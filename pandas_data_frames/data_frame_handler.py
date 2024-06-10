@@ -536,7 +536,7 @@ def read_table(file_path,
 def excel_handler(file_path, 
                   sheet_name=None,
                   header=None,
-                  engine=None, 
+                  engine=None,
                   decimal='.', 
                   return_type='dict'):
     
