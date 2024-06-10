@@ -78,7 +78,7 @@ def hex2dec(n_hex):
 
     
 # Operations with arbitrary bases #
-#----------------------------------------------#
+#---------------------------------#
     
 # From arbitrary base to decimal #
 def arbitrary_base_to_dec(x, base=10):
