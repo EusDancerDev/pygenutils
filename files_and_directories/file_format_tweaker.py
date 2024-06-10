@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#----------------#
+# Import modules #
+#----------------#
+
+import json
+
 #-----------------------#
 # Import custom modules #
 #-----------------------#
@@ -37,6 +43,10 @@ modify_obj_specs = string_handler.modify_obj_specs
 #------------------#
 # Define functions #
 #------------------#
+
+
+# PDF files #
+#-----------#
 
 def tweak_pages(file, cat_str, output_path="default"):
     
@@ -413,6 +423,43 @@ def msg2pdf(path_to_walk_into,
         remove_files_by_ext(extension, path_to_walk_into)
         
 
+# JSON files #
+#------------#
+
+def json2dict(in_file_path):
+    """
+    Function that converts a dictionary (not only its content, 
+    but as a whole) to a string and writes the latter to a JSON file.
+    
+    Parameters 
+    ----------
+    input_file_path : str
+        Input file path, could be absolute or relative.
+               
+    Returns
+    -------
+    content_dict : dict
+            The content of the JSON file converted to a dictionary.
+    """
+    
+    # Open the JSON file #
+    try:
+        in_file_obj = open(in_file_path)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"File '{in_file_path}' not found.")
+    else:
+        # Read the content of the file
+        content_str = in_file_obj.read()
+    
+    # Convert it to a dictionary #
+    try:
+        content_dict = json.loads(content_str)
+    except:
+        raise TypeError(f"Could not decode content from file '{in_file_path}'.")
+    else:
+        return content_dict
+    
+    
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
