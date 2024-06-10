@@ -6,3 +6,6 @@ egiteko_nagusi_eta_bakarra_oraingoz.txt
 isinstance_NUMPY_might_not_be_necessary_to_import-files.txt
 isinstance_PANDAS_might_not_be_necessary_to_import-files.txt
 isinstance_XARRAY_might_not_be_necessary_to_import-files.txt
+
+# Ignore the file to make text changes #
+modify_text_in_file
