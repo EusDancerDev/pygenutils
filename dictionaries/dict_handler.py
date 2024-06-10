@@ -18,8 +18,10 @@ from strings.string_handler import aux_ext_adder, get_obj_specs
 # Define custom functions #
 #-------------------------#
 
-def dict2json(dictionary, json_indent=4, out_file_path=None):
-    
+# File exportations #
+#-------------------#
+
+def dict2json(dictionary, json_indent=4, out_file_path=None):    
     """
     Function that converts a dictionary (not only its content, 
     but as a whole) to a string and writes the latter to a JSON file.
@@ -63,7 +65,7 @@ def dict2json(dictionary, json_indent=4, out_file_path=None):
         raise IOError("Could not write to file '{out_file_path}',"
                       "invalid path.")
     else:
-        out_file.write(dict_str)
+        out_file_obj.write(dict_str)
         
         # Get the file name's parent and the name without the relative path #        
         out_file_parent = get_obj_specs(out_file_path, obj_spec_key="parent")
@@ -83,46 +85,34 @@ def dict2json(dictionary, json_indent=4, out_file_path=None):
                                        "or 'n' for 'no': ")
             else:    
                 if overwrite_stdin == "y":
-                    out_file.close()
+                    out_file_obj.close()
                 else:
                     pass
-                
     
+
+# Merge and sort operations #
+#---------------------------#
+
+def sort_dictionary_by_keys(dic):
+    keys_sorted_list = sorted(dic)
+    dic_sorted_byKeys = {key : dic[key]
+                         for key in keys_sorted_list}
+    return dic_sorted_byKeys
     
+
+def merge_dictionaries(dict_list):
+    ldl = len(dict_list)
+    if ldl == 1:
+        raise ValueError("2 dictionaries at least must be passed.")
     
-def json2dict(in_file_path):
-    """
-    Function that converts a dictionary (not only its content, 
-    but as a whole) to a string and writes the latter to a JSON file.
+    str2eval = "{"
+    for d in dict_list:
+        str2eval += f"**{d},"
+    str2eval += "}"
     
-    Parameters 
-    ----------
-    input_file_path : str
-        Input file path, could be absolute or relative.
-               
-    Returns
-    -------
-    content_dict : dict
-            The content of the JSON file converted to a dictionary.
-    """
-    
-    # Open the JSON file #
-    try:
-        in_file_obj = open(in_file_path)
-    except FileNotFoundError:
-        raise FileNotFoundError(f"File '{in_file_path}' not found.")
-    else:
-        # Read the content of the file
-        content_str = in_file.read()
-    
-    # Convert it to a dictionary #
-    try:
-        content_dict = json.loads(content_str)
-    except:
-        raise TypeError(f"Could not decode content from file '{in_file_path}'.")
-    else:
-        return content_dict
-    
+    merged_dict = eval(str2eval)
+    return merged_dict
+
     
 #--------------------------#
 # Parameters and constants #
