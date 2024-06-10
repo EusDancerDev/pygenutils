@@ -5,6 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
+from dictionaries.dict_handler import sort_dictionary_by_keys
 from parameters_and_constants.global_parameters import basic_four_rules
 
 #-------------------------#
@@ -42,9 +43,8 @@ def div_dict_values(dict1, dict2):
 def dict_value_basic_operator(dict1, dict2, 
                               basic_math_operator,
                               return_sorted_keys=False):
-
     """
-    Performs the basic mathematical operations between two dictionaries,
+    Performs basic mathematical operations between two dictionaries,
     calling the specific function for the chosen mathematical operator.
     It is not necessary for both dictionaries' to be sorted
     (always referring to the keys) because the same key is referred to them.    
@@ -94,31 +94,6 @@ def dict_value_basic_operator(dict1, dict2,
     result_dict = accepted_operation_dict.get(basic_math_operator)
     
     if return_sorted_keys: 
-        result_dict = sort_dictionary_byKeys(result_dict)
+        result_dict = sort_dictionary_by_keys(result_dict)
         
     return result_dict
-
-
-# Merge and sort operations #
-#---------------------------#
-
-def sort_dictionary_byKeys(dic):
-    keys_sorted_list = sorted(dic)
-    dic_sorted_byKeys = {key : dic[key]
-                         for key in keys_sorted_list}
-    return dic_sorted_byKeys
-    
-
-def merge_dictionaries(dict_list):
-    
-    ldl = len(dict_list)
-    if ldl == 1:
-        raise ValueError("2 dictionaries at least must be passed.")
-    
-    str2eval = "{"
-    for d in dict_list:
-        str2eval += f"**{d},"
-    str2eval += "}"
-    
-    merged_dict = eval(str2eval)
-    return merged_dict
