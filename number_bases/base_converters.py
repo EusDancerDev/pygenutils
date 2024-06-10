@@ -9,7 +9,7 @@
 #---------------------------#
 
 def check_input_number_format(x):
-    if isinstance(x, int):    
+    if isinstance(x, int):
         x_str = str(x)
     else:
         x_str = x
