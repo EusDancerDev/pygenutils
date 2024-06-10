@@ -79,8 +79,7 @@ def count_consecutive(array, calculate_max_consec=False):
             return None
 
 
-def calc_all_unique_pairs(array_like, method="python-default"):
-    
+def calc_all_unique_pairs(array_like, method="python-default"):    
     """
     Function to calculate all possible pairs, irrespective of the order,
     in a list or 1D array.
@@ -164,8 +163,7 @@ def calc_all_unique_pairs(array_like, method="python-default"):
     return all_pair_combo_arr
 
 
-def approach_value_in_array(array, given_value):
-    
+def approach_value_in_array(array, given_value):    
     """
     endds the index of the nearest numerical value 
     compared to the original one in the given array.
