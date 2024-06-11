@@ -11,8 +11,11 @@ from strings.string_handler import find_substring_index
 # Define custom functions #
 #-------------------------#
 
-def format_string(string2format, arg_obj):
-    
+# String format management #
+#--------------------------#
+
+# F-strings #
+def format_string(string2format, arg_obj):    
     bracket_index_list = find_substring_index(string2format, "{}",
                                             advanced_search=True,
                                             all_matches=True)
@@ -54,6 +57,7 @@ def print_format_string(string2format, arg_obj, end="\n"):
         raise SyntaxError(syntax_error_str)
 
     
+# %-strings (percent-strings) #
 def print_percent_string(string2format, arg_obj):
     try:
         if isinstance(arg_obj, str):
@@ -69,6 +73,15 @@ def print_percent_string(string2format, arg_obj):
         
     except SyntaxError:
         raise SyntaxError(syntax_error_str)
+        
+
+# Object type's class to string conversions #
+#-------------------------------------------#
+
+def get_type_str(obj):
+    obj_type_class = type(obj)
+    obj_type_str = obj_type_class.__name__
+    return obj_type_str
 
 #--------------------------#
 # Parameters and constants #
