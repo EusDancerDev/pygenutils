@@ -78,7 +78,7 @@ def print_percent_string(string2format, arg_obj):
 # Object type's class to string conversions #
 #-------------------------------------------#
 
-def get_type_str(obj):
+def get_obj_type_str(obj):
     obj_type_class = type(obj)
     obj_type_str = obj_type_class.__name__
     return obj_type_str
