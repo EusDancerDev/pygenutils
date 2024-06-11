@@ -471,28 +471,24 @@ def time2seconds(t, time_fmt_str=None):
         days = t_dtTuple.day
         hours = t_dtTuple.hour
         minutes = t_dtTuple.minute
-        seconds = t_dtTuple.second
-        
+        seconds = t_dtTuple.second        
         t_secs = days*86400 + hours*3600 + minutes*60 + seconds
         return(t_secs)
         
     elif isinstance(t, tuple):
         
-        lt = len(t)
-        
+        lt = len(t)        
         if lt == 4:
             days = t[0]
             hours = t[1]
             minutes = t[2]
-            seconds = t[3]
-            
+            seconds = t[3]            
             t_secs = days*86400 + hours*3600 + minutes*60 + seconds
             
         elif lt == 3:
             hours = t[0]
             minutes = t[1]
-            seconds = t[2]
-            
+            seconds = t[2]            
             t_secs = hours*3600 + minutes*60 + seconds
             
         else:
@@ -526,11 +522,9 @@ function '{}' is designed to output a time string.
 Please provide a time string format identifier.
 """
 
-value_error_str = """Wrong '{}' option. Options are {}."""
-value_error_for_type_str = """'{}'=='{}' not allowed for argument '{}' of type ´{}´.
+value_error_str = """Unsupported '{}' option. Options are {}."""
+value_error_for_type_str = """'{}'=='{}' not allowed for argument '{}' of type '{}'.
 Options are {}."""
-
-attribute_error_str = """Wrong attribute option at position {}. Options are {}. """
 
 non_satisfactory_dt_obj_error_str = \
 """Argument '{}' of type '{}' will not give a satisfactory \
