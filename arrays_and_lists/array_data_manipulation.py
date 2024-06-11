@@ -639,50 +639,101 @@ def find_item_rudimentary(obj, obj2find):
 
 def select_array_elements(array, idx2access):
     """
-    Function to select a slice of a 1D array or list.
-    If dimension number is greater than one,
-    then throws a warning indicating that.
+    Function to select elements from an array, list, or dict.
+    Supports multidimensional NumPy arrays with dimensions up to 3.
     
     Parameters
     ----------
-    array : list or numpy.ndarray
-        List or array containing whatever values
-    idx2access : int or list or numpy.ndarray
-        List or array to select multiple values.
-        If a single value is detected, 
-        then it will be converted to list, because
-        and integer object is not iterable.
+    array : list, dict, or numpy.ndarray
+        Container holding the values. If a NumPy array, it can have up to 3 dimensions.
+    idx2access : int, list, or numpy.ndarray
+        Indices to select multiple values. If a single value is provided,
+        it will be converted to a list.
     
     Returns
     -------
-    slice : int or list or numpy.ndarray
-        Single value or a slice of the input list or array
+    selected : int, list, dict, or numpy.ndarray
+        Single value or a slice of the input container.
+    
+    Raises
+    ------
+    ValueError
+        If the input NumPy array has more than 3 dimensions.
+    TypeError
+        If the input array is not a list, dict, or numpy.ndarray.
+    
+    Examples
+    --------
+    # Selecting from a 1D list
+    >>> select_array_elements([10, 20, 30, 40, 50], [1, 3])
+    [20, 40]
+    
+    # Selecting from a 1D NumPy array
+    >>> select_array_elements(np.array([10, 20, 30, 40, 50]), [1, 3])
+    array([20, 40])
+    
+    # Selecting from a 2D NumPy array
+    >>> select_array_elements(np.array([[10, 20, 30], [40, 50, 60], 
+                                        [70, 80, 90]]), [[0, 1], [2, 2]])
+    array([20, 90])
+    
+    # Selecting from a 3D NumPy array
+    >>> select_array_elements(np.array([[[10, 20], [30, 40]],
+                                        [[50, 60], [70, 80]]]),
+                              [[0, 1, 0], [1, 0, 1]])
+    array([30, 60])
+    
+    # Selecting from a dictionary
+    >>> select_array_elements({'a': 1, 'b': 2, 'c': 3}, ['a', 'c'])
+    {'a': 1, 'c': 3}
     """
     
+    # Ensure idx2access is a list or numpy.ndarray 
+    # if it is a single integer or also numpy.ndarray, respectively
     if isinstance(idx2access, int):
         idx2access = [idx2access]
+    elif isinstance(idx2access, np.ndarray):
+        idx2access = np.array(idx2access)
     
+    # Access elements in a list
     if isinstance(array, list):
         accessed_mapping = map(array.__getitem__, idx2access)
         accessed_list = list(accessed_mapping)
         
-        lal = len(accessed_list)
-        if lal == 1:
+        if len(accessed_list) == 1:
             accessed_list = accessed_list[0]
         return accessed_list
     
+    # Access elements in a dictionary
     elif isinstance(array, dict):
-        accessed_dict = {idx : array[idx]
-                         for idx in idx2access}
+        accessed_dict = {idx: array[idx] for idx in idx2access}
         return accessed_dict
     
+    # Access elements in a NumPy array        
     elif isinstance(array, np.ndarray):
-        accessed_array = array[idx2access]
+        if array.ndim > 3:
+            raise ValueError("The input array has more than 3 dimensions, "
+                             "which is not supported.")
         
-        laa = len(accessed_array)
-        if laa == 1:
-            accessed_array = accessed_array[0]
+        accessed_array = array[tuple(idx2access.T)] if idx2access.ndim > 1 else array[idx2access]
+        
+        if accessed_array.size == 1:
+            accessed_array = accessed_array.item()
         return accessed_array
+    
+    else:
+        raise TypeError("Unsupported array type. "
+                        "Only lists, dicts, and numpy.ndarrays are supported.")
+
+# Example usage:
+array_1d = np.array([10, 20, 30, 40, 50])
+array_2d = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
+array_3d = np.array([[[10, 20], [30, 40]], [[50, 60], [70, 80]]])
+
+print(select_array_elements(array_1d, [1, 3]))  # Output: [20, 40]
+print(select_array_elements(array_2d, [[0, 1], [2, 2]]))  # Output: [20, 90]
+print(select_array_elements(array_3d, [[0, 1, 0], [1, 0, 1]]))  # Output: [30, 60]
+
         
 
 # Array uniqueness-related operations #
