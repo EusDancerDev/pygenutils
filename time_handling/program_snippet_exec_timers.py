@@ -70,10 +70,7 @@ def snippet_exec_timer(snippet_str,
         
     # Quality control #
     arg_names = snippet_exec_timer.__code__.co_varnames
-    roundoff_arg_pos = find_substring_index(arg_names,
-                                            "roundoff",
-                                            advanced_search=True,
-                                            find_whole_words=True)
+    roundoff_arg_pos = find_substring_index(arg_names, "roundoff")
     
     # Execution time in the specified number of trials with no repeats #
     if repeats is None:
