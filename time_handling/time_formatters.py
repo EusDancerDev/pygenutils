@@ -298,7 +298,7 @@ def time_format_tweaker(t,
         
     elif isinstance(t, np.datetime64):
         
-        if method == "datetime_list":
+        if method == "datetime_tolist":
             t_res = frequent_time_format_converter(t, method)
         if return_str:
             t_res = str(t)
@@ -505,7 +505,7 @@ def time2seconds(t, time_fmt_str=None):
 #--------------------------#
 
 # Global method options #
-method_options = ["datetime", "datetime_list", "datetime_pydt", "model_datetime",
+method_options = ["datetime", "datetime_tolist", "datetime_pydt", "model_datetime",
                   "pandas", 
                   "numpy_dt64", "numpy_dt64_array", "numpy_generic"]
 
@@ -541,7 +541,7 @@ unconverteable_pandas_dt_obj_error_str = \
 
 datetime_obj_dict = {
     "datetime" : "datetime.datetime.strptime(t, time_fmt_str)",
-    "datetime_list" : "t.tolist()",
+    "datetime_tolist" : "t.tolist()",
     "datetime_pydt" : "t.to_pydatetime()",
     "numpy_dt64" : "t.to_datetime64()",
     "numpy_dt64_array" : "np.array(t, dtype=np.datetime64)",
