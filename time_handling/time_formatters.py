@@ -35,7 +35,10 @@ substring_replacer = string_handler.substring_replacer
 #       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
 #       1. Zein sarrera mota nahi ditudan
 #       2. Horietako bakoitza zer motatara bihurtu nahi ditudan
-#       
+#       3. Kontsideratu, hala badagokio, data- edo denbora-zatiak erakustea
+#       4. Erakuste formatoa zehaztu <-> 'output_format' aldagaia
+#       5. Galdetu ChatGPT-ri, ONGI ATERAKO DA
+#       6. Docstring-a
         
 def time_format_tweaker(t,
                         time_fmt_str=None,
@@ -52,7 +55,6 @@ def time_format_tweaker(t,
         array-like, pandas.Series or xarray.DataArray 
     In either case, the object containg the dates and times.
     
-    TODO: ondoko guztiak hobeto azaldu
     method : {"numpy_generic", "numpy_dt64",
               "pandas", 
               "datetime", "model_datetime"}
@@ -454,9 +456,22 @@ def over_24hour_fixer(time_obj):
 
 def time2seconds(t, time_fmt_str=None):
     
+    # TODO: proiektuaren atal nahikoa handia
+    #       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
+    #       1. Allowed types: string, datetime.datetime, datetime.date, datetime.time
+    #                         np.datetime64, pd.Timestamp and time.struct_time
+    #       2. Horietako bakoitza, AHAL DELA 'time_format_tweaker' erabiliz,
+    #          beti bihurtu 'timedelta' batera --> lehenetsi datetime.timedelta
+    #          zeren azkarragoa eta memoria-erabilera txikiagokoa baita, 
+    #          pd.Timedelta baino (izatez, ondoko hau datetime-ren gainean dago eraikita).
+    #       3. Irteera-formatoa: BETI FLOAT, '.total_seconds()' ezaugarria 
+    #          deituko baita, non emaitza segundoak besterik ez diren.
+    #       4. Galdetu ChatGPT-ri, ONGI ATERAKO DA
+    #       5. Docstring-a
+
+    
     # TODO: Convert the input object to datetime.timedelta object #
-    # Allowed types: string, datetime.datetime, datetime.date, datetime.time
-    #                np.datetime64, pd.Timestamp and time.struct_time
+
     
     method_name = inspect.currentframe().f_code.co_name
     
