@@ -62,15 +62,8 @@ def netcdf_file_scanner(path_to_walk_into,
 
     # Proper argument selection control #
     arg_names = netcdf_file_scanner.__code__.co_varnames
-    verb_arg_pos = find_substring_index(arg_names, 
-                                        "verbose",
-                                        advanced_search=True,
-                                        find_whole_words=True)
-    
-    xverb_arg_pos = find_substring_index(arg_names, 
-                                         "extra_verbose",
-                                         advanced_search=True,
-                                         find_whole_words=True)
+    verb_arg_pos = find_substring_index(arg_names, "verbose")
+    xverb_arg_pos = find_substring_index(arg_names, "extra_verbose")
     
     # Define the input data directories and files #
     #---------------------------------------------#
