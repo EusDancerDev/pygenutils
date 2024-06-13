@@ -273,9 +273,7 @@ def cdo_shifttime(file_list,
                   shift_value):
                        
     for file in file_list:
-        
         temp_file = add_str_to_aux_path(file)
-        
         shifttime_command = f"cdo shifttime,{shift_value} '{file}' '{temp_file}'"
         exec_shell_command(shifttime_command)
         
@@ -552,7 +550,7 @@ def apply_periodic_deltas(projected_ncfile,
     
     period_abbr_idx = find_substring_index(time_freqs_delta, delta_period)
     delta_apply_fn = add_str_to_aux_path(historical_ncfile, 
-                                      return_file_name_noext=True)
+                                         return_file_name_noext=True)
     
     if proj_model is None:
         raise ValueError("The model name's position contained on the file name "\
@@ -637,7 +635,7 @@ cdo_remap_option_dict = {
 cdo_remap_options = list(cdo_remap_option_dict.keys())
 
                           
-# Basic operator switch-case dictionary #
+# Basic operator switch case dictionary #
 cdo_operator_str_dict = {
     basic_four_rules[0] : "add",
     basic_four_rules[1] : "sub",
