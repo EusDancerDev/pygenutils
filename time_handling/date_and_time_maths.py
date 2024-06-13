@@ -36,6 +36,8 @@ print_format_string = information_output_formatters.print_format_string
 # Define functions #
 #------------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 #%%
 
 # Times #
@@ -63,7 +65,9 @@ def sum_clock_times(clock_obj_list,
         are "sum" (default) and "subtr" for subtraction.
     time_fmt_str : str, optional
         The format string that specifies the format of the time objects. 
-        Default is "%H:%M:%S".
+        This only affects objects that are strings. Default is "%H:%M:%S".
+        Note that all strings must have at least the detecteable part 
+        by the given string.
     output_format : str, optional
         The format of the output. Supported options:
         - 'standard': Returns the total time as a pandas.Timedelta object (default).
@@ -126,7 +130,6 @@ def sum_clock_times(clock_obj_list,
     # Return the result in the specified output format #
     total_timedelta_formatted = time_output_format_dict.get(output_format)(total_timedelta)
     return total_timedelta_formatted
-
     
 
 # Auxiliary methods #
@@ -140,7 +143,7 @@ def convert_to_time(clock_obj, time_fmt_str):
                 datetime.datetime, datetime.time, or pandas.Timestamp
         The input time object to be converted.
     time_fmt_str : str
-        The format string that specifies the format of the time objects.
+        The format string that specifies the format of the string time objects.
 
     Returns
     -------
@@ -223,41 +226,131 @@ def time_to_timedelta(t):
 #-#-#-#-#-#-#-#-
 
 # Adapted from https://stackoverflow.com/questions/12033905/using-python-to-create-an-average-out-of-a-list-of-times
-
-# TODO: ChatGPT docstring-ak
-# TODO: mota gehio onartu
+# and refined with ChatGPT
 
 # Main method #
 ###############
 
-def clock_time_average(clock_obj_list):
-    # input datetime.datetime array and output datetime.time value
-    angles = [time_to_radians(time) for time in clock_obj_list]
+def clock_time_average(clock_obj_list, 
+                       time_fmt_str="%H:%M:%S",
+                       output_format="standard"):
+    """
+    Calculate the average time from a list of time objects
+    and format the output accordingly.
+    
+    Parameters
+    ----------
+    clock_obj_list : list, tuple, or numpy.ndarray
+        A collection of date and/or time objects or strings that follow 
+        the format specified in 'time_fmt_str'.
+    time_fmt_str : str, optional
+        The format string that specifies the format of the time objects. 
+        This only affects objects that are strings. Default is "%H:%M:%S".
+        Note that all strings must have at least the detectable part 
+        specified by the given format string.
+    output_format : str, optional
+        The format of the output. Supported options:
+        - 'standard': Returns the total time as a pandas.Timedelta object (default).
+        - 'string': Returns the total time as a string.
+        - 'time_only': Returns the total time as a datetime.time object.
+        - 'tuple': Returns a tuple of (days, hours, minutes, seconds) from the total time.
+    
+    Returns
+    -------
+    object
+        The total time after performing the specified operation,
+        formatted based on 'output_format'.
+        
+    Raises
+    ------
+    TypeError
+        If 'clock_obj_list' is not a list, tuple, or numpy.ndarray.
+    ValueError
+        If 'clock_obj_list' contains fewer than 2 elements
+        or if an unsupported output format is specified.
+    """    
+    # Argument adecuacy controls #
+    ##############################
+
+    # Date and/or time list format control and its length #
+    arg_names = sum_clock_times.__code__.co_varnames
+    obj_list_pos = arg_names.index("clock_obj_list")
+    
+    if isinstance(clock_obj_list, str):
+        raise TypeError(f"Argument '{arg_names[obj_list_pos]}' "
+                        f"(position {obj_list_pos}) must either be a "
+                        "list, tuple or numpy.ndarray.")
+    elif (isinstance(clock_obj_list, (list, tuple, np.ndarray)) and len(clock_obj_list) < 2):
+        raise ValueError(f"Argument '{arg_names[obj_list_pos]}' "
+                         "must contain at least two objects.")
+        
+    # Output format parameter control #
+    if output_format not in time_output_format_options:
+        raise ValueError(f"Unsupported output format '{output_format}'. "
+                         f"Supported options are: {time_output_format_options}")
+        
+    # Operations #
+    ##############
+        
+    angles = [time_to_radians(clock_obj) for clock_obj in clock_obj_list]
     avg_angle = average_angle(angles)    
-    return radians_to_time_of_day(avg_angle)
+    time_average = radians_to_time_of_day(avg_angle)
+    
+    # Return the result in the specified output format #
+    time_average_formatted = time_output_format_dict.get(output_format)(time_average)
+    return time_average_formatted
+
 
 # Auxiliary methods #
 #####################
 
-def time_to_radians(x):
-    # Radians are calculated using a 24-hour circle, not 12-hour, 
-    # starting at north and moving clockwise.
+def time_to_radians(t, time_fmt_str):
+    """
+    Convert a time object to radians.
     
-    # If the given time is already a datetime.time() clock_object,
-    # skip to the next step.
+    Parameters
+    ----------
+    t : str, numpy.datetime64, time.struct_time, datetime.datetime, 
+        datetime.time, or pandas.Timestamp.
+        The input time object to be converted.
+    time_fmt_str : str
+        The format string that specifies the format of the time objects. 
+        This only affects objects that are strings.
+        
+    Returns
+    -------
+    float
+        The angle in radians representing the input time on a 24-hour clock.
     
-    if isinstance(x, datetime.time):
-        time_of_day = x
-    else:
-        time_of_day = x.time()
+    Note
+    ----
+    Radians are calculated using a 24-hour circle,
+    starting at north (midnight) and moving clockwise.
+    """
+    # TODO: 'time2seconds' funtzioa behar bezala diseinatutakoan deskomentatu ondoko lerroa
+    # seconds_from_midnight = time2seconds(time_of_day)
     
-    seconds_from_midnight = time2seconds(time_of_day)
+    time_obj = convert_to_time(t, time_fmt_str=time_fmt_str)
+    time_of_day = time_to_timedelta(time_obj)
     
+    seconds_from_midnight = time_of_day.total_seconds()
     radians = seconds_from_midnight / (24 * 60 * 60) * 2 * np.pi
     return radians
 
 def average_angle(angles):
-    # Angles are measured in RADIANS
+    """
+    Calculate the average of a list of angles in RADIANS.
+    
+    Parameters
+    ----------
+    angles : list of float
+        The angles in radians to average.
+        
+    Returns
+    -------
+    float
+        The average angle in radians.
+    """
     x_sum = np.sum([np.sin(x) for x in angles])
     y_sum = np.sum([np.cos(x) for x in angles])
     
@@ -266,9 +359,21 @@ def average_angle(angles):
     
     return np.arctan2(x_mean, y_mean)   
 
-def radians_to_time_of_day(x):
-    # Radians are measured clockwise from north and represent time in a 24-hour circle
-    seconds_from_midnight = x / (2 * np.pi) * 24 * 60 * 60
+def radians_to_time_of_day(rads):
+    """
+    Convert an angle in radians to a time of day.
+    
+    Parameters
+    ----------
+    rads : float
+        The angle in radians representing the time on a 24-hour clock.
+        
+    Returns
+    -------
+    datetime.time
+        The time of day corresponding to the input radians.
+    """
+    seconds_from_midnight = rads / (2 * np.pi) * 24 * 60 * 60
     
     # It cannot be considered the next second
     # until the decimal fraction equals to 1.
@@ -283,7 +388,6 @@ def radians_to_time_of_day(x):
     
     if second_fraction_to_one < tol:
         seconds_from_midnight_int = int(seconds_from_midnight) + 1
-        
     else:
         seconds_from_midnight_int = int(seconds_from_midnight)
     
@@ -292,9 +396,9 @@ def radians_to_time_of_day(x):
     # Minutes and seconds are calculated on the 60th basis.
     hour, minute, second = time_format_tweaker(seconds_from_midnight_int)
     
-    dt_time = datetime.time(hour, minute, second)
+    time_of_day = datetime.time(hour, minute, second)
     
-    return dt_time
+    return time_of_day
 
 #%%
 
@@ -322,8 +426,8 @@ def sum_date_objects(date_list,
         The operation to perform on the dates. Supported operations 
         are "sum" (default) and "subtr" for subtraction.
     time_fmt_str : str, optional
-        The format string that specifies the format of the date objects as strings. 
-        Default is "%Y-%m-%d".
+        The format string that specifies the format of the date objects.
+        This only affects objects that are strings. Default is "%Y-%m-%d".
     output_format : str, optional
         The format of the output. Supported options:
         - 'default': Returns the total date as a datetime.date object (default).
