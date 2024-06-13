@@ -115,19 +115,19 @@ def netcdf_file_scanner(path_to_walk_into,
             # Create faulty netCDF file report #
             #----------------------------------#
             
-            ofile_name = f"{code_call_dir}/{report_fn_noext}.txt"
-            out_file_obj = open(ofile_name, "w")
+            out_file_obj_name = f"{code_call_dir}/{report_fn_noext}.txt"
+            out_file_obj = open(out_file_obj_name, "w")
             
             arg_tuple_file_scan3 = (ptwi,
                                     faulty_ncf_counter[0], 
                                     faulty_ncf_counter[-1])
-            ofile.write(format_string(report_info_str, arg_tuple_file_scan3))
+            out_file_obj.write(format_string(report_info_str, arg_tuple_file_scan3))
             
             for faulty_ncf in faulty_ncf_list:
-                ofile.write(f" {faulty_ncf}\n")
+                out_file_obj.write(f" {faulty_ncf}\n")
             
             print("Faulty netCDF file report created at the current directory.")
-            ofile.close()
+            out_file_obj.close()
             
         else:
             return faulty_ncf_counter[-1]
@@ -413,11 +413,11 @@ def save_nc_data_as_csv(nc_file,
     # Create the saving file's name or maintain the user-defined name #
     #-----------------------------------------------------------------#
     
-    if isinstance(nc_file, str) and csv_file_name == "default":
+    if (isinstance(nc_file, str) and csv_file_name == "default"):
         obj2change = "ext"
         csv_file_name = get_obj_specs(nc_file, obj2change, extensions[1])
     
-    elif not isinstance(nc_file, str) and csv_file_name == "default":
+    elif (not isinstance(nc_file, str) and csv_file_name == "default"):
         raise ValueError("You must provide a CSV file name.")
         
     else:
@@ -562,7 +562,7 @@ def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
         nc_files = get_netcdf_fileList(ncf_dir_name)
         lncfs = len(nc_files)
         
-        out_file_obj = open(latlon_bound_ofile_name, "w")
+        out_file_obj = open(latlon_bound_out_file_obj_name, "w")
     
         if lncfs > 0:
             for ncf_num, ncf_name in enumerate(nc_files, start=1):
@@ -578,7 +578,7 @@ def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
                     = find_coordinate_variables_raise_none(ncf_name)
                             
                     if not coord_varlist:
-                        ofile.write(f"No 'latitude' or 'longitude' coordinates "
+                        out_file_obj.write(f"No 'latitude' or 'longitude' coordinates "
                                     f"found in file {ncf_name}\n")
                         
                     else:        
@@ -606,7 +606,7 @@ def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
                                                   llons,
                                                   lat_delta,
                                                   lon_delta)
-                            ofile.write(format_string(latlon_info_str,
+                            out_file_obj.write(format_string(latlon_info_str,
                                                       arg_tuple_latlons2))
                             
                         else:
@@ -623,21 +623,21 @@ def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
                                 deltas[0],
                                 deltas[1]
                                 )
-                            ofile.write(format_string(latlon_info_str, 
+                            out_file_obj.write(format_string(latlon_info_str, 
                                                       arg_tuple_latlons1))
                                                 
                 else: 
-                    ofile.write(f"FAULTY FILE {ncf_name}\n")
+                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
                             
                             
-            ofile.close()
-            move_files_by_globstr_from_exec_code(latlon_bound_ofile_name, ncf_dir_name)
+            out_file_obj.close()
+            move_files_by_globstr_from_exec_code(latlon_bound_out_file_obj_name, ncf_dir_name)
                 
         else:
-            ofile.write(f"No netCDF files in directory {ncf_dir_name}\n")
-            ofile.close()
+            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")
+            out_file_obj.close()
             
-            move_files_by_globstr_from_exec_code(latlon_bound_ofile_name, ncf_dir_name)
+            move_files_by_globstr_from_exec_code(latlon_bound_out_file_obj_name, ncf_dir_name)
         
 
 def extract_and_store_period_bounds():
@@ -653,7 +653,7 @@ def extract_and_store_period_bounds():
         nc_files = get_netcdf_fileList(ncf_dir_name)
         lncfs = len(nc_files)
         
-        out_file_obj = open(period_bound_ofile_name, "w")
+        out_file_obj = open(period_bound_out_file_obj_name, "w")
     
         if lncfs > 0:
             for ncf_num, ncf_name in enumerate(nc_files, start=1):    
@@ -668,7 +668,7 @@ def extract_and_store_period_bounds():
                     time_var = find_time_dimension_raise_none(ncf_name)
                     
                     if not time_var :
-                        ofile.write(f"No 'time' dimension found in file {ncf_name}\n")
+                        out_file_obj.write(f"No 'time' dimension found in file {ncf_name}\n")
                     
                     else:    
                         times = get_times(ncf_name, time_var)
@@ -680,17 +680,17 @@ def extract_and_store_period_bounds():
                             times[-1].values,
                             records
                             )
-                        ofile.write(format_string(period_info_str, arg_tuple_bounds1))
+                        out_file_obj.write(format_string(period_info_str, arg_tuple_bounds1))
                 else: 
-                    ofile.write(f"FAULTY FILE {ncf_name}\n")
+                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
                 
-            ofile.close()
-            move_files_by_globstr_from_exec_code(period_bound_ofile_name, ncf_dir_name)
+            out_file_obj.close()
+            move_files_by_globstr_from_exec_code(period_bound_out_file_obj_name, ncf_dir_name)
                 
         else:
-            ofile.write(f"No netCDF files in directory {ncf_dir_name}\n")    
-            ofile.close()
-            move_files_by_globstr_from_exec_code(period_bound_ofile_name, ncf_dir_name)
+            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")    
+            out_file_obj.close()
+            move_files_by_globstr_from_exec_code(period_bound_out_file_obj_name, ncf_dir_name)
 
 
 def extract_and_store_time_formats():
@@ -699,7 +699,7 @@ def extract_and_store_time_formats():
     # Open each file and extract time array format data #
     #---------------------------------------------------#
     
-    ofile_name = "time_formats.txt"
+    out_file_obj_name = "time_formats.txt"
 
     netcdf_files_dirs = get_netcdf_file_dirList(code_call_dir)
     lncfd = len(netcdf_files_dirs)
@@ -708,7 +708,7 @@ def extract_and_store_time_formats():
         nc_files = get_netcdf_fileList(ncf_dir_name)
         lncfs = len(nc_files)
         
-        out_file_obj = open(ofile_name, "w")
+        out_file_obj = open(out_file_obj_name, "w")
 
         if lncfs > 0:                
             for ncf_num, ncf_name in enumerate(nc_files, start=1):
@@ -723,7 +723,7 @@ def extract_and_store_time_formats():
                     time_var = find_time_dimension_raise_none(ncf_name)
                     
                     if not time_var:
-                        ofile.write(f"No 'time' dimension found in file {ncf_name}\n")
+                        out_file_obj.write(f"No 'time' dimension found in file {ncf_name}\n")
                     
                     else:
                         times = get_times(ncf_name, time_var)
@@ -734,18 +734,18 @@ def extract_and_store_time_formats():
                             times.values,
                             records
                             )
-                        ofile.write(format_string(time_format_info_str, arg_tuple_bounds2))
+                        out_file_obj.write(format_string(time_format_info_str, arg_tuple_bounds2))
                         
                 else:
-                    ofile.write(f"FAULTY FILE {ncf_name}\n")
+                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
                     
-            ofile.close()
-            move_files_by_globstr_from_exec_code(ofile_name, ncf_dir_name)
+            out_file_obj.close()
+            move_files_by_globstr_from_exec_code(out_file_obj_name, ncf_dir_name)
             
         else:
-            ofile.write(f"No netCDF files in directory {ncf_dir_name}\n")
-            ofile.close()
-            move_files_by_globstr_from_exec_code(ofile_name, ncf_dir_name)
+            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")
+            out_file_obj.close()
+            move_files_by_globstr_from_exec_code(out_file_obj_name, ncf_dir_name)
 
 
 #--------------------#
@@ -907,7 +907,6 @@ def find_coordinate_variables(nc_file_name):
     # Open the netCDF file if necessary #
     if isinstance(nc_file_name, str):
         ds = xr.open_dataset(nc_file_name)
-        
     else:
         ds = nc_file_name.copy()
     
@@ -973,8 +972,7 @@ def find_coordinate_variables_raise_none(nc_file_name):
     
     # Open the netCDF file if necessary #
     if isinstance(nc_file_name, str):
-        ds = xr.open_dataset(nc_file_name)
-        
+        ds = xr.open_dataset(nc_file_name)        
     else:
         ds = nc_file_name.copy()
     
@@ -1295,8 +1293,8 @@ code_call_dir = Path.cwd()
 extensions = ["nc", "csv"]
 
 # Main file names #
-latlon_bound_ofile_name = "latlon_bounds.txt"
-period_bound_ofile_name = "period_bounds.txt"
+latlon_bound_out_file_obj_name = "latlon_bounds.txt"
+period_bound_out_file_obj_name = "period_bounds.txt"
 
 # String splitting character #
 splitdelim = common_delim_list[0]
