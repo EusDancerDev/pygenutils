@@ -47,9 +47,7 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
     #-----------------------------------#
     
     arg_names = translate_string.__code__.co_varnames
-    meth_list_arg_pos = find_substring_index(arg_names, 
-                                             "method_list",
-                                             advanced_search=False)
+    meth_list_arg_pos = find_substring_index(arg_names, "method_list")
     
     if method not in method_list:
         raise ValueError(f"Wrong '{arg_names[meth_list_arg_pos]}' option. "
