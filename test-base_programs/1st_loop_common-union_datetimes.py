@@ -22,7 +22,7 @@ from time_handling import datetime_operators, time_formatters
 # Create aliases #
 #----------------#
 
-datetime_range_operator = datetime_operators.datetime_range_operator
+merge_datetime_dataframes = datetime_operators.merge_datetime_dataframes
 natural_year = datetime_operators.natural_year
 
 time_format_tweaker = time_formatters.time_format_tweaker
