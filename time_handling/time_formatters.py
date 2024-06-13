@@ -354,9 +354,12 @@ def time_format_tweaker(t,
                             
             
     if return_str:
-        if isinstance(t_res, (pd.DataFrame, pd.Series)):
+        if isinstance(t_res, pd.Series):
             t_res = t_res.dt.strftime(time_fmt_str) 
             return t_res
+        if isinstance(t_res, pd.DataFrame):
+            for col in t_res.columns:
+                t_res.loc[:, col] = t_res.loc[:, col].dt.strftime(time_fmt_str)                
         elif isinstance(t_res, np.ndarray):
             t_res = t_res.astype('U')
             return t_res
