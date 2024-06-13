@@ -38,9 +38,7 @@ find_substring_index = string_handler.find_substring_index
 def get_current_time(dtype="datetime", time_fmt_str=None):
     arg_names = get_current_time.__code__.co_varnames
         
-    type_arg_pos = find_substring_index("dtype", 
-                                        arg_names,
-                                        advanced_search=False)
+    type_arg_pos = find_substring_index("dtype", arg_names)
     
     if dtype not in current_time_type_options:
         arg_tuple_current_time = (arg_names[type_arg_pos], current_time_type_options)
@@ -66,10 +64,7 @@ def get_obj_operation_datetime(obj_list,
     
     attr_options = list(struct_time_attr_dict.keys())
     arg_names = get_obj_operation_datetime.__code__.co_varnames
-    
-    attr_arg_pos = find_substring_index(arg_names,
-                                        "attr", 
-                                        advanced_search=False)
+    attr_arg_pos = find_substring_index(arg_names, "attr")
     
     if attr not in attr_options:
         arg_tuple_operation_datetime = (attr_arg_pos, attr_options)
@@ -105,20 +100,9 @@ def datetime_range_operator(df1, df2,
     # Main argument names and their position on the function's definition #    
     arg_names = datetime_range_operator.__code__.co_varnames
     
-    df1_arg_pos\
-    = find_substring_index(arg_names,
-                           "df1",
-                           advanced_search=False)
-    
-    df2_arg_pos\
-    = find_substring_index(arg_names,
-                           "df2",
-                           advanced_search=False)
-    
-    operator_arg_pos\
-    = find_substring_index(arg_names,
-                           "operator", 
-                           advanced_search=False)
+    df1_arg_pos = find_substring_index(arg_names, "df1")
+    df2_arg_pos = find_substring_index(arg_names, "df2")
+    operator_arg_pos = find_substring_index(arg_names, "operator")
     
     # Operator argument choice #    
     if operator not in dt_range_operators:
