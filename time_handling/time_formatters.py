@@ -30,13 +30,19 @@ substring_replacer = string_handler.substring_replacer
 #------------------#
 # Define functions #
 #------------------#
+
+# TODO: proiektuaren atal nahikoa handia
+#       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
+#       1. Zein sarrera mota nahi ditudan
+#       2. Horietako bakoitza zer motatara bihurtu nahi ditudan
+#       
         
 def time_format_tweaker(t,
                         time_fmt_str=None,
                         return_str=False,
                         return_days=False,
                         method="datetime",
-                        standardizeHourRange=False):
+                        standardize_hour_range=False):
     
     """
     Parameters
@@ -175,13 +181,13 @@ def time_format_tweaker(t,
             arg_tuple_tweaker3 = (arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker3))
 
-        particularAllowedMethods = ["pandas", "datetime", "model_datetime"]
-        if method not in particularAllowedMethods:
+        particular_allowed_methods = ["pandas", "datetime", "model_datetime"]
+        if method not in particular_allowed_methods:
             arg_tuple_tweaker4 = (arg_names[method_arg_pos],
                                   method,
                                   arg_names[t_arg_pos],
                                   get_obj_type_str(eval(arg_names[t_arg_pos])),
-                                  particularAllowedMethods)
+                                  particular_allowed_methods)
             
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker4))
         
@@ -268,14 +274,14 @@ def time_format_tweaker(t,
     elif isinstance(t, pd.Timestamp):
         
         if not return_str:        
-            particularAllowedMethods = ["numpy_generic", "numpy_dt64", "datetime_pydt"]
+            particular_allowed_methods = ["numpy_generic", "numpy_dt64", "datetime_pydt"]
             
-            if method not in particularAllowedMethods:  
+            if method not in particular_allowed_methods:  
                 arg_tuple_tweaker9 = (arg_names[method_arg_pos],
                                       method,
                                       arg_names[t_arg_pos],
                                       get_obj_type_str(eval(arg_names[t_arg_pos])),
-                                      particularAllowedMethods)
+                                      particular_allowed_methods)
                 
                 raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker9))
             
@@ -288,7 +294,7 @@ def time_format_tweaker(t,
                                    return_days,
                                    arg_names[t_arg_pos],
                                    get_obj_type_str(eval(arg_names[t_arg_pos])),
-                                   particularAllowedMethods)
+                                   particular_allowed_methods)
 
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker10))
             
@@ -307,7 +313,7 @@ def time_format_tweaker(t,
 
     
     else:                
-        if standardizeHourRange:
+        if standardize_hour_range:
             try:
                 t_res = over_24hour_fixer(t)
             except Exception:        
@@ -317,13 +323,13 @@ def time_format_tweaker(t,
                 return t_res
                 
         else:   
-            particularAllowedMethods = ["numpy_dt64_array", "pandas"]
-            if method not in particularAllowedMethods:
-                arg_tuple_tweaker12 =  (arg_names[method_arg_pos],
-                                        method,
-                                        arg_names[t_arg_pos],
-                                        get_obj_type_str(eval(arg_names[t_arg_pos])),
-                                        particularAllowedMethods)
+            particular_allowed_methods = ["numpy_dt64_array", "pandas"]
+            if method not in particular_allowed_methods:
+                arg_tuple_tweaker12 = (arg_names[method_arg_pos],
+                                       method,
+                                       arg_names[t_arg_pos],
+                                       get_obj_type_str(eval(arg_names[t_arg_pos])),
+                                       particular_allowed_methods)
                 
                 raise ValueError(format_string(value_error_for_type_str,
                                                arg_tuple_tweaker12))
@@ -463,15 +469,19 @@ def over_24hour_fixer(time_obj):
 
 def time2seconds(t, time_fmt_str=None):
     
+    # TODO: Convert the input object to datetime.timedelta object #
+    # Allowed types: string, datetime.datetime, datetime.date, datetime.time
+    #                np.datetime64, pd.Timestamp and time.struct_time
+    
     method_name = inspect.currentframe().f_code.co_name
     
     if isinstance(t, str):
-        t_dtTuple = time_format_tweaker(t, time_fmt_str)
+        t_datetime_tuple = time_format_tweaker(t, time_fmt_str)
         
-        days = t_dtTuple.day
-        hours = t_dtTuple.hour
-        minutes = t_dtTuple.minute
-        seconds = t_dtTuple.second        
+        days = t_datetime_tuple.day
+        hours = t_datetime_tuple.hour
+        minutes = t_datetime_tuple.minute
+        seconds = t_datetime_tuple.second        
         t_secs = days*86400 + hours*3600 + minutes*60 + seconds
         return(t_secs)
         
