@@ -692,7 +692,7 @@ def select_array_elements(array, idx2access):
     # if it is a single integer or also numpy.ndarray, respectively
     if isinstance(idx2access, int):
         idx2access = [idx2access]
-    elif isinstance(idx2access, np.ndarray):
+    elif isinstance(idx2access, list):
         idx2access = np.array(idx2access)
     
     # Access elements in a list
@@ -725,16 +725,6 @@ def select_array_elements(array, idx2access):
         raise TypeError("Unsupported array type. "
                         "Only lists, dicts, and numpy.ndarrays are supported.")
 
-# Example usage:
-array_1d = np.array([10, 20, 30, 40, 50])
-array_2d = np.array([[10, 20, 30], [40, 50, 60], [70, 80, 90]])
-array_3d = np.array([[[10, 20], [30, 40]], [[50, 60], [70, 80]]])
-
-print(select_array_elements(array_1d, [1, 3]))  # Output: [20, 40]
-print(select_array_elements(array_2d, [[0, 1], [2, 2]]))  # Output: [20, 90]
-print(select_array_elements(array_3d, [[0, 1, 0], [1, 0, 1]]))  # Output: [30, 60]
-
-        
 
 # Array uniqueness-related operations #
 #-------------------------------------#
@@ -1043,7 +1033,7 @@ def df_to_structured_array(df):
 # Parameters and constants #
 #--------------------------#
 
-# Switch-case dictionaries #
+# Switch case dictionaries #
 #--------------------------#
 
 obj_conversion_opt_dict = {
