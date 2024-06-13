@@ -14,7 +14,7 @@ from pathlib import Path
 from arrays_and_lists.array_data_manipulation import select_array_elements
 from files_and_directories import file_and_directory_handler, file_and_directory_paths
 from parameters_and_constants import global_parameters
-from time_handling.datetime_operators import get_current_time, get_obj_operation_datetime
+from time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
 from strings import information_output_formatters, string_handler
 
 # Create aliases #
@@ -259,7 +259,7 @@ def reorder_objs(path,
                                          time_format_str)
             
             timestamp_str_nff_dR2\
-            = get_current_time(time_fmt_string=ctime_format_str)
+            = get_current_datetime(time_fmt_string=ctime_format_str)
             
             timestamp_str_confl_obj\
             = get_obj_operation_datetime(conflicting_objs,
@@ -276,9 +276,9 @@ def reorder_objs(path,
                                            timestamp_str_nff_dR2,
                                            confl_obj, 
                                            timestamp_str_confl_obj)
-                rf.write(format_string(conf_obj_info_str, arg_tuple_reorder_objs1))
+                report_file_obj.write(format_string(conf_obj_info_str, arg_tuple_reorder_objs1))
                          
-            rf.close()
+            report_file_obj.close()
                 
             if obj_type == basic_object_types[0]:
                 arg_tuple_reorder1 = ("files", report_file_name)
@@ -301,9 +301,9 @@ def reorder_objs(path,
                                            timestamp_str_objname_uneven,
                                            nff_dR2,
                                            timestamp_str_nff_dR2)
-                rf.write(conf_obj_info_str, arg_tuple_reorder_objs2)
+                report_file_obj.write(conf_obj_info_str, arg_tuple_reorder_objs2)
                          
-            rf.close()
+            report_file_obj.close()
                 
             if obj_type == basic_object_types[0]:
                 arg_tuple_reorder3 = ("files", report_file_name)
@@ -377,7 +377,7 @@ def reorder_objs(path,
                                          time_format_str)
             
             timestamp_str_nff_dR\
-            = get_current_time(time_fmt_string=ctime_format_str)
+            = get_current_datetime(time_fmt_string=ctime_format_str)
             
             timestamp_str_confl_obj\
             = get_obj_operation_datetime(conflicting_objs,
@@ -394,9 +394,9 @@ def reorder_objs(path,
                                            timestamp_str_nff_dR,
                                            confl_obj,
                                            timestamp_str_confl_obj)
-                rf.write(format_string(conf_obj_info_str, arg_tuple_reorder_objs3))
+                report_file_obj.write(format_string(conf_obj_info_str, arg_tuple_reorder_objs3))
                          
-            rf.close()
+            report_file_obj.close()
                 
             print(f"\n\nSome renamed objs conflict! Information is stored "
                   f"at file '{report_file_name}'.")
@@ -412,9 +412,9 @@ def reorder_objs(path,
             for objname_unevens, nff_dr in zip(obj_list_uneven_slice, 
                                                num_formatted_objs_dryRun):
                 arg_tuple_reorder_objs4 = (objname_unevens, nff_dR)
-                rf.write(format_string(dry_run_info_str, arg_tuple_reorder_objs4))
+                report_file_obj.write(format_string(dry_run_info_str, arg_tuple_reorder_objs4))
                          
-            rf.close()
+            report_file_obj.close()
                 
             print("No conflicting objs found. "
                   "Please check the dry-run renaming information "
