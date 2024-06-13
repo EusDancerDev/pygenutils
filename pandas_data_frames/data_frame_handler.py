@@ -20,7 +20,7 @@ from arrays_and_lists.array_data_manipulation import find_duplicated_elements
 from files_and_directories import file_and_directory_handler, file_and_directory_paths
 from parameters_and_constants import global_parameters
 from strings.string_handler import aux_ext_adder, get_obj_specs, find_substring_index
-from strings.information_output_formatters import format_string
+from strings.information_output_formatters import format_string, get_obj_type_str
 
 # Create aliases #
 #----------------#
@@ -112,15 +112,19 @@ def find_date_key(df):
         String which date key is identified with.
     """
     
-    df_cols = np.char.lower(df.columns.tolist())    
-    date_key_idx = find_substring_index(df_cols, time_kws)
-    
     try:
-        date_key = df_cols[date_key_idx]
-    except:
-        raise ValueError("Grouper name 'date' or similar not found")
+        df_cols = np.char.lower(df.columns.tolist())    
+    except AttributeError:
+        input_obj_type = get_obj_type_str(df)
+        raise TypeError(f"Expected a pandas.DataFrame object, got {input_obj_type}")
     else:
-        return date_key
+        try:
+            date_key_idx = find_substring_index(df_cols, time_kws)
+            date_key = df_cols[date_key_idx]
+        except KeyError:
+            raise KeyError("Grouper name 'date' or similar not found")
+        else:
+            return date_key
     
     
 # Data grouping #
