@@ -1036,7 +1036,7 @@ cp_command_str = """cp -rv {}/* {}""" # TODO: 'bash' agindua saihes daiteke?
 not_equal_length_error_str = """{} and {} lists are not of the same length."""
 objtype_error_str = "Both input arguments must either be strings or lists simultaneously."
 
-# 'rsync' command switch-case dictionary #
+# 'rsync' command switch case dictionary #
 rsync_command_dict = {
     1 : """rsync -{} --delete '{}' '{}' """,
     2 : """rsync -{} '{}' '{}' """,
