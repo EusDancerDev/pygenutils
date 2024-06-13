@@ -19,6 +19,7 @@ from arrays_and_lists.array_data_manipulation import count_unique_type_objects
 from pandas_data_frames import data_frame_handler
 from parameters_and_constants.global_parameters import basic_time_format_strs
 from strings.string_handler import find_substring_index, modify_obj_specs
+from strings.information_output_formatters import get_obj_type_str
 from time_handling.time_formatters import time_format_tweaker
 
 # Create aliases #
@@ -268,17 +269,12 @@ def standardize_calendar(obj,
         #------------------------------------------------------#
         
         import xarray as xr
-        import netcdf_handler
-        
-        # Define imported module(s)' function call shortcuts by convenience #
-        #-------------------------------------------------------------------#
-            
-        find_time_dimension = netcdf_handler.find_time_dimension
-        get_file_dimensions = netcdf_handler.get_file_dimensions
+        from weather_and_climate.netcdf_handler import find_time_dimension, get_file_dimensions
  
-        # TODO: develop the case for xarray.Dataset objects #
-        # elif isinstance(obj[0], xr.Dataset)\
-        # or isinstance(obj[0], xr.DataArray):
+        # TODO: develop the case for xarray.Dataset and xarray.DataArray objects #
+        # if (get_obj_type_str(obj[0]) == "Dataset" \
+        #     or get_obj_type_str(obj[0]) == "DataArray"):
+        
             
 
 def week_range(date):
