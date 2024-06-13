@@ -219,7 +219,7 @@ def return_constants():
 # Parameters and constants #
 #--------------------------#
 
-# Magnitude unit switch-case dictionary #
+# Magnitude unit switch case dictionary #
 unit_converter_dict = {
     "deg2rad" : "np.deg2rad(angle)",
     "rad2deg" : "np.rad2deg(angle)",
