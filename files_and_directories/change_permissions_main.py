@@ -56,14 +56,8 @@ def modify_obj_permissions(path,
     Directories: attr_id = 775
     """    
     arg_names = modify_obj_permissions.__code__.co_varnames
-    ot_arg_pos = find_substring_index(arg_names, 
-                                      "obj_type",
-                                      advanced_search=True,
-                                      find_whole_words=True)
-    attr_arg_pos = find_substring_index(arg_names, 
-                                        "attr_id",
-                                        advanced_search=True,
-                                        find_whole_words=True)
+    ot_arg_pos = find_substring_index(arg_names, "obj_type")
+    attr_arg_pos = find_substring_index(arg_names, "attr_id")
     
     if isinstance(attr_id, str):
         raise TypeError(format_string(type_error_str, arg_names[attr_arg_pos]))
@@ -117,14 +111,8 @@ def modify_obj_owner(path,
     """
     
     arg_names = modify_obj_permissions.__code__.co_varnames
-    mod_arg_pos = find_substring_index(arg_names, 
-                                       "module",
-                                       advanced_search=True,
-                                       find_whole_words=True)
-    ot_arg_pos = find_substring_index(arg_names, 
-                                      "obj_type", 
-                                      advanced_search=True,
-                                      find_whole_words=True)
+    mod_arg_pos = find_substring_index(arg_names, "module")
+    ot_arg_pos = find_substring_index(arg_names, "obj_type")
     
     le2s = len(extensions2skip)
     
