@@ -17,8 +17,8 @@ from strings.string_handler import find_substring_index
 # F-strings #
 def format_string(string2format, arg_obj):    
     bracket_index_list = find_substring_index(string2format, "{}",
-                                            advanced_search=True,
-                                            all_matches=True)
+                                              advanced_search=True,
+                                              all_matches=True)
     
     num_brackets = len(bracket_index_list)
     
