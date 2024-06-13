@@ -67,10 +67,7 @@ def loop_renamer(obj_list,
                  splitdelim=None):
     
     arg_names = loop_renamer.__code__.co_varnames
-    ot_arg_pos = find_substring_index(arg_names, 
-                                      "obj_type",
-                                      advanced_search=True,
-                                      find_whole_words=True)
+    ot_arg_pos = find_substring_index(arg_names, "obj_type")
     
     if obj_type not in basic_object_types:
         raise ValueError(f"Wrong '{arg_names[ot_arg_pos]}' option. "
@@ -467,7 +464,7 @@ no_conflicting_object_message = """No conflicting {} found
 Please check the dry-run renaming information at file '{}'."""
 
 
-# Switch-case dictionaries #
+# Switch case dictionaries #
 #--------------------------#
 
 report_filename_dict = {
