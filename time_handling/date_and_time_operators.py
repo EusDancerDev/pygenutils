@@ -33,6 +33,7 @@ find_substring_index = string_handler.find_substring_index
 # Define functions #
 #------------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
 
 #%%
 
