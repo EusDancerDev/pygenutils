@@ -86,21 +86,9 @@ def time_format_tweaker(t,
     method_name = inspect.currentframe().f_code.co_name
     arg_names = time_format_tweaker.__code__.co_varnames
     
-    print_arg_pos = find_substring_index(arg_names,
-                                         "return_str",
-                                         advanced_search=True,
-                                         find_whole_words=True)
-    
-    t_arg_pos = find_substring_index(arg_names,
-                                     "t",
-                                     advanced_search=True,
-                                     find_whole_words=True)
-    
-    method_arg_pos = find_substring_index(arg_names,
-                                          "method",  
-                                          advanced_search=True,
-                                          find_whole_words=True,
-                                          case_sensitive=True)
+    print_arg_pos = find_substring_index(arg_names, "return_str")
+    t_arg_pos = find_substring_index(arg_names, "t")
+    method_arg_pos = find_substring_index(arg_names, "method")
     
     return_str_options = [False, "basic", "extended"]
     
@@ -386,10 +374,7 @@ def frequent_time_format_converter(t,
                                    time_fmt_str=None):
     
     arg_names = frequent_time_format_converter.__code__.co_varnames
-    method_arg_pos = find_substring_index(arg_names, 
-                                          "method", 
-                                          advanced_search=True,
-                                          find_whole_words=False)
+    method_arg_pos = find_substring_index(arg_names, "method")
     
     method_options = list(datetime_obj_dict.keys())
     if method not in method_options:
