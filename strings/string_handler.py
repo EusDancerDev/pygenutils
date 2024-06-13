@@ -450,10 +450,7 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
                        flags=0):
     
     arg_names = substring_replacer.__code__.co_varnames
-    adv_search_arg_pos = find_substring_index(arg_names, 
-                                              "advanced_search",
-                                              advanced_search=True,
-                                              find_whole_words=True)
+    adv_search_arg_pos = find_substring_index(arg_names, "advanced_search")
             
     if not advanced_search:
         if isinstance(string, str):
