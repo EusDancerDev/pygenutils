@@ -58,14 +58,8 @@ def basic_interval_operator(interval_array,
     # Main argument names and their position on the function's definition #    
     arg_names = basic_interval_operator.__code__.co_varnames
     
-    op_arg_pos = find_substring_index(arg_names,
-                                      "operation",
-                                      advanced_search=True,
-                                      find_whole_words=True)
-    obj_type_pos = find_substring_index(arg_names, 
-                                        "obj_type", 
-                                        advanced_search=True,
-                                        find_whole_words=True)
+    op_arg_pos = find_substring_index(arg_names, "operation")
+    obj_type_pos = find_substring_index(arg_names, "obj_type")
     
     op_options = ["union", "difference", "intersection",
                   "symmetric_difference", "comparison"]
