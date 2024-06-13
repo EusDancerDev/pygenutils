@@ -54,7 +54,7 @@ def modify_variable_units_and_values(file_list,
                                file_num, lfl)
             print_format_string(prefmt_str_progress_UV, arg_tuple_print)
             
-            # Get the command from the corresponding switch dictionary #
+            # Get the command from the corresponding switch case dictionary #
             arg_tuple_command = (ncap2_comm_args,
                                  variable_name, variable_name, value,
                                  file_name, temp_file)
@@ -104,7 +104,7 @@ def modify_coordinate_values_by_threshold(file_list,
                 
                 print_format_string(prefmt_str_progress_BTH, arg_tuple_print)
                 
-                # Get the command from the corresponding switch dictionary #
+                # Get the command from the corresponding switch case dictionary #
                 arg_tuple_command = (ncap2_comm_args,
                                      dimension_name, threshold,
                                      dimension_name, dimension_name, value,
@@ -156,7 +156,7 @@ def modify_coordinate_all_values(file_list,
                 
                 print_format_string(prefmt_str_progress_BTH, arg_tuple_print)
                 
-                # Get the command from the corresponding switch dictionary #
+                # Get the command from the corresponding switch case dictionary #
                 arg_tuple_command = (ncap2_comm_args,
                                      dimension_name, dimension_name, value,
                                      file_name, temp_file)
@@ -241,7 +241,7 @@ prefmt_wrong_threshold_mode = \
 
 threshold_mode_opts = ["max", "min"]
 
-# Switch-case dictionaries #
+# Switch case dictionaries #
 #--------------------------#
 
 operator_gerund_dict = {
