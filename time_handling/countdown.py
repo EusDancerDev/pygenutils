@@ -21,6 +21,8 @@ from time_handling.time_formatters import time_format_tweaker
 # Define functions #
 #------------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 def countdown(t, time_fmt_str=None, print_str=False):
     
     if isinstance(t, str):

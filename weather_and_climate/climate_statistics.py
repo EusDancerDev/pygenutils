@@ -40,6 +40,8 @@ find_substring_index = string_handler.find_substring_index
 # Define functions #
 #------------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 def periodic_statistics(obj, statistic, freq,
                         groupby_dates=False,
                         drop_date_idx_col=False,

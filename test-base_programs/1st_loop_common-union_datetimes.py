@@ -31,6 +31,8 @@ time_format_tweaker = time_formatters.time_format_tweaker
 # Parameters #
 #------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 # Time format strings and frequency 
 customizing_tfs1 = "%d/%m/%Y %H:%M"
 customizing_tfs2 = "%b%y"

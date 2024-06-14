@@ -51,6 +51,8 @@ program_exec_timer = program_snippet_exec_timers.program_exec_timer
 # Define functions #
 #------------------#
 
+# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 def df_to_structured_array(df):
     records = df.to_records(index=False)
     data = np.array(records, dtype=records.dtype.descr)
