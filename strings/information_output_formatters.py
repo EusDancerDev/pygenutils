@@ -86,7 +86,7 @@ def get_obj_type_str(obj):
 
 # Retrieve a function's name to use for visualization purposes #
 def retrieve_function_name(library="inspect"):
-    """Returns the name of the method that called this function."""
+    """Returns the name of the method defined in situ."""
 
     if library not in method_name_retrieval_libraries:
         raise ValueError("Unsupported library, choose one from "
@@ -100,7 +100,6 @@ def retrieve_function_name(library="inspect"):
             return frame_info.function
         elif library == "sys":
             import sys
-            """Returns the name of the method that called this function using sys._getframe()."""
             method_name = sys._getframe(1).f_code.co_name  # Get the caller's frame (1 level up)
         return method_name
 
