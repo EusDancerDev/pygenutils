@@ -5,8 +5,6 @@
 # Import modules # 
 #----------------#
 
-import inspect
-
 from pathlib import Path
 
 import numpy as np
@@ -18,6 +16,7 @@ import re
 #-----------------------#
 
 from parameters_and_constants.global_parameters import common_delim_list
+from strings.information_output_formatters import retrieve_function_name
 
 #------------------#
 # Define functions #
@@ -542,7 +541,7 @@ def strip(string, strip_option='strip', chars=None):
 #-----------------------------------------#
 
 def condense_array_content_as_string(obj, add_final_space=False):
-    method_name = inspect.currentframe().f_code.co_name
+    method_name = retrieve_function_name()
     
     if not (isinstance(obj, (list, np.ndarray, pd.DataFrame, pd.Series))):
         raise TypeError(f"'{method_name}' method works only for lists, "
