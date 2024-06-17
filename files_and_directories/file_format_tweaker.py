@@ -36,7 +36,7 @@ aux_ext_adder = string_handler.aux_ext_adder
 add_str_to_aux_path = string_handler.add_str_to_aux_path
 get_obj_specs = string_handler.get_obj_specs
 obj_path_specs = string_handler.obj_path_specs
-condense_array_content_as_string = string_handler.file_list_to_str
+condense_array_content_as_string = string_handler.condense_array_content_as_string
 find_substring_index = string_handler.find_substring_index
 modify_obj_specs = string_handler.modify_obj_specs
 
