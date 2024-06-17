@@ -54,7 +54,11 @@ def create_engine_with_credentials(config, database_type="mysql"):
         - 'username': str, the username for accessing the database.
         - 'password': str, the password for accessing the database.
         - 'host': str, the host address of the database.
+        Optional keys:
         - 'database_name': str, the name of the database.
+          For example, if the MySQL query is precisely to create a database,
+          then creating an engine with this parameter is nonsensical, 
+          hence the reason to be optional.
           
     database_type : {'mysql', 'postgresql', or 'sqlite'}, optional
         Type of SQL database. Default is 'mysql'.
@@ -274,6 +278,7 @@ def load_file_to_sql(input_file_list,
         
         
 def df_loader(df, table_name, engine, if_exists="replace", import_index=False):
+    # TODO: taula osatuko duten zutabeen formatoa ezar daiteke?
     """
     Load a DataFrame into a SQL database table.
 
