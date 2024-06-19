@@ -66,50 +66,18 @@ def print_percent_string(string2format, arg_obj):
             raise TypeError(type_error_str2)
             
     except TypeError:
-       raise TypeError(type_error_str1)
+        raise TypeError(type_error_str1)
                 
     except IndexError:
         raise IndexError(index_error_str)
         
     except SyntaxError:
         raise SyntaxError(syntax_error_str)
-        
-        
-# Object information gatherers #
-#------------------------------#
-
-# Object type's class to string conversions #
-def get_obj_type_str(obj):
-    obj_type_class = type(obj)
-    obj_type_str = obj_type_class.__name__
-    return obj_type_str
-
-# Retrieve a function's name to use for visualization purposes #
-def retrieve_function_name(library="inspect"):
-    """Returns the name of the method defined in situ."""
-
-    if library not in method_name_retrieval_libraries:
-        raise ValueError("Unsupported library, choose one from "
-                         f"{method_name_retrieval_libraries}.")
-    else:
-        if library == "inspect":
-            import inspect
-            current_frame = inspect.currentframe()
-            caller_frame = current_frame.f_back  # Get the caller's frame
-            frame_info = inspect.getframeinfo(caller_frame)
-            return frame_info.function
-        elif library == "sys":
-            import sys
-            method_name = sys._getframe(1).f_code.co_name  # Get the caller's frame (1 level up)
-        return method_name
 
 
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
-
-# Supported library list for method name retrievals #
-method_name_retrieval_libraries = ["inspect", "sys"]
 
 # Error strings #
 type_error_str1 = "Check the iterable type passed to the instance."
@@ -118,4 +86,4 @@ type_error_str2 = "Argument must be of type 'str' only."
 index_error_str = "Not all indices were referenced in the string to format."
 
 syntax_error_str = "One or more arguments in the formatting object "\
-                   "has strings with unclosed quotes."
+                    "has strings with unclosed quotes."
