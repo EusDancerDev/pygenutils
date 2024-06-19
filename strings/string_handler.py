@@ -16,7 +16,7 @@ import re
 #-----------------------#
 
 from parameters_and_constants.global_parameters import common_delim_list
-from strings.information_output_formatters import retrieve_function_name
+from strings.information_output_formatters import get_obj_type_str, retrieve_function_name
 
 #------------------#
 # Define functions #
@@ -135,8 +135,7 @@ def find_substring_index(string,
                                  if n != -1]
                 
             
-    
-    elif isinstance(string, pd.Series):
+    elif get_obj_type_str(string) == "Series":
         try:
             substr_match_obj_no_filter = string.str.contains(substring)
         except AttributeError:
@@ -460,10 +459,10 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
                 string = np.array(string)
             string_replaced = np.char.replace(string, string2find, string2replace)
             
-        elif isinstance(string, pd.DataFrame):
+        elif get_obj_type_str(string) == "DataFrame":
             string_replaced = pd.DataFrame.replace(string, string2find, string2replace)
             
-        elif isinstance(string, pd.Series):
+        elif get_obj_type_str(string) == "Series":
             string_replaced = pd.Series.replace(string, string2find, string2replace)
             
         return string_replaced
@@ -543,7 +542,7 @@ def strip(string, strip_option='strip', chars=None):
 def condense_array_content_as_string(obj, add_final_space=False):
     method_name = retrieve_function_name()
     
-    if not (isinstance(obj, (list, np.ndarray, pd.DataFrame, pd.Series))):
+    if get_obj_type_str(obj) not in ["list", "ndarray", "DataFrame", "Series"]:
         raise TypeError(f"'{method_name}' method works only for lists, "
                         "NumPy arrays and pandas DataFrames and series.")
         
@@ -551,7 +550,7 @@ def condense_array_content_as_string(obj, add_final_space=False):
         if isinstance(obj, list):
             obj_val_array = obj.copy()
             
-        elif isinstance(obj, (pd.DataFrame, pd.Series)):
+        elif get_obj_type_str(obj) in ["DataFrame", "Series"]:
             # Get the pandas DataFrame's or Series's value array #
             obj_val_array = obj.values
             
