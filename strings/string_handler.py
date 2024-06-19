@@ -18,7 +18,6 @@ import re
 #-----------------------#
 
 from parameters_and_constants.global_parameters import common_delim_list
-from strings.information_output_formatters import get_obj_type_str, retrieve_function_name
 
 #------------------#
 # Define functions #
@@ -585,6 +584,35 @@ def condense_array_content_as_string(obj, add_final_space=False):
             allobj_string += local_delim
         
         return allobj_string
+    
+    
+# Object information gatherers #
+#------------------------------#
+
+# Object type's class to string conversions #
+def get_obj_type_str(obj):
+    obj_type_class = type(obj)
+    obj_type_str = obj_type_class.__name__
+    return obj_type_str
+
+# Retrieve a function's name to use for visualization purposes #
+def retrieve_function_name(library="inspect"):
+    """Returns the name of the method defined in situ."""
+
+    if library not in method_name_retrieval_libraries:
+        raise ValueError("Unsupported library, choose one from "
+                          f"{method_name_retrieval_libraries}.")
+    else:
+        if library == "inspect":
+            import inspect
+            current_frame = inspect.currentframe()
+            caller_frame = current_frame.f_back  # Get the caller's frame
+            frame_info = inspect.getframeinfo(caller_frame)
+            return frame_info.function
+        elif library == "sys":
+            import sys
+            method_name = sys._getframe(1).f_code.co_name  # Get the caller's frame (1 level up)
+        return method_name
 
 
 #--------------------------#
@@ -597,6 +625,9 @@ obj_specs_keylist_essential = obj_specs_keylist[2:]
 
 # Substring search availanble method list #
 combined_case_search_method_list = ['default', 'numpy_basic', 'numpy_advanced']
+
+# Supported library list for method name retrievals #
+method_name_retrieval_libraries = ["inspect", "sys"]
 
 # Switch-type dictionaries #
 #--------------------------#
