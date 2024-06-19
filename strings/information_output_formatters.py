@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import find_substring_index
+from strings.string_handler import find_substring_index, get_obj_type_str
 
 #-------------------------#
 # Define custom functions #
@@ -22,20 +22,23 @@ def format_string(string2format, arg_obj):
     
     num_brackets = len(bracket_index_list)
     
-    try:
-        if isinstance(arg_obj, (list, tuple)):
-            if num_brackets >= 2:
-                formatted_string = string2format.format(*arg_obj)
-            else:
-                formatted_string = string2format.format(arg_obj)
+    try:               
+        if (get_obj_type_str(arg_obj) in ["list", "ndarray", "tuple"]\
+            and num_brackets >= 2):
+            formatted_string = string2format.format(*arg_obj)
+            
+        elif ((get_obj_type_str(arg_obj) in ["list", "ndarray", "tuple"] and num_brackets < 2)\
+            or (get_obj_type_str(arg_obj) not in ["list", "ndarray", "tuple"]\
+            and not isinstance(arg_obj, dict))):
+            formatted_string = string2format.format(arg_obj)
         
         elif isinstance(arg_obj, dict):
             formatted_string = string2format.format(**arg_obj)
-            
+           
         return formatted_string
     
         
-    except TypeError:
+    except (TypeError, UnboundLocalError):
         raise TypeError(type_error_str1)
     
     except IndexError:
