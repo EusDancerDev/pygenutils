@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -14,7 +14,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from array_data_manipulation import select_array_elements
+from arrays_and_lists.array_data_manipulation import select_array_elements
 
 #------------------#
 # Define functions #
