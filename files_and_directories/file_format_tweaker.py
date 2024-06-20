@@ -5,8 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-# Perform whole or partial module importations #
-#----------------------------------------------#
+# Perform whole or partial module imports #
+#-----------------------------------------#
 
 from files_and_directories import file_and_directory_handler, file_and_directory_paths
 from parameters_and_constants.global_parameters import common_delim_list
