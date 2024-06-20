@@ -18,8 +18,8 @@ from strings.string_handler import aux_ext_adder, get_obj_specs
 # Define custom functions #
 #-------------------------#
 
-# Conversions to JSON files and importations from them #
-#------------------------------------------------------#
+# Conversions to JSON files and imports from them #
+#-------------------------------------------------#
 
 def dict2json(dictionary, json_indent=4, out_file_path=None):
     """
