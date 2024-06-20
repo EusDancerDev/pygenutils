@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -12,7 +12,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from strings.information_output_formatters import format_string
+from pytools.strings.information_output_formatters import format_string
 
 #------------------#
 # Define functions # 
@@ -249,7 +249,6 @@ def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None):
     return sorted_array_rbc
 
 
-
 def sort_array_columns_by_row(array, nrow, sort_order="ascending"): 
     """
     Function that sorts the values in a 2D dimension array
@@ -279,7 +278,7 @@ def sort_array_columns_by_row(array, nrow, sort_order="ascending"):
     Raises
     ------
     TypeError: if the array is not actually a NumPy array, because
-               every operation relies on that type of arrays.
+                every operation relies on that type of arrays.
     
     Examples
     --------
@@ -287,8 +286,8 @@ def sort_array_columns_by_row(array, nrow, sort_order="ascending"):
     >>> array=np.random.randint(1,10,size=(3,4))
     >>> array
     array([[6, 4, 2, 3],
-           [3, 9, 7, 1],
-           [4, 6, 4, 5]])
+            [3, 9, 7, 1],
+            [4, 6, 4, 5]])
     
     Suppose that we want to sort the values of the first row (nrow=0)
     in an ascending order.
