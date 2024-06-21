@@ -16,21 +16,12 @@ from datetime import datetime as dt
 # Import custom modules #
 #-----------------------#
 
-from pandas_data_frames.data_frame_handler import csv2df, excel_handler, ods_handler
-from strings import string_handler, information_output_formatters
+from pytools.pandas_data_frames.data_frame_handler import csv2df, excel_handler, ods_handler
 
-# Create aliases #
-#----------------#
+from pytools.strings.information_output_formatters import format_string
+from pytools.strings.string_handler import find_substring_index, get_obj_specs
 
-# TODO: 'string_handler' moduluan 'get_obj_type_str' eta 'retrieve_function_name'
-#       lekuz aldaukoitut hemendikan denbora batera, kontuan hartu inportazioak
-
-get_obj_specs = string_handler.get_obj_specs
-get_obj_type_str = string_handler.get_obj_type_str
-find_substring_index = string_handler.find_substring_index
-retrieve_function_name = string_handler.retrieve_function_name
-
-format_string = information_output_formatters.format_string
+from pytools.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
 
 #----------------#
 # Create objects #
