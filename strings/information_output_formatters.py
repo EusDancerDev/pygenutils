@@ -1,11 +1,13 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import find_substring_index, get_obj_type_str
+# TODO: docstring-ak <-> ChatGPT-ren laguntzaz
+
+from pytools.strings.string_handler import find_substring_index, get_obj_type_str
 
 #-------------------------#
 # Define custom functions #
@@ -15,7 +17,7 @@ from strings.string_handler import find_substring_index, get_obj_type_str
 #--------------------------#
 
 # F-strings #
-def format_string(string2format, arg_obj):    
+def format_string(string2format, arg_obj):
     bracket_index_list = find_substring_index(string2format, "{}",
                                               advanced_search=True,
                                               all_matches=True)
@@ -23,12 +25,12 @@ def format_string(string2format, arg_obj):
     num_brackets = len(bracket_index_list)
     
     try:               
-        if (get_obj_type_str(arg_obj) in ["list", "ndarray", "tuple"]\
+        if (get_obj_type_str(arg_obj) in main_input_dtype_list_strfmt\
             and num_brackets >= 2):
             formatted_string = string2format.format(*arg_obj)
             
-        elif ((get_obj_type_str(arg_obj) in ["list", "ndarray", "tuple"] and num_brackets < 2)\
-            or (get_obj_type_str(arg_obj) not in ["list", "ndarray", "tuple"]\
+        elif ((get_obj_type_str(arg_obj) in main_input_dtype_list_strfmt and num_brackets < 2)\
+            or (get_obj_type_str(arg_obj) not in main_input_dtype_list_strfmt\
             and not isinstance(arg_obj, dict))):
             formatted_string = string2format.format(arg_obj)
         
@@ -81,6 +83,9 @@ def print_percent_string(string2format, arg_obj):
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
+
+# Frequent input data types for string formatting #
+main_input_dtype_list_strfmt = ["list", "ndarray", "tuple"]
 
 # Error strings #
 type_error_str1 = "Check the iterable type passed to the instance."
