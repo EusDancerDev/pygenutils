@@ -22,8 +22,14 @@ from strings import string_handler, information_output_formatters
 # Create aliases #
 #----------------#
 
+# TODO: 'string_handler' moduluan 'get_obj_type_str' eta 'retrieve_function_name'
+#       lekuz aldaukoitut hemendikan denbora batera, kontuan hartu inportazioak
+
 get_obj_specs = string_handler.get_obj_specs
+get_obj_type_str = string_handler.get_obj_type_str
 find_substring_index = string_handler.find_substring_index
+retrieve_function_name = string_handler.retrieve_function_name
+
 format_string = information_output_formatters.format_string
 
 #----------------#
@@ -188,97 +194,201 @@ def load_file_to_sql(input_file_list,
                      sheet_name=None,
                      header=None,
                      parser_engine=None,
-                     decimal="."):
-       
+                     decimal=".",
+                     dtype_dict=None):
     """
-    Load data from input files into an existing SQL database.
+    Load data from various file types into a MySQL database.
 
     Parameters
     ----------
-    input_file_list : str or list
-        The path(s) of the input file(s) to be loaded into the database.
+    input_file_list : str or list of str
+        Path(s) to the input file(s).
     config : dict
-        Configuration dictionary containing database credentials.
+        Database configuration. For the accepted arguments, 
+        refer the docs in 'create_engine_with_credentials' method.
     database_type : {'mysql', 'postgresql', or 'sqlite'}, optional
         Type of SQL database. Default is 'mysql'.
-    if_exists : str, optional
-        Action to take if the table already exists in the database.
-        Options are 'replace', 'append', or 'fail'. Default is 'replace'.
+    if_exists : {'replace', 'append', or 'fail'}, optional
+        Action to take when the table already exists in the database.
+        Default is 'replace'.
     import_index : bool, optional
-        Whether to import the index of the DataFrame into the database table.
+        Whether to import the DataFrame index into the database table.
         Default is False.
     separator : str, optional
-        The separator used in the input file(s). Affects only CSV files.
-        Default is '\t'.
-    sheet_name : str, int, list, or None, optional
-        Sheet name(s) to be loaded. Default is None (all sheets).
-    header : int or list of int, optional
-        Row number(s) to use as column names. Default is None.
-    parser_engine : str, optional
-        Engine to use for reading Excel files. Default is None.
-    decimal : str, optional
-        Character to recognize as decimal point. Default is ".".
+        Separator for only CSV files. Default is "\t".
+    sheet_name : str or None
+        Sheet name for Excel and ODS files. Default is None.
+    header : int or None
+        Row number(s) to use as the column names.
+        Default is None (take into account all sheets).
+    parser_engine : str or None
+        Parser engine for reading the files. Default is None.
+    decimal : str
+        Character to recognize as decimal point (default is ".").
+    dtype_dict : dict or list of dict or None
+        Data type definitions for columns. Default is None.
 
     Returns
     -------
     None
     """
     
-    # Create the engine #
-    engine = create_engine_with_credentials(config, database_type=database_type)
+    """
+    Load data from various file types into a MySQL database.
+
+    Parameters
+    ----------
+    input_file_list : str or list of str
+        Path(s) to the input file(s).
+    config : dict
+        Database configuration. For the accepted arguments, 
+        refer the docs in 'create_engine_with_credentials' method.
+    database_type : {'mysql', 'postgresql', or 'sqlite'}, optional
+        Type of SQL database. Default is 'mysql'.
+    if_exists : {'replace', 'append', or 'fail'}, optional
+        Action to take when the table already exists in the database.
+        Default is 'replace'.
+    import_index : bool, optional
+        Whether to import the DataFrame index into the database table.
+        Default is False.
+    separator : str, optional
+        Separator for only CSV files. Default is "\t".
+    sheet_name : str or None, optional
+        Sheet name for Excel and ODS files. Default is None.
+    header : int or None, optional
+        Row number(s) to use as the column names.
+        Default is None (take into account all sheets).
+    parser_engine : str or None, optional
+        Parser engine for reading the files. Default is None.
+    decimal : str, optional
+        Character to recognize as decimal point (default is ".").
+    dtype_dict : dict or None, optional
+        Data type definitions for columns. Ddefault is None.
+        
+        Usage Notes
+        -----------
+        - The 'dtype_dict_obj' parameter used to specify data types for columns 
+          in the DataFrame.
+        - Usage is identical to the 'dtype_dict_obj' parameter in the 
+          'load_file_to_sql' method, and it is optional.
+        - If several files are being processed, construct a list of dictionaries 
+          (one per file).
+        - It is not necessary to mention every data table column in a dictionary.
+        - If no dtype is needed: 
+            * For a single file, set 'dtype_dict_obj' to None or an empty dictionary.
+            * For a list of files, for each file in which dtype is not needed, 
+              proceed in the same way for the corresponding dict in the list of them.
+        
+        Data Type Options
+        -----------------
+        Refer to the following table for mapping Pandas data types to MySQL data types:
+
+        | Pandas Data Type | MySQL Data Type     |
+        |------------------|---------------------|
+        | `int64`          | `BIGINT`            |
+        | `int32`          | `INTEGER`           |
+        | `float64`        | `DOUBLE`            |
+        | `float32`        | `FLOAT`             |
+        | `bool`           | `BOOLEAN`           |
+        | `datetime64`     | `DATETIME`          |
+        | `timedelta[ns]`  | `TIME`              |
+        | `object`         | `TEXT` or `VARCHAR` |
+        | `category`       | `VARCHAR`           |
+        
+    Returns
+    -------
+    None
+    """
     
+    # Argument adecuacy controls #
+    ##############################
+    
+    # Retrieve argument names for error handling #
+    arg_names = retrieve_function_name()
+    dtype_dict_arg_pos = find_substring_index(arg_names, "dtype_dict")
+    
+    # Convert the input file list to that if it's a string
     if isinstance(input_file_list, str):
         input_file_list = [input_file_list]
         
-    # Common keyword argument dictionary #
+    # Convert 'dtype_dict' argument to list if it's a single dictionary
+    if isinstance(dtype_dict, dict):
+        dtype_dict = [dtype_dict]
+          
+    # Common keyword arguments #
+    ############################
+        
+    # Common keyword argument dictionary for CSV and other file handlers
     kwargs_simple = dict(
         engine=parser_engine,
         header=header, 
         decimal=decimal,
-        )
+    )
     
     kwargs_complete = dict(
         engine=parser_engine,
         sheet_name=sheet_name,
         header=header, 
         decimal=decimal,
-        )
+    )
     
+    # Operations #
+    ##############
+    
+    # Create the database engine
+    engine = create_engine_with_credentials(config, database_type=database_type)
+  
+    # Keyword arguments for data upload
     kwargs_data_upload = dict(
         engine=engine,
         if_exists=if_exists,
-        import_index=import_index
-        )
+        import_index=import_index,
+    )
     
     # Loop through files and upload data to the table names defined by their sheet names
-    for file in input_file_list:
+    for file, dtype in zip(input_file_list, dtype_dict):
         in_extension = get_obj_specs(file, "ext")
         
-        # CSV files
-        if in_extension == extensions[0]:
-            """
-            In CSV files there is no 'sheet' concept, so it is assumed
-            that the input data comes as is.
-            """
-            df = csv2df(file, separator, **kwargs_simple)
-            table_name = get_obj_specs(file, "name_noext")
-            df_loader(df, table_name, **kwargs_data_upload)
-    
-        # Microsoft Excel files
-        elif in_extension == extensions[1]:
-            item_dict = excel_handler(file, **kwargs_complete, return_type='dict')
-            for sheet_name, df in item_dict.items():
+        try:
+            # CSV files
+            if in_extension == extensions[0]:
+                """
+                In CSV files there is no 'sheet' concept, so it is assumed
+                that the input data comes as is.
+                """
+                df = csv2df(file, separator, **kwargs_simple)
+                table_name = get_obj_specs(file, "name_noext")
+                if dtype:
+                    df = df.astype(dtype)
                 df_loader(df, table_name, **kwargs_data_upload)
-            
-        # LibreOffice Calc files
-        elif in_extension == extensions[2]:
-            item_dict = ods_handler(file, **kwargs_complete, return_type='dict')
-            for sheet_name, df in item_dict.items():
-                df_loader(df, table_name, **kwargs_data_upload)
+        
+            # Microsoft Excel files
+            elif in_extension == extensions[1]:
+                item_dict = excel_handler(file, **kwargs_complete, return_type='dict')
+                for sheet_name, df in item_dict.items():
+                    if dtype:
+                        df = df.astype(dtype)
+                    df_loader(df, sheet_name, **kwargs_data_upload)
+                
+            # LibreOffice Calc files
+            elif in_extension == extensions[2]:
+                item_dict = ods_handler(file, **kwargs_complete, return_type='dict')
+                for sheet_name, df in item_dict.items():
+                    if dtype:
+                        df = df.astype(dtype)
+                    df_loader(df, sheet_name, **kwargs_data_upload)
+                    
+        except ValueError:
+            # Handle ValueError for unsupported data types
+            raise ValueError(format_string(unsupported_dtype_err_str, file))
+        except TypeError:
+            # Handle TypeError for incorrect dtype_dict type
+            dtype_arg_type = get_obj_type_str(dtype_dict)
+            arg_list_typeerror = [file, arg_names[dtype_dict_arg_pos], dtype_arg_type]
+            raise TypeError(incorrect_arg_type_str, arg_list_typeerror)
         
         
 def df_loader(df, table_name, engine, if_exists="replace", import_index=False):
-    # TODO: taula osatuko duten zutabeen formatoa ezar daiteke?
     """
     Load a DataFrame into a SQL database table.
 
@@ -406,10 +516,17 @@ def custom_database_query(query_str, engine):
 extensions = ["csv", "xlsx", "ods"]
 
 # Preformatted strings #
+#----------------------#
+
+# Informative strings #
 success_data_load_str = """Data successfully loaded:
 Database : {}
 Table : {}
 """
+
+# Error strings #
+unsupported_dtype_err_str = "File: {}\nUnsupported data type(s) provided"
+incorrect_arg_type_str = "File: {}\nExpected dictionary for argument '{}', got {}"
 
 # Switch dictionaries #
 #---------------------#
