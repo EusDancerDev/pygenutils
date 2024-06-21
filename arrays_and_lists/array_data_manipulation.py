@@ -39,7 +39,7 @@ def sort_values_standard(array, key=None, reverse=False,
     ----------
     array : list or numpy.ndarray
         Array containing string, integer, float, etc. values,
-        but all of the same semantic type.
+        but all of the same semantics.
     key : function, optional
         If a key function is given, apply it once to each list item and sort them,
         ascending or descending, according to their function values.
