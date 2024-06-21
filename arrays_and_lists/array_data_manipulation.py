@@ -12,7 +12,9 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
+from pytools.parameters_and_constants.global_parameters import common_delim_list
 from pytools.strings.information_output_formatters import format_string
+from pytools.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
 
 #------------------#
 # Define functions # 
@@ -974,63 +976,62 @@ def basic_value_data_type_converter(obj_data,
                 return obj_data
 
 
-# Structured array conversion #
-#-----------------------------#
 
-def df_to_structured_array(df):
-    """
-    Converts a pandas DataFrame to a structured NumPy array.
-    This type of array is still a conventional one of Numpy,
-    but it consists on classifying the data type of each column.
-    Then the resulting array contains:
-        1. Values in each row displayed as a tuple.
-        2. Data type of each column
-        
-    Parameters
-    ----------
-    df : pandas.DataFrame
-        Pandas DataFrame containing data.
-        
-    Returns
-    -------
-    data : numpy.ndarray
-        Structured NumPy array with the aforementioned structure.
+# String creators from array-like objects #
+#-----------------------------------------#
+
+def condense_array_content_as_string(obj, add_final_space=False):
+    method_name = retrieve_function_name()
     
-    Raises
-    ------
-    None
+    if get_obj_type_str(obj) not in ["list", "ndarray", "DataFrame", "Series"]:
+        raise TypeError(f"'{method_name}' method works only for lists, "
+                        "NumPy arrays and pandas DataFrames and series.")
         
-    Examples
-    --------
-    >>> dtype = [('name', 'S10'), ('height', float), ('age', int)]
-    >>> values = [('Arthur', 1.8, 41), ('Lancelot', 1.9, 38),
-                  ('Galahad', 1.7, 38)]
-    >>> a = np.array(values, dtype=dtype)
-    array([(b'Arthur', 1.8, 41), (b'Lancelot', 1.9, 38),
-           (b'Galahad', 1.7, 38)],
-          dtype=[('name', 'S10'), ('height', '<f8'), ('age', '<i8')])
-    
-    As can be seen, in the structured array values are displayed by rows
-    as a tuple, together with the data type of each column, which reads
-    strings with a maximum of 10 characters, floats less than 8 bits
-    and integers less than 8 bits, respectively.
-    
-    For readability, converted to a pandas DataFrame is:
+    else:        
+        if isinstance(obj, list):
+            obj_val_array = obj.copy()
+            
+        elif get_obj_type_str(obj) in ["DataFrame", "Series"]:
+            # Get the pandas DataFrame's or Series's value array #
+            obj_val_array = obj.values
+            
         
-              name  height  age
-    0    b'Arthur'     1.8   41
-    1  b'Lancelot'     1.9   38
-    2   b'Galahad'     1.7   38
-    """
-    
-    records = df.to_records(index=False)
-    data = np.array(records, dtype=records.dtype.descr)
-    return data
+        """
+        In the case of NumPy arrays and pandas DataFrames and series,
+        if the object's dimension is N > 1, i.e. has the attribute 'flatten', 
+        precisely flatten it.
+        """
+        if hasattr(obj, "flatten"):
+            obj_val_array = obj_val_array.flatten()
+            
+            
+        """
+        In order to join every content in a single string, each element
+        inside the object must be a string.
+        Then, by default, each element is going to be converted to a string
+        """
+        
+        obj_list = [str(el) for el in obj_val_array]
+        
+        # Merge the content of the resulting list #
+        allobj_string = local_delim.join(obj_list)
+        
+        """
+        If other procedures or methods require a final space in the string,
+        add it as requested
+        """
+        if add_final_space:
+            allobj_string += local_delim
+        
+        return allobj_string
 
 
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
+
+# Character delimiter #
+local_delim = common_delim_list[6]
 
 # Switch case dictionaries #
 #--------------------------#
