@@ -19,18 +19,11 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_data_manipulation import select_array_elements
-from strings import information_output_formatters, string_handler
-from time_handling.time_formatters import time2seconds, time_format_tweaker
-
-# Create aliases #
-#----------------#
-
-find_substring_index = string_handler.find_substring_index
-
-format_string = information_output_formatters.format_string
-get_obj_type_str = information_output_formatters.get_obj_type_str
-print_format_string = information_output_formatters.print_format_string
+from pytools.arrays_and_lists.array_data_manipulation import select_array_elements
+from pytools.strings.information_output_formatters import format_string, print_format_string
+from pytools.strings.string_handler import find_substring_index
+from pytools.time_handling.time_formatters import time2seconds, time_format_tweaker
+from pytools.utilities.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #
@@ -870,17 +863,19 @@ operation_dict = {
 }
 
 time_output_format_dict = {
-    time_output_format_options[0] : lambda td: td,
-    time_output_format_options[1] : lambda td: str(td),
-    time_output_format_options[2] : lambda td: td.time(),
-    time_output_format_options[3] : lambda td: (td.days,
-                                                td.hours, 
-                                                td.minutes, 
-                                                td.seconds)
+    time_output_format_options[0] : lambda t_obj: t_obj,
+    time_output_format_options[1] : lambda t_obj: str(t_obj),
+    time_output_format_options[2] : lambda t_obj: t_obj.time(),
+    time_output_format_options[3] : lambda t_obj: (t_obj.days,
+                                                   t_obj.hours, 
+                                                   t_obj.minutes, 
+                                                   t_obj.seconds)
 }
 
 date_output_format_dict = {
-    date_output_format_options[0] : lambda td: td,
-    date_output_format_options[1] : lambda td: str(td),
-    date_output_format_options[2] : lambda td: (td.year, td.month, td.day)
+    date_output_format_options[0] : lambda d_obj: d_obj,
+    date_output_format_options[1] : lambda d_obj: str(d_obj),
+    date_output_format_options[2] : lambda d_obj: (d_obj.year,
+                                                   d_obj.month, 
+                                                   d_obj.day)
 }
