@@ -26,13 +26,13 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     #-----------------#
     
     # Main argument names and their position on the function's definition #    
-    required_required_arg_names = get_caller_method_args()    
-    contructor_arg_pos = find_substring_index(required_required_arg_names, "constructor")
+    all_arg_names = get_caller_method_args()    
+    contructor_arg_pos = find_substring_index(all_arg_names, "constructor")
     
     # constructor argument choice #    
     if constructor not in contructor_arg_pos:
         raise ValueError("Unsupported mathematical interval constructor library, "
-                         f"argument '{required_required_arg_names[contructor_arg_pos]}'. "
+                         f"argument '{all_arg_names[contructor_arg_pos]}'. "
                          f"Choose one from {interval_contructor_options}.")
     
     if constructor == "pandas":
@@ -59,13 +59,13 @@ def basic_interval_operator(interval_array,
     #-----------------#
     
     # Main argument names and their position on the function's definition #    
-    required_arg_names = get_caller_method_args()
-    operator_arg_pos = find_substring_index(required_arg_names, "operator_sets")
+    all_arg_names = get_caller_method_args()
+    operator_arg_pos = find_substring_index(all_arg_names, "operator_sets")
     
     # operator_sets and object type argument choices #    
     if operator not in operations_sets_list:
         raise ValueError("Unsupported operator for mathematical sets, "
-                         f"argument '{required_arg_names[operator_arg_pos]}' option. "
+                         f"argument '{all_arg_names[operator_arg_pos]}' option. "
                          f"Supported options are {operations_sets_list}.")
         
     # Operations #
