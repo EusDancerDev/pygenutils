@@ -566,8 +566,7 @@ def detect_subarray_in_array(obj, test_obj,
             return is_test_obj_contained
             
         
-    elif isinstance(obj, pd.Series):
-        
+    elif get_obj_type_str(obj) == "Series":        
         if not reverse_arg_order:
             is_test_obj_contained = obj.isin(test_obj)
         else:
@@ -921,8 +920,7 @@ def basic_value_data_type_converter(obj_data,
                          f"Options are {type_option_list}.")
     
     # Pandas DataFrames
-    if isinstance(obj_data, pd.DataFrame):
-
+    if get_obj_type_str(obj_data) == "DataFrame":
         data_type = obj_data.loc[:,colname].dtype
         
         if colname is None:
