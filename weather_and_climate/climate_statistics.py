@@ -965,7 +965,7 @@ def moving_average(x, N):
 # Parameters and constants #
 #--------------------------#
 
-choice_error_str = "Wrong {}. Options are {}"
+choice_error_str = "Unsupported {}. Options are {}"
 season_length_warning_str = "Season length must strictly be of 3 months."
 season_month_fmt_error_str = \
 """You must specify the season months in a list. For example: [12,1,2]"""
@@ -985,12 +985,23 @@ freq_abbrs1 = ["Y", "SEAS", "M", "D", "H", "min", "S"]
 freq_abbrs2 = ["Y", "S", "M", "D", "H"]
 
 # Switch cases #
+# FIXME: topatu moduren bat ondoko lambda guztiek kasua edozein dela parametro guztiak har ez ditzaten
 obj_climat_str_dict = {
-    "hourly" : "obj.groupby(obj_climat_nonstd_times).{statistic}(dim=date_key)",
-    "daily" : "obj.groupby(obj[date_key].dt.dayofyear).{statistic}(dim=date_key)",
-    "monthly" : "obj.groupby(obj[date_key].dt.month).{statistic}(dim=date_key)",
-    "seasonal" : "obj_seas_sel.{statistic}(dim=date_key)",
-    "yearly" : "obj.{statistic}(dim=date_key)"
+    "hourly" : 
+        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
+            obj.groupby(obj_climat_nonstd_times).statistic(dim=date_key),
+    "daily" : 
+        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
+            obj([date_key].dt.dayofyear).statistic(dim=date_key),
+    "monthly" :
+        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
+            obj([date_key].dt.month).statistic(dim=date_key),
+    "seasonal" :
+        lambda obj, obj_climat_nonstd_times, obj_seas_sel, statistic, date_key : 
+            obj_seas_sel.statistic(dim=date_key),
+    "yearly" : 
+        lambda obj, obj_climat_nonstd_times, obj_seas_sel, statistic, date_key : 
+            obj.statistic(dim=date_key)
     }
 
 # Tuples to pass in into preformatted strings #
