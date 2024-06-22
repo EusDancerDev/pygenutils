@@ -727,7 +727,7 @@ def save2excel(file_path,
             return 0
 
 
-    elif isinstance(frame_obj, pd.DataFrame()):
+    elif isinstance(frame_obj, pd.DataFrame):
         
         # If the file to be created already exists, prompt to overwrite it #    
         if file_already_exists:
