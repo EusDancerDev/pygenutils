@@ -11,11 +11,12 @@ from pathlib import Path
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_data_manipulation import select_array_elements
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from parameters_and_constants import global_parameters
-from time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
-from strings import information_output_formatters, string_handler
+from pytools.arrays_and_lists.array_data_manipulation import select_array_elements
+from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pytools.parameters_and_constants import global_parameters
+from pytools.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
+from pytools.strings import information_output_formatters, string_handler
+from pytools.utilities.introspection_utils import get_caller_method_all_args
 
 # Create aliases #
 #----------------#
@@ -66,11 +67,11 @@ def loop_renamer(obj_list,
                  dry_run=False,
                  splitdelim=None):
     
-    arg_names = loop_renamer.__code__.co_varnames
-    ot_arg_pos = find_substring_index(arg_names, "obj_type")
+    all_arg_names = list(get_caller_method_all_args().values())
+    ot_arg_pos = find_substring_index(all_arg_names, "obj_type")
     
     if obj_type not in basic_object_types:
-        raise ValueError(f"Wrong '{arg_names[ot_arg_pos]}' option. "
+        raise ValueError(f"Wrong '{all_arg_names[ot_arg_pos]}' option. "
                          f"Options are {basic_object_types}.")
         
     num_formatted_objs = []
@@ -134,19 +135,20 @@ def reorder_objs(path,
                  zero_padding="default",
                  splitdelim=None):
     
-    # Quality control of the parameters #
-    arg_names = reorder_objs.__code__.co_varnames
-    defaults = reorder_objs.__defaults__
+    # Input parameter validation #
+    all_arg_dict = get_caller_method_all_args()    
+    all_arg_names = list(all_arg_dict.keys())
+    defaults = list(all_arg_dict.values())
         
-    zp_arg_pos = find_substring_index(arg_names, "zero_padding")
-    stn_arg_pos = find_substring_index(arg_names, "starting_number")
-    ir_arg_pos = find_substring_index(arg_names, "index_range")
+    zp_arg_pos = find_substring_index(all_arg_names, "zero_padding")
+    start_num_arg_pos = find_substring_index(all_arg_names, "starting_number")
+    ir_arg_pos = find_substring_index(all_arg_names, "index_range")
     
-    if ((zero_padding != 'default' and not isinstance(zero_padding, int))\
-        or (zero_padding != 'default'
+    if ((zero_padding != "default" and not isinstance(zero_padding, int))\
+        or (zero_padding != "default"
             and isinstance(zero_padding, int) 
             and zero_padding < 1)):
-        raise TypeError(f"Argument '{arg_names[zp_arg_pos]}' "
+        raise TypeError(f"Argument '{all_arg_names[zp_arg_pos]}' "
                         f"at position {zp_arg_pos} must either be "
                         "an integer equal or greater than 1.\n"
                         "Set to `None` if no zero padding is desired.")
@@ -329,9 +331,9 @@ def reorder_objs(path,
                                                       index_range)   
         
         if starting_number == "default":
-            raise ValueError(f"'{arg_names[stn_arg_pos]}' argument "
-                             f"at position {stn_arg_pos} "
-                             f"cannot be '{defaults[stn_arg_pos]}' "
+            raise ValueError(f"'{all_arg_names[start_num_arg_pos]}' argument "
+                             f"at position {start_num_arg_pos} "
+                             f"cannot be '{defaults[start_num_arg_pos]}' "
                              f"if '{ir_arg_pos}' argument is not None")
                
         num_formatted_objs_dryRun = loop_renamer(obj_list_uneven_slice, 
