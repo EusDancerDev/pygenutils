@@ -11,71 +11,66 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import find_substring_index
+from pytools.strings.string_handler import find_substring_index
+from pytools.utilities.instrospection_utils import get_caller_method_args
 
 #------------------#
 # Define functions #
 #------------------#
 
-def define_interval(left_limit, right_limit, method="pandas", closed="both"):
+def define_interval(left_limit, right_limit, constructor="pandas", closed="both"):
     
     # Quality control #
     #-----------------#
     
     # Main argument names and their position on the function's definition #    
-    arg_names = define_interval.__code__.co_varnames
+    required_required_arg_names = get_caller_method_args()    
+    contructor_arg_pos = find_substring_index(required_required_arg_names, "constructor")
     
-    method_arg_pos = find_substring_index(arg_names, "method")
-    method_options = ["pandas", "intervaltree"]
+    # constructor argument choice #    
+    if constructor not in contructor_arg_pos:
+        raise ValueError("Unsupported mathematical interval constructor library, "
+                         f"argument '{required_required_arg_names[contructor_arg_pos]}'. "
+                         f"Choose one from {interval_contructor_options}.")
     
-    # Method argument choice #    
-    if method not in method_options:
-        raise ValueError(f"Wrong '{arg_names[method_arg_pos]}' option. "
-                         f"Options are {method_options}.")
-    
-    if method == "pandas":
+    if constructor == "pandas":
         import piso
         piso.register_accessors()
         itv = pd.Interval(left_limit, right_limit, closed=closed)
         
-    elif method == "intervaltree":
+    elif constructor == "intervaltree":
         from intervaltree import Interval
-        print(f"WARNING: method {method} does not include upper bound.")
+        print(f"WARNING: intervals constructed using {constructor} "
+              "do not include upper bound.")
         itv = Interval(left_limit, right_limit)
         
     return itv
     
 
 def basic_interval_operator(interval_array,
-                            obj_type="pandas",
+                            constructor="pandas",
                             closed="left",
-                            operation="union", 
+                            operator_sets="union", 
                             force_union=False):
     
     # Quality control #
     #-----------------#
     
     # Main argument names and their position on the function's definition #    
-    arg_names = basic_interval_operator.__code__.co_varnames
+    required_arg_names = get_caller_method_args()
+    operator_arg_pos = find_substring_index(required_arg_names, "operator_sets")
     
-    op_arg_pos = find_substring_index(arg_names, "operation")
-    obj_type_pos = find_substring_index(arg_names, "obj_type")
-    
-    op_options = ["union", "difference", "intersection",
-                  "symmetric_difference", "comparison"]
-    
-    obj_type_options = ["pandas", "intervaltree"]
-    
-    # Operation and object type argument choices #    
-    if operation not in op_options:
-        raise ValueError(f"Wrong '{arg_names[op_arg_pos]}' option. "
-                         f"Options are {op_options}.")
+    # operator_sets and object type argument choices #    
+    if operator_sets not in operators_sets_options:
+        raise ValueError("Unsupported operator for mathematical sets, "
+                         f"argument '{required_arg_names[operator_arg_pos]}' option. "
+                         f"Supported options are {operators_sets_options}.")
         
-    if obj_type not in obj_type_options:
-        raise ValueError(f"Wrong '{arg_names[obj_type_pos]}' option. "
-                         f"Options are {obj_type_options}.")
+    # Operations #
+    #------------#
+    
         
-    if obj_type == "pandas":
+    if constructor == "pandas":
         import piso
         piso.register_accessors()
          
@@ -84,7 +79,7 @@ def basic_interval_operator(interval_array,
         
         # TODO: garatu bost kasuak, denak web-orrialde ofizialetik
         
-        if operation == "union":
+        if operator_sets == "union":
             merged_bin = itv_pdArray.piso.union()[0]
             
             if not force_union:
@@ -112,17 +107,31 @@ def basic_interval_operator(interval_array,
                 else:
                     return merged_bin
                 
-        elif operation == "intersection":
+        elif operator_sets == "intersection":
             """do sth"""
             
-        
-
     
-    elif obj_type == "intervaltree":
-        print(f"WARNING: method {obj_type} does not include upper bound.")
-        
+    elif constructor == "intervaltree":
+        print(f"WARNING: intervals constructed with method '{constructor}' "
+              "do not allow closed upper bounds.")        
         from intervaltree import Interval, IntervalTree
         itv_ItvArray = IntervalTree.from_tuples(interval_array)
         
         # TODO: garatu bost kasuak, denak web-orrialde ofizialetik
 
+#--------------------------#
+# Parameters and constants #
+#--------------------------#
+
+# Operations with mathematical intervals #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+# Supported mathematical interval constructors #
+interval_contructor_options = ["pandas", "intervaltree"]
+
+# Operations with sets #
+#-#-#-#-#-#-#-#-#-#-#-#-
+
+# Supported operators #
+operators_sets_options = ["union", "difference", "intersection",
+                          "symmetric_difference", "comparison"]
