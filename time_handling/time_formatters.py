@@ -17,15 +17,9 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from strings import information_output_formatters, string_handler
-
-# Create aliases #
-#----------------#
-
-format_string = information_output_formatters.format_string
-find_substring_index = string_handler.find_substring_index
-get_obj_type_str = information_output_formatters.get_obj_type_str
-substring_replacer = string_handler.substring_replacer
+from pytools.strings.information_output_formatters import format_string
+from pytools.strings.string_handler import find_substring_index, substring_replacer
+from pytools.utilities.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #
