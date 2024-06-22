@@ -50,7 +50,7 @@ def method_checker(arg):
     ValueError : If the method is not valid.
     """
     if arg not in method_opts:
-        raise ValueError(f"Wrong method. Options are {method_opts}.")
+        raise ValueError(f"Unsupported method. Choose one from {method_opts}.")
         
 # Operations with frequently used bases #
 #---------------------------------------#
