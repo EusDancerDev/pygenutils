@@ -5,6 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
+from pytools.Zparameters_and_constants.global_parameters import operations_sets_list
 from pytools.strings.string_handler import find_substring_index
 from pytools.utilities.introspection_utils import get_caller_method_args
 
@@ -14,55 +15,62 @@ from pytools.utilities.introspection_utils import get_caller_method_args
 
 def operations_with_sets(array_of_sets1, 
                          array_of_sets2=None, 
-                         obj_type="built-in",
-                         operation="union"):
+                         constructor="built-in",
+                         operator="union"):
     
     # Argument validations #
     #-#-#-#-#-#-#-#-#-#-#-#-
 
-    arg_names = get_caller_method_args()
-    operation_arg_pos = find_substring_index(arg_names, "operation")
-    obj_type_arg_pos = find_substring_index(arg_names, "obj_type")
+    required_arg_names = get_caller_method_args()
+    operator_arg_pos = find_substring_index(required_arg_names, "operation")
+    constructor_arg_pos = find_substring_index(required_arg_names, "constructor")
     
-    operation_opt_array = list(operation_dict.keys())
-    
-    if operation not in operation_opt_array:
-        raise ValueError(f"Wrong '{arg_names[operation_arg_pos]}' argument. "
-                         f"Options are {operation_opt_array}.")
+    if operator not in operations_sets_list:
+        raise ValueError("Unsupported operator for mathematical sets, "
+                         f"argument '{required_arg_names[operator_arg_pos]}' option. "
+                         f"Supported options are {operations_sets_list}.")
         
         
-    if obj_type not in obj_types:
-        raise ValueError(f"Wrong '{arg_names[obj_type_arg_pos]}' argument. "
-                         f"Options are {obj_types}.")
+    if constructor not in sets_contructor_options: 
+        raise ValueError("Unsupported mathematical interval constructor library, "
+                         f"argument '{required_arg_names[constructor_arg_pos]}'. "
+                         f"Choose one from {sets_contructor_options}.")
         
     # Operations #
     #-#-#-#-#-#-#-
         
-    if obj_type == "built-in":
-        if operation == operation_opt_array[-1]:
-            from itertools import product    
-            
-        res_set = eval(operation_dict.get(operation))            
+    if constructor == "built-in":
+        if operator == operations_sets_list[-1]:
+            from itertools import product as operations_external_module
+              
+        else:
+            operations_external_module = None
+        res_set = operation_dict.get(operator)(array_of_sets1, array_of_sets2,
+                                               operations_external_module)
         return res_set
             
-    elif obj_type == "sympy":
-        
+    elif constructor == "sympy":        
         # TODO: garatu 'sympy' motako multzoen kasua
         # from sympy import FiniteSet
         raise NotImplementedError("Please for now set argument "
-                                  f"'{arg_names[obj_type_arg_pos]}' to "
-                                  f"{obj_types[0]}.")
+                                  f"'{required_arg_names[constructor_arg_pos]}' to "
+                                  f"{sets_contructor_options[0]}.")
 
 #--------------------------#        
 # Parameters and constants #
 #--------------------------#
 
-obj_types = ["built-in", "sympy"]
+sets_contructor_options = ["built-in", "sympy"]
 
 operation_dict = {
-    "union": "array_of_sets1.union(array_of_sets2)",
-    "intersection": "array_of_sets1.intersection(array_of_sets2)",
-    "difference": "array_of_sets1.difference(array_of_sets2)",
-    "symmetric_difference": "array_of_sets1.symmetric_difference(array_of_sets2)",
-    "cartesian_product": "set(product(array_of_sets1))"
+    "union" :
+        lambda array_of_sets1, array_of_sets2, operations_external_module : array_of_sets1.union(array_of_sets2),
+    "intersection" : 
+        lambda array_of_sets1, array_of_sets2, operations_external_module : array_of_sets1.intersection(array_of_sets2),
+    "difference" : 
+        lambda array_of_sets1, array_of_sets2, operations_external_module : array_of_sets1.difference(array_of_sets2),
+    "symmetric_difference" : 
+        lambda array_of_sets1, array_of_sets2, operations_external_module : array_of_sets1.symmetric_difference(array_of_sets2),
+    "cartesian_product" : 
+        lambda array_of_sets1, array_of_sets2, operations_external_module : set(operations_external_module(array_of_sets1))
 }
