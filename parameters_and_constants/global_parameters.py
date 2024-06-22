@@ -88,6 +88,13 @@ time_frequencies_shorter_1 = ["year", "seas", "mon", "day", "hour"]
 
 basic_four_rules = ["+", "-", "*", "/"]
 
+#-------------# 
+# Set algebra #
+#-------------# 
+
+operators_sets_list = ["union", "difference", "intersection",
+                       "symmetric_difference", "comparison"]
+
 #%% PROGRAMMING CONCEPTS
 
 #-------------------# 
