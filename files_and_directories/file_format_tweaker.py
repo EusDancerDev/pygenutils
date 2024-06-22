@@ -74,7 +74,7 @@ def pdf_file_tweaker(path, cat_out_obj):
     For that it uses 'pdftk' tool, together with 'cat' and the
     os.system shell emulator method.
     
-    For the sake of gathering simplicity and practicity,
+    For the sake of gathering simplicity and practicality,
     the structure of the default output file name will be the following:
     '{path_without_the_extension}_{page_configuration}.{extension}'
     
@@ -168,7 +168,7 @@ def pdf_file_tweaker(path, cat_out_obj):
     the 'pdf' extension will be added if necessary. 
     Recall that the latter refers to the output path(s).
     
-    Also for the sake of gathering simplicity and practicity,
+    Also for the sake of gathering simplicity and practicality,
     this function is designed to work with absolute paths,
     in order to have a unique function placed in a module with a fixed path.
     """

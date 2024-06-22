@@ -729,7 +729,7 @@ def hdy_interpolation(hdy_df,
     because the last interpolation involving pairs of months
     is that of October and November.
     
-    For practicity and uniqueness purposes, it is strongly reccommended,
+    For practicality and uniqueness purposes, it is strongly reccommended,
     to the extent of present elements in the variable list
     to interpolate against, to follow these standard short names.
     The order of the variables is not strict:

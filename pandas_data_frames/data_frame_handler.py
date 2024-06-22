@@ -1287,7 +1287,7 @@ def merge_csv_files(input_file_list,
     -----   
     Usage of 'separator_in' applies for all files, which means
     that every file must have the same separator.
-    In order to keep simplicity and practicity, 'out_single_DataFrame'
+    In order to keep simplicity and practicality, 'out_single_DataFrame'
     and 'keep_data_in_sections' cannot be True at the same time.
     """
         

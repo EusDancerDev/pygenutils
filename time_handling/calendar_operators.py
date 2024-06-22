@@ -56,7 +56,7 @@ def standardize_calendar(obj,
     mainly because the basic libraries are already installed.
     
     To this day, taking account the structure of the modules
-    and practicity and cleanliness of this function,
+    and practicality and cleanliness of this function,
     the 'netcdf_handler' module will only be imported here
     together with xarray.
     
