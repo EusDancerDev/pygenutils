@@ -16,11 +16,12 @@ import xarray as xr
 # Import custom modules #
 #-----------------------#
 
-from pandas_data_frames.data_frame_handler import find_date_key
-from parameters_and_constants import global_parameters
-from strings import information_output_formatters, string_handler
-from time_handling.time_formatters import time_format_tweaker
-from weather_and_climate.netcdf_handler import find_time_dimension
+from pytools.pandas_data_frames.data_frame_handler import find_date_key
+from pytools.parameters_and_constants import global_parameters
+from pytools.strings import information_output_formatters, string_handler
+from pytools.time_handling.time_formatters import time_format_tweaker
+from pytools.utilities.introspection_utils import get_obj_type_str
+from pytools.weather_and_climate.netcdf_handler import find_time_dimension
 
 # Create aliases #
 #----------------#
@@ -105,7 +106,7 @@ def periodic_statistics(obj, statistic, freq,
         arg_tuple_stats1 = ("statistic", statistics)
         raise ValueError(format_string(choice_error_str, arg_tuple_stats1))
  
-    if isinstance(obj, pd.DataFrame):   
+    if get_obj_type_str(obj) == "DataFrame":
         date_key = find_date_key(obj)
         
         if freq not in freq_abbrs1 and season_months is None:
@@ -131,9 +132,7 @@ def periodic_statistics(obj, statistic, freq,
             return df_stat
     
         
-    elif isinstance(obj, xr.Dataset)\
-    or isinstance(obj, xr.DataArray): 
-        
+    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):    
         date_key = find_time_dimension(obj)
         
         if groupby_dates:
@@ -231,11 +230,10 @@ def climat_periodic_statistics(obj,
     # Identify the time dimension #
     #-----------------------------#
     
-    if isinstance(obj, pd.DataFrame):
+    if get_obj_type_str(obj) == "DataFrame":
         date_key = find_date_key(obj)
         
-    elif isinstance(obj, xr.Dataset)\
-    or isinstance(obj, xr.DataArray):
+    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):    
         date_key = find_time_dimension(obj)               
     
     # Calculate statistical climatologies #
@@ -258,7 +256,7 @@ def climat_periodic_statistics(obj,
     else:
         latest_year = years[-1]
 
-    if isinstance(obj, pd.DataFrame):
+    if get_obj_type_str(obj) == "DataFrame":
         
         # Define the climatologic statistical data frame #
         ncols_obj = len(obj.columns)
@@ -377,9 +375,7 @@ def climat_periodic_statistics(obj,
         obj_climat.iloc[:, 0] = time_format_tweaker(obj_climat.iloc[:, 0],
                                                     to_pandas_datetime="pand")        
         
-    elif isinstance(obj, xr.Dataset)\
-    or isinstance(obj, xr.DataArray):
-          
+    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):          
         if time_freq == "hourly":
             
             # Define the time array #
@@ -558,19 +554,19 @@ def calculate_and_apply_deltas(observed_series,
     # Identify the time dimension #
     #-----------------------------#
     
-    if isinstance(observed_series, pd.DataFrame) \
-    and isinstance(reanalysis_series, pd.DataFrame):
-        
+    if (get_obj_type_str(observed_series) == "DataFrame"
+    and get_obj_type_str(reanalysis_series) == "DataFrame"):
+      
         date_key = find_date_key(observed_series)
         date_key_rean = find_date_key(observed_series)
 
         if date_key != date_key_rean:
             reanalysis_series.columns = [date_key] + reanalysis_series.columns[1:]
 
-    elif (isinstance(observed_series, xr.Dataset) \
-        and isinstance(reanalysis_series, xr.Dataset)) \
-    or (isinstance(observed_series, xr.DataArray) \
-        and isinstance(reanalysis_series, xr.DataArray)):
+    elif (get_obj_type_str(observed_series) == "Dataset"
+          and get_obj_type_str(reanalysis_series) == "Dataset")\
+        or (get_obj_type_str(observed_series) == "DataArray" 
+            and get_obj_type_str(reanalysis_series) == "DataArray"):
         
         date_key = find_time_dimension(observed_series)
         date_key_rean = find_time_dimension(observed_series)
@@ -636,8 +632,8 @@ def calculate_and_apply_deltas(observed_series,
         # Calculate deltas #
         #------------------#
     
-        if isinstance(observed_series, pd.DataFrame) \
-        and isinstance(reanalysis_series, pd.DataFrame):
+        if (get_obj_type_str(observed_series) == "DataFrame"
+        and get_obj_type_str(reanalysis_series) == "DataFrame"):
             
             if preference_over == "observed":
                 delta_cols = observed_series.columns[1:]
@@ -660,10 +656,10 @@ def calculate_and_apply_deltas(observed_series,
                                   axis=1)
             
         
-        elif (isinstance(observed_series, xr.Dataset) \
-            and isinstance(reanalysis_series, xr.Dataset)) \
-        or (isinstance(observed_series, xr.DataArray) \
-            and isinstance(reanalysis_series, xr.DataArray)):
+        elif (get_obj_type_str(observed_series) == "Dataset"
+              and get_obj_type_str(reanalysis_series) == "Dataset")\
+            or (get_obj_type_str(observed_series) == "DataArray" 
+                and get_obj_type_str(reanalysis_series) == "DataArray"):
                 
             if preference_over == "observed":
                 
@@ -690,15 +686,15 @@ def calculate_and_apply_deltas(observed_series,
             
         else:
             
-            if isinstance(observed_series, pd.DataFrame) \
-            and isinstance(reanalysis_series, pd.DataFrame):  
+            if (get_obj_type_str(observed_series) == "DataFrame"
+            and get_obj_type_str(reanalysis_series) == "DataFrame"):  
                 
                 freq_abbr = pd.infer_freq(obs_climat[date_key])
                 
-            elif (isinstance(observed_series, xr.Dataset) \
-                and isinstance(reanalysis_series, xr.Dataset)) \
-            or (isinstance(observed_series, xr.DataArray) \
-                and isinstance(reanalysis_series, xr.DataArray)):
+            elif (get_obj_type_str(observed_series) == "Dataset"
+                  and get_obj_type_str(reanalysis_series) == "Dataset")\
+                or (get_obj_type_str(observed_series) == "DataArray" 
+                    and get_obj_type_str(reanalysis_series) == "DataArray"):
                     
                 freq_abbr = xr.infer_freq(obs_climat[date_key])
         
@@ -727,8 +723,8 @@ def calculate_and_apply_deltas(observed_series,
                 )
             print_format_string(delta_application_info_str, arg_tuple_delta5)
             
-            if isinstance(observed_series, pd.DataFrame) \
-            and isinstance(reanalysis_series, pd.DataFrame):  
+            if (get_obj_type_str(observed_series) == "DataFrame"
+            and get_obj_type_str(reanalysis_series) == "DataFrame"): 
                 
                 if delta_type == "absolute":    
                     obj_aux.loc[obj2C.index, delta_cols]\
@@ -737,10 +733,10 @@ def calculate_and_apply_deltas(observed_series,
                     obj_aux.loc[obj2C.index, delta_cols]\
                     *= delta_obj.loc[:, delta_cols].values
                     
-            elif (isinstance(observed_series, xr.Dataset) \
-                and isinstance(reanalysis_series, xr.Dataset)) \
-            or (isinstance(observed_series, xr.DataArray) \
-                and isinstance(reanalysis_series, xr.DataArray)):
+            elif (get_obj_type_str(observed_series) == "Dataset"
+                  and get_obj_type_str(reanalysis_series) == "Dataset")\
+                or (get_obj_type_str(observed_series) == "DataArray" 
+                    and get_obj_type_str(reanalysis_series) == "DataArray"):
                     
                 if delta_type == "absolute":
                     obj_aux.loc[obj2C.time] += delta_obj.values
@@ -764,8 +760,8 @@ def calculate_and_apply_deltas(observed_series,
                     )
                 print_format_string(delta_application_info_str, arg_tuple_delta6)
                 
-                if isinstance(observed_series, pd.DataFrame) \
-                and isinstance(reanalysis_series, pd.DataFrame):
+                if (get_obj_type_str(observed_series) == "DataFrame"
+                and get_obj_type_str(reanalysis_series) == "DataFrame"):
                 
                     if delta_type == "absolute":
                         obj_aux.loc[obj2C.index, delta_cols]\
@@ -774,10 +770,10 @@ def calculate_and_apply_deltas(observed_series,
                         obj_aux.loc[obj2C.index, delta_cols]\
                         *= objD.loc[:, delta_cols].values
                         
-                elif (isinstance(observed_series, xr.Dataset) \
-                    and isinstance(reanalysis_series, xr.Dataset)) \
-                or (isinstance(observed_series, xr.DataArray) \
-                    and isinstance(reanalysis_series, xr.DataArray)):
+                elif (get_obj_type_str(observed_series) == "Dataset"
+                      and get_obj_type_str(reanalysis_series) == "Dataset")\
+                    or (get_obj_type_str(observed_series) == "DataArray" 
+                        and get_obj_type_str(reanalysis_series) == "DataArray"):
                         
                     if delta_type == "absolute":
                         obj_aux.loc[obj2C.time] += objD.values
@@ -807,8 +803,8 @@ def calculate_and_apply_deltas(observed_series,
                             )
                         print_format_string(delta_application_info_str, arg_tuple_delta7)
                         
-                        if isinstance(observed_series, pd.DataFrame) \
-                        and isinstance(reanalysis_series, pd.DataFrame):
+                        if (get_obj_type_str(observed_series) == "DataFrame"
+                        and get_obj_type_str(reanalysis_series) == "DataFrame"):
                         
                             if delta_type == "absolute":
                                 obj_aux.loc[obj2C.index, delta_cols] \
@@ -818,10 +814,10 @@ def calculate_and_apply_deltas(observed_series,
                                 obj_aux.loc[obj2C.index, delta_cols] \
                                 *= objD.loc[:, delta_cols].values
                                 
-                        elif (isinstance(observed_series, xr.Dataset) \
-                            and isinstance(reanalysis_series, xr.Dataset)) \
-                        or (isinstance(observed_series, xr.DataArray) \
-                            and isinstance(reanalysis_series, xr.DataArray)):
+                        elif (get_obj_type_str(observed_series) == "Dataset"
+                              and get_obj_type_str(reanalysis_series) == "Dataset")\
+                            or (get_obj_type_str(observed_series) == "DataArray" 
+                                and get_obj_type_str(reanalysis_series) == "DataArray"):
                                 
                             if delta_type == "absolute":
                                 obj_aux.loc[obj2C.time] += objD.values
@@ -856,8 +852,8 @@ def calculate_and_apply_deltas(observed_series,
                                 )
                             print_format_string(delta_application_info_str, arg_tuple_delta8)
                             
-                            if isinstance(observed_series, pd.DataFrame) \
-                            and isinstance(reanalysis_series, pd.DataFrame):
+                            if (get_obj_type_str(observed_series) == "DataFrame"
+                            and get_obj_type_str(reanalysis_series) == "DataFrame"):
                             
                                 if delta_type == "absolute":
                                     obj_aux.loc[obj2C.index, delta_cols] \
@@ -866,10 +862,10 @@ def calculate_and_apply_deltas(observed_series,
                                     obj_aux.loc[obj2C.index, delta_cols] \
                                     *= objD.loc[:, delta_cols].values
                                     
-                            elif (isinstance(observed_series, xr.Dataset) \
-                                and isinstance(reanalysis_series, xr.Dataset)) \
-                            or (isinstance(observed_series, xr.DataArray) \
-                                and isinstance(reanalysis_series, xr.DataArray)):
+                            elif (get_obj_type_str(observed_series) == "Dataset"
+                                  and get_obj_type_str(reanalysis_series) == "Dataset")\
+                                or (get_obj_type_str(observed_series) == "DataArray" 
+                                    and get_obj_type_str(reanalysis_series) == "DataArray"):
                                 
                                 if delta_type == "absolute":
                                     obj_aux.loc[obj2C.time] += objD.values
