@@ -5,7 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import find_substring_index
+from pytools.strings.string_handler import find_substring_index
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 #-------------------------#
 # Define custom functions #
@@ -15,8 +16,11 @@ def operations_with_sets(array_of_sets1,
                          array_of_sets2=None, 
                          obj_type="built-in",
                          operation="union"):
+    
+    # Argument validations #
+    #-#-#-#-#-#-#-#-#-#-#-#-
 
-    arg_names = operations_with_sets.__code__.co_varnames
+    arg_names = get_caller_method_args()
     operation_arg_pos = find_substring_index(arg_names, "operation")
     obj_type_arg_pos = find_substring_index(arg_names, "obj_type")
     
@@ -30,6 +34,9 @@ def operations_with_sets(array_of_sets1,
     if obj_type not in obj_types:
         raise ValueError(f"Wrong '{arg_names[obj_type_arg_pos]}' argument. "
                          f"Options are {obj_types}.")
+        
+    # Operations #
+    #-#-#-#-#-#-#-
         
     if obj_type == "built-in":
         if operation == operation_opt_array[-1]:
@@ -53,9 +60,9 @@ def operations_with_sets(array_of_sets1,
 obj_types = ["built-in", "sympy"]
 
 operation_dict = {
-    'union': "array_of_sets1.union(array_of_sets2)",
-    'intersection': "array_of_sets1.intersection(array_of_sets2)",
-    'difference': "array_of_sets1.difference(array_of_sets2)",
-    'symmetric_difference': "array_of_sets1.symmetric_difference(array_of_sets2)",
-    'cartesian_product': "set(product(array_of_sets1))"
+    "union": "array_of_sets1.union(array_of_sets2)",
+    "intersection": "array_of_sets1.intersection(array_of_sets2)",
+    "difference": "array_of_sets1.difference(array_of_sets2)",
+    "symmetric_difference": "array_of_sets1.symmetric_difference(array_of_sets2)",
+    "cartesian_product": "set(product(array_of_sets1))"
 }
