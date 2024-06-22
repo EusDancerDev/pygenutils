@@ -92,8 +92,8 @@ basic_four_rules = ["+", "-", "*", "/"]
 # Set algebra #
 #-------------# 
 
-operators_sets_list = ["union", "difference", "intersection",
-                       "symmetric_difference", "comparison"]
+operations_sets_list = ["union", "difference", "intersection",
+                        "symmetric_difference", "comparison"]
 
 #%% PROGRAMMING CONCEPTS
 
