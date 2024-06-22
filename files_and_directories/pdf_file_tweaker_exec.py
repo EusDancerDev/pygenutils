@@ -158,7 +158,7 @@ cat_out_dict_list\
 # Cut the provided files according to the catenation string object #
 #------------------------------------------------------------------#
 
-case_usage_options = ['single-single', 'single-multiple', 'multiple-multiple']
+case_usage_options = ["single-single", "single-multiple", "multiple-multiple"]
 
 case_usage_dict = {
     case_usage_options[0] : 
