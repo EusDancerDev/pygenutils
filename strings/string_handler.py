@@ -1,8 +1,6 @@
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# FIXME: ekidin .eval erabiltzea --> ChatGPTren laguntza
-
 #----------------#
 # Import modules # 
 #----------------#
@@ -172,7 +170,9 @@ def advanced_pattern_searcher(string, substring,
     #--------------------#
     
     if not case_sensitive and not all_matches and not find_whole_words:
-        re_obj_str = "re.search(substring, string, re.IGNORECASE)"
+        re_obj_str = lambda substring, string : re.search(substring,
+                                                          string, 
+                                                          re.IGNORECASE)
         iterator_considered = False
         
         
@@ -180,15 +180,19 @@ def advanced_pattern_searcher(string, substring,
     #---------------------#
         
     elif case_sensitive and not all_matches and not find_whole_words:
-        re_obj_str = "re.search(substring, string)"
+        re_obj_str = lambda substring, string : re.search(substring, string)
         iterator_considered = False
         
     elif not case_sensitive and all_matches and not find_whole_words:
-        re_obj_str = "re.finditer(substring, string, re.IGNORECASE)"
+        re_obj_str = lambda substring, string : re.finditer(substring,
+                                                         string,
+                                                         re.IGNORECASE)
         iterator_considered = True        
         
     elif not case_sensitive and not all_matches and find_whole_words:
-        re_obj_str = "re.fullmatch(substring, string, re.IGNORECASE)"
+        re_obj_str = lambda substring, string : re.fullmatch(substring,
+                                                          string, 
+                                                          re.IGNORECASE)
         iterator_considered = False
 
 
@@ -196,11 +200,11 @@ def advanced_pattern_searcher(string, substring,
     #----------------------# 
     
     elif case_sensitive and all_matches and not find_whole_words:
-        re_obj_str = "re.finditer(substring, string)"
+        re_obj_str = lambda substring, string : re.finditer(substring, string)
         iterator_considered = True        
         
     elif case_sensitive and not all_matches and find_whole_words:
-        re_obj_str = "re.fullmatch(substring, string)"
+        re_obj_str = lambda substring, string : re.fullmatch(substring, string)
         iterator_considered = False
         
     
@@ -238,7 +242,8 @@ def return_search_obj_spec(match_obj, return_match_index, return_match_str):
         except AttributeError:
             return -1
         else:
-            match_obj_idx = eval(match_obj_index_option_dict.get(return_match_index))
+            match_obj_idx = \
+            match_obj_index_option_dict.get(return_match_index)(match_obj_span)
             return match_obj_idx
             
     elif return_match_str:
@@ -256,7 +261,7 @@ def return_search_obj_spec_iterators(callable_iterator,
                           else -1
                           for match_obj in callable_iterator] 
 
-        match_obj_idx = eval(match_obj_index_option_dict.get(return_match_index))
+        match_obj_idx = match_obj_index_option_dict.get(return_match_index)(match_obj_span)
         return match_obj_idx
             
     elif return_match_str:
@@ -277,12 +282,12 @@ def return_search_obj_spec_aux(string, substring, re_obj_str,
 
     
     if not iterator_considered:
-        match_obj_spec = return_search_obj_spec(eval(re_obj_str),
+        match_obj_spec = return_search_obj_spec(re_obj_str(substring, string),
                                                 return_match_index,
                                                 return_match_str)
         
     else:
-        match_obj_spec = return_search_obj_spec_iterators(eval(re_obj_str),
+        match_obj_spec = return_search_obj_spec_iterators(re_obj_str(substring, string),
                                                           return_match_index,
                                                           return_match_str)
     
@@ -504,7 +509,7 @@ def case_modifier(string, case=None):
                          f"{case_modifier_option_keys}")
         
     else:
-        str_case_modified = eval(case_modifier_option_dict.get(case))
+        str_case_modified = case_modifier_option_dict.get(case)(string)
         return str_case_modified
 
     
@@ -533,7 +538,7 @@ def strip(string, strip_option='strip', chars=None):
                          f"the following list: {strip_option_keys}")
         
     else:
-        string_stripped = eval(strip_option_dict.get(strip_option))
+        string_stripped = strip_option_dict.get(strip_option)(string, chars)
         return string_stripped
     
 
@@ -553,28 +558,28 @@ combined_case_search_method_list = ['default', 'numpy_basic', 'numpy_advanced']
 
 # Search matching object's indexing options #
 match_obj_index_option_dict = {
-    'lo'   : 'match_obj_span[0]',
-    'hi'   : 'match_obj_span[-1]',
-    'span' : 'match_obj_span'
-    }
-    
+    "lo"   : lambda span: span[0],
+    "hi"   : lambda span: span[-1],
+    "span" : lambda span: span
+}
+
 match_obj_index_option_keys = list(match_obj_index_option_dict.keys()) + [False]
 
 # String case handling #
 case_modifier_option_dict = {
-    'lower'      : 'string.lower()',
-    'upper'      : 'string.upper()',
-    'capitalize' : 'string.capitalize()',
-    'title'      : 'string.title()'
+    "lower"      : lambda string : string.lower(),
+    "upper"      : lambda string : string.upper(),
+    "capitalize" : lambda string : string.capitalize(),
+    "title"      : lambda string : string.title()
     }
 
 case_modifier_option_keys = list(case_modifier_option_dict.keys())
 
 # String stripping #
 strip_option_dict = {
-    'strip'  : 'string.strip(chars)',
-    'lstrip' : 'string.lstrip(chars)',
-    'rstrip' : 'string.rstrip(chars)',
-    }
+    "strip": lambda string, chars: string.strip(chars),
+    "lstrip": lambda string, chars: string.lstrip(chars),
+    "rstrip": lambda string, chars: string.rstrip(chars),
+}
 
 strip_option_keys = list(strip_option_dict.keys())
