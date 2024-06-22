@@ -5,8 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-from dictionaries.dict_handler import sort_dictionary_by_keys
-from parameters_and_constants.global_parameters import basic_four_rules
+from pytools.dictionaries.dict_handler import sort_dictionary_by_keys
+from pytools.parameters_and_constants.global_parameters import basic_four_rules
 
 #-------------------------#
 # Define custom functions #
@@ -81,8 +81,8 @@ def dict_value_basic_operator(dict1, dict2,
     
     # Quality control #
     if basic_math_operator not in basic_four_rules:
-        raise ValueError ("Wrong basic operator sign. Accepted operators are: "\
-                          f"{basic_four_rules}.")
+        raise ValueError ("Unsupported basic operator sign. "
+                          f"Choose one from {basic_four_rules}.")
          
     accepted_operation_dict = {
         basic_four_rules[0] : sum_dict_values(dict1, dict2),
