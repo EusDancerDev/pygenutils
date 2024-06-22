@@ -11,6 +11,8 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
+from pytools.parameters_and_constants.global_parameters import operations_sets_list
+
 from pytools.strings.string_handler import find_substring_index
 from pytools.utilities.instrospection_utils import get_caller_method_args
 
@@ -50,7 +52,7 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
 def basic_interval_operator(interval_array,
                             constructor="pandas",
                             closed="left",
-                            operator_sets="union", 
+                            operator="union", 
                             force_union=False):
     
     # Quality control #
@@ -61,10 +63,10 @@ def basic_interval_operator(interval_array,
     operator_arg_pos = find_substring_index(required_arg_names, "operator_sets")
     
     # operator_sets and object type argument choices #    
-    if operator_sets not in operators_sets_options:
+    if operator not in operations_sets_list:
         raise ValueError("Unsupported operator for mathematical sets, "
                          f"argument '{required_arg_names[operator_arg_pos]}' option. "
-                         f"Supported options are {operators_sets_options}.")
+                         f"Supported options are {operations_sets_list}.")
         
     # Operations #
     #------------#
@@ -79,7 +81,7 @@ def basic_interval_operator(interval_array,
         
         # TODO: garatu bost kasuak, denak web-orrialde ofizialetik
         
-        if operator_sets == "union":
+        if operator == "union":
             merged_bin = itv_pdArray.piso.union()[0]
             
             if not force_union:
@@ -107,7 +109,7 @@ def basic_interval_operator(interval_array,
                 else:
                     return merged_bin
                 
-        elif operator_sets == "intersection":
+        elif operator == "intersection":
             """do sth"""
             
     
@@ -128,10 +130,3 @@ def basic_interval_operator(interval_array,
 
 # Supported mathematical interval constructors #
 interval_contructor_options = ["pandas", "intervaltree"]
-
-# Operations with sets #
-#-#-#-#-#-#-#-#-#-#-#-#-
-
-# Supported operators #
-operators_sets_options = ["union", "difference", "intersection",
-                          "symmetric_difference", "comparison"]
