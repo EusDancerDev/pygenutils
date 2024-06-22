@@ -160,6 +160,8 @@ cat_out_dict_list\
 
 case_usage_options = ["single-single", "single-multiple", "multiple-multiple"]
 
+# FIXME: atondu ondoko switch case hiztegia parametro guztiak ez egokitzeko moduan
+
 case_usage_dict = {
     case_usage_options[0] : 
         lambda path_obj, cat_out_obj : pdf_file_tweaker(path_obj, cat_out_obj),
