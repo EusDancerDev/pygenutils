@@ -297,8 +297,7 @@ def week_range(date):
         last days of the week that lies the given date within.
     """
     
-    if isinstance(date, pd._libs.tslibs.timestamps.Timestamp):
-        
+    if get_obj_type_str(date) == "Timestamp":
         dow = date.isocalendar()[-1]
 
         # Find the first day of the week #
