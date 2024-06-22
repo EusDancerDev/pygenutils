@@ -19,7 +19,7 @@ from pytools.arrays_and_lists.array_data_manipulation import count_unique_type_o
 from pytools.pandas_data_frames import data_frame_handler
 from pytools.parameters_and_constants.global_parameters import basic_time_format_strs
 from pytools.strings.string_handler import find_substring_index, modify_obj_specs
-from pytools.utilities.introspection_utils import get_obj_type_str
+from pytools.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 from pytools.time_handling.time_formatters import time_format_tweaker
 
 # Create aliases #
@@ -104,8 +104,7 @@ def standardize_calendar(obj,
     
     Returns
     -------
-    obj : pd.DataFrame, xarray.Dataset 
-        or xarray.DataArray.
+    obj : pd.DataFrame, xarray.Dataset or xarray.DataArray.
         Object containing the standardized calendar to gregorian.
     
     Note
@@ -114,15 +113,14 @@ def standardize_calendar(obj,
     as can be donde with Excel files, because CSV is rough, old format
     but mainly for data transport used.
     """
-    
-    obj_types = ["pandas", "xarray"]
 
-    arg_names = standardize_calendar.__code__.co_varnames
-    obj_type_arg_pos = find_substring_index(arg_names, "obj_type")
+    all_arg_names = get_caller_method_args()
+    obj_type_arg_pos = find_substring_index(all_arg_names, "obj_type")
     
     if obj_type not in obj_types:
-        raise ValueError(f"Wrong '{arg_names[obj_type_arg_pos]}' argument. "
-                         f"Options are {obj_types}.")
+        raise ValueError("Unsupported object type "
+                         f"(argument '{all_arg_names[obj_type_arg_pos]}'."
+                         f"Choose one from {obj_types}.")
         
     if obj_type == "pandas":
 
@@ -256,9 +254,9 @@ def standardize_calendar(obj,
                                            save_header)
             
                         else:
-                            raise ValueError("Wrong extension choice. "
+                            raise ValueError("Unsupported file extension . "
                                              "Options for a Pandas data frame "
-                                             "are {'csv', 'xlsx'}.")
+                                             f"are {supported_file_exts_pandas}.")
                             
         return obj_std_calendar
     
@@ -383,3 +381,12 @@ def leap_year_detector(start_year, end_year, return_days=False):
             is_leap_year_arr = [calendar.isleap(year)
                                 for year in range(start_year, end_year+1)]
             return is_leap_year_arr
+
+
+#--------------------------#
+# Parameters and constants #
+#--------------------------#
+
+# Supported object types and file extensions for calendar standardizations #
+obj_types = ["pandas", "xarray"]
+supported_file_exts_pandas = ['csv', 'xlsx']
