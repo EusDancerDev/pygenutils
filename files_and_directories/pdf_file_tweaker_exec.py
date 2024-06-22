@@ -14,7 +14,6 @@ as the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-# The following method is actually used, in a case-switch dictionary!
 from files_and_directories.file_format_tweaker import pdf_file_tweaker
 
 #-------------------#
@@ -150,7 +149,7 @@ cat_str_lists = [
      "1-2 8"],
     ]
 
-cat_out_dictList\
+cat_out_dict_list\
 = [{out_path : cat_str 
     for out_path, cat_str in zip(output_path_list, cat_str_list)
     for output_path_list, cat_str_list in zip(output_path_lists, cat_str_list)}]
@@ -159,14 +158,27 @@ cat_out_dictList\
 # Cut the provided files according to the catenation string object #
 #------------------------------------------------------------------#
 
+case_usage_options = ['single-single', 'single-multiple', 'multiple-multiple']
+
 case_usage_dict = {
-    "single-single" : "pdf_file_tweaker(path_str, cat_out_str)",
-    "single-multiple" : "pdf_file_tweaker(path_str, cat_out_dict)",
-    "multiple-multiple" : "pdf_file_tweaker(path_list, cat_out_dictList)"
+    case_usage_options[0] : 
+        lambda path_obj, cat_out_obj : pdf_file_tweaker(path_obj, cat_out_obj),
+    case_usage_options[1] : 
+        lambda path_obj, cat_out_obj : pdf_file_tweaker(path_obj, cat_out_obj),
+    case_usage_options[2] : 
+        lambda path_list, cat_out_obj : pdf_file_tweaker(path_list, cat_out_obj),
     }
 
-case_usage_options = list(case_usage_dict.keys())
 if case_usage not in case_usage_options:
-    raise ValueError("Wrong case usage. Options are: {case_usage_options}")
+    raise ValueError(f"Unsupported case usage, choose one from {case_usage_options}.")
 else:
-    eval(case_usage_dict.get(case_usage))
+    if case_usage == case_usage_options[0]:
+        path_obj = path_str
+        cat_out_obj = cat_out_str
+    elif case_usage == case_usage_options[1]:
+        path_obj = path_str
+        cat_out_obj = cat_out_dict
+    elif case_usage == case_usage_options[2]:
+        path_obj = path_list
+        cat_out_obj = cat_out_dict_list
+    case_usage_dict.get(path_obj, cat_out_obj)
