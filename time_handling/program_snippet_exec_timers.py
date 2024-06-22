@@ -16,6 +16,7 @@ import timeit
 
 from strings import information_output_formatters, string_handler
 from time_formatters import time_format_tweaker
+from utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -30,7 +31,7 @@ find_substring_index = string_handler.find_substring_index
 #------------------#
 
 # TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-
+# TODO: 'else' blokean switch case hiztegi bat garatu
 def program_exec_timer(mode, module="time", return_days=False):
     
     global ti
@@ -71,8 +72,8 @@ def snippet_exec_timer(snippet_str,
                        return_best_time=False):
         
     # Quality control #
-    arg_names = snippet_exec_timer.__code__.co_varnames
-    roundoff_arg_pos = find_substring_index(arg_names, "roundoff")
+    all_arg_names = get_caller_method_args()
+    roundoff_arg_pos = find_substring_index(all_arg_names, "roundoff")
     
     # Execution time in the specified number of trials with no repeats #
     if repeats is None:
@@ -87,7 +88,7 @@ def snippet_exec_timer(snippet_str,
         
         if roundoff is not None:
             if not isinstance(roundoff, int):
-                raise TypeError(format_string(type_error_str, '{arg_names[roundoff_arg_pos]}'))
+                raise TypeError(format_string(type_error_str, f'{all_arg_names[roundoff_arg_pos]}'))
             else:
                 exec_time_norep = np.round(exec_time_norep, roundoff)
         
@@ -111,7 +112,7 @@ def snippet_exec_timer(snippet_str,
         
         if roundoff is not None:
             if not isinstance(roundoff, int):
-                raise TypeError(format_string(type_error_str, '{arg_names[roundoff_arg_pos]}'))
+                raise TypeError(format_string(type_error_str, f'{all_arg_names[roundoff_arg_pos]}'))
             else:
                 exec_time_rep = np.round(exec_time_rep, roundoff)
                 time_unit_str = sec_time_unit_str
@@ -162,4 +163,4 @@ rep_exec_time_info_best_str = \
 
 # Error messages #
 type_error_str = """Argument '{}' must be of type 'int'."""
-wrong_module_choice_str = """Wrong module chosen. Options are {}."""
+wrong_module_choice_str = """Unsupported module option, choose one from {}."""
