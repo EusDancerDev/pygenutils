@@ -550,7 +550,7 @@ def strip(string, strip_option='strip', chars=None):
 obj_specs_keylist = ['parent', 'name', 'name_noext', 'name_noext_parts', 'ext']
 obj_specs_keylist_essential = obj_specs_keylist[2:]
 
-# Substring search availanble method list #
+# Substring search available method list #
 combined_case_search_method_list = ['default', 'numpy_basic', 'numpy_advanced']
 
 # Switch-type dictionaries #
