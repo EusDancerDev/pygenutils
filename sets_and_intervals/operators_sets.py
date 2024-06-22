@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.Zparameters_and_constants.global_parameters import operations_sets_list
+from pytools.parameters_and_constants.global_parameters import operations_sets_list
 from pytools.strings.string_handler import find_substring_index
 from pytools.utilities.introspection_utils import get_caller_method_args
 
@@ -21,19 +21,19 @@ def operations_with_sets(array_of_sets1,
     # Argument validations #
     #-#-#-#-#-#-#-#-#-#-#-#-
 
-    required_arg_names = get_caller_method_args()
-    operator_arg_pos = find_substring_index(required_arg_names, "operation")
-    constructor_arg_pos = find_substring_index(required_arg_names, "constructor")
+    all_arg_names = get_caller_method_args()
+    operator_arg_pos = find_substring_index(all_arg_names, "operation")
+    constructor_arg_pos = find_substring_index(all_arg_names, "constructor")
     
     if operator not in operations_sets_list:
         raise ValueError("Unsupported operator for mathematical sets, "
-                         f"argument '{required_arg_names[operator_arg_pos]}' option. "
+                         f"argument '{all_arg_names[operator_arg_pos]}' option. "
                          f"Supported options are {operations_sets_list}.")
         
         
     if constructor not in sets_contructor_options: 
         raise ValueError("Unsupported mathematical interval constructor library, "
-                         f"argument '{required_arg_names[constructor_arg_pos]}'. "
+                         f"argument '{all_arg_names[constructor_arg_pos]}'. "
                          f"Choose one from {sets_contructor_options}.")
         
     # Operations #
@@ -53,7 +53,7 @@ def operations_with_sets(array_of_sets1,
         # TODO: garatu 'sympy' motako multzoen kasua
         # from sympy import FiniteSet
         raise NotImplementedError("Please for now set argument "
-                                  f"'{required_arg_names[constructor_arg_pos]}' to "
+                                  f"'{all_arg_names[constructor_arg_pos]}' to "
                                   f"{sets_contructor_options[0]}.")
 
 #--------------------------#        
