@@ -14,7 +14,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_data_manipulation import select_array_elements
+from pytools.arrays_and_lists.array_data_manipulation import select_array_elements
 
 #------------------#
 # Define functions #
@@ -152,8 +152,8 @@ def calc_all_unique_pairs(array_like, method="python-default"):
             array = array.flatten()
     
     # Method #
-    if method not in return_pairs_options:
-        raise ValueError(f"Wrong method. Options are {return_pairs_options}")
+    if method not in return_pairs_method_list:
+        raise ValueError(f"Unsupported method. Choose one from {return_pairs_method_list}.")
     
     
     # Number pair computations #
@@ -271,7 +271,7 @@ def decompose_24h_cumulative_data(array, zeros_dtype='d'):
                               axis=0)
 
 #--------------------------#
-# Parameters and constants #
+# Parameters and constants #return_pairs_options
 #--------------------------#
 
 # Pair-combo calculation function #
@@ -281,9 +281,8 @@ def decompose_24h_cumulative_data(array, zeros_dtype='d'):
 return_pairs_method_list = ["python-default", "itertools-comb"]
 
 # Switch-type operation dictionary #
+# TODO: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
 return_pairs_opt_dict = {
-    "python-default" : "[(i,j) for i_aux,i in enumerate(array_like) for j in array[i_aux+1:]]",
-    "itertools-comb" : "list(it.combinations(array_like, 2))"
+    return_pairs_method_list[0] : "[(i,j) for i_aux,i in enumerate(array_like) for j in array[i_aux+1:]]",
+    return_pairs_method_list[1] : "list(it.combinations(array_like, 2))"
 }
-
-return_pairs_options = list(return_pairs_opt_dict.keys())
