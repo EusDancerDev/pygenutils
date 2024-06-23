@@ -3,8 +3,8 @@
 
 This program is an application of the main module 'database_handler',
 and it uses some of its attributes and/or functions.
-YOU MAY REDISTRIBUTE this program along with any other directory
-and adapt it to your needs.
+YOU MAY REDISTRIBUTE this program along any other directory,
+but keep in mind that the module is designed to work with absolute paths.
 
 Purpose
 -------
