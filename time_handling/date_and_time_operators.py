@@ -20,6 +20,7 @@ import pandas as pd
 from pandas_data_frames.data_frame_handler import find_date_key
 from strings import information_output_formatters, string_handler
 from time_handling.time_formatters import time_format_tweaker
+from utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -73,7 +74,7 @@ def get_current_datetime(dtype, time_fmt_str=None):
     """
     
     # Valid data type selection control #
-    arg_names = get_current_datetime.__code__.co_varnames    
+    all_arg_names = get_caller_method_args()
     if dtype not in current_time_type_options:
         arg_tuple_current_time = (dtype, current_time_type_options)
         raise ValueError(format_string(unsupported_option_str, arg_tuple_current_time))
@@ -82,11 +83,11 @@ def get_current_datetime(dtype, time_fmt_str=None):
     current_time = current_datetime_dict.get(dtype)
     
     # A string does not have .strftime attribute, warn accordingly #
-    fmt_str_arg_pos = find_substring_index(arg_names, "time_fmt_str")
+    fmt_str_arg_pos = find_substring_index(all_arg_names, "time_fmt_str")
     if (isinstance(current_time, str) and time_fmt_str is not None):
         raise ValueError("Current time is already a string. "
                          f"Choose another data type or "
-                         f"set {arg_names[fmt_str_arg_pos]} to None.")
+                         f"set {all_arg_names[fmt_str_arg_pos]} to None.")
     
     # Format the object based on 'time_fmt_str' variable, if provided #
     if time_fmt_str is not None:
@@ -127,10 +128,9 @@ def get_obj_operation_datetime(obj_list,
     AttributeError
         If attr is not one of the valid options ('creation', 'modification', 'access').
     """
-    # Validate the yype of time attribute #
-    attr_options = list(struct_time_attr_dict.keys())
-    arg_names = get_obj_operation_datetime.__code__.co_varnames
-    attr_arg_pos = find_substring_index(arg_names, "attr")
+    # Validate the type of time attribute #
+    all_arg_names = get_caller_method_args()
+    attr_arg_pos = find_substring_index(all_arg_names, "attr")
     
     if attr not in attr_options:
         arg_tuple_operation_datetime = (attr_arg_pos, attr_options)
@@ -201,9 +201,9 @@ def merge_datetime_dataframes(df1, df2,
     #-#-#-#-#-#-#-#-#-#-#-#-#
     
     # Get the main argument names and their position on the function's arg list #    
-    arg_names = merge_datetime_dataframes.__code__.co_varnames
-    df1_arg_pos = find_substring_index(arg_names, "df1")
-    df2_arg_pos = find_substring_index(arg_names, "df2")
+    all_arg_names = get_caller_method_args()
+    df1_arg_pos = find_substring_index(all_arg_names, "df1")
+    df2_arg_pos = find_substring_index(all_arg_names, "df2")
     
     # Convert Series to DataFrame if necessary and standardize the column name #
     if isinstance(df1, pd.Series):
@@ -219,7 +219,7 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_date_key(df1)
     except:
-        print_format_string(date_colname_not_found_err, arg_names[df1_arg_pos])
+        print_format_string(date_colname_not_found_err, all_arg_names[df1_arg_pos])
         
         df1_cols = list(df1.columns)
         df1_cols[0] = std_date_colname
@@ -229,7 +229,7 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_date_key(df2)
     except:
-        print_format_string(date_colname_not_found_err, arg_names[df2_arg_pos])
+        print_format_string(date_colname_not_found_err, all_arg_names[df2_arg_pos])
         
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
@@ -269,6 +269,7 @@ def merge_datetime_dataframes(df1, df2,
 # Option lists #
 dt_range_operators = ["inner", "outer", "cross", "left", "right"]
 current_time_type_options = ["datetime", "str", "timestamp"]
+attr_options = ["creation", "modification", "access"]
 
 # Preformatted strings #
 #----------------------#
@@ -277,17 +278,16 @@ current_time_type_options = ["datetime", "str", "timestamp"]
 unsupported_option_str = """Unsupported option '{}'. Options are {}."""
 attribute_error_str = "Wrong attribute option at position {}. Options are {}. "
 date_colname_not_found_err = """Standard time column name not found at object \
-f"'{arg_names[df1_arg_pos]}. 
-Setting default name 'Date' to column number 0."""
+f"'{all_arg_names[df1_arg_pos]}.\nSetting default name 'Date' to column number 0."""
 
 # Switch dictionaries #
 #---------------------#
 
 # Dictionary mapping attribute names to corresponding methods #
 struct_time_attr_dict = {
-    "creation": lambda obj: time.gmtime(os.path.getctime(obj)),
-    "modification": lambda obj: time.gmtime(os.path.getmtime(obj)),
-    "access": lambda obj: time.gmtime(os.path.getatime(obj))
+    attr_options[0]: lambda obj: time.gmtime(os.path.getctime(obj)),
+    attr_options[1]: lambda obj: time.gmtime(os.path.getmtime(obj)),
+    attr_options[2]: lambda obj: time.gmtime(os.path.getatime(obj))
 }
 
 # Dictionary mapping current time provider methods to the corresponding methods #
