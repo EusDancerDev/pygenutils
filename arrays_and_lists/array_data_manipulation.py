@@ -233,11 +233,12 @@ def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None):
     and last time access columns, but the mechanism remains exactly the same.
     """
     
-    sort_order_ops = ["ascending", "descending"]
-    
+    all_arg_names = get_caller_method_args()
+    sort_opt_pos = find_substring_index(all_arg_names, "sort_order")
     if sort_order not in sort_order_ops:
-        raise ValueError("Wrong sort order option. "
-                         f"Options are {sort_order_ops}.")
+        raise ValueError("Invalid sort order option. "
+                         f"(argument '{all_arg_names[sort_opt_pos]}'). \n"
+                         f"Choose one from {sort_order_ops}.")
     
     if sort_order == "ascending":
         try:
@@ -408,8 +409,8 @@ def insert_values(x, index, values, axis=None):
         return x_appended
         
     else:
-        raise TypeError("Wrong type of data. "
-                        "Data must either be a list or NumPy array.")
+        input_obj_type = get_obj_type_str(x)
+        raise TypeError(f"Expected a list or NumPy array, got {input_obj_type}.")
         
         
 def extend_array(obj, obj2extend, np_axis=None):
@@ -1045,6 +1046,9 @@ modules_adaptation = ["numpy", "pandas"]
 
 # Character delimiter #
 local_delim = common_delim_list[6]
+
+# Sorting options #
+sort_order_ops = ["ascending", "descending"]
 
 # Switch case dictionaries #
 #--------------------------#
