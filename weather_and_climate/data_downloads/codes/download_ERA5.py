@@ -37,7 +37,7 @@ def return_file_extension(file_format):
     extension_idx = find_substring_index(available_formats, file_format)
     
     if extension_idx == -1:
-        raise ValueError(f"Wrong file format. Options are '{available_formats}'.")
+        raise ValueError(f"Unsupported file format. Choose from '{available_formats}'.")
     else:
         extension = available_extensions[extension_idx]
         return extension
@@ -144,8 +144,8 @@ variable_kw = "variable"
 
 format_kw = "format"
 
-available_formats = ["grib", "netcdf.zip", "netcdf"]
-available_extensions = ["grib", "netcdf.zip", "nc"]
+available_formats = ["grib", "netcdf_zip", "netcdf"]
+available_extensions = ["grib", "netcdf_zip", "nc"]
 
 #--------------------#
 # Initialize program #
