@@ -4,7 +4,7 @@
 # TODO: eraiki txantiloia, databases/upload_data_to_mysql_database.py moduluan bezalatsu
 
 """
-This program is an application of the main module netcdf_handler.py
+This program is an application of the main module 'netcdf_handler'
 Simply copy this script to the desired directory.
 """
 

@@ -3,7 +3,7 @@
 """
 **Note**
 
-This program is an application of the main module 'audio_and_video.py',
+This program is an application of the main module 'audio_and_video',
 and it uses the 'merge_audio_and_video_files' attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
