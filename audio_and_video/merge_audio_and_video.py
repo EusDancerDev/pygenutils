@@ -5,8 +5,8 @@
 
 This program is an application of the main module 'audio_and_video.py',
 and it uses the 'merge_audio_and_video_files' attributes and/or functions.
-PLEASE DO NOT REDISTRIBUTE this program along any other directory,
-as the module is designed to work with absolute paths.
+YOU MAY REDISTRIBUTE this program along any other directory,
+but keep in mind that the module is designed to work with relative paths.
 """
 
 #-----------------------#
