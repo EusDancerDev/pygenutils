@@ -26,7 +26,7 @@ def operations_with_sets(array_of_sets1,
     constructor_arg_pos = find_substring_index(all_arg_names, "constructor")
     
     if operator not in operations_sets_list:
-        raise ValueError("Unsupported operator for mathematical sets, "
+        raise ValueError("Invalid operator for mathematical sets, "
                          f"argument '{all_arg_names[operator_arg_pos]}' option. "
                          f"Supported options are {operations_sets_list}.")
         
