@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -14,11 +14,12 @@ import xarray as xr
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from pandas_data_frames.data_frame_handler import save2csv
-from parameters_and_constants.global_parameters import common_delim_list
-from operative_systems.os_operations import exec_shell_command
-from string_handler import information_output_formatters, string_handler
+from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pytools.pandas_data_frames.data_frame_handler import save2csv
+from pytools.parameters_and_constants.global_parameters import common_delim_list
+from pytools.operative_systems.os_operations import exec_shell_command
+from pytools.string_handler import information_output_formatters, string_handler
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -61,7 +62,7 @@ def netcdf_file_scanner(path_to_walk_into,
                         create_report=False):
 
     # Proper argument selection control #
-    arg_names = netcdf_file_scanner.__code__.co_varnames
+    arg_names = get_caller_method_args()
     verb_arg_pos = find_substring_index(arg_names, "verbose")
     xverb_arg_pos = find_substring_index(arg_names, "extra_verbose")
     
@@ -218,7 +219,7 @@ def save_xarray_dataset_as_netcdf(xarray_ds,
     print(f"{file_name} has been successfully created")
     
     
-def netcdf_regridder(ds_in, ds_image, method="bilinear"):
+def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):
     
     
     import xesmf as xe
@@ -234,7 +235,7 @@ def netcdf_regridder(ds_in, ds_image, method="bilinear"):
         Input xarray data set
     ds_image : xarray.Dataset
         Xarray data set with grid specifications to which apply on ds_in.
-    method : {'bilinear', 'conservative', 'nearest_s2d', 'nearest_d2s', 'patch'}
+    regrid_method : {'bilinear', 'conservative', 'nearest_s2d', 'nearest_d2s', 'patch'}
         Regridding method. Defaults 'bilinear'.
     
     Returns
@@ -243,12 +244,12 @@ def netcdf_regridder(ds_in, ds_image, method="bilinear"):
         Output data set regridded according to the grid specs of ds_in.
     """
     
-    if method not in method_list:
-        raise ValueError("Wrong regridding method.\n"
-                         f"Options are {method_list}.")
+    if regrid_method not in regrid_method_list:
+        raise ValueError("Invalid regridding method.\n"
+                         f"Choose one from {regrid_method_list}.")
         
     else:
-        regridder = xe.Regridder(ds_in, ds_image, method)
+        regridder = xe.Regridder(ds_in, ds_image, regrid_method)
         ds_out = regridder(ds_in)
         return ds_out
     
@@ -1107,7 +1108,7 @@ def get_file_dimensions(nc_file):
             return dimlist_nodim
     
     else:
-        return TypeError("Cannot handle data file, wrong type of data file.")
+        return TypeError("Unsupported data file type.")
 
 
 def get_file_variables(nc_file):
@@ -1165,7 +1166,7 @@ def get_file_variables(nc_file):
             return varlist_nodim
     
     else:
-        return TypeError("Cannot handle data file, wrong type of data file.")
+        return TypeError("Unsupported data file type.")
 
 
 def get_latlon_bounds(netcdf_file,
@@ -1303,7 +1304,7 @@ splitdelim = common_delim_list[0]
 regex_grib2nc = r"^[a-zA-Z0-9\._-]$"
 
 # Regridding method options #
-method_list = [
+regrid_method_list = [
     "bilinear",
     "conservative",
     "conservative_normed",
