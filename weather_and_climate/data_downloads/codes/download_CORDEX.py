@@ -10,11 +10,11 @@ Created on Fri Nov  3 21:19:13 2023
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_data_manipulation import select_from_array_element
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from strings.string_handler import find_substring_index, substring_replacer
-from time_handling.program_snippet_exec_timers import program_exec_timer
-from weather_and_climate import cds_tools, netcdf_handler
+from pytools.arrays_and_lists.array_data_manipulation import select_from_array_element
+from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pytools.strings.string_handler import find_substring_index, substring_replacer
+from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
+from pytools.weather_and_climate import cds_tools, netcdf_handler
 
 # Create aliases #
 #----------------#
@@ -34,40 +34,34 @@ netcdf_file_scanner = netcdf_handler.netcdf_file_scanner
 
 def check_correct_domain(domain):
     if domain not in available_domains:
-        raise ValueError(f"Wrong product. Options are '{available_domains}'.")
+        raise ValueError("Unsupported product. "
+                         f"Choose one from '{available_domains}'.")
    
         
-def return_rcp_std(rcp):
-    
-    try:
-        rcp_num = eval(rcp)            
-    except:            
-        if rcp not in available_rcps:
-            raise ValueError(f"Wrong RCP scenario. Options are '{available_rcps}'.")
-        else:
-            return rcp
+def return_rcp_std(rcp):        
+    if rcp not in available_rcps:
+        raise ValueError("Unsupported RCP scenario. "
+                         f"Choose one from '{available_rcps}'.")
         
     else:
-        if not (isinstance(rcp_num, (float, str))):
-            raise ValueError(f"Wrong RCP scenario. Options are '{available_rcps}'.")
+        rcp_mod = substring_replacer(rcp, char_split_delim1, char_split_delim2)  
+        rcp_std = f"rcp_{rcp_mod}"
+        
+        if rcp_std not in available_rcps:
+            raise ValueError("Unsupported RCP scenario. "
+                             f"Choose one from '{available_rcps}'.")
         else:
-            rcp_mod = substring_replacer(rcp, char_split_delim1, char_split_delim2)  
-            rcp_std = f"rcp_{rcp_mod}"
-            
-            if rcp_std not in available_rcps:
-                raise ValueError(f"Wrong RCP scenario. Options are '{available_rcps}'.")
-            else:
-                return rcp_std
+            return rcp_std
         
         
 def check_correct_gcm(gcm):
     if gcm not in available_gcms:
-        raise ValueError(f"Wrong GCM. Options are '{available_gcms}'.")
+        raise ValueError(f"Unsupported GCM. Choose one from '{available_gcms}'.")
         
         
 def check_correct_rcm(rcm):
     if rcm not in available_rcms:
-        raise ValueError(f"Wrong rcm. Options are '{available_rcms}'.")
+        raise ValueError(f"Unsupported rcm. Choose one from '{available_rcms}'.")
         
     
 def return_rcp_period(rcp):
@@ -85,7 +79,8 @@ def return_file_extension(file_format):
     extension_idx = find_substring_index(available_formats, file_format)
     
     if extension_idx == -1:
-        raise ValueError(f"Wrong file format. Options are '{available_formats}'.")
+        raise ValueError("Unsupported file format. "
+                         f"Choose one from '{available_formats}'.")
     else:
         extension = available_extensions[extension_idx]
         return extension
@@ -93,7 +88,8 @@ def return_file_extension(file_format):
 
 def return_horizontal_std_resolution(h_resolution):
     if h_resolution not in available_h_resolutions:
-        raise ValueError(f"Wrong horizontal resolution. Options are {available_h_resolutions}")
+        raise ValueError("Unsupported horizontal resolution. "
+                         f"Choose one from {available_h_resolutions}")
     else:
         h_resolution1 = substring_replacer(h_resolution,
                                            char_split_delim1,
@@ -105,7 +101,8 @@ def return_horizontal_std_resolution(h_resolution):
     
 def check_correct_temporal_resolution(t_resolution):    
     if t_resolution not in available_t_resolutions:
-        raise ValueError(f"Wrong temporal resolution. Options are {available_t_resolutions}")    
+        raise ValueError("Unsupported temporal resolution. "
+                         f"Choose one from {available_t_resolutions}")    
            
 #---------------------#
 # Variable parameters #
