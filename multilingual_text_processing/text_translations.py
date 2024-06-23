@@ -7,6 +7,7 @@
 
 from pytools.operative_systems.os_operations import catch_shell_prompt_output
 from pytools.strings import string_handler, information_output_formatters
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Define aliases #
 #----------------#
@@ -46,11 +47,12 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
     # Proper argument selection control #
     #-----------------------------------#
     
-    arg_names = translate_string.__code__.co_varnames
-    meth_list_arg_pos = find_substring_index(arg_names, "action_list")
+    all_arg_names = get_caller_method_args()
+    meth_list_arg_pos = find_substring_index(all_arg_names, "action_list")
     
     if action not in action_list:
-        raise ValueError(f"Invalid processing action, argument '{arg_names[meth_list_arg_pos]}'. "
+        raise ValueError("Invalid processing action "
+                         f"(argument '{all_arg_names[meth_list_arg_pos]}').\n"
                          f"Options are {action_list}.")
         
     
@@ -320,13 +322,48 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
             
             
 def attribute_printer(generator, output_info_str, attr_list):
+    """
+    Iterates over a generator or list of objects, retrieves specified attributes,
+    and prints formatted output information using a provided format string.
+
+    Parameters
+    ----------
+    generator : object or list of objects
+        A single object or a list of objects from which attributes will be retrieved.
+
+    output_info_str : str
+        A format string specifying how to format and print the output information.
+
+    attr_list : list of str
+        A list of attribute names to retrieve from each object in the generator or list.
+
+    Raises
+    ------
+    TypeError
+        If the generator is not a list and is not an object.
+
+    Notes
+    -----
+    - If `generator` is a list, iterates over each object `obj` in the list and retrieves
+      the attributes specified in `attr_list`. Each attribute value is then formatted
+      using `print_format_string` and printed according to `output_info_str`.
+
+    - If `generator` is a single object, retrieves the attributes specified in `attr_list`
+      from that object. Each attribute value is formatted using `print_format_string` and
+      printed according to `output_info_str`.
+
+    - Uses `getattr` to dynamically retrieve attributes from objects.
+
+    - Uses `print_format_string` to format and print the output information.
+
+    """
     if isinstance(generator, list):
         for obj in generator:            
-            arg_list = [eval(f"obj.{attr}") for attr in attr_list]
+            arg_list = [getattr(obj.attr)() for attr in attr_list]
             print_format_string(output_info_str, arg_list)
             
     else:
-        arg_list = [eval(f"generator.{attr}") for attr in attr_list]
+        arg_list = [getattr(generator.attr)() for attr in attr_list]
         print_format_string(output_info_str, arg_list)
                 
 
