@@ -93,7 +93,7 @@ def merge_independent_rasters(raster_files_dict,
             fpnp_changes_tuple = (file_path_name_parts[-2], joint_region_name)
 
             """It is assumed that every file follows
-            the standard name described at module cdo_tools.py
+            the standard name described at module 'cdo_tools'
             """
             
             output_file_name = modify_obj_specs(raster_file_list[0],
