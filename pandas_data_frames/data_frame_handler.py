@@ -19,9 +19,9 @@ import pandas as pd
 from pytools.arrays_and_lists.array_data_manipulation import find_duplicated_elements
 from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pytools.parameters_and_constants import global_parameters
-from pytools.strings.string_handler import aux_ext_adder, find_substring_index
+from pytools.strings.string_handler import aux_ext_adder, find_substring_index, get_obj_specs
 from pytools.strings.information_output_formatters import format_string, get_obj_type_str
-from pytools.utilities.introspection_utils import get_obj_specs
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -117,7 +117,7 @@ def find_date_key(df):
         df_cols = np.char.lower(df.columns.tolist())    
     except AttributeError:
         input_obj_type = get_obj_type_str(df)
-        raise TypeError(f"Expected a pandas.DataFrame object, got {input_obj_type}")
+        raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
     else:
         try:
             date_key_idx = find_substring_index(df_cols, time_kws)
@@ -543,7 +543,7 @@ def excel_handler(file_path,
                   header=None,
                   engine=None,
                   decimal='.', 
-                  return_type='dict'):
+                  return_obj_type='dict'):
     
     """
     Reads an Excel file and processes its sheets either into a 
@@ -565,7 +565,7 @@ def excel_handler(file_path,
         appropriate engine for the file type.
     decimal : str, default '.'
         Character to recognize as decimal point (e.g., ',' in Europe).
-    return_type : str, default 'dict'
+    return_obj_type : str, default 'dict'
         Type of output to return. Must be either 'dict' to return a dictionary
         of DataFrames, or 'df' to return a single merged DataFrame.
 
@@ -589,9 +589,9 @@ def excel_handler(file_path,
     """
     
     # Validate the return type argument #
-    if return_type not in ['dict', 'df']:        
-        raise TypeError("Invalid return type. "
-                        f"Options are {excel_handling_return_options}.")
+    if return_obj_type not in excel_handling_return_options:        
+        raise TypeError("Invalid type of the object to return. "
+                        f"Choose one from {excel_handling_return_options}.")
 
     else:
         sheetname_and_data_dict = pd.read_excel(file_path,
@@ -600,7 +600,7 @@ def excel_handler(file_path,
                                                 engine=engine,
                                                 decimal=decimal)
     
-        if return_type == 'dict':
+        if return_obj_type == 'dict':
             polished_sheetname_and_val_dict = {}
             for sheet_name, sheet_df in sheetname_and_data_dict.items():
                 df_polished_colnames = polish_df_column_names(sheet_name, sheet_df)
@@ -608,7 +608,7 @@ def excel_handler(file_path,
                 polished_sheetname_and_val_dict.update(indiv_polished_dict)
             return polished_sheetname_and_val_dict
     
-        elif return_type == 'df':
+        elif return_obj_type == 'df':
             all_value_df = pd.DataFrame()
             for sheet_name, sheet_df in sheetname_and_data_dict.items():
                 df_polished_colnames = polish_df_column_names(sheet_name, sheet_df)
@@ -757,7 +757,7 @@ def save2excel(file_path,
             return 0
         
     else:
-        raise ValueError("Wrong type of frame. "
+        raise ValueError("Unsupported type of frame. "
                          "It must either be of type 'dict' or 'pandas.DataFrame'.")
         
 
@@ -955,7 +955,7 @@ def save2csv(file_path,
     Raises
     ------
     TypeError
-        If 'data_frame' is not of type 'pd.DataFrame'.
+        If 'data_frame' is not of type 'pandas.DataFrame'.
 
     Notes
     -----
@@ -1070,7 +1070,8 @@ def save2csv(file_path,
                 return 0
             
     else:        
-        raise TypeError("Wrong type of data. It must be of type 'pd.DataFrame'.")
+        input_obj_type = get_obj_type_str(data_frame)
+        raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
         
         
     
@@ -1295,13 +1296,13 @@ def merge_csv_files(input_file_list,
     #-----------------------------------#
     
     # Data merging #
-    arg_names = merge_csv_files.__code__.co_varnames
-    kdis_arg_pos = find_substring_index(arg_names, "keep_data_in_sections")
-    osd_arg_pos = find_substring_index(arg_names, "out_single_DataFrame")
+    all_arg_names = get_caller_method_args()
+    kdis_arg_pos = find_substring_index(all_arg_names, "keep_data_in_sections")
+    osd_arg_pos = find_substring_index(all_arg_names, "out_single_DataFrame")
     
     if out_single_DataFrame and keep_data_in_sections:
-        raise ValueError(f"Arguments '{arg_names[kdis_arg_pos]}' and "
-                         f"'{arg_names[osd_arg_pos]}' cannot be True at the same time. "
+        raise ValueError(f"Arguments '{all_arg_names[kdis_arg_pos]}' and "
+                         f"'{all_arg_names[osd_arg_pos]}' cannot be True at the same time. "
                          "Set one of them True and False the other one.")
     
     # Correct number of input files #
@@ -1630,6 +1631,11 @@ already exists.\nDo you want to overwrite it? (y/n) """
 overwrite_prompt_warning = "\nPlease select 'y' for 'yes' or 'n' for 'no': "
 below_minimum_file_warning = """At least 2 files must be given \
 in order to perform the merge."""
+
+# Error strings #
+#---------------#
+
+unsupported_obj_type_err_str = "Expected a pandas.DataFrame object, got {}"
 
 # Argument choice options #
 #-------------------------#
