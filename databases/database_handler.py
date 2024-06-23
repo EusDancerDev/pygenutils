@@ -79,7 +79,8 @@ def create_engine_with_credentials(config, database_type="mysql"):
     # Proper database type argument control #
     database_type_list = list(db_alias_dict.keys())
     if database_type not in database_type_list:
-        raise ValueError(f"Wrong database type. Options are {database_type_list}")
+        raise ValueError(f"Unsupported database type. "
+                         f"Choose one from {database_type_list}")
     
     # URL-encode the password #
     password = quote_plus(config.get('password'))
