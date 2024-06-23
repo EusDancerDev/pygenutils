@@ -1,15 +1,15 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories.file_and_directory_handler import rename_objects
-from os_operations import exec_shell_command
-from parameters_and_constants import global_parameters
-from strings import information_output_formatters, string_handler
-from weather_and_climate import netcdf_handler 
+from pytools.files_and_directories.file_and_directory_handler import rename_objects
+from pytools.os_operations import exec_shell_command
+from pytools.parameters_and_constants import global_parameters
+from pytools.strings import information_output_formatters, string_handler
+from pytools.weather_and_climate import netcdf_handler 
 
 # Create aliases #
 #----------------#
@@ -381,7 +381,7 @@ def cdo_remap(file_list,
     
     if remap_method not in cdo_remap_options:
         arg_tuple_remap = ("remapping option", cdo_remap_options)
-        raise ValueError(choice_error_str, arg_tuple_remap)
+        raise ValueError(unsupported_option_error_str, arg_tuple_remap)
          
     else:
         remap_method_cdo = cdo_remap_option_dict.get(remap_method_str)
@@ -455,14 +455,14 @@ def cdo_periodic_statistics(nc_file_name, statistic, isclimatic, freq, season_st
     
     # Quality control #
     if statistic not in statistics:
-        raise ValueError(format_string(choice_error_str, statistics))
+        raise ValueError(format_string(unsupported_option_error_str, statistics))
         
     # Identify the abbreviature for the selected time frequency #
     period_abbr_idx = find_substring_index(time_freqs, freq)
   
     if period_abbr_idx == -1:
         arg_tuple_period_stats = ("time-frequency", time_freqs)
-        raise ValueError(choice_error_str, arg_tuple_period_stats)
+        raise ValueError(unsupported_option_error_str, arg_tuple_period_stats)
     else:
         period_abbr = freq_abbrs[period_abbr_idx]
         
@@ -518,7 +518,7 @@ def calculate_periodic_deltas(projected_ncfile,
                          "for projections.")
 
     if period_abbr_idx == -1:
-        raise ValueError(format_string(choice_error_str, arg_tuple_delta1))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta1))
     else:
         period_abbr = freq_abbrs_delta[period_abbr_idx]
     
@@ -529,7 +529,7 @@ def calculate_periodic_deltas(projected_ncfile,
     delta_calc_filename_longer = add_str_to_aux_path(delta_calc_filename, string2add)
     
     if operator not in basic_four_rules:
-        raise ValueError(format_string(choice_error_str, arg_tuple_delta2))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta2))
     else:  
         cdo_operator_str = cdo_operator_str_dict.get(operator)
         arg_tuple_delta_calc = (cdo_operator_str,
@@ -561,7 +561,7 @@ def apply_periodic_deltas(projected_ncfile,
 
     if period_abbr_idx == -1:
         arg_tuple_periodic_delta1 = ("time-frequency", time_freqs_delta)
-        raise ValueError(format_string(choice_error_str, arg_tuple_periodic_delta1))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_periodic_delta1))
     else:
         period_abbr = freq_abbrs_delta[period_abbr_idx]
         
@@ -572,7 +572,7 @@ def apply_periodic_deltas(projected_ncfile,
     
     if operator not in basic_four_rules:
         arg_tuple_periodic_delta2 = ("basic operator", basic_four_rules)
-        raise ValueError(format_string(choice_error_str, arg_tuple_periodic_delta2))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_periodic_delta2))
     else:   
         cdo_operator_str = cdo_operator_str_dict.get(operator)
         arg_tuple_delta_apply = (period_abbr, cdo_operator_str,
@@ -617,19 +617,19 @@ statistics = ["max", "min", "sum",
   
 # CDO remapping options #
 cdo_remap_option_dict = {
-    'ordinary' : 'remap',
-    'bilinear' : 'remapbil',
-    'nearest_neighbour' : 'remapnn',
-    'bicubic' : 'remapbic',
-    'conservative1' : 'remapcon',
-    'conservative2' : 'remapcon2',
-    'conservative1_y' : 'remapycon',
-    'distance_weighted_average' : 'remapdis',
-    'vertical_hybrid' : 'remapeta',
-    'vertical_hybrid_sigma' : 'remapeta_s',
-    'vertical_hybrid_z' : 'remapeta_z',
-    'largest_area_fraction' : 'remaplaf',
-    'sum' : 'remapsum',
+    "ordinary" : "remap",
+    "bilinear" : "remapbil",
+    "nearest_neighbour" : "remapnn",
+    "bicubic" : "remapbic",
+    "conservative1" : "remapcon",
+    "conservative2" : "remapcon2",
+    "conservative1_y" : "remapycon",
+    "distance_weighted_average" : "remapdis",
+    "vertical_hybrid" : "remapeta",
+    "vertical_hybrid_sigma" : "remapeta_s",
+    "vertical_hybrid_z" : "remapeta_z",
+    "largest_area_fraction" : "remaplaf",
+    "sum" : "remapsum",
     }
 
 cdo_remap_options = list(cdo_remap_option_dict.keys())
@@ -646,7 +646,7 @@ cdo_operator_str_dict = {
 # Preformatted strings #
 #----------------------#
 
-choice_error_str = "Wrong {}. Options are {}."
+unsupported_option_error_str = "Unsupported {}. Options are {}."
 
 cdo_operator_syntax = """cdo {} {} {} {}"""
 cdo_delta_syntax = """cdo y{}{} {} {} {}"""
