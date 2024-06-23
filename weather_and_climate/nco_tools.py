@@ -45,7 +45,7 @@ def modify_variable_units_and_values(file_list,
         exec_shell_command(var_chunit_command)
         
         if operator not in basic_four_rules:
-            raise ValueError(wrong_operator_errtext)
+            raise ValueError(invalid_operator_errtext)
         else:            
             # Print progress information #
             operator_gerund = operator_gerund_dict.get(operator)
@@ -88,10 +88,10 @@ def modify_coordinate_values_by_threshold(file_list,
         isactuallyfloat_int = int(isactuallyfloat)
         
         if operator not in basic_four_rules:
-            raise ValueError(wrong_operator_errtext)
+            raise ValueError(invalid_operator_errtext)
         else:
             if threshold_mode not in threshold_mode_opts:
-                raise ValueError(format_string(prefmt_wrong_threshold_mode,
+                raise ValueError(format_string(prefmt_invalid_threshold_mode,
                                                threshold_mode_opts))
             
             else:
@@ -140,10 +140,10 @@ def modify_coordinate_all_values(file_list,
         isactuallyfloat_int = int(isactuallyfloat)
         
         if operator not in basic_four_rules:
-            raise ValueError(wrong_operator_errtext)
+            raise ValueError(invalid_operator_errtext)
         else:
             if threshold_mode not in threshold_mode_opts:
-                raise ValueError(format_string(prefmt_wrong_threshold_mode,
+                raise ValueError(format_string(prefmt_invalid_threshold_mode,
                                                threshold_mode_opts))
             
             else:
@@ -230,10 +230,10 @@ prefmt_str_multvalue_where_min_float = """{} 'where({}>{}) {}={}*{}.0f' '{}' '{}
 prefmt_str_divvalue_where_min_float = """{} 'where({}>{}) {}={}/{}.0f' '{}' '{}'"""
 
 # Error messages #
-wrong_operator_errtext = \
-f"Wrong basic operator chosen. Options are {basic_four_rules}."
-prefmt_wrong_threshold_mode = \
-"""Wrong threshold mode. Options are {}."""
+invalid_operator_errtext = \
+f"Invalid basic operator chosen. Options are {basic_four_rules}."
+prefmt_invalid_threshold_mode = \
+"""Invalid threshold mode. Options are {}."""
 
 
 # Locally available threshold mode list #
