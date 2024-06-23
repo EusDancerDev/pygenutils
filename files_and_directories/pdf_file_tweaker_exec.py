@@ -14,7 +14,7 @@ and adapt it to your needs.
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories.file_format_tweaker import pdf_file_tweaker
+from pytools.files_and_directories.file_format_tweaker import pdf_file_tweaker
 
 #-------------------#
 # Define parameters #
