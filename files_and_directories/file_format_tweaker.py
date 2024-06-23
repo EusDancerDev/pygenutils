@@ -8,10 +8,11 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from parameters_and_constants.global_parameters import common_delim_list
-import operative_systems.os_operations as os_module_operations
-from strings import string_handler, information_output_formatters
+from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pytools.parameters_and_constants.global_parameters import common_delim_list
+import pytools.operative_systems.os_operations as os_module_operations
+from pytools.strings import string_handler, information_output_formatters
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -173,7 +174,7 @@ def pdf_file_tweaker(path, cat_out_obj):
     in order to have a unique function placed in a module with a fixed path.
     """
     
-    arg_names = pdf_file_tweaker.__code__.co_varnames
+    all_arg_names = get_caller_method_args()
     splitdelim = common_delim_list[2]
     
     if isinstance(path, str) and isinstance(cat_out_obj, str):
@@ -207,7 +208,7 @@ def pdf_file_tweaker(path, cat_out_obj):
                 tweak_pages(p, cat_str, output_path)            
         
     else:
-        arg_tuple_pdftweaker = (arg_names[0], arg_names[1])
+        arg_tuple_pdftweaker = (all_arg_names[0], all_arg_names[1])
         raise TypeError(format_string(type_error_str_complete_1, arg_tuple_pdftweaker))
 
 
@@ -269,12 +270,12 @@ def pdf_file_compressor(in_path, out_path=None):
     placed in a module with a fixed path.
     """
     
-    arg_names = pdf_file_compressor.__code__.co_varnames
+    all_arg_names = get_caller_method_args()
           
     if not ((isinstance(in_path, str) and (isinstance(out_path, str) or out_path is None))\
         or (isinstance(in_path, list) and isinstance(out_path, list))):
         
-        arg_tuple_pdfcompress = (arg_names[0], arg_names[1])
+        arg_tuple_pdfcompress = (all_arg_names[0], all_arg_names[1])
         raise TypeError(format_string(type_error_str_complete_2, arg_tuple_pdfcompress))
         
     else:
