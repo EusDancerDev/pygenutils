@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+# TODO: eraiki txantiloia, databases/upload_data_to_mysql_database.py moduluan bezalatsu
+
 """
 This program is an application of the main module netcdf_handler.py
 Simply copy this script to the desired directory.
