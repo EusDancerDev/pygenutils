@@ -7,7 +7,7 @@
 This program is an application of the main module 'file_format_tweaker.py',
 and it uses the 'pdf_file_compressor' attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
-but keep in mind that the module is designed to work with relative paths.
+but keep in mind that the module is designed to work with absolute paths.
 
 It is reccommended to firsly run this first cell, and then one of the 
 following cells, instead of running the whole program.
