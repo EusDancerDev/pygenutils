@@ -4,10 +4,10 @@
 """
 **Note**
 
-This program is an application of the main module 'file_format_tweaker.py',
+This program is an application of the main module 'file_format_tweaker',
 and it uses the 'pdf_file_tweaker' attributes and/or functions.
-PLEASE DO NOT REDISTRIBUTE this program along any other directory,
-as the module is designed to work with absolute paths.
+YOU MAY REDISTRIBUTE this program along with any other directory
+and adapt it to your needs.
 """
 
 #-----------------------#
@@ -40,8 +40,6 @@ according to that character.
 The space aroun the semicolon is not necessary and
 serves only as a description.
 
-This case is abbreviated later as 'single-single'.
-
 2. The path is a string, and the catenation object is a dictionary
 ------------------------------------------------------------------
 
@@ -55,8 +53,6 @@ input_path --> type string --> it corresponds this object:
  output_path_2 : cat_str_2,
              (...)        ,
  output_path_n : cat_str_n}
-
-This case is abbreviated later as 'single-multiple'.
 
 3. Both the path and catenation object are lists
 ------------------------------------------------
@@ -80,26 +76,33 @@ input_path_n --> type string --> it corresponds this object:
                (...)        ,
  output_path_n+m : cat_str_n+m}
 
-This case is abbreviated later as 'multiple-multiple'.
+
+In order to maintain the required variable names to use the 'pdf_file_tweaker'
+method, instead of centralizing under a generic name,
+the program is splitted into three blocks, each for a case usage,
+where at the end of it the method is implemented.
+
+It is reccommended to firsly run this first cell, and then one of the 
+following cells, instead of running the whole program.
 """
 
-# Case usage switch #
-case_usage = "single-single"
-
+#%%
 # 1st case usage #
 #----------------#
 
-# Select case_usage = 'single-single'
 path_str = "/home/jonander/Documents/apunteak.pdf"
 output_path_str = "/home/jonander/Documents/tweaked.pdf"
 cat_str = "1-2 8"
 
 cat_out_str = f"{cat_str}; {output_path_str}"
 
+# For readability purposes, place the method here,
+# alongside with the case usage parameters 
+pdf_file_tweaker(path_str, cat_out_str)
+
+#%%
 # 2nd case usage #
 #----------------#
-
-# Select case_usage = 'single-multiple'
 
 path_str = "/home/jonander/Documents/sample_1.pdf"
 
@@ -116,10 +119,13 @@ cat_str_list = ["1-25 34-end",
 cat_out_dict = {out_path : cat_str 
                 for out_path, cat_str in zip(output_path_list, cat_str_list)}
 
+# For readability purposes, place the method here,
+# alongside with the case usage parameters 
+pdf_file_tweaker(path_str, cat_out_dict)
+
+#%%
 # 3rd case usage #
 #----------------#
-
-# Select case_usage = 'multiple-multiple'
 
 path_list = ["/home/jonander/Documents/sample_1.pdf",
              "Hizkuntzak/sample_2.pdf"]
@@ -154,33 +160,6 @@ cat_out_dict_list\
     for out_path, cat_str in zip(output_path_list, cat_str_list)
     for output_path_list, cat_str_list in zip(output_path_lists, cat_str_list)}]
 
-#------------------------------------------------------------------#
-# Cut the provided files according to the catenation string object #
-#------------------------------------------------------------------#
-
-case_usage_options = ["single-single", "single-multiple", "multiple-multiple"]
-
-# FIXME: atondu ondoko switch case hiztegia parametro guztiak ez egokitzeko moduan
-
-case_usage_dict = {
-    case_usage_options[0] : 
-        lambda path_obj, cat_out_obj : pdf_file_tweaker(path_obj, cat_out_obj),
-    case_usage_options[1] : 
-        lambda path_obj, cat_out_obj : pdf_file_tweaker(path_obj, cat_out_obj),
-    case_usage_options[2] : 
-        lambda path_list, cat_out_obj : pdf_file_tweaker(path_list, cat_out_obj),
-    }
-
-if case_usage not in case_usage_options:
-    raise ValueError(f"Unsupported case usage, choose one from {case_usage_options}.")
-else:
-    if case_usage == case_usage_options[0]:
-        path_obj = path_str
-        cat_out_obj = cat_out_str
-    elif case_usage == case_usage_options[1]:
-        path_obj = path_str
-        cat_out_obj = cat_out_dict
-    elif case_usage == case_usage_options[2]:
-        path_obj = path_list
-        cat_out_obj = cat_out_dict_list
-    case_usage_dict.get(path_obj, cat_out_obj)
+# For readability purposes, place the method here,
+# alongside with the case usage parameters 
+pdf_file_tweaker(path_list, cat_out_dict_list)
