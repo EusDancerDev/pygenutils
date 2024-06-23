@@ -37,19 +37,12 @@ def get_current_path():
     return cwd
 
 
-def get_obj_list(main_posix_path, obj_type):
-    
-    switch_dict = {
-        "file" : """[file.name for file in main_posix_path.iterdir() if file.is_file()]""",
-        "directory" : """[dirc.name for dirc in main_posix_path.iterdir() if dirc.is_dir()]"""
-        }
-    
-    keys = list(switch_dict.keys())
-    
-    if obj_type not in keys:
-        raise ValueError(f"You must choose between these options: {keys} ")
+def get_obj_list(main_posix_path, obj_type):    
+    if obj_type not in obj_type_list:
+        raise ValueError("You must choose between these object type options: "
+                         f"{obj_type_list}.")
     else:
-        obj_list = eval(switch_dict.get(obj_type))
+        obj_list = object_listing_dict.get(obj_type)(main_posix_path)
         obj_list.sort()
         return obj_list
      
@@ -60,6 +53,9 @@ def print_format_string(strin2format, arg_list):
 #-------------------#
 # Define parameters #
 #-------------------#
+
+# Path objects #
+#--------------#
 
 # Define the main path #
 main_path = "/home/jonander/Pictures/2022"
@@ -77,6 +73,21 @@ rename_progress_info_str = """Current directory : {}
 File or directory list : {}
 Length of the list : {}
 """
+
+# Switch case dictionaries #
+#--------------------------#
+
+# List of objects in a path or list of them #
+obj_type_list = ["file" ,"directory"]
+
+object_listing_dict = {
+    obj_type_list[0] : lambda main_posix_path : [file.name
+                                                 for file in main_posix_path.iterdir() 
+                                                 if file.is_file()],
+    obj_type_list[1] : lambda main_posix_path : [dirc.name 
+                                                 for dirc in main_posix_path.iterdir() 
+                                                 if dirc.is_dir()]
+    }
 
 #--------------------#
 # Batch rename files #
