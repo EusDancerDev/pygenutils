@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -19,7 +19,9 @@ import pandas as pd
 
 from pytools.strings.information_output_formatters import format_string
 from pytools.strings.string_handler import find_substring_index, substring_replacer
-from pytools.utilities.introspection_utils import get_obj_type_str
+from pytools.utilities.introspection_utils import get_obj_type_str,\
+                                                  get_caller_method_args, \
+                                                  retrieve_function_name
 
 #------------------#
 # Define functions #
@@ -79,22 +81,22 @@ def time_format_tweaker(t,
     Otherwise the calendar type remains as Gregorian, unchanged.
     """
     
-    method_name = inspect.currentframe().f_code.co_name
-    arg_names = time_format_tweaker.__code__.co_varnames
+    method_name = retrieve_function_name()
+    all_arg_names = get_caller_method_args()
     
-    print_arg_pos = find_substring_index(arg_names, "return_str")
-    t_arg_pos = find_substring_index(arg_names, "t")
-    method_arg_pos = find_substring_index(arg_names, "method")
+    print_arg_pos = find_substring_index(all_arg_names, "return_str")
+    t_arg_pos = find_substring_index(all_arg_names, "t")
+    method_arg_pos = find_substring_index(all_arg_names, "method")
     
     return_str_options = [False, "basic", "extended"]
     
     
     if return_str not in return_str_options:
-        arg_tuple_tweaker1 = (arg_names[print_arg_pos], return_str_options)
+        arg_tuple_tweaker1 = (all_arg_names[print_arg_pos], return_str_options)
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker1))
         
     if method not in method_options:
-        arg_tuple_tweaker2 = (arg_names[method_arg_pos], method_options)
+        arg_tuple_tweaker2 = (all_arg_names[method_arg_pos], method_options)
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker2))
 
     if isinstance(t, (float, int)):
@@ -162,15 +164,15 @@ def time_format_tweaker(t,
     elif isinstance(t, str):
 
         if time_fmt_str is None:
-            arg_tuple_tweaker3 = (arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker3 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker3))
 
         particular_allowed_methods = ["pandas", "datetime", "model_datetime"]
         if method not in particular_allowed_methods:
-            arg_tuple_tweaker4 = (arg_names[method_arg_pos],
+            arg_tuple_tweaker4 = (all_arg_names[method_arg_pos],
                                   method,
-                                  arg_names[t_arg_pos],
-                                  get_obj_type_str(eval(arg_names[t_arg_pos])),
+                                  all_arg_names[t_arg_pos],
+                                  get_obj_type_str(all_arg_names[t_arg_pos]),
                                   particular_allowed_methods)
             
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker4))
@@ -215,13 +217,13 @@ def time_format_tweaker(t,
         not(isinstance(t, tuple) and isinstance(t, time.struct_time)):
         
         if time_fmt_str is None:
-            arg_tuple_tweaker5 = (arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker5 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker5))
         else:
             t_res = datetime.datetime(*t).strftime(time_fmt_str) 
             
         if method == "pandas":    
-            arg_tuple_tweaker6 = (arg_names[t_arg_pos], get_obj_type_str(t))
+            arg_tuple_tweaker6 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
             raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker6))
             
         return t_res
@@ -229,13 +231,13 @@ def time_format_tweaker(t,
     
     elif isinstance(t, tuple) and isinstance(t, time.struct_time):
         if time_fmt_str is None:
-            arg_tuple_tweaker7 = (arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker7 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker7))
         else:
             t_res = datetime.datetime(*t[:-3]).strftime(time_fmt_str)
             
         if method == "pandas":
-            arg_tuple_tweaker8 = (arg_names[t_arg_pos], get_obj_type_str(t))
+            arg_tuple_tweaker8 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
             raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker8))
             
         return t_res
@@ -261,10 +263,10 @@ def time_format_tweaker(t,
             particular_allowed_methods = ["numpy_generic", "numpy_dt64", "datetime_pydt"]
             
             if method not in particular_allowed_methods:  
-                arg_tuple_tweaker9 = (arg_names[method_arg_pos],
+                arg_tuple_tweaker9 = (all_arg_names[method_arg_pos],
                                       method,
-                                      arg_names[t_arg_pos],
-                                      get_obj_type_str(eval(arg_names[t_arg_pos])),
+                                      all_arg_names[t_arg_pos],
+                                      get_obj_type_str(all_arg_names[t_arg_pos]),
                                       particular_allowed_methods)
                 
                 raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker9))
@@ -274,10 +276,10 @@ def time_format_tweaker(t,
                 return t_res
         
         elif return_str == "extended":
-            arg_tuple_tweaker10 = (arg_names[print_arg_pos],
+            arg_tuple_tweaker10 = (all_arg_names[print_arg_pos],
                                    return_days,
-                                   arg_names[t_arg_pos],
-                                   get_obj_type_str(eval(arg_names[t_arg_pos])),
+                                   all_arg_names[t_arg_pos],
+                                   get_obj_type_str(all_arg_names[t_arg_pos]),
                                    particular_allowed_methods)
 
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker10))
@@ -301,7 +303,7 @@ def time_format_tweaker(t,
             try:
                 t_res = over_24hour_fixer(t)
             except Exception:        
-                arg_tuple_tweaker11 = (arg_names[t_arg_pos], get_obj_type_str(t))
+                arg_tuple_tweaker11 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
                 raise TypeError(format_string(unstandardizable_error_str, arg_tuple_tweaker11))
             else:
                 return t_res
@@ -309,10 +311,10 @@ def time_format_tweaker(t,
         else:   
             particular_allowed_methods = ["numpy_dt64_array", "pandas"]
             if method not in particular_allowed_methods:
-                arg_tuple_tweaker12 = (arg_names[method_arg_pos],
+                arg_tuple_tweaker12 = (all_arg_names[method_arg_pos],
                                        method,
-                                       arg_names[t_arg_pos],
-                                       get_obj_type_str(eval(arg_names[t_arg_pos])),
+                                       all_arg_names[t_arg_pos],
+                                       get_obj_type_str(all_arg_names[t_arg_pos]),
                                        particular_allowed_methods)
                 
                 raise ValueError(format_string(value_error_for_type_str,
@@ -340,7 +342,7 @@ def time_format_tweaker(t,
                     try:
                         t_res  = t.strftime(time_fmt_str)
                     except:
-                        arg_tuple_tweaker13 = (arg_names[t_arg_pos, get_obj_type_str(t_res)])
+                        arg_tuple_tweaker13 = (all_arg_names[t_arg_pos, get_obj_type_str(t_res)])
                         raise Exception(format_string(unconverteable_pandas_dt_obj_error_str,
                                                       arg_tuple_tweaker13))
                     else:
@@ -362,38 +364,36 @@ def time_format_tweaker(t,
             try:
                 t_res  = t_res.strftime(time_fmt_str)
             except:
-                arg_tuple_tweaker14 = (arg_names[t_arg_pos, get_obj_type_str(t_res)])
+                arg_tuple_tweaker14 = (all_arg_names[t_arg_pos, get_obj_type_str(t_res)])
                 raise Exception(format_string(unconverteable_pandas_dt_obj_error_str,
                                               arg_tuple_tweaker14))
             else:
                 return t_res
                     
                 
-def frequent_time_format_converter(t,
-                                   method=None,
-                                   time_fmt_str=None):
+def frequent_time_format_converter(time_obj, library=None, time_fmt_str=None):
     
-    arg_names = frequent_time_format_converter.__code__.co_varnames
-    method_arg_pos = find_substring_index(arg_names, "method")
+    all_arg_names = get_caller_method_args()
+    library_arg_pos = find_substring_index(all_arg_names, "library")
     
-    method_options = list(datetime_obj_dict.keys())
-    if method not in method_options:
-        arg_tuple_tweaker15 = (arg_names[method_arg_pos], method_options)
+    library_options = list(datetime_obj_dict.keys())
+    if library not in library_options:
+        arg_tuple_tweaker15 = (all_arg_names[library_arg_pos], library_options)
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
     
     else:
-        if method == "pandas":
+        if library == "pandas":
             try:
-                dtobj = eval(datetime_obj_dict.get(method))                
+                dtobj = eval(datetime_obj_dict.get(library))                
             except:        
                 import cftime as cft
                 dtobj\
                 = pd.to_datetime([cft.datetime.strftime(time_el, format=time_fmt_str)
-                                  for time_el in t],
+                                  for time_el in time_obj],
                                  format=time_fmt_str)
                       
         else:
-            dtobj = eval(datetime_obj_dict.get(method))
+            dtobj = eval(datetime_obj_dict.get(library))
             
         return dtobj
     
@@ -425,25 +425,25 @@ def over_24hour_fixer(time_obj):
     """
    
     if isinstance(time_obj, np.ndarray):
-        twentyFourHourIdx = find_substring_index(time_obj, "24:0")
+        twenty_four_hour_idx = find_substring_index(time_obj, "24:0")
         time_obj_no24Hour = substring_replacer(time_obj, "24:0", "23:0")
         
         time_obj_fixed = \
         frequent_time_format_converter(time_obj_no24Hour, method="numpy_dt64_array")
-        time_obj_fixed[twentyFourHourIdx] += np.timedelta64(1, "s")
+        time_obj_fixed[twenty_four_hour_idx] += np.timedelta64(1, "s")
         
     elif isinstance(time_obj, (pd.DataFrame, pd.Series)):
         try:
-            twentyFourHourIdx = time_obj.str.contains("24:0")
+            twenty_four_hour_idx = time_obj.str.contains("24:0")
         except:
-            twentyFourHourIdx = time_obj.iloc[:,0].str.contains("24:0")
+            twenty_four_hour_idx = time_obj.iloc[:,0].str.contains("24:0")
             
-        twentyFourHourIdxFilt = twentyFourHourIdx[twentyFourHourIdx]  
+        twenty_four_hour_idxFilt = twenty_four_hour_idx[twenty_four_hour_idx]  
         time_obj_no24Hour = substring_replacer(time_obj, "24:0", "23:0")
             
         time_obj_fixed = \
         frequent_time_format_converter(time_obj_no24Hour, method="pandas")
-        time_obj_fixed[twentyFourHourIdxFilt] += pd.Timedelta(hours=1)
+        time_obj_fixed[twenty_four_hour_idxFilt] += pd.Timedelta(hours=1)
         
     # TODO: ondokoa garatu
     # else:
@@ -546,6 +546,8 @@ unconverteable_pandas_dt_obj_error_str = \
 
 # Switch dictionaries #
 #---------------------#
+
+# FIXME: topatu moduren bat ondoko lambda guztiek kasua edozein dela parametro guztiak har ez ditzaten
 
 datetime_obj_dict = {
     "datetime" : "datetime.datetime.strptime(t, time_fmt_str)",
