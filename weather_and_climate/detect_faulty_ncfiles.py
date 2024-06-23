@@ -5,6 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
+# TODO: eraiki txantiloia, databases/upload_data_to_mysql_database.py moduluan bezalatsu
+
 from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
 from pytools.weather_and_climate.netcdf_handler import netcdf_file_scanner
 
