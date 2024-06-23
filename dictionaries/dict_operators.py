@@ -81,7 +81,7 @@ def dict_value_basic_operator(dict1, dict2,
     
     # Quality control #
     if basic_math_operator not in basic_four_rules:
-        raise ValueError ("Unsupported basic operator sign. "
+        raise ValueError ("Invalid basic operator sign. "
                           f"Choose one from {basic_four_rules}.")
          
     accepted_operation_dict = {
