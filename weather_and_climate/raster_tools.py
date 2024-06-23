@@ -5,9 +5,9 @@
 # Import custom modules #
 #-----------------------#
 
-from parameters_and_constants.global_parameters import common_delim_list
-from operative_systems.os_operations import exec_shell_command
-from strings import string_handler 
+from pytools.parameters_and_constants.global_parameters import common_delim_list
+from pytools.operative_systems.os_operations import exec_shell_command
+from pytools.strings import string_handler 
 
 # Create aliases #
 #----------------#
