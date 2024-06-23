@@ -12,8 +12,8 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_maths import approach_value_in_array
-from time_handling.calendar_attibute_operators import week_range
+from pytools.arrays_and_lists.array_maths import approach_value_in_array
+from pytools.time_handling.calendar_attibute_operators import week_range
 
 #-------------------------#
 # Define custom functions #
@@ -197,7 +197,7 @@ def epw_creator(HDY_df_epw,
     
     # Write the hearders down #
     for header in header_list:
-        epw_file.write(f"{header} \n")
+        epw_file_obj.write(f"{header} \n")
     
     # Append HDY values to the headers # 
     HDY_df_epw_vals = HDY_df_epw.values
@@ -207,10 +207,10 @@ def epw_creator(HDY_df_epw,
        
     for t in range(lhdy):
         for ivar in range(HDY_ncols):
-            epw_file.write(f"{HDY_df_epw_vals[t,ivar]},")
+            epw_file_obj.write(f"{HDY_df_epw_vals[t,ivar]},")
             
             if ivar == HDY_ncols-1:
-                epw_file.write(f"{HDY_df_epw_vals[t,ivar]}\n" )
+                epw_file_obj.write(f"{HDY_df_epw_vals[t,ivar]}\n" )
     
     # Close the file #
-    epw_file.close()
+    epw_file_obj.close()
