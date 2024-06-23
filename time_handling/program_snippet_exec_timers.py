@@ -37,7 +37,7 @@ def program_exec_timer(mode, module="time", return_days=False):
     global ti
     
     if module not in module_list:
-        raise ValueError(format_string(wrong_module_choice_str, module_list))
+        raise ValueError(format_string(unsupported_module_choice_str, module_list))
         
     else:
         if mode == "start":  
@@ -163,4 +163,4 @@ rep_exec_time_info_best_str = \
 
 # Error messages #
 type_error_str = """Argument '{}' must be of type 'int'."""
-wrong_module_choice_str = """Unsupported module option, choose one from {}."""
+unsupported_module_choice_str = """Unsupported module option, choose one from {}."""
