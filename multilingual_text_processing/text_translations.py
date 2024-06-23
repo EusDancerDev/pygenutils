@@ -5,8 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-from operative_systems.os_operations import catch_shell_prompt_output
-from strings import string_handler, information_output_formatters
+from pytools.operative_systems.os_operations import catch_shell_prompt_output
+from pytools.strings import string_handler, information_output_formatters
 
 # Define aliases #
 #----------------#
@@ -31,7 +31,7 @@ def get_googletrans_version():
     
 
 def translate_string(phrase_or_words, lang_origin, lang_translation="en", 
-                     method="translate",
+                     action="translate",
                      text_which_language_to_detect=None,
                      service_urls=None,
                      user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64)",
@@ -47,11 +47,11 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
     #-----------------------------------#
     
     arg_names = translate_string.__code__.co_varnames
-    meth_list_arg_pos = find_substring_index(arg_names, "method_list")
+    meth_list_arg_pos = find_substring_index(arg_names, "action_list")
     
-    if method not in method_list:
-        raise ValueError(f"Wrong '{arg_names[meth_list_arg_pos]}' option. "
-                         f"Options are {method_list}.")
+    if action not in action_list:
+        raise ValueError(f"Invalid processing action, argument '{arg_names[meth_list_arg_pos]}'. "
+                         f"Options are {action_list}.")
         
     
     # Operation part #
@@ -205,7 +205,7 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
         String translated to the desired language.
     """
     
-    # 'googletrans' package with 'translate' method chosen #
+    # 'googletrans' package with 'translate' action chosen #
     #------------------------------------------------------#
     
     # Import the module only here #
@@ -217,7 +217,7 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
                                                    proxies=proxies,
                                                    timeout=timeout)
     
-    if method == "translate":    
+    if action == "translate":    
         try:
             googletrans_transl_generator = \
             translator_instance_google.translate(phrase_or_words,
@@ -295,10 +295,10 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
                     return alternative_transl_translation
                 
                 
-    # 'googletrans' package with 'detect' method chosen #
+    # 'googletrans' package with 'detect' action chosen #
     #---------------------------------------------------#
      
-    elif method == "detect":
+    elif action == "detect":
         try:
             googletrans_detect_spec_generator = \
             translator_instance_google.detect(text_which_language_to_detect)
@@ -343,5 +343,5 @@ lang_detection_conf_info_str = "Detected language: {}\nConfidence: {}"
 translate_alternative_error_source_kws = "INVALID SOURCE"
 translate_alternative_error_target_kws = "INVALID TARGET"
 
-# Method list #
-method_list = ["detect", "translate"]
+# Processing action list #
+action_list = ["detect", "translate"]
