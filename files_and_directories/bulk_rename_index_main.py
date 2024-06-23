@@ -120,9 +120,9 @@ def loop_direct_renamer(obj_list, fixed_new_obj_list):
         rename_objects(obj, new_obj)
         
 
-def return_report_file_fixedPath(file_path_noname, 
-                                 file_name,
-                                 extension):
+def return_report_file_fixed_path(file_path_noname, 
+                                  file_name,
+                                  extension):
     
     report_file_path = f"{file_path_noname}/{file_name}.{extension}"
     return report_file_path
@@ -250,9 +250,9 @@ def reorder_objs(path,
                 conflicting_objs = conflicting_objs[:lcos_upper_limit]            
             
             report_file_name = report_filename_dict.get(obj_type)     
-            report_file_path = return_report_file_fixedPath(path,
-                                                            report_file_name,
-                                                            fixed_ext)
+            report_file_path = return_report_file_fixed_path(path,
+                                                             report_file_name,
+                                                             fixed_ext)
             
             report_file_obj = open(report_file_path, "w")                    
          
@@ -294,9 +294,9 @@ def reorder_objs(path,
         else:
             
             report_file_name = "dry-run_renaming_report"    
-            report_file_path = return_report_file_fixedPath(path,
-                                                            report_file_name,
-                                                            fixed_ext)
+            report_file_path = return_report_file_fixed_path(path,
+                                                             report_file_name,
+                                                             fixed_ext)
             report_file_obj = open(report_file_path, "w")                    
             
             for objname_uneven, nff_dR2 in zip(obj_list_uneven, num_formatted_objs_dryRun_2):
@@ -368,9 +368,9 @@ def reorder_objs(path,
                 conflicting_objs = conflicting_objs[:lcos_upper_limit]   
                 
             report_file_name = report_filename_dict.get(obj_type)
-            report_file_path = return_report_file_fixedPath(path,
-                                                            report_file_name,
-                                                            fixed_ext)
+            report_file_path = return_report_file_fixed_path(path,
+                                                             report_file_name,
+                                                             fixed_ext)
             
             report_file_obj = open(report_file_path, "w")                    
               
@@ -407,9 +407,9 @@ def reorder_objs(path,
         else:
             
             report_file_name = "dry-run_renaming_report"    
-            report_file_path = return_report_file_fixedPath(path,
-                                                           report_file_name,
-                                                           fixed_ext)
+            report_file_path = return_report_file_fixed_path(path,
+                                                             report_file_name,
+                                                             fixed_ext)
             report_file_obj = open(report_file_path, "w")                    
             
             for objname_unevens, nff_dr in zip(obj_list_uneven_slice, 
