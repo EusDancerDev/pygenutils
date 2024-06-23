@@ -5,8 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-from time_handling.program_snippet_exec_timers import program_exec_timer
-from weather_and_climate.netcdf_handler import netcdf_file_scanner
+from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
+from pytools.weather_and_climate.netcdf_handler import netcdf_file_scanner
 
 #-------------------#
 # Define parameters #
