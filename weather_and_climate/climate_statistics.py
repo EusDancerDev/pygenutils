@@ -104,13 +104,13 @@ def periodic_statistics(obj, statistic, freq,
     # Quality control of parameters #     
     if statistic not in statistics:
         arg_tuple_stats1 = ("statistic", statistics)
-        raise ValueError(format_string(choice_error_str, arg_tuple_stats1))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stats1))
  
     if get_obj_type_str(obj) == "DataFrame":
         date_key = find_date_key(obj)
         
         if freq not in freq_abbrs1 and season_months is None:
-            raise ValueError(format_string(choice_error_str, arg_tuple_stats))
+            raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stats))
                 
         elif freq == freq_abbrs1[1] and season_months is None:
             raise ValueError(season_month_fmt_error_str)
@@ -138,7 +138,7 @@ def periodic_statistics(obj, statistic, freq,
         if groupby_dates:
             if freq not in time_freqs1 and season_months is None:
                 arg_tuple_stats3 = ("time-frecuency", time_freqs1)
-                raise ValueError(choice_error_str, arg_tuple_stats3)
+                raise ValueError(unsupported_option_error_str, arg_tuple_stats3)
             
             elif freq == time_freqs1[1] and season_months is None:
                 raise ValueError(season_month_fmt_error_str)
@@ -153,7 +153,7 @@ def periodic_statistics(obj, statistic, freq,
             
         else:
             if freq not in freq_abbrs1 and season_months is None:
-                raise ValueError(choice_error_str, arg_tuple_stats)
+                raise ValueError(unsupported_option_error_str, arg_tuple_stats)
             
             elif freq == freq_abbrs1[1] and season_months is None:
                 raise ValueError(season_month_fmt_error_str)
@@ -223,7 +223,7 @@ def climat_periodic_statistics(obj,
     tf_idx = find_substring_index(time_freqs2, time_freq)     
     if tf_idx == -1:
         arg_tuple_climat_stats = ("time-frequency", time_freqs2)
-        raise ValueError(format_string(choice_error_str, arg_tuple_climat_stats))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_climat_stats))
     else:
         freq_abbr = freq_abbrs2[tf_idx]
     
@@ -545,11 +545,11 @@ def calculate_and_apply_deltas(observed_series,
     # Quality control of parameters #     
     if delta_type not in delta_types:
         arg_tuple_delta1 = ("delta type", delta_types)
-        raise ValueError(format_string(choice_error_str, arg_tuple_delta1))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta1))
     
     if preference_over not in preferences_over:
         arg_tuple_delta2 = ("preference type", preferences_over)
-        raise ValueError(format_string(choice_error_str, arg_tuple_delta2))
+        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta2))
     
     # Identify the time dimension #
     #-----------------------------#
@@ -965,7 +965,7 @@ def moving_average(x, N):
 # Parameters and constants #
 #--------------------------#
 
-choice_error_str = "Unsupported {}. Options are {}"
+unsupported_option_error_str = "Unsupported {}. Options are {}"
 season_length_warning_str = "Season length must strictly be of 3 months."
 season_month_fmt_error_str = \
 """You must specify the season months in a list. For example: [12,1,2]"""
