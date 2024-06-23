@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists.array_numerical_operations import count_consecutive, decompose_24h_cumulative_data
+from pytools.arrays_and_lists.array_numerical_operations import count_consecutive, decompose_24h_cumulative_data
 
 #------------------#
 # Define functions #
@@ -145,7 +145,7 @@ def count_consecutive_days_mindata(array, min_threshold,
         An array which contains the daily minimum value data.
     min_threshold : int
         Integer that defines an upper or lower limit of the minimum value.
-    threshold_mode : {"below","above"}, optional
+    threshold_mode : {"below", "above"}, optional
         Defines whether to select the data that lies
         above or below the threshold. Default value is "below".
     min_consec_days : int
@@ -232,5 +232,5 @@ def count_consecutive_days_mindata(array, min_threshold,
         
         
     else:
-        raise ValueError("You have entered the wrong threshold mode, "\
-                         "options are {'below', 'above'}")
+        raise ValueError("Invalid threshold mode. "
+                         f"Choose one from {'below', 'above'}.")
