@@ -18,24 +18,22 @@ from pytools.strings.information_output_formatters import format_string
 #-------------------------#
 
 # Angle converter #
-def angle_converter(angle, method):
+def angle_converter(angle, conversion):
     conv_options = unit_conversions_list[:2]
-    if method not in conv_options:
-        raise ValueError(format_string(unsupported_unit_conversion_error, 
-                                       conv_options))
+    if conversion not in conv_options:
+        raise ValueError(format_string(unsupported_unit_conversion_error, conv_options))
     else:
-        converted_angle = eval(unit_converter_dict.get(method))
+        converted_angle = unit_converter_dict[conversion](angle)
         return converted_angle
 
-# Wind speed unit converter #
-def ws_unit_converter(data, method):
+def ws_unit_converter(wind_speed, conversion):
     conv_options = unit_conversions_list[2:]
-    if method not in conv_options:
-        raise ValueError(format_string(unsupported_unit_conversion_error, 
-                                       conv_options))
+    if conversion not in conv_options:
+        raise ValueError(format_string(unsupported_unit_conversion_error, conv_options))
     else:
-        converted_speed = eval(unit_converter_dict.get(method))
+        converted_speed = unit_converter_dict[conversion](wind_speed)
         return converted_speed
+
 
 # Wind direction calculator based on meteorological criteria #
 def meteorological_wind_direction(u, v):
@@ -231,8 +229,7 @@ def return_constants():
 #-------------------#
 
 # Magnitude unit conversions #
-unit_conversions_list = ["deg2rad", "rad2deg", "2ms", "2kph"]
-
+unit_conversions_list = ["deg2rad", "rad2deg", "mps_to_kph", "kph_to_mps"]
 
 # Preformatted strings #
 #----------------------#
@@ -243,12 +240,10 @@ unsupported_unit_conversion_error = "Unsupported unit converter. Choose one from
 # Switch case dictionaries #
 #--------------------------#
 
-# FIXME: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
-
 # Magnitude unit conversions #
 unit_converter_dict = {
-    unit_conversions_list[0] : "np.deg2rad(angle)",
-    unit_conversions_list[1] : "np.rad2deg(angle)",
-    unit_conversions_list[2] : "wind_speed*5/18",
-    unit_conversions_list[3] : "wind_speed*18/5"
-    }
+    unit_conversions_list[0]: lambda angle: np.deg2rad(angle),
+    unit_conversions_list[1]: lambda angle: np.rad2deg(angle),
+    unit_conversions_list[2]: lambda wind_speed: wind_speed * 3.6,
+    unit_conversions_list[3]: lambda wind_speed: wind_speed / 3.6
+}
