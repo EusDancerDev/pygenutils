@@ -100,7 +100,7 @@ def sum_clock_times(clock_obj_list,
     
     # Operation argument control #
     if operation not in basic_math_opt_list:
-        raise ValueError(unsupported_math_operation_error)
+        raise ValueError(invalid_math_operation_error)
         
     # Output format parameter control #
     if output_format not in time_output_format_options:
@@ -458,7 +458,7 @@ def sum_date_objects(date_list,
     
     # Operation argument control #
     if operation not in basic_math_opt_list:
-        raise ValueError(unsupported_math_operation_error)
+        raise ValueError(invalid_math_operation_error)
         
     # Output format parameter control #
     if output_format not in date_output_format_options:
@@ -837,7 +837,7 @@ unsupported_obj_type_str2 = """Unsupported datetime type. Supported types are:
     - time.struct_time
 """
 
-unsupported_math_operation_error = \
+invalid_math_operation_error = \
 f"Only sum and subtraction operation are supported: {basic_math_opt_list}"
 too_few_arg_error_str = \
 "At least two {} or datetime objects are required to perform the addition."
