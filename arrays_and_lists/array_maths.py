@@ -79,7 +79,7 @@ def count_consecutive(array, calculate_max_consec=False):
             return None
 
 
-def calc_all_unique_pairs(array_like, method="python-default"):    
+def calc_all_unique_pairs(array_like, library="python-default"):    
     """
     Function to calculate all possible pairs, irrespective of the order,
     in a list or 1D array.
@@ -125,14 +125,14 @@ def calc_all_unique_pairs(array_like, method="python-default"):
         Numbers can be of type integer, float, complex
         or a combination among them.
             
-    method : {'python-default', 'itertools'}
-        Method to be used. Using 'itertools' built-in library
+    library : {'python-default', 'itertools'}
+        Library to be used. Using 'itertools' built-in library
         the execution time is slightly improved.
             
     Returns
     -------
     all_pair_combo_arr : list or array of tuples
-        The resulting list or array (depending the method used) of tuples.    
+        The resulting list or array (depending the library used) of tuples.    
     """
     
     # Parameter correctness checkings #
@@ -144,22 +144,24 @@ def calc_all_unique_pairs(array_like, method="python-default"):
 
     if data_type == 'O':       
         raise TypeError("All elements of the array must either be of type"
-                        "'int', 'float', 'complex', 'str' or a combination among them.")
+                        "'int', 'float', 'complex', 'str' "
+                        "or a combination of several of them.")
         
     else:
         dims = len(array.shape)
         if dims > 1:
             array = array.flatten()
     
-    # Method #
-    if method not in return_pairs_method_list:
-        raise ValueError(f"Unsupported method. Choose one from {return_pairs_method_list}.")
+    # Library #
+    if library not in return_pairs_library_list:
+        raise ValueError("Unsupported library. "
+                         f"Choose one from {return_pairs_library_list}.")
     
     
     # Number pair computations #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-
     
-    all_pair_combo_arr = eval(return_pairs_opt_dict.get(method))
+    all_pair_combo_arr = return_pairs_opt_dict.get(library)(array)
     return all_pair_combo_arr
 
 
@@ -278,11 +280,12 @@ def decompose_24h_cumulative_data(array, zeros_dtype='d'):
 #---------------------------------#
 
 # Method options #
-return_pairs_method_list = ["python-default", "itertools-comb"]
+return_pairs_library_list = ["python-default", "itertools-comb"]
 
 # Switch-type operation dictionary #
-# FIXME: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
 return_pairs_opt_dict = {
-    return_pairs_method_list[0] : "[(i,j) for i_aux,i in enumerate(array_like) for j in array[i_aux+1:]]",
-    return_pairs_method_list[1] : "list(it.combinations(array_like, 2))"
+    return_pairs_library_list[0]: lambda arr: [(i, j) 
+                                               for i_aux, i in enumerate(arr)
+                                               for j in arr[i_aux+1:]],
+    return_pairs_library_list[1]: lambda arr: list(it.combinations(arr, 2))
 }
