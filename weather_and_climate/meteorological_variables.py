@@ -7,24 +7,32 @@
 
 import numpy as np
 
+#-----------------------#
+# Import custom modules #
+#-----------------------#
+
+from pytools.strings.information_output_formatters import format_string
+
 #-------------------------#
 # Define custom functions #
 #-------------------------#
 
 # Angle converter #
 def angle_converter(angle, method):
-    conv_options = list(unit_converter_dict.keys())[:2]
+    conv_options = unit_conversions_list[:2]
     if method not in conv_options:
-        raise ValueError(f"Wrong unit converter. Options are {conv_options}.")
+        raise ValueError(format_string(unsupported_unit_conversion_error, 
+                                       conv_options))
     else:
         converted_angle = eval(unit_converter_dict.get(method))
         return converted_angle
 
 # Wind speed unit converter #
 def ws_unit_converter(data, method):
-    conv_options = list(unit_converter_dict.keys())[2:]
+    conv_options = unit_conversions_list[2:]
     if method not in conv_options:
-        raise ValueError("Wrong unit converter. Options are {conv_options}.")
+        raise ValueError(format_string(unsupported_unit_conversion_error, 
+                                       conv_options))
     else:
         converted_speed = eval(unit_converter_dict.get(method))
         return converted_speed
@@ -219,10 +227,28 @@ def return_constants():
 # Parameters and constants #
 #--------------------------#
 
-# Magnitude unit switch case dictionary #
+# Supported options #
+#-------------------#
+
+# Magnitude unit conversions #
+unit_conversions_list = ["deg2rad", "rad2deg", "2ms", "2kph"]
+
+
+# Preformatted strings #
+#----------------------#
+
+# Error messages #
+unsupported_unit_conversion_error = "Unsupported unit converter. Choose one from {}."
+
+# Switch case dictionaries #
+#--------------------------#
+
+# FIXME: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
+
+# Magnitude unit conversions #
 unit_converter_dict = {
-    "deg2rad" : "np.deg2rad(angle)",
-    "rad2deg" : "np.rad2deg(angle)",
-    "2ms"     : "wind_speed*5/18",
-    "2kph"    : "wind_speed*18/5"
+    unit_conversions_list[0] : "np.deg2rad(angle)",
+    unit_conversions_list[1] : "np.rad2deg(angle)",
+    unit_conversions_list[2] : "wind_speed*5/18",
+    unit_conversions_list[3] : "wind_speed*18/5"
     }
