@@ -281,7 +281,7 @@ def decompose_24h_cumulative_data(array, zeros_dtype='d'):
 return_pairs_method_list = ["python-default", "itertools-comb"]
 
 # Switch-type operation dictionary #
-# TODO: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
+# FIXME: hobetu ondokoa, lambda guztiek argumentu berberak ez hartzeko
 return_pairs_opt_dict = {
     return_pairs_method_list[0] : "[(i,j) for i_aux,i in enumerate(array_like) for j in array[i_aux+1:]]",
     return_pairs_method_list[1] : "list(it.combinations(array_like, 2))"
