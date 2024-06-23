@@ -15,7 +15,7 @@ import re
 # Import custom modules # 
 #-----------------------#
 
-from pytools.utilities.introspection_utils import get_obj_type_str
+from pytools.utilities.introspection_utils import get_obj_type_str, get_caller_method_args
 
 #------------------#
 # Define functions #
@@ -46,25 +46,22 @@ def find_substring_index(string,
     # Proper argument selection control #
     #-----------------------------------#
     
-    arg_names = find_substring_index.__code__.co_varnames
-    match_index_pos = [i for i,arg in enumerate(arg_names) 
-                       if arg == "return_match_index"][0]
-    
-    match_index_str_pos = [i for i,arg in enumerate(arg_names) 
-                           if arg == "return_match_str"][0]
+    all_arg_names = get_caller_method_args()
+    match_index_pos = find_substring_index(all_arg_names, "return_match_index")    
+    match_index_str_pos = find_substring_index(all_arg_names, "return_match_str")
     
     if return_match_index and return_match_str:
-        raise ValueError(f"Arguments '{arg_names[match_index_pos]}' "
-                         f"and '{arg_names[match_index_str_pos]}' "
+        raise ValueError(f"Arguments '{all_arg_names[match_index_pos]}' "
+                         f"and '{all_arg_names[match_index_str_pos]}' "
                          "cannot be True at the same time.")
         
     else:
         if return_match_index and not (return_match_index in match_obj_index_option_keys):
-            raise ValueError(f"Wrong value for argument '{arg_names[match_index_pos]}' "
-                             f"Options are: {match_obj_index_option_keys}")
+            raise ValueError(f"Invalid indexation name, argument '{all_arg_names[match_index_pos]}'. "
+                             f"Choose one name from {match_obj_index_option_keys}.")
             
         if not (isinstance(return_match_str, bool)):
-            raise ValueError("Argument '{arg_names[match_index_str_pos]}' "
+            raise ValueError("Argument '{all_arg_names[match_index_str_pos]}' "
                              "must be a boolean.")
     
     # Case studies #
@@ -331,12 +328,12 @@ def get_obj_specs(obj_path,
                   splitdelim=None):
     
     # Proper argument selection control #
-    arg_names = get_obj_specs.__code__.co_varnames
-    osk_arg_pos = find_substring_index(arg_names, "obj_spec_key")
+    all_arg_names = get_caller_method_args()
+    osk_arg_pos = find_substring_index(all_arg_names, "obj_spec_key")
     
     if obj_spec_key not in obj_specs_keylist:
-        raise ValueError(f"Wrong '{arg_names[osk_arg_pos]}' option. "
-                         f"Options are {obj_specs_keylist}.")
+        raise ValueError(f"Invalid path object name, argument '{all_arg_names[osk_arg_pos]}'. "
+                         f"Choose one from {obj_specs_keylist}.")
         
     # Get the object specification name #
     if not isinstance(obj_path, dict):
@@ -344,7 +341,7 @@ def get_obj_specs(obj_path,
     
     if obj_spec_key == obj_specs_keylist[3] and splitdelim is None:
         raise ValueError("You must specify a string-splitting character "
-                         f"if '{arg_names[osk_arg_pos]}' == '{obj_spec_key}'.")
+                         f"if '{all_arg_names[osk_arg_pos]}' == '{obj_spec_key}'.")
     else:
         obj_spec = obj_specs_dict.get(obj_spec_key)
         return obj_spec
@@ -363,15 +360,16 @@ def modify_obj_specs(target_path_obj,
     """
      
     # Proper argument selection control #
-    arg_names = modify_obj_specs.__code__.co_varnames
-    obj2ch_arg_pos = find_substring_index(arg_names, "obj2modify")
-    new_obj_arg_pos = find_substring_index(arg_names, "new_obj")
-    str2add_arg_pos = find_substring_index(arg_names, "str2add")
+    all_arg_names = get_caller_method_args()
+    obj2ch_arg_pos = find_substring_index(all_arg_names, "obj2modify")
+    new_obj_arg_pos = find_substring_index(all_arg_names, "new_obj")
+    str2add_arg_pos = find_substring_index(all_arg_names, "str2add")
     
     
     if obj2modify not in obj_specs_keylist:
-        raise ValueError(f"Wrong '{arg_names[obj2ch_arg_pos]}' option. "
-                         f"Options are {obj_specs_keylist}.")
+        raise ValueError("Invalid object name to modify, "
+                         f"argument '{all_arg_names[obj2ch_arg_pos]}'. "
+                         f"Choose one from {obj_specs_keylist}.")
     
     # Get the object specification name #
     if not isinstance(target_path_obj, dict):
@@ -395,10 +393,10 @@ def modify_obj_specs(target_path_obj,
                 
     else:
         if new_obj is None:
-            raise ValueError(f"For '{arg_names[obj2ch_arg_pos]}' = '{obj2modify}', "
-                             f"'{arg_names[str2add_arg_pos]}' argument is ambiguous; "
+            raise ValueError(f"For '{all_arg_names[obj2ch_arg_pos]}' = '{obj2modify}', "
+                             f"'{all_arg_names[str2add_arg_pos]}' argument is ambiguous; "
                              "you must provide yourself the new path object "
-                             f"(argument '{arg_names[new_obj_arg_pos]}') .")
+                             f"(argument '{all_arg_names[new_obj_arg_pos]}') .")
             
        
     item2updateDict = {obj2modify : new_obj}
@@ -453,8 +451,8 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
                        count_adv=0,
                        flags=0):
     
-    arg_names = substring_replacer.__code__.co_varnames
-    adv_search_arg_pos = find_substring_index(arg_names, "advanced_search")
+    all_arg_names = get_caller_method_args()
+    adv_search_arg_pos = find_substring_index(all_arg_names, "advanced_search")
             
     if not advanced_search:
         if isinstance(string, str):
@@ -476,7 +474,7 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
     else:
         if not isinstance(string, str):
             raise ValueError("Input object must only be of type 'string' "
-                             f"if '{arg_names[adv_search_arg_pos]}' is True.")
+                             f"if '{all_arg_names[adv_search_arg_pos]}' is True.")
         else:
             string_replaced = re.sub(string2find, string2replace, 
                                      string,
