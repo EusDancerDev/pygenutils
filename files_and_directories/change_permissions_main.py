@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -16,16 +16,17 @@ import shutil
 # Import custom modules #
 #-----------------------#
 
-import file_and_directory_paths
-from parameters_and_constants.global_parameters import basic_object_types
-from strings import information_output_formatters, string_handler
+import pytools.file_and_directory_paths as pyt_paths
+from pytools.parameters_and_constants.global_parameters import basic_object_types
+from pytools.strings import information_output_formatters, string_handler
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
 
-find_all_file_extensions = file_and_directory_paths.find_all_file_extensions
-find_all_directories = file_and_directory_paths.find_all_directories
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
+find_all_file_extensions = pyt_paths.find_all_file_extensions
+find_all_directories = pyt_paths.find_all_directories
+find_files_by_ext = pyt_paths.find_files_by_ext
 
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
@@ -55,17 +56,17 @@ def modify_obj_permissions(path,
     Files: attr_id = 664
     Directories: attr_id = 775
     """    
-    arg_names = modify_obj_permissions.__code__.co_varnames
-    ot_arg_pos = find_substring_index(arg_names, "obj_type")
-    attr_arg_pos = find_substring_index(arg_names, "attr_id")
+    all_arg_names = get_caller_method_args()
+    ot_arg_pos = find_substring_index(all_arg_names, "obj_type")
+    attr_arg_pos = find_substring_index(all_arg_names, "attr_id")
     
     if isinstance(attr_id, str):
-        raise TypeError(format_string(type_error_str, arg_names[attr_arg_pos]))
+        raise TypeError(format_string(type_error_str, all_arg_names[attr_arg_pos]))
         
     le2s = len(extensions2skip)
     
     if obj_type not in basic_object_types:
-        arg_tuple_mod_perms1 = (arg_names[ot_arg_pos], basic_object_types)
+        arg_tuple_mod_perms1 = (all_arg_names[ot_arg_pos], basic_object_types)
         raise ValueError(format_string(value_error_str, arg_tuple_mod_perms1))
   
     if obj_type == basic_object_types[0]:
@@ -110,18 +111,18 @@ def modify_obj_owner(path,
     both os.chown and shutil.chown need the user to be rooted.
     """
     
-    arg_names = modify_obj_permissions.__code__.co_varnames
-    mod_arg_pos = find_substring_index(arg_names, "module")
-    ot_arg_pos = find_substring_index(arg_names, "obj_type")
+    all_arg_names = get_caller_method_args()
+    mod_arg_pos = find_substring_index(all_arg_names, "module")
+    ot_arg_pos = find_substring_index(all_arg_names, "obj_type")
     
     le2s = len(extensions2skip)
     
     if obj_type not in basic_object_types:
-        arg_tuple_mod_perms2 = (arg_names[ot_arg_pos], basic_object_types)
+        arg_tuple_mod_perms2 = (all_arg_names[ot_arg_pos], basic_object_types)
         raise ValueError(format_string(value_error_str, arg_tuple_mod_perms2))
         
     if module not in modules:
-        arg_tuple_mod_perms3 = (arg_names[mod_arg_pos], modules)
+        arg_tuple_mod_perms3 = (all_arg_names[mod_arg_pos], modules)
         raise ValueError(format_string(value_error_str, arg_tuple_mod_perms3))
         
     if obj_type == basic_object_types[0]:
@@ -184,9 +185,9 @@ modules = ["os", "shutil"]
 #----------------------#
 
 # Error indicators #
-type_error_str = """Argument '{}' "must be of type 'int'"""
+type_error_str = """Argument '{}' "must be of type 'int'."""
 permission_error_str = "Please execute the program as sudo."
-value_error_str = """Wrong '{}' option. Options are {}."""
+value_error_str = """Unsupported '{}' option. Choose one from {}."""
 
 # Progress information #
 perm_mod_excepts_progress_info = """Modifying {} of all {} in {}\
