@@ -23,7 +23,7 @@ from pytools.arrays_and_lists.array_data_manipulation import select_array_elemen
 from pytools.strings.information_output_formatters import format_string, print_format_string
 from pytools.strings.string_handler import find_substring_index
 from pytools.time_handling.time_formatters import time2seconds, time_format_tweaker
-from pytools.utilities.introspection_utils import get_obj_type_str
+from pytools.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 
 #------------------#
 # Define functions #
@@ -87,15 +87,15 @@ def sum_clock_times(clock_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    arg_names = sum_clock_times.__code__.co_varnames
-    obj_list_pos = arg_names.index("clock_obj_list")
+    all_arg_names = get_caller_method_args()
+    obj_list_pos = all_arg_names.index("clock_obj_list")
     
     if isinstance(clock_obj_list, str):
-        raise TypeError(f"Argument '{arg_names[obj_list_pos]}' "
+        raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
                         f"(position {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(clock_obj_list, (list, tuple, np.ndarray)) and len(clock_obj_list) < 2):
-        raise ValueError(f"Argument '{arg_names[obj_list_pos]}' "
+        raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
                          "must contain at least two objects.")
     
     # Operation argument control #
@@ -266,15 +266,15 @@ def clock_time_average(clock_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    arg_names = sum_clock_times.__code__.co_varnames
-    obj_list_pos = arg_names.index("clock_obj_list")
+    all_arg_names = get_caller_method_args()
+    obj_list_pos = all_arg_names.index("clock_obj_list")
     
     if isinstance(clock_obj_list, str):
-        raise TypeError(f"Argument '{arg_names[obj_list_pos]}' "
+        raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
                         f"(position {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(clock_obj_list, (list, tuple, np.ndarray)) and len(clock_obj_list) < 2):
-        raise ValueError(f"Argument '{arg_names[obj_list_pos]}' "
+        raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
                          "must contain at least two objects.")
         
     # Output format parameter control #
@@ -446,11 +446,11 @@ def sum_date_objects(date_list,
     ##############################
     
     # Date and/or time list format control and its length #
-    arg_names = sum_date_objects.__code__.co_varnames
-    date_list_pos = find_substring_index(arg_names, "date_list")
+    all_arg_names = get_caller_method_args()
+    date_list_pos = find_substring_index(all_arg_names, "date_list")
     
     if isinstance(date_list, str):
-        raise TypeError(f"Argument '{arg_names[date_list_pos]}' "
+        raise TypeError(f"Argument '{all_arg_names[date_list_pos]}' "
                         f"(position {date_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(date_list, (list, tuple, np.ndarray)) and len(date_list) < 2):
@@ -683,10 +683,10 @@ def natural_year(dt_start, dt_end, time_fmt_str=None,
                          f"Supported options are: {date_output_format_options}")
     
     # Date-only return option #
-    arg_names = natural_year.__code__.co_varnames
-    return_date_arg_pos = find_substring_index(arg_names, "return_date_only")
+    all_arg_names = get_caller_method_args()
+    return_date_arg_pos = find_substring_index(all_arg_names, "return_date_only")
     if not isinstance(return_date_only, bool):
-        raise TypeError(f"Parameter '{arg_names[return_date_arg_pos]}' "
+        raise TypeError(f"Parameter '{all_arg_names[return_date_arg_pos]}' "
                         "must be a boolean.")
     
 
