@@ -64,7 +64,7 @@ def basic_interval_operator(interval_array,
     
     # operator_sets and object type argument choices #    
     if operator not in operations_sets_list:
-        raise ValueError("Unsupported operator for mathematical sets, "
+        raise ValueError("Invalid operator for mathematical sets, "
                          f"argument '{all_arg_names[operator_arg_pos]}' option. "
                          f"Supported options are {operations_sets_list}.")
         
