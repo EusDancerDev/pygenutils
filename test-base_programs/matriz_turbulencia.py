@@ -512,13 +512,13 @@ save_index = False
 save_header = True
 
 # Case selection controls #
-anyCaseSelected = bool(np.mean([eval(case)
-                                for case in vars()
-                                if case.startswith("consider")]))
+anyCaseSelected = bool(np.mean([vars()[key]
+                                for key in vars()
+                                if key.startswith("consider")]))
 
-allCasesSelected = np.all([eval(case)
-                           for case in vars()
-                           if case.startswith("consider")])
+allCasesSelected = np.all([vars()[key]
+                           for key in vars()
+                           if key.startswith("consider")])
 
 # Fixed pandas' data frame column names #
 #########################################
