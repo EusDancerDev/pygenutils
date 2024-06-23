@@ -7,7 +7,7 @@
 This program is an application of the main module 'bulk_rename_index_main.py',
 and it uses some of its attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
-but keep in mind that the module is designed to work with relative paths.
+but keep in mind that the module is designed to work with absolute paths.
 """
 
 #-----------------------#
