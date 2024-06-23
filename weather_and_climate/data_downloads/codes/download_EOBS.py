@@ -36,7 +36,7 @@ def return_file_extension(file_format):
     extension_idx = find_substring_index(available_formats, file_format)
     
     if extension_idx == -1:
-        raise ValueError(f"Wrong file format. Options are '{available_formats}'.")
+        raise ValueError(f"Unsupported file format. Choose from '{available_formats}'.")
     else:
         extension = available_extensions[extension_idx]
         return extension
@@ -44,14 +44,15 @@ def return_file_extension(file_format):
 def return_grid_resolution(resolution):
     
     if resolution not in available_resolutions:
-        raise ValueError(f"Wrong grid resolution. Options are {available_resolutions}")
+        raise ValueError("Invalid grid resolution. "
+                         f"Choose form {available_resolutions}")
     else:
         resolution += "deg"
         return resolution
     
 def check_correct_product_type(product_type):
     if product_type not in available_products:
-        raise ValueError(f"Wrong product. Options are '{available_products}'.")
+        raise ValueError(f"Unsupported product. Choose from '{available_products}'.")
 
     
 #---------------------#
