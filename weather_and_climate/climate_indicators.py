@@ -15,11 +15,13 @@ import scipy.stats as ss
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists import array_data_manipulation, array_numerical_operations
-from global_parameters import common_delim_list
-from meteorological_variables import meteorological_wind_direction
-from string_handler import find_substring_index
-from weather_and_climate import climate_statistics, climatic_signal_modulators, consecutive_idx_statistics
+from pytools.arrays_and_lists import array_data_manipulation, array_numerical_operations
+from pytools.global_parameters import common_delim_list
+from pytools.meteorological_variables import meteorological_wind_direction
+from pytools.string_handler import find_substring_index
+from pytools.weather_and_climate import climate_statistics, \
+                                        climatic_signal_modulators, \
+                                        consecutive_idx_statistics
 
 # Create aliases #
 #----------------#
