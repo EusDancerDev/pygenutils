@@ -12,7 +12,8 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from strings import information_output_formatters, string_handler
+from pytools.strings import information_output_formatters, string_handler
+from pytools.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -30,14 +31,14 @@ def merge_audio_and_video_files(input_video_file_list,
                                 ZERO_PADDING=1):
     
     # Quality control of the zero-padding #
-    arg_names = merge_audio_and_video_files.__code__.co_varnames
-    zp_arg_pos = find_substring_index(arg_names, "ZERO_PADDING")
+    all_arg_names = get_caller_method_args()
+    zp_arg_pos = find_substring_index(all_arg_names, "ZERO_PADDING")
     
     if ((ZERO_PADDING is not None and not isinstance(ZERO_PADDING, int))\
         or (ZERO_PADDING is not None
             and isinstance(ZERO_PADDING, int) 
             and ZERO_PADDING < 1)):
-        raise TypeError(f"Argument '{arg_names[zp_arg_pos]}' "
+        raise TypeError(f"Argument '{all_arg_names[zp_arg_pos]}' "
                         f"at position {zp_arg_pos} must either be "
                         "an integer equal or greater than 1.\n"
                         "Set to `None` if no zero padding is desired.")
