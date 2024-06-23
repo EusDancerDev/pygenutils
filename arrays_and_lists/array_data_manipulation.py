@@ -14,7 +14,10 @@ import pandas as pd
 
 from pytools.parameters_and_constants.global_parameters import common_delim_list
 from pytools.strings.information_output_formatters import format_string
-from pytools.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
+from pytools.strings.string_handler import find_substring_index
+from pytools.utilities.introspection_utils import get_obj_type_str, \
+                                                  retrieve_function_name,\
+                                                  get_caller_method_args
 
 #------------------#
 # Define functions # 
@@ -494,7 +497,7 @@ def remove_elements_from_array(array, idx2access, axis=None):
 #-#-#-#-#-#-#-#-#-#-
 
 def detect_subarray_in_array(obj, test_obj, 
-                             preferent_conv_method="numpy",
+                             preferent_adapt_method="numpy",
                              reverse_arg_order=False,
                              return_all=False):
     
@@ -520,7 +523,7 @@ def detect_subarray_in_array(obj, test_obj,
         type(obj) === 'pandas.Series'; type(test_obj) === 'numpy.ndarray'
         type(obj) === 'pandas.Series'; type(test_obj) === 'pandas.Series'
                 
-    preferent_conv_method : {'numpy', 'pandas'}
+    preferent_adapt_method : {'numpy', 'pandas'}
         If the input 'obj' argument is neither an array or pandas Series,
         it will be converted accordingly.
         Default method is 'numpy', which means that if this case is satisfied,
@@ -543,12 +546,16 @@ def detect_subarray_in_array(obj, test_obj,
         If 'return_all' is set to False, it retuns True if all elements
         of the test array are contained in the original one, else returns False.
     """
-    conversion_methods = list(obj_conversion_opt_dict.keys())
-    if preferent_conv_method not in conversion_methods:
-        raise ValueError("Wrong conversion method. "
-                         f"Options are {conversion_methods}.")
+    
+    all_arg_names = get_caller_method_args()
+    adapt_method_opt_pos = find_substring_index(all_arg_names, "preferent_adapt_method")
+    
+    if preferent_adapt_method not in modules_adaptation:
+        raise ValueError("Invalid module for input object adaptations. "
+                         f"(argument '{all_arg_names[adapt_method_opt_pos]}'.\n"
+                         f"Options are {modules_adaptation}.")
     else:
-        obj = eval(obj_conversion_opt_dict.get(preferent_conv_method))
+        obj = obj_conversion_opt_dict.get(preferent_adapt_method)(obj)
       
     
     # Determine the element-wise presence #
@@ -910,13 +917,12 @@ def basic_value_data_type_converter(obj_data,
 
     """  
     
-    arg_names = basic_value_data_type_converter.__code__.co_varnames
-    
+    all_arg_names = get_caller_method_args()    
     type_option_list = ["O", "U", "d"]
     
     if old_type not in type_option_list:
-        raise ValueError(f"Wrong option of the original data type "
-                         f"(argument '{arg_names[1]}').\n"
+        raise ValueError(f"Invalid option of the original data type "
+                         f"(argument '{all_arg_names[1]}').\n"
                          f"Options are {type_option_list}.")
     
     # Pandas DataFrames
@@ -925,7 +931,7 @@ def basic_value_data_type_converter(obj_data,
         
         if colname is None:
             raise ValueError("Please introduce a valid "
-                             f"column name (argument '{arg_names[3]})"
+                             f"column name (argument '{all_arg_names[3]})"
                              "of the obj_data frame.")
 
         else:            
@@ -953,7 +959,7 @@ def basic_value_data_type_converter(obj_data,
             data_type = obj_data.dtype
 
         if colname is not None:
-            raise ValueError(f"Please set the argument '{arg_names[3]}' "
+            raise ValueError(f"Please set the argument '{all_arg_names[3]}' "
                              "to 'None'.")
 
         else:
@@ -1028,6 +1034,15 @@ def condense_array_content_as_string(obj, add_final_space=False):
 # Parameters and constants #
 #--------------------------#
 
+# Supported options #
+#-------------------#
+
+# Conversions of the data type of an object #
+type_option_list = ["O", "U", "d"]
+
+# Modules used to adaptat input objects to detect subarrays in arrays #
+modules_adaptation = ["numpy", "pandas"]
+
 # Character delimiter #
 local_delim = common_delim_list[6]
 
@@ -1035,8 +1050,8 @@ local_delim = common_delim_list[6]
 #--------------------------#
 
 obj_conversion_opt_dict = {
-    "numpy" : "np.array(obj)",
-    "pandas" : "pd.Series(obj)"
+    modules_adaptation[0] : lambda obj: np.array(obj),
+    modules_adaptation[1] : lambda obj: pd.Series(obj)
     }
 
 # Preformatted strings #
