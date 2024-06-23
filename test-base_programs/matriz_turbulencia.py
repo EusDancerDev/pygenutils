@@ -24,10 +24,10 @@ import warnings
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists import array_data_manipulation
-from pandas_data_frames import data_frame_handler
-from strings.string_handler import find_substring_index
-from time_handling import datetime_operators, program_snippet_exec_timers
+from pytools.arrays_and_lists import array_data_manipulation
+from pytools.pandas_data_frames import data_frame_handler
+from pytools.strings.string_handler import find_substring_index
+from pytools.time_handling import datetime_operators, program_snippet_exec_timers
 
 # Create aliases #
 #----------------#
@@ -74,8 +74,19 @@ def customize_excel_file_merger(results_dir, merged_file_name, excel_files):
      
      
 def df_summarizer(df, df_cols, operator):
-    data_count = eval(f"df.groupby(df_cols).{operator}()")
-    return data_count    
+    # Validate operator
+    valid_operators = ["sum", "mean", "std", "min", "max"]  # Add more as needed
+    if operator not in valid_operators:
+        raise ValueError(f"Unsupported operator '{operator}'. "
+                         f"Choose one from {valid_operators}.")
+    
+    # Dynamically apply the operator using getattr and apply
+    groupby_obj = df.groupby(df_cols)
+    summarizer_func = getattr(groupby_obj, operator)
+    data_count = summarizer_func()
+    
+    return data_count
+ 
 
 
 def complete_data_reach_threshold(WS_arr,
