@@ -68,11 +68,12 @@ def loop_renamer(obj_list,
                  splitdelim=None):
     
     all_arg_names = list(get_caller_method_all_args().values())
-    ot_arg_pos = find_substring_index(all_arg_names, "obj_type")
+    obj_type_arg_pos = find_substring_index(all_arg_names, "obj_type")
     
     if obj_type not in basic_object_types:
-        raise ValueError(f"Wrong '{all_arg_names[ot_arg_pos]}' option. "
-                         f"Options are {basic_object_types}.")
+        raise ValueError("Unsupported object type "
+                         f"(argument '{all_arg_names[obj_type_arg_pos]}'). "
+                         f"Choose one from {basic_object_types}.")
         
     num_formatted_objs = []
     obj2change = obj2change_dict.get(obj_type)
