@@ -27,8 +27,8 @@ def posixpath_converter(path, glob_bool=True):
         
     return posixpath
 
-# Operations involving files as a result #
-#----------------------------------------#
+# Operations involving files #
+#----------------------------#
 
 def find_files_by_ext(extensions, path_to_walk_into, top_path_only=False):
     
@@ -195,8 +195,8 @@ def find_all_file_extensions(extensions2skip,
     return unique_extension_list
          
 
-# Operations involving directories as a result #
-#----------------------------------------------#
+# Operations involving directories #
+#----------------------------------#
 
 def find_all_directories(source_directory,
                          top_path_only=False,
@@ -287,10 +287,9 @@ def find_file_containing_dirs_by_ext(extensions,
     unique_dirlist = list(np.unique(dirlist))    
     return unique_dirlist
 
-
 def find_file_containing_dirs_by_globstr(file_string,
-                                            path_to_walk_into,
-                                            top_path_only=False):
+                                         path_to_walk_into,
+                                         top_path_only=False):
     
     """
     Function that searches for directories containing the
