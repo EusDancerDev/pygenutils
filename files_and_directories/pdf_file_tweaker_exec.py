@@ -6,8 +6,8 @@
 
 This program is an application of the main module 'file_format_tweaker',
 and it uses the 'pdf_file_tweaker' attributes and/or functions.
-YOU MAY REDISTRIBUTE this program along with any other directory
-and adapt it to your needs.
+YOU MAY REDISTRIBUTE this program along any other directory,
+but keep in mind that the module is designed to work with absolute paths.
 """
 
 #-----------------------#
