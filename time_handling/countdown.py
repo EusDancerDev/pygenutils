@@ -95,19 +95,7 @@ string_arr2 = np.array([["%d", "%-d"],
 
 t = input("Introduce any time: ")
 
-try:
-    eval(t)
-except:
-    time_fmt_str = input("String format detected. "
-                         "Introduce the formatting string without quotes: ")
-    try:
-        countdown(t, time_fmt_str=time_fmt_str)
-    except OverflowError:
-        print("Time up!")
-    except KeyboardInterrupt:
-        print("\nCountdown stopped.")
-        
-else:
+if t.isdigit():
     print_str = input("Convertible time format detected. "
                       "Would you like to print the time in string format? [y/n] ")
     
@@ -119,3 +107,12 @@ else:
         except KeyboardInterrupt:
             print("\nCountdown stopped.")
             
+else:
+    time_fmt_str = input("String format detected. "
+                         "Introduce the formatting string without quotes: ")
+    try:
+        countdown(t, time_fmt_str=time_fmt_str)
+    except OverflowError:
+        print("Time up!")
+    except KeyboardInterrupt:
+        print("\nCountdown stopped.")
