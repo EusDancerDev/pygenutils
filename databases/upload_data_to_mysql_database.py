@@ -43,9 +43,9 @@ Data Files
 # Import custom modules #
 #-----------------------#
 
-from databases.database_handler import load_file_to_sql
-# from files_and_directories.file_and_directory_paths import find_files_by_globstr
-# from files_and_directories.file_and_directory_paths import find_files_by_ext
+from pytools.databases.database_handler import load_file_to_sql
+# from pytools.files_and_directories.file_and_directory_paths import find_files_by_globstr
+# from pytools.files_and_directories.file_and_directory_paths import find_files_by_ext
 
 #-------------------#
 # Define parameters #

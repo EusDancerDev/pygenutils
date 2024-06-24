@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories.file_format_tweaker import msg2pdf
+from pytools.files_and_directories.file_format_tweaker import msg2pdf
 
 #-------------------#
 # Define parameters #

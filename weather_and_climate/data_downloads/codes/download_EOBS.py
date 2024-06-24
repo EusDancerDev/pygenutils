@@ -10,10 +10,10 @@ Created on Fri Nov  3 20:57:17 2023
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from strings.string_handler import find_substring_index, substring_replacer
-from time_handling.program_snippet_exec_timers import program_exec_timer
-from weather_and_climate import cds_tools, netcdf_handler
+from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pytools.strings.string_handler import find_substring_index, substring_replacer
+from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
+from pytools.weather_and_climate import cds_tools, netcdf_handler
 
 # Create aliases #
 #----------------#

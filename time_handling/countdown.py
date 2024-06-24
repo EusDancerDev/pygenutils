@@ -14,8 +14,8 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import substring_replacer
-from time_handling.time_formatters import time_format_tweaker
+from pytools.strings.string_handler import substring_replacer
+from pytools.time_handling.time_formatters import time_format_tweaker
 
 #------------------#
 # Define functions #

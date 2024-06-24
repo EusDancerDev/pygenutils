@@ -12,7 +12,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from strings.string_handler import get_obj_specs
+from pytools.strings.string_handler import get_obj_specs
 
 #------------------#
 # Define functions #

@@ -12,8 +12,8 @@ Simply copy this script to the desired directory.
 # Import custom modules #
 #-----------------------#
 
-from time_handling.program_snippet_exec_timers import program_exec_timer
-from weather_and_climate import netcdf_handler
+from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
+from pytools.weather_and_climate import netcdf_handler
 
 # Create aliases #
 #----------------#

@@ -27,7 +27,7 @@ purpose.
 # Import custom modules #
 #-----------------------#
 
-from numeral_systems.base_converters import base2bin, bin2dec
+from pytools.numeral_systems.base_converters import base2bin, bin2dec
 
 #-------------------------#
 # Define custom functions #

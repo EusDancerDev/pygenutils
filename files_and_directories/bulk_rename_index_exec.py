@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from files_and_directories.bulk_rename_index_main import reorder_objs
+from pytools.files_and_directories.bulk_rename_index_main import reorder_objs
 
 #-------------------#
 # Define parameters #

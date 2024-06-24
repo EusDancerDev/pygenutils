@@ -23,8 +23,8 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 # Import custom modules # 
 #-----------------------#
 
-from files_and_directories.file_and_directory_paths import find_files_by_ext
-from strings import string_handler, information_output_formatters
+from pytools.files_and_directories.file_and_directory_paths import find_files_by_ext
+from pytools.strings import string_handler, information_output_formatters
 
 # Create aliases #
 #----------------#
