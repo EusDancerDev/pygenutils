@@ -25,6 +25,8 @@ from pytools.utilities.introspection_utils import get_obj_type_str, get_caller_m
 #---------------------------#
 
 # Main method #
+#-#-#-#-#-#-#-#
+
 def find_substring_index(string,
                          substring, 
                          start=0,
@@ -35,6 +37,8 @@ def find_substring_index(string,
                          case_sensitive=False,
                          find_whole_words=False,
                          all_matches=False):
+    
+    # TODO: add docstring (ChatGPT)
     
     """
     substring: str or [list, np.ndarray, tuple] of str
@@ -103,11 +107,11 @@ def find_substring_index(string,
                 
             else:
                 substr_match_obj_no_filter = advanced_pattern_searcher(string, substring,
-                                                                      return_match_index,
-                                                                      return_match_str,
-                                                                      case_sensitive, 
-                                                                      find_whole_words,
-                                                                      all_matches)
+                                                                       return_match_index,
+                                                                       return_match_str,
+                                                                       case_sensitive, 
+                                                                       find_whole_words,
+                                                                       all_matches)
       
                 substr_match_obj = [n
                                      for n in substr_match_obj_no_filter
@@ -120,11 +124,11 @@ def find_substring_index(string,
                 np.char.find(string, substring, start=start, end=end)  
             else:   
                 substr_match_obj_no_filter = advanced_pattern_searcher(string, substring,
-                                                                      return_match_index,
-                                                                      return_match_str,
-                                                                      case_sensitive, 
-                                                                      find_whole_words,
-                                                                      all_matches)
+                                                                       return_match_index,
+                                                                       return_match_str,
+                                                                       case_sensitive, 
+                                                                       find_whole_words,
+                                                                       all_matches)
       
             substr_match_obj = [n
                                  for n in substr_match_obj_no_filter
@@ -150,64 +154,84 @@ def find_substring_index(string,
 
 
 # Core method #
+#-#-#-#-#-#-#-#
+
 def advanced_pattern_searcher(string, substring,
                               return_match_index,
                               return_match_str,
                               case_sensitive,
                               find_whole_words,
                               all_matches):
-    
-    
     """
-    string: str or [list, np.ndarray, tuple]
-    substring : str ONLY
+    Perform advanced pattern searching on the input string or list of strings.
+
+    Parameters
+    ----------
+    string : str, list, np.ndarray, or tuple
+        The input string or collection of strings to search within.
+    substring : str
+        The substring pattern to search for.
+    return_match_index : bool
+        If True, return the start index of the match.
+    return_match_str : bool
+        If True, return the matched substring.
+    case_sensitive : bool
+        If True, the search is case-sensitive.
+    find_whole_words : bool
+        If True, match the whole word exactly.
+    all_matches : bool
+        If True, find all matches instead of just the first one.
+
+    Returns
+    -------
+    match_obj_spec : list or array
+        A list or array of matching results based on the input arguments.
     """
     
+    # Determine if the input string is multi-line
+    multiline = '\n' in string \
+                if isinstance(string, str) \
+                else any('\n' in s for s in string)
+    flags = re.MULTILINE if multiline else 0
+
     # No option selected #
     #--------------------#
-    
     if not case_sensitive and not all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string : re.search(substring,
-                                                          string, 
-                                                          re.IGNORECASE)
+        re_obj_str = lambda substring, string: re.search(substring, 
+                                                         string, 
+                                                         re.IGNORECASE | flags)
         iterator_considered = False
-        
-        
+
     # One option selected #
     #---------------------#
-        
     elif case_sensitive and not all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string : re.search(substring, string)
+        re_obj_str = lambda substring, string: re.search(substring, string, flags)
         iterator_considered = False
         
     elif not case_sensitive and all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string : re.finditer(substring,
-                                                         string,
-                                                         re.IGNORECASE)
+        re_obj_str = lambda substring, string: re.finditer(substring,
+                                                           string, 
+                                                           re.IGNORECASE | flags)
         iterator_considered = True        
         
     elif not case_sensitive and not all_matches and find_whole_words:
-        re_obj_str = lambda substring, string : re.fullmatch(substring,
-                                                          string, 
-                                                          re.IGNORECASE)
+        re_obj_str = lambda substring, string: re.fullmatch(substring,
+                                                            string, 
+                                                            re.IGNORECASE | flags)
         iterator_considered = False
-
 
     # Two options selected #
     #----------------------# 
-    
     elif case_sensitive and all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string : re.finditer(substring, string)
+        re_obj_str = lambda substring, string: re.finditer(substring, string, flags)
         iterator_considered = True        
         
     elif case_sensitive and not all_matches and find_whole_words:
-        re_obj_str = lambda substring, string : re.fullmatch(substring, string)
+        re_obj_str = lambda substring, string: re.fullmatch(substring, string, flags)
         iterator_considered = False
-        
-    
+
     # Extract the matching information #
     #----------------------------------#
-    
     arg_list = [
         string, substring, re_obj_str,
         return_match_index, return_match_str,
@@ -215,80 +239,45 @@ def advanced_pattern_searcher(string, substring,
         case_sensitive,
         find_whole_words,
         all_matches
-        ]
-    
+    ]
     
     if isinstance(string, (list, np.ndarray, tuple)):
-        match_obj_spec = \
-        np.vectorize(return_search_obj_spec_aux)(*arg_list)
-        
+        match_obj_spec = np.vectorize(return_search_obj_spec_aux)(*arg_list)
     else:
-        match_obj_spec = return_search_obj_spec_aux(*arg_list)     
+        match_obj_spec = return_search_obj_spec_aux(*arg_list)
         
     return match_obj_spec
        
 
 # Complementary functions #
 #-#-#-#-#-#-#-#-#-#-#-#-#-#
-        
-# Main methods #
-def return_search_obj_spec(match_obj, return_match_index, return_match_str):
-    if return_match_index:
-        try:
-            match_obj_span = match_obj.span()
-        except AttributeError:
-            return -1
-        else:
-            match_obj_idx = \
-            match_obj_index_option_dict.get(return_match_index)(match_obj_span)
-            return match_obj_idx
-            
-    elif return_match_str:
-        match_obj_str = match_obj.group()
-        return match_obj_str
-    
-    
-    
-def return_search_obj_spec_iterators(callable_iterator, 
-                                     return_match_index,
-                                     return_match_str):
-    if return_match_index:
-        match_obj_span = [match_obj.span()
-                          if hasattr(match_obj, "span")
-                          else -1
-                          for match_obj in callable_iterator] 
-
-        match_obj_idx = match_obj_index_option_dict.get(return_match_index)(match_obj_span)
-        return match_obj_idx
-            
-    elif return_match_str:
-        match_obj_str = [match_obj.group()
-                         if hasattr(match_obj, "group")
-                         else -1
-                         for match_obj in callable_iterator]
-        return match_obj_str
-    
-    
-# Auxiliary method that gathers the two previous #
 def return_search_obj_spec_aux(string, substring, re_obj_str,
-                               return_match_index, return_match_str, 
-                               iterator_considered,
-                               case_sensitive,
-                               find_whole_words,
-                               all_matches):
-
+                               return_match_index, return_match_str,
+                               iterator_considered, case_sensitive,
+                               find_whole_words, all_matches):
+    """
+    Auxiliary function to handle the pattern searching and result extraction.
+    """
+    match_obj = re_obj_str(substring, string)
     
-    if not iterator_considered:
-        match_obj_spec = return_search_obj_spec(re_obj_str(substring, string),
-                                                return_match_index,
-                                                return_match_str)
-        
+    if iterator_considered:
+        matches = [m for m in match_obj]
     else:
-        match_obj_spec = return_search_obj_spec_iterators(re_obj_str(substring, string),
-                                                          return_match_index,
-                                                          return_match_str)
+        matches = [match_obj] if match_obj else []
     
-    return match_obj_spec
+    if return_match_index:
+        indices = [m.start() for m in matches] if matches else []
+    else:
+        indices = []
+    
+    if return_match_str:
+        match_strings = [m.group() for m in matches] if matches else []
+    else:
+        match_strings = []
+    
+    return indices, match_strings
+ 
+
    
 # PosixPath string management #
 #-----------------------------#
