@@ -8,8 +8,6 @@
 import datetime
 import time
 
-import inspect
-
 import numpy as np
 import pandas as pd
 
@@ -17,8 +15,10 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
+from pytools.arrays_and_lists.array_data_manipulation import select_array_elements,\
+                                                             remove_elements_from_array
 from pytools.strings.information_output_formatters import format_string
-from pytools.strings.string_handler import find_substring_index, substring_replacer
+from pytools.strings.string_handler import find_substring_index
 from pytools.utilities.introspection_utils import get_obj_type_str,\
                                                   get_caller_method_args, \
                                                   retrieve_function_name
@@ -40,7 +40,7 @@ def time_format_tweaker(t,
                         time_fmt_str=None,
                         return_str=False,
                         return_days=False,
-                        method="datetime",
+                        module="datetime",
                         standardize_hour_range=False):
     
     """
@@ -51,7 +51,7 @@ def time_format_tweaker(t,
         array-like, pandas.Series or xarray.DataArray 
     In either case, the object containg the dates and times.
     
-    method : {"numpy_generic", "numpy_dt64",
+    module : {"numpy_generic", "numpy_dt64",
               "pandas", 
               "datetime", "model_datetime"}
     
@@ -81,12 +81,12 @@ def time_format_tweaker(t,
     Otherwise the calendar type remains as Gregorian, unchanged.
     """
     
-    method_name = retrieve_function_name()
+    module_name = retrieve_function_name()
     all_arg_names = get_caller_method_args()
     
     print_arg_pos = find_substring_index(all_arg_names, "return_str")
     t_arg_pos = find_substring_index(all_arg_names, "t")
-    method_arg_pos = find_substring_index(all_arg_names, "method")
+    module_arg_pos = find_substring_index(all_arg_names, "module")
     
     return_str_options = [False, "basic", "extended"]
     
@@ -95,8 +95,8 @@ def time_format_tweaker(t,
         arg_tuple_tweaker1 = (all_arg_names[print_arg_pos], return_str_options)
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker1))
         
-    if method not in method_options:
-        arg_tuple_tweaker2 = (all_arg_names[method_arg_pos], method_options)
+    if module not in supported_modules:
+        arg_tuple_tweaker2 = (all_arg_names[module_arg_pos], supported_modules)
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker2))
 
     if isinstance(t, (float, int)):
@@ -164,24 +164,24 @@ def time_format_tweaker(t,
     elif isinstance(t, str):
 
         if time_fmt_str is None:
-            arg_tuple_tweaker3 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker3 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker3))
 
-        particular_allowed_methods = ["pandas", "datetime", "model_datetime"]
-        if method not in particular_allowed_methods:
-            arg_tuple_tweaker4 = (all_arg_names[method_arg_pos],
-                                  method,
+        particular_allowed_modules = select_array_elements(supported_modules, [0,3,4])
+        if module not in particular_allowed_modules:
+            arg_tuple_tweaker4 = (all_arg_names[module_arg_pos],
+                                  module,
                                   all_arg_names[t_arg_pos],
                                   get_obj_type_str(all_arg_names[t_arg_pos]),
-                                  particular_allowed_methods)
+                                  particular_allowed_modules)
             
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker4))
         
     
-        if method == "model_datetime":
-            t_res = frequent_time_format_converter(t,
-                                                method="datetime",
-                                                time_fmt_str=time_fmt_str)
+        if module == "model_datetime":
+            t_res = datetime_object_type_converter(t,
+                                                   module="datetime",
+                                                   time_fmt_str=time_fmt_str)
             
             if ("%Y" not in time_fmt_str or "%y" not in time_fmt_str)\
                 and "%m" not in time_fmt_str\
@@ -209,7 +209,7 @@ def time_format_tweaker(t,
             return t_res
         
         else:
-            t_res = frequent_time_format_converter(t, method, time_fmt_str)
+            t_res = datetime_object_type_converter(t, module, time_fmt_str)
             return t_res
                   
       
@@ -217,12 +217,12 @@ def time_format_tweaker(t,
         not(isinstance(t, tuple) and isinstance(t, time.struct_time)):
         
         if time_fmt_str is None:
-            arg_tuple_tweaker5 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker5 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker5))
         else:
             t_res = datetime.datetime(*t).strftime(time_fmt_str) 
             
-        if method == "pandas":    
+        if module == "pandas":    
             arg_tuple_tweaker6 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
             raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker6))
             
@@ -231,12 +231,12 @@ def time_format_tweaker(t,
     
     elif isinstance(t, tuple) and isinstance(t, time.struct_time):
         if time_fmt_str is None:
-            arg_tuple_tweaker7 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), method_name)
+            arg_tuple_tweaker7 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
             raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker7))
         else:
             t_res = datetime.datetime(*t[:-3]).strftime(time_fmt_str)
             
-        if method == "pandas":
+        if module == "pandas":
             arg_tuple_tweaker8 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
             raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker8))
             
@@ -249,8 +249,8 @@ def time_format_tweaker(t,
         and not isinstance(t, pd.Timestamp):
             
         if not return_days:
-            method = "pandas"
-            t_res = frequent_time_format_converter(t, method, time_fmt_str) 
+            module = "pandas"
+            t_res = datetime_object_type_converter(t, module, time_fmt_str) 
         else:
             t_res = datetime.datetime.strftime(t, time_fmt_str)
         
@@ -260,19 +260,18 @@ def time_format_tweaker(t,
     elif isinstance(t, pd.Timestamp):
         
         if not return_str:        
-            particular_allowed_methods = ["numpy_generic", "numpy_dt64", "datetime_pydt"]
-            
-            if method not in particular_allowed_methods:  
-                arg_tuple_tweaker9 = (all_arg_names[method_arg_pos],
-                                      method,
+            particular_allowed_modules = select_array_elements(supported_modules, [2, -3, -1])
+            if module not in particular_allowed_modules:  
+                arg_tuple_tweaker9 = (all_arg_names[module_arg_pos],
+                                      module,
                                       all_arg_names[t_arg_pos],
                                       get_obj_type_str(all_arg_names[t_arg_pos]),
-                                      particular_allowed_methods)
+                                      particular_allowed_modules)
                 
                 raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker9))
             
             else:
-                t_res = frequent_time_format_converter(t, method)
+                t_res = datetime_object_type_converter(t, module)
                 return t_res
         
         elif return_str == "extended":
@@ -280,7 +279,7 @@ def time_format_tweaker(t,
                                    return_days,
                                    all_arg_names[t_arg_pos],
                                    get_obj_type_str(all_arg_names[t_arg_pos]),
-                                   particular_allowed_methods)
+                                   particular_allowed_modules)
 
             raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker10))
             
@@ -290,8 +289,8 @@ def time_format_tweaker(t,
         
     elif isinstance(t, np.datetime64):
         
-        if method == "datetime_tolist":
-            t_res = frequent_time_format_converter(t, method)
+        if module == "datetime_tolist":
+            t_res = datetime_object_type_converter(t, module)
         if return_str:
             t_res = str(t)
         return t_res
@@ -301,7 +300,7 @@ def time_format_tweaker(t,
     else:                
         if standardize_hour_range:
             try:
-                t_res = over_24hour_fixer(t)
+                t_res = hour_range_standardizer(t)
             except Exception:        
                 arg_tuple_tweaker11 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
                 raise TypeError(format_string(unstandardizable_error_str, arg_tuple_tweaker11))
@@ -309,18 +308,18 @@ def time_format_tweaker(t,
                 return t_res
                 
         else:   
-            particular_allowed_methods = ["numpy_dt64_array", "pandas"]
-            if method not in particular_allowed_methods:
-                arg_tuple_tweaker12 = (all_arg_names[method_arg_pos],
-                                       method,
+            particular_allowed_modules = select_array_elements(supported_modules, [4, -2])
+            if module not in particular_allowed_modules:
+                arg_tuple_tweaker12 = (all_arg_names[module_arg_pos],
+                                       module,
                                        all_arg_names[t_arg_pos],
                                        get_obj_type_str(all_arg_names[t_arg_pos]),
-                                       particular_allowed_methods)
+                                       particular_allowed_modules)
                 
                 raise ValueError(format_string(value_error_for_type_str,
                                                arg_tuple_tweaker12))
             
-                t_res = frequent_time_format_converter(t, method, time_fmt_str)
+                t_res = datetime_object_type_converter(t, module, time_fmt_str)
                 return t_res
             
             
@@ -371,85 +370,129 @@ def time_format_tweaker(t,
                 return t_res
                     
                 
-def frequent_time_format_converter(time_obj, library=None, time_fmt_str=None):
-    
-    all_arg_names = get_caller_method_args()
-    library_arg_pos = find_substring_index(all_arg_names, "library")
-    
-    library_options = list(datetime_obj_dict.keys())
-    if library not in library_options:
-        arg_tuple_tweaker15 = (all_arg_names[library_arg_pos], library_options)
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
-    
-    else:
-        if library == "pandas":
-            try:
-                dtobj = eval(datetime_obj_dict.get(library))                
-            except:        
-                import cftime as cft
-                dtobj\
-                = pd.to_datetime([cft.datetime.strftime(time_el, format=time_fmt_str)
-                                  for time_el in time_obj],
-                                 format=time_fmt_str)
-                      
-        else:
-            dtobj = eval(datetime_obj_dict.get(library))
-            
-        return dtobj
-    
-    
-def over_24hour_fixer(time_obj):
-
+def datetime_object_type_converter(time_obj, module=None, time_fmt_str=None):
     """
-    Function that checks whether the range of hours
-    contained in an object (numpy's or pandas's) is the 24-hour standard 0-23.
-    
-    For the task, the date and times in the input object 
-    must only be of type string, otherwise it is not possible
-    to define non standard hour ranges like 1-24
-    with Timestamp-like attributes.
-    
-    Time 24:00 is assumed to mean the next day,
-    so it is converted to string 23:00 and then 
-    an hour time delta is added to it.
+    Convert datetime objects between different types using specified modules.
     
     Parameters
     ----------
-    time_obj : array-like of strings, pandas.DataFrame or pandas.Series
-        Object containing the date and times to be checked.
-    
+    time_obj : datetime.datetime or list-like
+        The datetime object(s) or list of datetime objects to convert.
+    module : {'datetime', 'datetime_tolist', 'datetime_pydt', 'pandas',
+              'numpy_dt64', 'numpy_dt64_array', 'numpy_generic'}, optional
+        Module name specifying the type of conversion.
+    time_fmt_str : str, optional
+        Format string specifying the format of datetime objects. Required
+        only for certain conversions.
+        
     Returns
     -------
-    time_obj_fixed : array-like, pandas.DataFrame or pandas.Series
+    converted_obj : object
+        Converted datetime object or array based on the specified module.
+        
+    Raises
+    ------
+    ValueError
+        If an unsupported module option is provided.
+    """
+    
+    # Get all argument names of the caller method
+    all_arg_names = get_caller_method_args()
+    module_arg_pos = find_substring_index(all_arg_names, "module")
+    arg_tuple_tweaker15 = (all_arg_names[module_arg_pos], supported_modules_switch_case)
+    
+    # Validate 'module' argument
+    if module not in supported_modules_switch_case:
+        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
+    
+    # Get the function or lambda from the dictionary using getattr
+    func_or_lambda = datetime_obj_dict.get(module)
+    
+    if func_or_lambda is None:
+        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
+    
+    # Perform conversion based on the selected module
+    if callable(func_or_lambda):
+        # Handle callable lambdas directly
+        if module == "datetime":
+            dtobj = func_or_lambda(time_obj, time_fmt_str)
+        else:
+            dtobj = func_or_lambda(time_obj)
+    elif isinstance(func_or_lambda, str):
+        # Handle string functions (e.g., for pandas)
+        dtobj = eval(func_or_lambda)
+    else:
+        # Handle unsupported options (though ideally this should not occur)
+        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
+    
+    return dtobj
+    
+
+
+def hour_range_standardizer(time_obj):
+    """
+    Function that checks whether the range of hours contained in an object 
+    (numpy, pandas, or xarray) is the 24-hour standard 0-23. Converts hours in 
+    the range 1-24 to 0-23.
+
+    For the task, the date and times in the input object must only be of type 
+    string, otherwise it is not possible to define non-standard hour ranges 
+    like 1-24 with Timestamp-like attributes.
+
+    Time 24:00 is assumed to mean the next day, so it is converted to string 
+    23:00 and then an hour time delta is added to it.
+
+    Parameters
+    ----------
+    time_obj : array-like of strings, pandas.DataFrame, pandas.Series,
+               xarray.Dataset, or xarray.DataArray
+        Object containing the date and times to be checked.
+
+    Returns
+    -------
+    time_obj_fixed : array-like of strings, pandas.DataFrame, pandas.Series,
+                     xarray.Dataset, or xarray.DataArray
         Object containing fixed dates and times.
     """
-   
+    
+    # Define anidated functions for easier manipulations #
+    #----------------------------------------------------#
+    
+    def fix_24_hour_format(time_series):
+        twenty_four_hour_idx = time_series.str.contains("24:0")
+        time_series_no24hour = time_series.str.replace("24:0", "23:0", regex=False)
+        time_series_fixed = pd.to_datetime(time_series_no24hour, format="%H:%M")
+        time_series_fixed[twenty_four_hour_idx] += pd.Timedelta(hours=1)
+        return time_series_fixed
+
+    # Operations depending on the type of the input object #
+    #------------------------------------------------------#
+
     if isinstance(time_obj, np.ndarray):
-        twenty_four_hour_idx = find_substring_index(time_obj, "24:0")
-        time_obj_no24Hour = substring_replacer(time_obj, "24:0", "23:0")
+        time_series = pd.Series(time_obj)
+        time_obj_fixed = fix_24_hour_format(time_series).to_numpy()
+
+    elif isinstance(time_obj, pd.DataFrame):
+        time_obj_fixed = time_obj.apply(lambda col: fix_24_hour_format(col) if col.dtype == 'O' else col)
+
+    elif isinstance(time_obj, pd.Series):
+        time_obj_fixed = fix_24_hour_format(time_obj)
+
+    elif (get_obj_type_str(time_obj) == "Dataset"
+          or get_obj_type_str(time_obj) == "DataArray"):
         
-        time_obj_fixed = \
-        frequent_time_format_converter(time_obj_no24Hour, method="numpy_dt64_array")
-        time_obj_fixed[twenty_four_hour_idx] += np.timedelta64(1, "s")
-        
-    elif isinstance(time_obj, (pd.DataFrame, pd.Series)):
-        try:
-            twenty_four_hour_idx = time_obj.str.contains("24:0")
-        except:
-            twenty_four_hour_idx = time_obj.iloc[:,0].str.contains("24:0")
-            
-        twenty_four_hour_idxFilt = twenty_four_hour_idx[twenty_four_hour_idx]  
-        time_obj_no24Hour = substring_replacer(time_obj, "24:0", "23:0")
-            
-        time_obj_fixed = \
-        frequent_time_format_converter(time_obj_no24Hour, method="pandas")
-        time_obj_fixed[twenty_four_hour_idxFilt] += pd.Timedelta(hours=1)
-        
-    # TODO: ondokoa garatu
-    # else:
-    #     import xarray as xr
-             
+        time_obj_fixed = time_obj.copy()
+        time_series = time_obj_fixed.to_series().reset_index(drop=True)
+        time_series_fixed = fix_24_hour_format(time_series)
+        time_obj_fixed.values = time_series_fixed.values.reshape(time_obj_fixed.shape)
+    
+    else:
+        raise TypeError("Unsupported object type. Supported types are "
+                        "array-like of strings, pandas.DataFrame, pandas.Series, "
+                        "xarray.Dataset, or xarray.DataArray.")
+    
     return time_obj_fixed
+
 
 
 def time2seconds(t, time_fmt_str=None):
@@ -466,12 +509,8 @@ def time2seconds(t, time_fmt_str=None):
     #          deituko baita, non emaitza segundoak besterik ez diren.
     #       4. Galdetu ChatGPT-ri, ONGI ATERAKO DA
     #       5. Docstring-a
-
-    
-    # TODO: Convert the input object to datetime.timedelta object #
-
-    
-    method_name = inspect.currentframe().f_code.co_name
+   
+    method_name = retrieve_function_name()
     
     if isinstance(t, str):
         t_datetime_tuple = time_format_tweaker(t, time_fmt_str)
@@ -512,10 +551,12 @@ def time2seconds(t, time_fmt_str=None):
 # Parameters and constants #
 #--------------------------#
 
-# Global method options #
-method_options = ["datetime", "datetime_tolist", "datetime_pydt", "model_datetime",
-                  "pandas", 
-                  "numpy_dt64", "numpy_dt64_array", "numpy_generic"]
+# Supported module options #
+supported_modules = ["datetime", "datetime_tolist", "datetime_pydt", "model_datetime",
+                     "pandas", 
+                     "numpy_dt64", "numpy_dt64_array", "numpy_generic"]
+
+supported_modules_switch_case = remove_elements_from_array(supported_modules, 3)
 
 # Extension list #
 extensions = ["csv", "xlsx", "nc"]
@@ -547,14 +588,12 @@ unconverteable_pandas_dt_obj_error_str = \
 # Switch dictionaries #
 #---------------------#
 
-# FIXME: topatu moduren bat ondoko lambda guztiek kasua edozein dela parametro guztiak har ez ditzaten
-
 datetime_obj_dict = {
-    "datetime" : "datetime.datetime.strptime(t, time_fmt_str)",
-    "datetime_tolist" : "t.tolist()",
-    "datetime_pydt" : "t.to_pydatetime()",
-    "numpy_dt64" : "t.to_datetime64()",
-    "numpy_dt64_array" : "np.array(t, dtype=np.datetime64)",
-    "numpy_generic" : "t.to_numpy()",
-    "pandas" : "pd.to_datetime(t, format=time_fmt_str)"
-    }
+    supported_modules_switch_case[0] : lambda t, time_fmt_str: datetime.datetime.strptime(t, time_fmt_str),
+    supported_modules_switch_case[1] : lambda t: t.tolist(),
+    supported_modules_switch_case[2] : lambda t: t.to_pydatetime(),
+    supported_modules_switch_case[3] : "pd.to_datetime(time_obj, format=time_fmt_str)",
+    supported_modules_switch_case[4] : np.datetime64,
+    supported_modules_switch_case[5] : lambda t: np.array(t, dtype=np.datetime64),
+    supported_modules_switch_case[6] : np.asarray,
+}
