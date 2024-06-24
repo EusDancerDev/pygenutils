@@ -956,26 +956,6 @@ statistics = ["max", "min", "sum", "mean", "std"]
 freq_abbrs1 = ["Y", "SEAS", "M", "D", "H", "min", "S"]
 freq_abbrs2 = ["Y", "S", "M", "D", "H"]
 
-# Switch cases #
-# FIXME: topatu moduren bat ondoko lambda guztiek kasua edozein dela parametro guztiak har ez ditzaten
-obj_climat_str_dict = {
-    "hourly" : 
-        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
-            obj.groupby(obj_climat_nonstd_times).statistic(dim=date_key),
-    "daily" : 
-        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
-            obj([date_key].dt.dayofyear).statistic(dim=date_key),
-    "monthly" :
-        lambda obj, obj_climat_nonstd_times, statistic, date_key : 
-            obj([date_key].dt.month).statistic(dim=date_key),
-    "seasonal" :
-        lambda obj, obj_climat_nonstd_times, obj_seas_sel, statistic, date_key : 
-            obj_seas_sel.statistic(dim=date_key),
-    "yearly" : 
-        lambda obj, obj_climat_nonstd_times, obj_seas_sel, statistic, date_key : 
-            obj.statistic(dim=date_key)
-    }
-
 # Tuples to pass in into preformatted strings #
 arg_tuple_stats = ("time-frecuency", freq_abbrs1)
 
