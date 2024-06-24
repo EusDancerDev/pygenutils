@@ -7,6 +7,7 @@
 
 import numpy as np
 
+import os
 import time
 import timeit
 
@@ -30,38 +31,53 @@ find_substring_index = string_handler.find_substring_index
 # Define functions #
 #------------------#
 
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-# TODO: 'else' blokean switch case hiztegi bat garatu
+# OPTIMIZE: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
+
 def program_exec_timer(mode, module="time", return_days=False):
-    
-    global ti
-    
-    if module not in module_list:
-        raise ValueError(format_string(unsupported_module_choice_str, module_list))
+    """
+    Measures and returns the execution time of a code snippet
+    based on the specified mode and module.
+
+    Parameters
+    ----------
+    mode : {"start", "stop"}
+        Mode to start or stop the timer.
+    module : {"os", "time", "timeit".}, optional
+        Module to use for timing. Default is "time".
+    return_days : bool, optional
+        If True, splits hours into days and remaining hours, minutes and seconds
+        in the formatted result. Default is False.
+
+    Returns
+    -------
+    str
+        Formatted string of the elapsed time if mode is "stop".
         
+    Raises
+    ------
+    ValueError
+        If the specified module is not supported or if the mode is invalid.
+    """
+
+    global ti
+   
+    # Validate the required parameter #
+    if module not in module_list:
+        raise ValueError(f"Unsupported module. Choose one from {module_list}.")
+
+    # Operations #
+    if mode == "start":
+        ti = module_operation_dict[module]()
+        
+    elif mode == "stop":
+        tf = module_operation_dict[module]()
+        elapsed_time = abs(ti - tf)
+        return time_format_tweaker(elapsed_time,
+                                   return_str="extended", 
+                                   return_days=return_days)
+    
     else:
-        if mode == "start":  
-            if module == "os":
-                import os
-                ti = os.times()[-1]
-            elif module == "time":
-                ti = time.time()
-            elif module == "timeit":
-                ti = timeit.default_timer()
-            
-        elif mode == "stop":
-            if module == "os":
-                tf = os.times()[-1]
-            elif module == "time":
-                tf = time.time()
-            elif module == "timeit":
-                tf = timeit.default_timer()
-                
-            elapsed_time = abs(ti-tf)
-            
-            return time_format_tweaker(elapsed_time,
-                                       return_str="extended", 
-                                       return_days=return_days)
+        raise ValueError("Invalid mode. Choose 'start' or 'stop'.")
 
     
 def snippet_exec_timer(snippet_str, 
@@ -164,3 +180,13 @@ rep_exec_time_info_best_str = \
 # Error messages #
 type_error_str = """Argument '{}' must be of type 'int'."""
 unsupported_module_choice_str = """Unsupported module option, choose one from {}."""
+
+# Switch case dictionaries #
+#--------------------------#
+
+# Methods for code execution timing #
+module_operation_dict = {
+    module_list[0]: lambda: os.times()[-1],
+    module_list[1]: lambda: time.time(),
+    module_list[2]: lambda: timeit.default_timer(),
+}
