@@ -28,7 +28,7 @@ from pytools.weather_and_climate.netcdf_handler import find_time_dimension
 
 basic_time_format_strs = global_parameters.basic_time_format_strs
 month_number_dict = global_parameters.month_number_dict
-season_timeFreq_dict = global_parameters.season_timeFreq_dict
+season_time_freq_dict = global_parameters.season_time_freq_dict
 time_freqs1 = global_parameters.time_frequencies_complete
 time_freqs2 = global_parameters.time_frequencies_short_1
 
@@ -41,8 +41,6 @@ find_substring_index = string_handler.find_substring_index
 # Define functions #
 #------------------#
 
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-
 def periodic_statistics(obj, statistic, freq,
                         groupby_dates=False,
                         drop_date_idx_col=False,
@@ -54,13 +52,12 @@ def periodic_statistics(obj, statistic, freq,
     
     Parameters
     ----------
-    obj : pandas.DataFrame or xarray.Dataset
-          or xarray.DataArray
-          Object containing data.
+    obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray
+          The object to calculate statistics for.
     statistic : {"max", "min", "mean", "std", "sum"}
-          String that defines which statistic to compute.
+          The statistic to calculate.
     freq : str
-          String that identifies the frequency to which data is filtered.
+          The frequency for resampling or grouping the data.
           For example, "D" stands for daily data, "M" for monthly and so on.
           See https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
           for more details.
@@ -84,21 +81,18 @@ def periodic_statistics(obj, statistic, freq,
           is not that common to compute.
           This functions incorporates this option.
     drop_date_idx_col : bool
-          Boolean used to whether drop the date columns in the new data frame.
-          If it is False, then the columns of the dates will be kept.
-          Otherwise, the dates themselves will be kept, but they will be
-          treated as indexers, and not as a column.
+          Whether to drop the date index column. Default is False.
+          If True, the dates will be kept, but the corresponding array
+          will be an index, instead of a column.
           Defaults to False.
     season_months : list of integers
-          List containing the month numbers to later refer to the time array,
-          whatever the object is among the mentioned three types.
+          List of three months defining a season, used if 'freq' is "SEAS".
           Defaults to None.
     
     Returns
     -------
-    obj : pd.DataFrame, xarray.Dataset 
-          or xarray.DataArray.
-          Object containing the frecuency-statistic data.
+    pandas.DataFrame or xarray object
+        The calculated statistics.
     """
     
     # Quality control of parameters #     
@@ -106,7 +100,7 @@ def periodic_statistics(obj, statistic, freq,
         arg_tuple_stats1 = ("statistic", statistics)
         raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stats1))
  
-    if get_obj_type_str(obj) == "DataFrame":
+    if (get_obj_type_str(obj) == "DataFrame"):
         date_key = find_date_key(obj)
         
         if freq not in freq_abbrs1 and season_months is None:
@@ -119,20 +113,17 @@ def periodic_statistics(obj, statistic, freq,
             if len(season_months) != 3:
                 raise ValueError(season_length_warning_str)
             else:                
-                freq = season_timeFreq_dict[season_months[-1]]
+                freq = season_time_freq_dict[season_months[-1]]
                 
         else:        
-            grouper = "pd.Grouper(key=date_key, freq=freq)"
-            df_groupby = f"obj.groupby({grouper})"
-            
-            df_stat\
-            = eval(f"{df_groupby}.{statistic}()"
-                   f".reset_index(drop={drop_date_idx_col})")
-                
+            grouper = pd.Grouper(key=date_key, freq=freq)
+            df_groupby = obj.groupby({grouper})
+            df_stat = \
+            getattr(df_groupby, statistic)().reset_index(drop=drop_date_idx_col)
             return df_stat
     
         
-    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):    
+    elif ((get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray")):
         date_key = find_time_dimension(obj)
         
         if groupby_dates:
@@ -147,9 +138,8 @@ def periodic_statistics(obj, statistic, freq,
                 if len(season_months) != 3:
                     raise ValueError(season_length_warning_str)
                 else:
-                    freq = season_timeFreq_dict[season_months[-1]]
-                    grouper = f"obj.{date_key}.dt.{freq}"
-                    obj_groupby = f"obj.groupby({grouper})"
+                    freq = season_time_freq_dict[season_months[-1]]
+                    obj_groupby = obj.groupby(f"{date_key}.dt.{freq}")
             
         else:
             if freq not in freq_abbrs1 and season_months is None:
@@ -162,16 +152,16 @@ def periodic_statistics(obj, statistic, freq,
                 if len(season_months) != 3:
                     raise ValueError(season_length_warning_str)
                 else:
-                    freq = season_timeFreq_dict[season_months[-1]]
-                    obj_groupby = f"obj.resample({date_key}='{freq}')"
+                    freq = season_time_freq_dict[season_months[-1]]
+                    obj_groupby = obj.resample({date_key: freq})
             
-        obj_stat = eval(f"{obj_groupby}.{statistic}()")
+        obj_stat = getattr(obj_groupby, statistic)()
         return obj_stat
             
     else:
         raise ValueError("Cannot operate with this data type.")
   
-  
+# OPTIMIZE: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia  
 def climat_periodic_statistics(obj,
                                statistic,
                                time_freq,
@@ -187,9 +177,9 @@ def climat_periodic_statistics(obj,
     obj : pandas.DataFrame, xarray.Dataset 
         or xarray.DataArray.
     statistic : {"max", "min", "mean", "std", "sum"}
-        String that defines which statistic to compute.
+        The statistic to calculate.
     time_freq : str
-        String that identifies the frequency to which data is filtered.
+        Time frequency to which data will be filtered.
     keep_std_dates : bool
         If True, standard YMD (HMS) date format is kept for all climatologics
         except for yearly climatologics.
@@ -197,12 +187,10 @@ def climat_periodic_statistics(obj,
         and season achronyms if "seasonal" is selected as the time frequency.
         Default value is False.
     drop_date_idx_col : bool
-        Affects only if the passed object is a Pandas DataFrame.
-        Boolean used to whether drop the date columns in the new data frame.
-        If it is False, then the columns of the dates will be kept.
-        Otherwise, the dates themselves will be kept, but they will be
-        treated as indexers, and not as a column.
-        Defaults to False.
+        Whether to drop the date index column. Default is False.
+        If True, the dates will be kept, but the corresponding array
+        will be an index, instead of a column.
+        Defaults to False
     season_months : list of integers
         List containing the month numbers to later refer to the time array,
         whatever the object is among the mentioned three types.
@@ -211,24 +199,30 @@ def climat_periodic_statistics(obj,
     Returns
     -------
     obj_climat : pandas.DataFrame, xarray.Dataset or xarray.DataArray.
-        Climatological average of the data.
+        Calculated climatological average.
     
     Notes
     -----
-    For Pandas DataFrames, since it is an 2D object,
+    For Pandas DataFrames, since it is a 2D object,
     it is interpreted as data holds for a specific geographical point.
     """
     
-    # Quality control of parameters #     
+    # Parameter validation #   
+    #----------------------#
+    
     tf_idx = find_substring_index(time_freqs2, time_freq)     
     if tf_idx == -1:
         arg_tuple_climat_stats = ("time-frequency", time_freqs2)
         raise ValueError(format_string(unsupported_option_error_str, arg_tuple_climat_stats))
     else:
         freq_abbr = freq_abbrs2[tf_idx]
+      
+        
+    # Operations #
+    #------------#    
     
     # Identify the time dimension #
-    #-----------------------------#
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
     
     if get_obj_type_str(obj) == "DataFrame":
         date_key = find_date_key(obj)
@@ -237,7 +231,7 @@ def climat_periodic_statistics(obj,
         date_key = find_time_dimension(obj)               
     
     # Calculate statistical climatologies #
-    #-------------------------------------#
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
     # Get date array and parts of it #
     dates = obj[date_key]
@@ -264,66 +258,59 @@ def climat_periodic_statistics(obj,
                                         for i in range(1, ncols_obj)]
                 
         if time_freq == "hourly":  
-            climat_vals\
-            = [np.float64(eval("obj[(obj[date_key].dt.month==m)"\
-                                   "&(obj[date_key].dt.day==d)"\
-                                   "&(obj[date_key].dt.hour==h)]."\
-                               f"iloc[:,1:].{statistic}()"))
-               for m in months
-               for d in days
-               for h in hours
-                       
-               if len(obj[(obj[date_key].dt.month==m)
-                          &(obj[date_key].dt.day==d)
-                          &(obj[date_key].dt.hour==h)].iloc[:,1:]) > 0]
+            climat_vals = []
+            for m in months:
+                for d in days:
+                    for h in hours:
+                        subset = obj[(obj[date_key].dt.month == m) & 
+                                     (obj[date_key].dt.day == d) & 
+                                     (obj[date_key].dt.hour == h)].iloc[:, 1:]
+                        if len(subset) > 0:
+                            climat_vals.append(subset[statistic]())
                 
             if keep_std_dates:
                 climat_dates = pd.date_range(f"{latest_year}-01-01 0:00",
                                              f"{latest_year}-12-31 23:00",
                                              freq=freq_abbr)
             else:    
-                lcv = len(climat_vals)
-                climat_dates = np.arange(lcv)
+                climat_dates = np.arange(len(climat_vals))
                 climat_obj_cols[0] = "hour_of_year"
             
             
         elif time_freq == "daily":   
-            climat_vals\
-            = [np.float64(eval("obj[(obj[date_key].dt.month==m)"\
-                                    "&(obj[date_key].dt.day==d)]."\
-                               f"iloc[:,1:].{statistic}()"))
-               
-               for m in months
-               for d in days
-               
-               if len(obj[(obj[date_key].dt.month==m)
-                          &(obj[date_key].dt.day==d)].iloc[:,1:]) > 0]
+            climat_vals = []
+            for m in months:
+                for d in days:
+                    subset = obj[(obj[date_key].dt.month == m) & 
+                                 (obj[date_key].dt.day == d)].iloc[:, 1:]
+                    if len(subset) > 0:
+                        climat_vals.append(subset[statistic]())
                 
             if keep_std_dates:
                 climat_dates = pd.date_range(f"{latest_year}-01-01 0:00",
                                              f"{latest_year}-12-31 23:00",
                                              freq=freq_abbr)
             else:    
-                lcv = len(climat_vals)
-                climat_dates = np.arange(1,lcv+1)
+                climat_dates = np.arange(1, len(climat_vals) + 1)
                 climat_obj_cols[0] = "day_of_year"
                 
                 
-        elif time_freq == "monthly":            
+        elif time_freq == "monthly": 
+            climat_vals = []
+            for m in months:
+                subset = obj[obj[date_key].dt.month == m].iloc[:, 1:]
+                if len(subset) > 0:
+                    climat_vals.append(subset[statistic]())
+                    
             if keep_std_dates:
                 climat_dates = pd.date_range(f"{latest_year}-01-01 0:00",
                                              f"{latest_year}-12-31 23:00",
                                              freq=freq_abbr)
                 
             else:
-                climat_dates = np.arange(1,13)
+                climat_dates = np.arange(1, 13)
                 climat_obj_cols[0] = "month_of_year"
             
-            climat_vals = [np.float64(eval("obj[obj[date_key].dt.month==m]."\
-                                            f"iloc[:,1:].{statistic}()"))
-                            for m in months
-                            if len(obj[obj[date_key].dt.month==m].iloc[:,1:]) > 0]
-                
             
         elif time_freq == "seasonal":
             
@@ -333,37 +320,28 @@ def climat_periodic_statistics(obj,
             
             if season_months is None:
                 raise ValueError(season_month_fmt_error_str)
-            else:   
-                if keep_std_dates:
+                
+            climat_vals = [obj[obj[date_key].dt.month.isin(season_months)].iloc[:, 1:][statistic]()]
+        
+            if keep_std_dates:                
+                climat_dates = [obj[obj[date_key].dt.month==season_months[-1]].
+                                iloc[-1][date_key].strftime(daytime_fmt_str)]
+            else:
+                climat_dates = [month_number_dict[m] for m in season_months]
+                climat_obj_cols[0] = "season"
                     
-                    # hobetu ondokoa #
-                    climat_dates = [obj[obj[date_key].dt.month==season_months[-1]].
-                                    iloc[-1][date_key].strftime(daytime_fmt_str)]
-                else:
-                    climat_dates = "".join([month_number_dict[m] for m in season_months]).split()
-                    climat_obj_cols[0] = "season"
-                    
-                        
-                climat_vals\
-                = [np.float64(eval("obj[obj[date_key].dt.month.isin(season_months)]."\
-                                   f"iloc[:,1:].{statistic}()"))]
-                    
+
             
         elif time_freq == "yearly":
-            climat_df = periodic_statistics(obj, 
-                                            statistic, 
-                                            freq_abbr,
-                                            drop_date_idx_col)
-    
-            climat_vals = [np.float64(eval(f"climat_df.iloc[:,1:].{statistic}()"))]
+            climat_df = periodic_statistics(obj, statistic, freq_abbr, drop_date_idx_col)
+            climat_vals = [climat_df.iloc[:, 1:][statistic]()]
             climat_dates = [climat_df.iloc[-1,0]]
               
         # Check climatological value array's shape to later fit into the df #
         climat_vals = np.array(climat_vals)
         climat_vals_shape = climat_vals.shape
-        lcvs = len(climat_vals_shape)
-        
-        if lcvs == 1:
+         
+        if len(climat_vals_shape) == 1:
             climat_vals = climat_vals[:, np.newaxis]    
         
         climat_dates = np.array(climat_dates, 'O')[:, np.newaxis]
@@ -371,9 +349,8 @@ def climat_periodic_statistics(obj,
         # Store climatological data into the data frame #
         climat_arr = np.append(climat_dates, climat_vals, axis=1)
         obj_climat = pd.DataFrame(climat_arr, columns=climat_obj_cols)
-        
         obj_climat.iloc[:, 0] = time_format_tweaker(obj_climat.iloc[:, 0],
-                                                    to_pandas_datetime="pand")        
+                                                    module="pandas")        
         
     elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):          
         if time_freq == "hourly":
@@ -384,22 +361,17 @@ def climat_periodic_statistics(obj,
             """
             
             # Define the hourly climatology pattern #
-            obj_climat_nonstd_times = obj['time.hour']/24 + obj['time.dayofyear']              
+            obj_climat_nonstd_times = obj['time.hour'] / 24 + obj['time.dayofyear']
+            obj_climat = obj.groupby(obj_climat_nonstd_times).statistic(dim=date_key)
             
         elif time_freq == "seasonal":
             if season_months is None:
                 raise ValueError(season_month_fmt_error_str)
             else:
                 obj_seas_sel = obj.sel({date_key: obj[date_key].dt.month.isin(season_months)})
+                obj_climat = obj_seas_sel[statistic](dim=date_key)
                       
-        # Compute the hourly climatology #
-        """
-        The two output variables are already included in the
-        strings of the switch dictionary, included at the bottom of this code.
-        """
-        obj_climat = eval(obj_climat_str_dict.get(time_freq))
-         
-            
+                 
         # Choose the climatological time format #
         #---------------------------------------#
         
@@ -500,13 +472,13 @@ def calculate_and_apply_deltas(observed_series,
     observed_series : pandas.DataFrame, xarray.Dataset or xarray.DataArray.
     reanalysis_series : pandas.DataFrame, xarray.Dataset or xarray.DataArray.
         This object can be that extracted from a reanalysis,
-        CORDEX projections or similar.
+        CORDEX projections or similar ones.
     time_freq : str
-        String that identifies the frequency to which data is filtered.
+        Time frequency to which data will be filtered.
     delta_type : {"absolute", "relative"}
     statistic : {"max", "min", "mean", "std", "sum"}
-        String that defines which statistic to compute.
-        Default is "mean" so that climatologic means are calculated.
+        The statistic to calculate.
+        Default is "mean" so that climatologic mean is calculated.
     preference_over : {"observed", "reanalysis"}
         If "observed", then the observed series will be treated as the 'truth'
         and the reanalysis will be delta-corrected.
@@ -968,7 +940,7 @@ def moving_average(x, N):
 unsupported_option_error_str = "Unsupported {}. Options are {}"
 season_length_warning_str = "Season length must strictly be of 3 months."
 season_month_fmt_error_str = \
-"""You must specify the season months in a list. For example: [12,1,2]"""
+"""You must specify the season months in a list. For example: [12, 1, 2]"""
 
 # Delta application function #
 delta_types = ["absolute", "relative"]
