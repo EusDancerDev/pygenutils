@@ -5,17 +5,10 @@
 # Import custom modules #
 #-----------------------#
 
+from pytools.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
 from pytools.parameters_and_constants.global_parameters import common_delim_list
 from pytools.operative_systems.os_operations import exec_shell_command
-from pytools.strings import string_handler 
-
-# Create aliases #
-#----------------#
-
-condense_array_content_as_string = string_handler.file_list_to_str
-get_file_spec = string_handler.get_file_spec
-modify_obj_specs = string_handler.modify_obj_specs
-obj_path_specs = string_handler.obj_path_specs
+from pytools.strings.string_handler import modify_obj_specs, obj_path_specs
 
 #-------------------------#
 # Define custom functions #
