@@ -89,16 +89,16 @@ def df_summarizer(df, df_cols, operator):
  
 
 
-def complete_data_reach_threshold(WS_arr,
-                                  WS_binned_df, WS_arr_binned,
-                                  WS_arr_sum, WS_sum_cols,
+def complete_data_reach_threshold(ws_arr,
+                                  ws_binned_df, ws_arr_binned,
+                                  ws_arr_sum, ws_sum_cols,
                                   key_var_index_list, key_var_list,
-                                  WS_sum_df=None):
+                                  ws_sum_df=None):
         
     # Main information from the passed arguments #
     #--------------------------------------------#
 
-    las = len(WS_arr_sum)
+    las = len(ws_arr_sum)
 
     # Array for the selected cases (s), based on the key variable list #
     ####################################################################
@@ -110,18 +110,18 @@ def complete_data_reach_threshold(WS_arr,
         arr_varcase_idx = range(las)
          
     elif lkvil == 1:   
-        arr_varcase_idx = np.where(WS_arr_sum[:, 1]==key_var_index_list)
+        arr_varcase_idx = np.where(ws_arr_sum[:, 1]==key_var_index_list)
         
     elif lkvil == 2:
-        arr_varcase_idx = np.where((WS_arr_sum[:, 1]==key_var_index_list[0])
-                                    * (WS_arr_sum[:, 2]==key_var_index_list[1]))
+        arr_varcase_idx = np.where((ws_arr_sum[:, 1]==key_var_index_list[0])
+                                    * (ws_arr_sum[:, 2]==key_var_index_list[1]))
         
     elif lkvil == 3:            
-        arr_varcase_idx = WS_sum_df[(WS_sum_df[WS_sum_cols[1]]==key_var_index_list[0])
-                                    & (WS_sum_df[WS_sum_cols[2]]==key_var_index_list[1])
-                                    & (WS_sum_df[WS_sum_cols[3]]==key_var_index_list[2])].index
+        arr_varcase_idx = ws_sum_df[(ws_sum_df[ws_sum_cols[1]]==key_var_index_list[0])
+                                    & (ws_sum_df[ws_sum_cols[2]]==key_var_index_list[1])
+                                    & (ws_sum_df[ws_sum_cols[3]]==key_var_index_list[2])].index
         
-    arr_varcase = WS_arr_sum[arr_varcase_idx]
+    arr_varcase = ws_arr_sum[arr_varcase_idx]
     arr_varcase_ref = arr_varcase.copy()
     
     lav = len(arr_varcase)
@@ -141,7 +141,7 @@ def complete_data_reach_threshold(WS_arr,
             list_slice = [arr_varcase_ref[i].tolist()]
 
             # Corresponding bin, average sigma, N-values and completed condition #
-            key_var_idx = find_substring_index(WS_sum_cols, key_var_list)
+            key_var_idx = find_substring_index(ws_sum_cols, key_var_list)
 
             curr_bin, sigma_avg, N = select_list_elements(list_slice[0], key_var_idx)
             
@@ -218,46 +218,46 @@ def complete_data_reach_threshold(WS_arr,
                         the binned wind speed column.
                         """
                         
-                        WS_bin, N = select_list_elements(list_slice[j], [0,-1])
+                        ws_bin, N = select_list_elements(list_slice[j], [0,-1])
                         NT += N        
                       
                         """
                         Pandas's indexing method has been chosen over np.where
-                        because it causes increasing performance loss over WS bin iterations.
+                        because it causes increasing performance loss over Wind Speed bin iterations.
                         """
                         
                         if lkvil == 0:
                             sigma_idx\
-                            = WS_binned_df[WS_binned_df[WS_sum_cols[0]]==WS_bin].index
+                            = ws_binned_df[ws_binned_df[ws_sum_cols[0]]==ws_bin].index
                        
                         elif lkvil == 1:
                             sigma_idx\
-                            = WS_binned_df[(WS_binned_df[WS_sum_cols[0]]==WS_bin)
-                                            & (WS_binned_df[WS_sum_cols[1]]==key_var_index_list[0])].index
+                            = ws_binned_df[(ws_binned_df[ws_sum_cols[0]]==ws_bin)
+                                            & (ws_binned_df[ws_sum_cols[1]]==key_var_index_list[0])].index
                         
                         elif lkvil == 2:
                             sigma_idx\
-                            = WS_binned_df[(WS_binned_df[WS_sum_cols[0]]==WS_bin)
-                                            & (WS_binned_df[WS_sum_cols[1]]==key_var_index_list[0])
-                                            & (WS_binned_df[WS_sum_cols[2]]==key_var_index_list[1])].index
+                            = ws_binned_df[(ws_binned_df[ws_sum_cols[0]]==ws_bin)
+                                            & (ws_binned_df[ws_sum_cols[1]]==key_var_index_list[0])
+                                            & (ws_binned_df[ws_sum_cols[2]]==key_var_index_list[1])].index
                             
                         elif lkvil == 3:
                             sigma_idx\
-                            = WS_binned_df[(WS_binned_df[WS_sum_cols[0]]==WS_bin)
-                                            & (WS_binned_df[WS_sum_cols[1]]==key_var_index_list[0])
-                                            & (WS_binned_df[WS_sum_cols[2]]==key_var_index_list[1])
-                                            & (WS_binned_df[WS_sum_cols[3]]==key_var_index_list[2])].index
+                            = ws_binned_df[(ws_binned_df[ws_sum_cols[0]]==ws_bin)
+                                            & (ws_binned_df[ws_sum_cols[1]]==key_var_index_list[0])
+                                            & (ws_binned_df[ws_sum_cols[2]]==key_var_index_list[1])
+                                            & (ws_binned_df[ws_sum_cols[3]]==key_var_index_list[2])].index
     
     
-                        arr_binned_WS_sigma_idx = WS_arr_binned[sigma_idx]
-                        arr_WS_sigma_idx = WS_arr[sigma_idx][:, np.newaxis]
+                        arr_binned_ws_sigma_idx = ws_arr_binned[sigma_idx]
+                        arr_ws_sigma_idx = ws_arr[sigma_idx][:, np.newaxis]
                         
-                        arr_WS_sigma_idx = np.append(arr_WS_sigma_idx, 
-                                                     arr_binned_WS_sigma_idx, 
+                        arr_ws_sigma_idx = np.append(arr_ws_sigma_idx, 
+                                                     arr_binned_ws_sigma_idx, 
                                                      axis=1)
                                             
                         """The last column will always be filled-in sigma"""
-                        sigma_bin = arr_WS_sigma_idx[:,-1]
+                        sigma_bin = arr_ws_sigma_idx[:,-1]
     
                         if NT < valid_data_threshold:
                             key_data_list.append((sigma_bin, N))
@@ -266,7 +266,7 @@ def complete_data_reach_threshold(WS_arr,
                             N1 = valid_data_threshold + N - NT
                             
                             curr_bin_left = curr_bin.left
-                            Bin_left = WS_bin.left
+                            Bin_left = ws_bin.left
                             d_bin = Bin_left - curr_bin_left
                          
                             if d_bin < 0:
@@ -275,7 +275,7 @@ def complete_data_reach_threshold(WS_arr,
                                 """
                                 
                                 sigma_bin_toComplMinN\
-                                = sort_array_rows_by_column(arr_WS_sigma_idx, 0)[-N1:,-1]
+                                = sort_array_rows_by_column(arr_ws_sigma_idx, 0)[-N1:,-1]
                                 
                                 
                             elif d_bin > 0:
@@ -283,7 +283,7 @@ def complete_data_reach_threshold(WS_arr,
                                 of the considered bin.
                                 """
                                 sigma_bin_toComplMinN\
-                                = sort_array_rows_by_column(arr_WS_sigma_idx, 0)[:N1,-1]
+                                = sort_array_rows_by_column(arr_ws_sigma_idx, 0)[:N1,-1]
     
                                 
                             key_data_list.append((sigma_bin_toComplMinN, N1))
@@ -302,7 +302,7 @@ def complete_data_reach_threshold(WS_arr,
                     
                     """
                     In some cases, due to the already used intervals and
-                    insufficient or non-existent data in the original series (WS_series)
+                    insufficient or non-existent data in the original series (ws_series)
                     the sliced list (list_slice) will be empty.
                       
                     In these cases, the mean of the sigma will be set to NaN
@@ -336,63 +336,63 @@ def complete_data_reach_threshold(WS_arr,
 
 
 def assign_sigma_to_original_data(original_array,
-                                  WS_binned_df,
-                                  sigmaFilledDf,
+                                  ws_binned_df,
+                                  sigma_filled_df,
                                   sigmaFilledArray,
-                                  WS_bins_arr,
+                                  ws_bins_arr,
                                   key_var_index_list):
     
-    sigmaToFillDfCols = list(sigmaFilledDf.columns)
+    sigma2fill_df_cols = list(sigma_filled_df.columns)
     
     lkvil = len(key_var_index_list)
-    lwsba = len(WS_bins_arr)
+    lwsba = len(ws_bins_arr)
     
-    # Array for the selected cases (s), based on the key variable list and WS bin #
+    # Array for the selected cases (s), based on the key variable list and ws bin #
     ###############################################################################
 
     for i in range(lwsba):
         
-        WS_bin = WS_bins_arr[i]
+        ws_bin = ws_bins_arr[i]
             
         # Depending on the length of the list, consider the variable case data frame #  
         if lkvil == 0:        
             df_varcase_idx\
-            = WS_binned_df[WS_binned_df[sigmaToFillDfCols[0]]==WS_bin].index
+            = ws_binned_df[ws_binned_df[sigma2fill_df_cols[0]]==ws_bin].index
             sigma_mean_bin_idx\
-            = sigmaFilledDf[sigmaFilledDf[sigmaToFillDfCols[0]]==WS_bin].index
+            = sigma_filled_df[sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin].index
              
         elif lkvil == 1:   
             df_varcase_idx\
-            = WS_binned_df[(WS_binned_df[sigmaToFillDfCols[0]]==WS_bin)
-                           & (WS_binned_df[sigmaToFillDfCols[1]]==key_var_index_list[0])].index
+            = ws_binned_df[(ws_binned_df[sigma2fill_df_cols[0]]==ws_bin)
+                           & (ws_binned_df[sigma2fill_df_cols[1]]==key_var_index_list[0])].index
             
             sigma_mean_bin_idx\
-            = sigmaFilledDf[(sigmaFilledDf[sigmaToFillDfCols[0]]==WS_bin)
-                                  & (sigmaFilledDf[sigmaToFillDfCols[1]]==key_var_index_list[0])].index          
+            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+                                  & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])].index          
             
         elif lkvil == 2:
             df_varcase_idx\
-            = WS_binned_df[(WS_binned_df[sigmaToFillDfCols[0]]==WS_bin)
-                           & (WS_binned_df[sigmaToFillDfCols[1]]==key_var_index_list[0])
-                           & (WS_binned_df[sigmaToFillDfCols[2]]==key_var_index_list[1])].index
+            = ws_binned_df[(ws_binned_df[sigma2fill_df_cols[0]]==ws_bin)
+                           & (ws_binned_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
+                           & (ws_binned_df[sigma2fill_df_cols[2]]==key_var_index_list[1])].index
             
             sigma_mean_bin_idx\
-            = sigmaFilledDf[(sigmaFilledDf[sigmaToFillDfCols[0]]==WS_bin)
-                            & (sigmaFilledDf[sigmaToFillDfCols[1]]==key_var_index_list[0])
-                            & (sigmaFilledDf[sigmaToFillDfCols[2]]==key_var_index_list[1])].index    
+            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+                            & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
+                            & (sigma_filled_df[sigma2fill_df_cols[2]]==key_var_index_list[1])].index    
             
         elif lkvil == 3:    
             df_varcase_idx\
-            = WS_binned_df[(WS_binned_df[sigmaToFillDfCols[0]]==WS_bin)
-                           & (WS_binned_df[sigmaToFillDfCols[1]]==key_var_index_list[0])
-                           & (WS_binned_df[sigmaToFillDfCols[2]]==key_var_index_list[1])
-                           & (WS_binned_df[sigmaToFillDfCols[3]]==key_var_index_list[2])].index
+            = ws_binned_df[(ws_binned_df[sigma2fill_df_cols[0]]==ws_bin)
+                           & (ws_binned_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
+                           & (ws_binned_df[sigma2fill_df_cols[2]]==key_var_index_list[1])
+                           & (ws_binned_df[sigma2fill_df_cols[3]]==key_var_index_list[2])].index
             
             sigma_mean_bin_idx\
-            = sigmaFilledDf[(sigmaFilledDf[sigmaToFillDfCols[0]]==WS_bin)
-                            & (sigmaFilledDf[sigmaToFillDfCols[1]]==key_var_index_list[0])
-                            & (sigmaFilledDf[sigmaToFillDfCols[2]]==key_var_index_list[1])
-                            & (sigmaFilledDf[sigmaToFillDfCols[3]]==key_var_index_list[2])].index  
+            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+                            & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
+                            & (sigma_filled_df[sigma2fill_df_cols[2]]==key_var_index_list[1])
+                            & (sigma_filled_df[sigma2fill_df_cols[3]]==key_var_index_list[2])].index  
             
         ldfvi = len(df_varcase_idx)
         lsmbi = len(sigma_mean_bin_idx)
@@ -459,7 +459,7 @@ print_IT_df = False
 #------------------------------#
 
 # Key file names #
-sigma_filled_file_string = "WS_byBins_sigma_10min_filled"
+sigma_filled_file_string = "ws_byBins_sigma_10min_filled"
 IT_file_string = "IT_10min"
 
 # Individual file saving #
@@ -479,8 +479,8 @@ consider_hour = True
 ###################################
 
 # Key variables #
-WS_col = "Sensor 1-Velocidad media"
-WS_sigma_col = "Sensor 1-Velocidad desviacion"
+ws_col = "Sensor 1-Velocidad media"
+ws_sigma_col = "Sensor 1-Velocidad desviacion"
 direc_col = "Sensor 1-Direccion media"
 
 # Fixed #
@@ -528,11 +528,11 @@ hour_col = "hour"
 month_col = "month" 
 
 # Key variables #
-WS_col_abbr = "v(m/s)"
-WS_byBins_col = "bins_velocidad_corregida_(m/s)"
+ws_col_abbr = "v(m/s)"
+ws_byBins_col = "bins_velocidad_corregida_(m/s)"
 
-WS_mean_sigma_col = "sigma_mean"
-WS_sigma_corrected_col = "sigma_corregido"
+ws_mean_sigma_col = "sigma_mean"
+ws_sigma_corrected_col = "sigma_corregido"
 
 direc_col_abbr = "dir(degrees)"
 direc_bins_col = "bins_direccion_media_(grados)"
@@ -540,7 +540,7 @@ direc_bins_col = "bins_direccion_media_(grados)"
 IT_col = "IT"
 
 # Main and key variable list #
-key_var_list = [WS_col_abbr, WS_mean_sigma_col, "N"]
+key_var_list = [ws_col_abbr, ws_mean_sigma_col, "N"]
 
 # Preformatted strings #
 #----------------------#
@@ -567,7 +567,7 @@ sigmaAssignRemainCasesInfoStr = \
 """
 
 fixed_df_InfoStr = """
-COMPLETED WS-BINNED DATA FRAME
+COMPLETED ws-BINNED DATA FRAME
 ------------------------------
 {}
 """
@@ -606,7 +606,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     df_10min[time_col] = df_10min_time_std
     
     """Add the corrected wind speed's sigma column"""
-    df_10min[WS_sigma_corrected_col] = np.nan
+    df_10min[ws_sigma_corrected_col] = np.nan
     
     """Get its values to use them later"""
     arr_10min = df_10min.values
@@ -636,13 +636,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # Mean wind speed #
     #-----------------#
     
-    WS_10min_series = df_10min.loc[:, WS_col]
-    WS_10min_arr = WS_10min_series.values
+    ws_10min_series = df_10min.loc[:, ws_col]
+    ws_10min_arr = ws_10min_series.values
     
-    max_WS_10min = np.max(df_10min[WS_col])
-    max_WS_1h = np.max(df_1h[WS_col])
+    max_ws_10min = np.max(df_10min[ws_col])
+    max_ws_1h = np.max(df_1h[ws_col])
     
-    max_WS = np.max([max_WS_10min, max_WS_1h])
+    max_ws = np.max([max_ws_10min, max_ws_1h])
     
     """The problem with the definition pair below is that numbers with small decimals
     fall into the previous bin.
@@ -650,32 +650,32 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     E.g. bar{v}=4.04 --> bin=(3,4] which is incorrect
     """
     
-    # WS_numBins = int(round(max_WS,0))
-    # WS_bins = pd.cut(WS_10min_series,WS_numBins)
+    # ws_numBins = int(round(max_ws,0))
+    # ws_bins = pd.cut(ws_10min_series,ws_numBins)
     
     """ Instead, define a list of upper and lower limits,
     being the number either integer or float
     """
-    WS_numBins = int(round(max_WS, 0))
+    ws_numBins = int(round(max_ws, 0))
     bin_width1 = 0.5
     bin_width2 = 1
     
-    WS_bins = np.append(np.arange(1,step=bin_width1),
-                        np.arange(1.5, WS_numBins+bin_width2, step=bin_width2))
+    ws_bins = np.append(np.arange(1,step=bin_width1),
+                        np.arange(1.5, ws_numBins+bin_width2, step=bin_width2))
     
     # Group (or cut) the values into the corresponding bin and get the indices #
     """For the bins to be closed to the left and open to the right,
     set the 'right' option in pd.cut to False
     """
-    WS_byBins_df = pd.DataFrame(pd.cut(WS_10min_series, WS_bins, right=False))
+    ws_byBins_df = pd.DataFrame(pd.cut(ws_10min_series, ws_bins, right=False))
     
     # Get mean speed data frame indices for each bin thereof #
-    WS_byBins_df.columns = [WS_byBins_col]
-    WS_byBins_unique = np.unique(WS_byBins_df.dropna())
+    ws_byBins_df.columns = [ws_byBins_col]
+    ws_byBins_unique = np.unique(ws_byBins_df.dropna())
     
-    WS_byWS10Bins_idx\
-    = [WS_10min_series[WS_10min_series.between(interval.left, interval.right)].index
-       for interval in WS_byBins_unique]
+    ws_byws10Bins_idx\
+    = [ws_10min_series[ws_10min_series.between(interval.left, interval.right)].index
+       for interval in ws_byBins_unique]
     
     
     # Direction #
@@ -727,7 +727,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         direc_byBins_unique = np.unique(direc_byBins_df.dropna())
         l_direcBin = len(direc_byBins_unique)
         
-        direc_byBins_byWS10Bins_idx\
+        direc_byBins_byws10Bins_idx\
         = [direc_10min_series[direc_10min_series.between(interval.left, interval.right)].index
            for interval in direc_byBins_unique
            if not isinstance(interval, float)]
@@ -748,62 +748,62 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                            for hour in range(24)]
     
     #---------------------------------------------------------------------------------#
-    # Get the 10-minutely WS sigma mean according to the indices of the binned series #
+    # Get the 10-minutely ws sigma mean according to the indices of the binned series #
     #---------------------------------------------------------------------------------#
     
-    WS_sigma_df = df_10min[WS_sigma_col]
+    ws_sigma_df = df_10min[ws_sigma_col]
     
     # Mean wind speed bins #
     #----------------------#
     
-    WS_sigma_10min_byWSBinIdx = [WS_sigma_df.loc[row_index_list]
-                                 for row_index_list in WS_byWS10Bins_idx]
+    ws_sigma_10min_bywsBinIdx = [ws_sigma_df.loc[row_index_list]
+                                 for row_index_list in ws_byws10Bins_idx]
     
-    WS_sigma_10min_byWSBinIdx_avg = [df_slice.mean()
-                                     for df_slice in WS_sigma_10min_byWSBinIdx]
+    ws_sigma_10min_bywsBinIdx_avg = [df_slice.mean()
+                                     for df_slice in ws_sigma_10min_bywsBinIdx]
     
     # Direction bins #
     #----------------#
     
     if consider_direction:
-        WS_sigma_10min_byDirecBinIdx = [WS_sigma_df.loc[row_index_list]
-                                        for row_index_list in direc_byBins_byWS10Bins_idx]
+        ws_sigma_10min_byDirecBinIdx = [ws_sigma_df.loc[row_index_list]
+                                        for row_index_list in direc_byBins_byws10Bins_idx]
         
-        WS_sigma_10min_byDirecBinIdx_avg = [df_slice.mean()
-                                            for df_slice in WS_sigma_10min_byDirecBinIdx]
+        ws_sigma_10min_byDirecBinIdx_avg = [df_slice.mean()
+                                            for df_slice in ws_sigma_10min_byDirecBinIdx]
     
     # Month bins #
     #------------#
     
     if consider_month:
-        WS_sigma_10min_byMonthBinIdx = [WS_sigma_df.loc[row_index_list]
+        ws_sigma_10min_byMonthBinIdx = [ws_sigma_df.loc[row_index_list]
                                         for row_index_list in time_byMonth_idx]
         
-        WS_sigma_10min_byMonth_avg = [df_slice.mean()
-                                      for df_slice in WS_sigma_10min_byMonthBinIdx]
+        ws_sigma_10min_byMonth_avg = [df_slice.mean()
+                                      for df_slice in ws_sigma_10min_byMonthBinIdx]
         
     # IT by hour #
     #------------#
     
     if consider_hour:
-        WS_sigma_10min_byHourBinIdx = [WS_sigma_df.loc[row_index_list]
+        ws_sigma_10min_byHourBinIdx = [ws_sigma_df.loc[row_index_list]
                                        for row_index_list in time_byHour_idx]
         
-        WS_sigma_10min_byHour_avg = [df_slice.mean()
-                                     for df_slice in WS_sigma_10min_byHourBinIdx]
+        ws_sigma_10min_byHour_avg = [df_slice.mean()
+                                     for df_slice in ws_sigma_10min_byHourBinIdx]
     
     
     #---------------------------------------------------------------------------------#
-    # Construct the mean WS sigma data frame according to the selected parameter bins #
+    # Construct the mean ws sigma data frame according to the selected parameter bins #
     #---------------------------------------------------------------------------------#
     
     # Mean wind speed #
     #-----------------#
     
     # Put data together #
-    WS_byBins_sigma_df = pd.concat([WS_byBins_df, WS_sigma_df], axis=1)
-    WS_byBins_Sigma_df_cols = [WS_col_abbr, WS_sigma_col]
-    WS_byBins_sigma_df.columns = WS_byBins_Sigma_df_cols
+    ws_byBins_sigma_df = pd.concat([ws_byBins_df, ws_sigma_df], axis=1)
+    ws_byBins_Sigma_df_cols = [ws_col_abbr, ws_sigma_col]
+    ws_byBins_sigma_df.columns = ws_byBins_Sigma_df_cols
     
     # Direction #
     #-----------#
@@ -811,10 +811,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     if consider_direction:
     
         # Construct only key column labelled data frame #
-        i = len(WS_byBins_sigma_df.columns)-1    
-        insert_column_in_df(WS_byBins_sigma_df, i, direc_col_abbr, direc_byBins_df)    
+        i = len(ws_byBins_sigma_df.columns)-1    
+        insert_column_in_df(ws_byBins_sigma_df, i, direc_col_abbr, direc_byBins_df)    
         
-        WS_byBins_Sigma_df_cols.insert(i, direc_col_abbr)  
+        ws_byBins_Sigma_df_cols.insert(i, direc_col_abbr)  
         
     # Month #
     #-------#
@@ -825,10 +825,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         month_df = df_10min[time_col].dt.month
         
         # Construct only key column labelled data frame #
-        i = len(WS_byBins_sigma_df.columns)-1
-        insert_column_in_df(WS_byBins_sigma_df, i, month_col, month_df)
+        i = len(ws_byBins_sigma_df.columns)-1
+        insert_column_in_df(ws_byBins_sigma_df, i, month_col, month_df)
         
-        WS_byBins_Sigma_df_cols.insert(i, month_col)
+        ws_byBins_Sigma_df_cols.insert(i, month_col)
     
     # Hour #
     #------#
@@ -839,38 +839,38 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         hour_df = df_10min[time_col].dt.hour
         
         # Construct only key column labelled data frame #
-        i = len(WS_byBins_sigma_df.columns)-1
-        insert_column_in_df(WS_byBins_sigma_df, i, hour_col, hour_df)      
+        i = len(ws_byBins_sigma_df.columns)-1
+        insert_column_in_df(ws_byBins_sigma_df, i, hour_col, hour_df)      
         
-        WS_byBins_Sigma_df_cols.insert(i, hour_col) 
+        ws_byBins_Sigma_df_cols.insert(i, hour_col) 
         
     # Define now an array of the binned data frame for later usage #
     #--------------------------------------------------------------#
     
-    WS_byBins_sigma_arr = WS_byBins_sigma_df.values
+    ws_byBins_sigma_arr = ws_byBins_sigma_df.values
       
     # Summarize the data #  
     #--------------------#
     
-    WS_byBins_sigma_df.columns = WS_byBins_Sigma_df_cols
+    ws_byBins_sigma_df.columns = ws_byBins_Sigma_df_cols
     
     # Count the number of available data for each parameter bin (N) and compute its mean #
-    df_validDataMean =  df_summarizer(WS_byBins_sigma_df,
-                                      WS_byBins_Sigma_df_cols[:-1],
+    df_validDataMean =  df_summarizer(ws_byBins_sigma_df,
+                                      ws_byBins_Sigma_df_cols[:-1],
                                       "mean")
     
-    df_intervalNumValidData = df_summarizer(WS_byBins_sigma_df,
-                                            WS_byBins_Sigma_df_cols[:-1],
+    df_intervalNumValidData = df_summarizer(ws_byBins_sigma_df,
+                                            ws_byBins_Sigma_df_cols[:-1],
                                             "count")
     
     sigmaToFill_MI_df = pd.concat([df_validDataMean, 
                                    df_intervalNumValidData],
                                   axis=1)
     
-    sigmaToFill_MI_df.columns = [WS_mean_sigma_col, "N"]
+    sigmaToFill_MI_df.columns = [ws_mean_sigma_col, "N"]
     
     #-----------------------------------------------------------------#
-    # Complete the WS-binned sigma data frame for each variable combo #
+    # Complete the ws-binned sigma data frame for each variable combo #
     #-----------------------------------------------------------------#
     
     # Define data frames easier to handle and understand #
@@ -893,13 +893,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                               ordered=True, 
                               categories=direc_byBins_unique)
         
-        WS_byBins_sigma_df.loc[:, direc_col_abbr]\
-        = pd.CategoricalIndex(WS_byBins_sigma_df.loc[:, direc_col_abbr],
+        ws_byBins_sigma_df.loc[:, direc_col_abbr]\
+        = pd.CategoricalIndex(ws_byBins_sigma_df.loc[:, direc_col_abbr],
                               ordered=True, 
                               categories=direc_byBins_unique)
     
     sigmaToFillArr = sigmaToFilldf.values
-    sigmaToFillDfCols = list(sigmaToFilldf)
+    sigma2fill_df_cols = list(sigmaToFilldf)
     
     # Final list to store fixed data #
     #--------------------------------#
@@ -913,27 +913,27 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # HIGH-COMPLEXITY CASE: WS BIN + DIRECTION BIN + MONTH + HOUR
+    # HIGH-COMPLEXITY CASE: ws BIN + DIRECTION BIN + MONTH + HOUR
     # =============================================================================
     
     if allCasesSelected:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Month", "Hour"]
-        tab_name = "WS + DIREC + MONTH + HOUR"
+        tab_name = "ws + DIREC + MONTH + HOUR"
         
         for i_direcBin, direcBin in enumerate(direc_byBins_unique):
             for m in month_range:
                 for h in hour_range:
                     
                     key_var_index_list1 = [direcBin, m, h]
-                    sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                                      WS_byBins_sigma_df,
-                                                                      WS_byBins_sigma_arr,
+                    sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                                      ws_byBins_sigma_df,
+                                                                      ws_byBins_sigma_arr,
                                                                       sigmaToFillArr,
-                                                                      sigmaToFillDfCols,
+                                                                      sigma2fill_df_cols,
                                                                       key_var_index_list1,
                                                                       key_var_list,
-                                                                      WS_sum_df=sigmaToFilldf)
+                                                                      ws_sum_df=sigmaToFilldf)
                     
                     sigmaFilledList.append(sigmaFilledArrVar)
                     
@@ -944,23 +944,23 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + MONTH + HOUR
+    # MEDIUM-COMPLEXITY CASE: ws BIN + MONTH + HOUR
     # =============================================================================
     
     if consider_month and consider_hour and not consider_direction:
         
         caseSelectionList = ["Wind speed (default)", "Month", "Hour"]
-        tab_name = "WS + MONTH + HOUR"
+        tab_name = "ws + MONTH + HOUR"
     
         for m in month_range:
             for h in hour_range:
     
                 key_var_index_list1 = [m, h]
-                sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                                  WS_byBins_sigma_df,
-                                                                  WS_byBins_sigma_arr,
+                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                                  ws_byBins_sigma_df,
+                                                                  ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
-                                                                  sigmaToFillDfCols,
+                                                                  sigma2fill_df_cols,
                                                                   key_var_index_list1,
                                                                   key_var_list)
                 
@@ -973,13 +973,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + DIRECTION BIN + HOUR
+    # MEDIUM-COMPLEXITY CASE: ws BIN + DIRECTION BIN + HOUR
     # =============================================================================
     
     if consider_direction and consider_hour and not consider_month:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Hour"]
-        tab_name = "WS + DIREC + HOUR"
+        tab_name = "ws + DIREC + HOUR"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -988,11 +988,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for h in hour_range:            
             
                 key_var_index_list1 = [direcBin, h]
-                sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                                  WS_byBins_sigma_df,
-                                                                  WS_byBins_sigma_arr,
+                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                                  ws_byBins_sigma_df,
+                                                                  ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
-                                                                  sigmaToFillDfCols,
+                                                                  sigma2fill_df_cols,
                                                                   key_var_index_list1,
                                                                   key_var_list)
                                                                
@@ -1006,13 +1006,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + DIRECTION BIN + MONTH
+    # MEDIUM-COMPLEXITY CASE: ws BIN + DIRECTION BIN + MONTH
     # =============================================================================
     
     if consider_direction and consider_month and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Month"]
-        tab_name = "WS + DIREC + MONTH"
+        tab_name = "ws + DIREC + MONTH"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -1021,11 +1021,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for m in month_range:
                   
                 key_var_index_list1 = [direcBin, m]
-                sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                                  WS_byBins_sigma_df,
-                                                                  WS_byBins_sigma_arr,
+                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                                  ws_byBins_sigma_df,
+                                                                  ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
-                                                                  sigmaToFillDfCols,
+                                                                  sigma2fill_df_cols,
                                                                   key_var_index_list1,
                                                                   key_var_list)
                 
@@ -1038,24 +1038,24 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + DIRECTION BIN
+    # LOW-COMPLEXITY CASE: ws BIN + DIRECTION BIN
     # =============================================================================
     
     if consider_direction and not consider_month and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Direction"]
-        tab_name = "WS + DIREC"
+        tab_name = "ws + DIREC"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
             i_direcBin = direc[0]
             
             key_var_index_list1 = [direcBin]
-            sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                              WS_byBins_sigma_df,
-                                                              WS_byBins_sigma_arr,
+            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                              ws_byBins_sigma_df,
+                                                              ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
-                                                              sigmaToFillDfCols,
+                                                              sigma2fill_df_cols,
                                                               key_var_index_list1,
                                                               key_var_list)
             
@@ -1068,22 +1068,22 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + MONTH
+    # LOW-COMPLEXITY CASE: ws BIN + MONTH
     # =============================================================================
     
     if consider_month and not consider_direction and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Month"]
-        tab_name = "WS + MONTH"
+        tab_name = "ws + MONTH"
     
         for m in month_range:
             
             key_var_index_list1 = [m]
-            sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                              WS_byBins_sigma_df,
-                                                              WS_byBins_sigma_arr,
+            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                              ws_byBins_sigma_df,
+                                                              ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
-                                                              sigmaToFillDfCols,
+                                                              sigma2fill_df_cols,
                                                               key_var_index_list1,
                                                               key_var_list)
     
@@ -1097,22 +1097,22 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + HOUR
+    # LOW-COMPLEXITY CASE: ws BIN + HOUR
     # =============================================================================
     
     if consider_hour and not consider_direction and not consider_month:
         
         caseSelectionList = ["Wind speed (default)", "Hour"]
-        tab_name = "WS + HOUR"
+        tab_name = "ws + HOUR"
     
         for h in hour_range:      
             key_var_index_list1 = [h]
     
-            sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                              WS_byBins_sigma_df,
-                                                              WS_byBins_sigma_arr,
+            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                              ws_byBins_sigma_df,
+                                                              ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
-                                                              sigmaToFillDfCols,
+                                                              sigma2fill_df_cols,
                                                               key_var_index_list1,
                                                               key_var_list)
          
@@ -1125,18 +1125,18 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # SIMPLEST CASE: WS BIN
+    # SIMPLEST CASE: ws BIN
     # =============================================================================
     
     if not anyCaseSelected:
-        tab_name = "WS"
+        tab_name = "ws"
     
         key_var_index_list1 = []
-        sigmaFilledArrVar = complete_data_reach_threshold(WS_10min_arr,
-                                                          WS_byBins_sigma_df,
-                                                          WS_byBins_sigma_arr,
+        sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                                                          ws_byBins_sigma_df,
+                                                          ws_byBins_sigma_arr,
                                                           sigmaToFillArr,
-                                                          sigmaToFillDfCols,
+                                                          sigma2fill_df_cols,
                                                           key_var_index_list1,
                                                           key_var_list)
         
@@ -1150,18 +1150,18 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #------------------------------------------------------------------------------------#
     
     sigmaFilledArr = list_array_to_std_array(sigmaFilledList)
-    sigmaFilledDf = pd.DataFrame(sigmaFilledArr, columns=sigmaToFillDfCols)
+    sigma_filled_df = pd.DataFrame(sigmaFilledArr, columns=sigma2fill_df_cols)
     
     #%%
     
     # =============================================================================
-    # HIGH-COMPLEXITY CASE: WS BIN + DIRECTION BIN + MONTH + HOUR
+    # HIGH-COMPLEXITY CASE: ws BIN + DIRECTION BIN + MONTH + HOUR
     # =============================================================================
     
     if allCasesSelected:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Month", "Hour"]
-        tab_name = "WS + DIREC + MONTH + HOUR"
+        tab_name = "ws + DIREC + MONTH + HOUR"
         
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -1172,10 +1172,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                     
                     key_var_index_list2 = [direcBin, m, h]
                     arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                              WS_byBins_sigma_df, 
-                                                              sigmaFilledDf,
+                                                              ws_byBins_sigma_df, 
+                                                              sigma_filled_df,
                                                               sigmaFilledArr,
-                                                              WS_byBins_unique,
+                                                              ws_byBins_unique,
                                                               key_var_index_list2)
            
                     print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
@@ -1186,22 +1186,22 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + MONTH + HOUR
+    # MEDIUM-COMPLEXITY CASE: ws BIN + MONTH + HOUR
     # =============================================================================
     
     if consider_month and consider_hour and not consider_direction:
         
         caseSelectionList = ["Wind speed (default)", "Month", "Hour"]
-        tab_name = "WS + MONTH + HOUR"
+        tab_name = "ws + MONTH + HOUR"
     
         for m in month_range:
             for h in hour_range:
                 key_var_index_list2 = [m, h]
                 arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                          WS_byBins_sigma_df, 
-                                                          sigmaFilledDf,
+                                                          ws_byBins_sigma_df, 
+                                                          sigma_filled_df,
                                                           sigmaFilledArr,
-                                                          WS_byBins_unique,
+                                                          ws_byBins_unique,
                                                           key_var_index_list2)
     
                 print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
@@ -1211,13 +1211,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + DIRECTION BIN + HOUR
+    # MEDIUM-COMPLEXITY CASE: ws BIN + DIRECTION BIN + HOUR
     # =============================================================================
     
     if consider_direction and consider_hour and not consider_month:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Hour"]
-        tab_name = "WS + DIREC + HOUR"
+        tab_name = "ws + DIREC + HOUR"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -1226,10 +1226,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for h in hour_range:            
                 key_var_index_list2 = [direcBin, h]
                 arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                          WS_byBins_sigma_df, 
-                                                          sigmaFilledDf,
+                                                          ws_byBins_sigma_df, 
+                                                          sigma_filled_df,
                                                           sigmaFilledArr,
-                                                          WS_byBins_unique,
+                                                          ws_byBins_unique,
                                                           key_var_index_list2)
                 
                 print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
@@ -1238,13 +1238,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # MEDIUM-COMPLEXITY CASE: WS BIN + DIRECTION BIN + MONTH
+    # MEDIUM-COMPLEXITY CASE: ws BIN + DIRECTION BIN + MONTH
     # =============================================================================
     
     if consider_direction and consider_month and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Direction", "Month"]
-        tab_name = "WS + DIREC + MONTH"
+        tab_name = "ws + DIREC + MONTH"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -1254,10 +1254,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                   
                 key_var_index_list2 = [direcBin, m]
                 arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                          WS_byBins_sigma_df, 
-                                                          sigmaFilledDf,
+                                                          ws_byBins_sigma_df, 
+                                                          sigma_filled_df,
                                                           sigmaFilledArr,
-                                                          WS_byBins_unique,
+                                                          ws_byBins_unique,
                                                           key_var_index_list2)
               
                 print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
@@ -1267,13 +1267,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + DIRECTION BIN
+    # LOW-COMPLEXITY CASE: ws BIN + DIRECTION BIN
     # =============================================================================
     
     if consider_direction and not consider_month and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Direction"]
-        tab_name = "WS + DIREC"
+        tab_name = "ws + DIREC"
     
         for direc in enumerate(direc_byBins_unique):
             direcBin = direc[-1]
@@ -1281,10 +1281,10 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             
             key_var_index_list2 = [direcBin]
             arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                      WS_byBins_sigma_df, 
-                                                      sigmaFilledDf,
+                                                      ws_byBins_sigma_df, 
+                                                      sigma_filled_df,
                                                       sigmaFilledArr,
-                                                      WS_byBins_unique,
+                                                      ws_byBins_unique,
                                                       key_var_index_list2)
     
             print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
@@ -1294,22 +1294,22 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + MONTH
+    # LOW-COMPLEXITY CASE: ws BIN + MONTH
     # =============================================================================
     
     if consider_month and not consider_direction and not consider_hour:
         
         caseSelectionList = ["Wind speed (default)", "Month"]
-        tab_name = "WS + MONTH"
+        tab_name = "ws + MONTH"
     
         for m in month_range:
             
             key_var_index_list2 = [m]
             arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                      WS_byBins_sigma_df, 
-                                                      sigmaFilledDf,
+                                                      ws_byBins_sigma_df, 
+                                                      sigma_filled_df,
                                                       sigmaFilledArr,
-                                                      WS_byBins_unique,
+                                                      ws_byBins_unique,
                                                       key_var_index_list2)
     
             print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
@@ -1319,22 +1319,22 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # LOW-COMPLEXITY CASE: WS BIN + HOUR
+    # LOW-COMPLEXITY CASE: ws BIN + HOUR
     # =============================================================================
     
     if consider_hour and not consider_direction and not consider_month:
         
         caseSelectionList = ["Wind speed (default)", "Hour"]
-        tab_name = "WS + HOUR"
+        tab_name = "ws + HOUR"
     
         for h in hour_range:      
             key_var_index_list2 = [h]        
     
             arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                      WS_byBins_sigma_df, 
-                                                      sigmaFilledDf,
+                                                      ws_byBins_sigma_df, 
+                                                      sigma_filled_df,
                                                       sigmaFilledArr,
-                                                      WS_byBins_unique,
+                                                      ws_byBins_unique,
                                                       key_var_index_list2)
               
             print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
@@ -1344,18 +1344,18 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # SIMPLEST CASE: WS BIN
+    # SIMPLEST CASE: ws BIN
     # =============================================================================
     
     if not anyCaseSelected:
-        tab_name = "WS"
+        tab_name = "ws"
     
         key_var_index_list2 = []
         arr_10min = assign_sigma_to_original_data(arr_10min,
-                                                  WS_byBins_sigma_df, 
-                                                  sigmaFilledDf,
+                                                  ws_byBins_sigma_df, 
+                                                  sigma_filled_df,
                                                   sigmaFilledArr,
-                                                  WS_byBins_unique,
+                                                  ws_byBins_unique,
                                                   key_var_index_list2)
     
     
@@ -1368,14 +1368,14 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     df_10min_filled = pd.DataFrame(arr_10min, columns=df_10min.columns)
     
     df_10min_filled[IT_col]\
-    = df_10min_filled[WS_sigma_corrected_col] / df_10min_filled[WS_col]
+    = df_10min_filled[ws_sigma_corrected_col] / df_10min_filled[ws_col]
     
     if IT_nan_to_num:
-        df_10MF_ITnanIdx = df_10min_filled[pd.isna(df_10min_filled[IT_col])].index
-        df_10MF_SnanIdx = df_10min_filled[pd.isna(df_10min_filled[WS_sigma_corrected_col])].index
+        df_10MF_ITnan_idx = df_10min_filled[pd.isna(df_10min_filled[IT_col])].index
+        df_10MF_Snan_idx = df_10min_filled[pd.isna(df_10min_filled[ws_sigma_corrected_col])].index
         
-        df_10min_filled.loc[df_10MF_ITnanIdx, IT_col] = invalid_sigma_value
-        df_10min_filled.loc[df_10MF_SnanIdx, WS_sigma_corrected_col] = invalid_sigma_value
+        df_10min_filled.loc[df_10MF_ITnan_idx, IT_col] = invalid_sigma_value
+        df_10min_filled.loc[df_10MF_Snan_idx, ws_sigma_corrected_col] = invalid_sigma_value
         
     #%%
 
@@ -1384,13 +1384,13 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # =============================================================================
     
     if print_sigmaFilled_df:
-        print(fixed_df_InfoStr.format(sigmaFilledDf))
+        print(fixed_df_InfoStr.format(sigma_filled_df))
     
     if save_sigma_filled_as_file:
         
         if sigma_nan_to_num:
-            fsdf_nanIdx = sigmaFilledDf[pd.isna(sigmaFilledDf[WS_mean_sigma_col])].index 
-            sigmaFilledDf.loc[fsdf_nanIdx, WS_mean_sigma_col] = invalid_sigma_value
+            fsdf_nan_idx = sigma_filled_df[pd.isna(sigmaFilledDf[ws_mean_sigma_col])].index 
+            sigma_filled_df.loc[fsdf_nan_idx, ws_mean_sigma_col] = invalid_sigma_value
         
         print("Saving sigma filled data frame into an Excel file...")
         tab_name_reSyntax = tab_name.replace(' + ', '_')
@@ -1400,7 +1400,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         = pd.DataFrame([program_exec_timer('stop')], columns=[elapsed_time_sigmaFill_col])
         
         elapsed_time_sigmaFill_sheetName = f"ET-Fill_{tab_name_reSyntax}"
-        frame_dict_sigma = {tab_name : sigmaFilledDf,
+        frame_dict_sigma = {tab_name : sigma_filled_df,
                             f"{elapsed_time_sigmaFill_sheetName}": elapsed_time_sigmaFill_df}
         
         file_name_sigma = f"{sigma_filled_file_string}-{tab_name_reSyntax}"
@@ -1410,7 +1410,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     #%%
     
     # =============================================================================
-    # SAVE THE ORIGINAL DATA FRAME CONTAINING THE TI MATRIX (CORRECTED WS SIGMA INCLUDED)
+    # SAVE THE ORIGINAL DATA FRAME CONTAINING THE TI MATRIX (CORRECTED ws SIGMA INCLUDED)
     # =============================================================================
     
     if print_IT_df:
