@@ -5,8 +5,9 @@
 # Import custom modules #
 #-----------------------#
 
+from pytools.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
 from pytools.files_and_directories.file_and_directory_handler import rename_objects
-from pytools.os_operations import exec_shell_command
+from pytools.operative_systems.os_operations import exec_shell_command
 from pytools.parameters_and_constants import global_parameters
 from pytools.strings import information_output_formatters, string_handler
 from pytools.weather_and_climate import netcdf_handler 
@@ -22,13 +23,12 @@ time_freqs = global_parameters.time_frequencies_short_1
 format_string = information_output_formatters.format_string
 
 get_file_variables = netcdf_handler.get_file_variables
-find_time_dimension_raise_none = netcdf_handler.find_time_dimension_raiseNone
+find_time_dimension_raise_none = netcdf_handler.find_time_dimension_raise_none
 get_times = netcdf_handler.get_times
 
 add_str_to_aux_path = string_handler.add_str_to_aux_path
 find_substring_index = string_handler.find_substring_index
-condense_array_content_as_string = string_handler.file_list_to_str
-obj_path_specs = string_handler.get_file_spec
+obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
 
 #-------------------------#
