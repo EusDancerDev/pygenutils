@@ -8,6 +8,7 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
+from pytools.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
 from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pytools.parameters_and_constants.global_parameters import common_delim_list
 import pytools.operative_systems.os_operations as os_module_operations
@@ -31,7 +32,6 @@ aux_ext_adder = string_handler.aux_ext_adder
 add_str_to_aux_path = string_handler.add_str_to_aux_path
 get_obj_specs = string_handler.get_obj_specs
 obj_path_specs = string_handler.obj_path_specs
-condense_array_content_as_string = string_handler.condense_array_content_as_string
 find_substring_index = string_handler.find_substring_index
 modify_obj_specs = string_handler.modify_obj_specs
 
