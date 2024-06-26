@@ -51,8 +51,8 @@ def find_substring_index(string,
     #-----------------------------------#
     
     all_arg_names = get_caller_method_args()
-    match_index_pos = find_substring_index(all_arg_names, "return_match_index")    
-    match_index_str_pos = find_substring_index(all_arg_names, "return_match_str")
+    match_index_pos = all_arg_names.index("return_match_index")
+    match_index_str_pos = all_arg_names.index("return_match_str")
     
     if return_match_index and return_match_str:
         raise ValueError(f"Arguments '{all_arg_names[match_index_pos]}' "
@@ -277,7 +277,6 @@ def return_search_obj_spec_aux(string, substring, re_obj_str,
     
     return indices, match_strings
  
-
    
 # PosixPath string management #
 #-----------------------------#
