@@ -11,8 +11,8 @@ import json
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories.file_and_directory_paths import find_files_by_globstr
-from pytools.strings.string_handler import aux_ext_adder, get_obj_specs
+from pyutils.files_and_directories.file_and_directory_paths import find_files_by_globstr
+from pyutils.strings.string_handler import aux_ext_adder, get_obj_specs
 
 #-------------------------#
 # Define custom functions #

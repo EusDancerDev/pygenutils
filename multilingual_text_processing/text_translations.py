@@ -5,9 +5,9 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.operative_systems.os_operations import catch_shell_prompt_output
-from pytools.strings import string_handler, information_output_formatters
-from pytools.utilities.introspection_utils import get_caller_method_args
+from pyutils.operative_systems.os_operations import catch_shell_prompt_output
+from pyutils.strings import string_handler, information_output_formatters
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Define aliases #
 #----------------#

@@ -5,8 +5,8 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.dictionaries.dict_handler import sort_dictionary_by_keys
-from pytools.parameters_and_constants.global_parameters import basic_four_rules
+from pyutils.dictionaries.dict_handler import sort_dictionary_by_keys
+from pyutils.parameters_and_constants.global_parameters import basic_four_rules
 
 #-------------------------#
 # Define custom functions #

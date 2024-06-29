@@ -12,8 +12,8 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pytools.parameters_and_constants.global_parameters import common_delim_list
-from pytools.strings.string_handler import modify_obj_specs, obj_path_specs
+from pyutils.parameters_and_constants.global_parameters import common_delim_list
+from pyutils.strings.string_handler import modify_obj_specs, obj_path_specs
 
 #-------------------------#
 # Define custom functions #

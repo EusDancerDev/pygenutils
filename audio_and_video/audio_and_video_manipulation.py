@@ -12,8 +12,8 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pytools.strings import information_output_formatters, string_handler
-from pytools.utilities.introspection_utils import get_caller_method_args
+from pyutils.strings import information_output_formatters, string_handler
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

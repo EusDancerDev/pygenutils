@@ -14,7 +14,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import select_array_elements
+from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
 
 #------------------#
 # Define functions #
