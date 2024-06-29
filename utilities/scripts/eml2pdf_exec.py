@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories.file_format_tweaker import eml2pdf
+from pyutils.files_and_directories.file_format_tweaker import eml2pdf
 
 #-------------------#
 # Define parameters #

@@ -14,13 +14,13 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories.bulk_rename_index_main import reorder_objs
+from pyutils.files_and_directories.bulk_rename_index_main import reorder_objs
 
 #-------------------#
 # Define parameters #
 #-------------------#
 
-path = "/home/jonander/Pictures/2023/Tenerife_test_rename_pytools"
+path = "/home/jonander/Pictures/2023/Tenerife_test_rename_pyutils.
 obj_type = "file"
 
 ZERO_PADDING = 3

@@ -15,7 +15,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories import change_permissions_main
+from pyutils.files_and_directories import change_permissions_main
 
 # Create aliases #
 #----------------#
