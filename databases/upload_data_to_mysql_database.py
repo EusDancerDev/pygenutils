@@ -1,8 +1,8 @@
 """
 **Note**
 
-This program is an application of the main module 'database_handler',
-and it uses some of its attributes and/or functions.
+This program is an application of the main module 'database_handler'
+from package 'pyutils', and it uses some of its attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 
@@ -43,9 +43,9 @@ Data Files
 # Import custom modules #
 #-----------------------#
 
-from pytools.databases.database_handler import load_file_to_sql
-# from pytools.files_and_directories.file_and_directory_paths import find_files_by_globstr
-# from pytools.files_and_directories.file_and_directory_paths import find_files_by_ext
+from pyutils.databases.database_handler import load_file_to_sql
+# from pyutils.files_and_directories.file_and_directory_paths import find_files_by_globstr
+# from pyutils.files_and_directories.file_and_directory_paths import find_files_by_ext
 
 #-------------------#
 # Define parameters #
@@ -105,12 +105,12 @@ dtype_dict_obj = {
 # Data files #
 #------------#
 
-input_file_obj = "/home/jonander/Documents/gordetegiak/pytools/databases/test.csv"
+input_file_obj = "/home/jonander/Documents/gordetegiak/pyutils.databases/test.csv"
 
 # input_file_obj = [
-#     "/home/jonander/Documents/gordetegiak/pytools/databases/test1.csv",
-#     "/home/jonander/Documents/gordetegiak/pytools/databases/test2.csv",
-#     "/home/jonander/Documents/gordetegiak/pytools/databases/test3.csv"
+#     "/home/jonander/Documents/gordetegiak/pyutils.databases/test1.csv",
+#     "/home/jonander/Documents/gordetegiak/pyutils.databases/test2.csv",
+#     "/home/jonander/Documents/gordetegiak/pyutils.databases/test3.csv"
 #     ]
 
 # input_file_obj = find_files_by_globstr("test*",
