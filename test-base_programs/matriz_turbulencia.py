@@ -24,10 +24,10 @@ import warnings
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists import array_data_manipulation
-from pytools.pandas_data_frames import data_frame_handler
-from pytools.strings.string_handler import find_substring_index
-from pytools.time_handling import datetime_operators, program_snippet_exec_timers
+from pyutils.arrays_and_lists import array_data_manipulation
+from pyutils.pandas_data_frames import data_frame_handler
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.time_handling import datetime_operators, program_snippet_exec_timers
 
 # Create aliases #
 #----------------#

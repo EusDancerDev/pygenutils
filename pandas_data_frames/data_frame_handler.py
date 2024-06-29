@@ -16,12 +16,12 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import find_duplicated_elements
-from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
-from pytools.parameters_and_constants import global_parameters
-from pytools.strings.string_handler import aux_ext_adder, find_substring_index, get_obj_specs
-from pytools.strings.information_output_formatters import format_string, get_obj_type_str
-from pytools.utilities.introspection_utils import get_caller_method_args
+from pyutils.arrays_and_lists.array_data_manipulation import find_duplicated_elements
+from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pyutils.parameters_and_constants import global_parameters
+from pyutils.strings.string_handler import aux_ext_adder, find_substring_index, get_obj_specs
+from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

@@ -41,8 +41,8 @@ Constants
 # Import custom modules #
 #-----------------------#
 
-from pytools.strings.string_handler import find_substring_index
-from pytools.utilities.introspection_utils import get_obj_type_str
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.utilities.introspection_utils import get_obj_type_str
 
 #-------------------------#
 # Define custom functions #

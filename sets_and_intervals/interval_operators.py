@@ -11,10 +11,10 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pytools.parameters_and_constants.global_parameters import operations_sets_list
+from pyutils.parameters_and_constants.global_parameters import operations_sets_list
 
-from pytools.strings.string_handler import find_substring_index
-from pytools.utilities.instrospection_utils import get_caller_method_args
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.utilities.instrospection_utils import get_caller_method_args
 
 #------------------#
 # Define functions #
