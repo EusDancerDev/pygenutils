@@ -13,9 +13,9 @@ import shutil
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories.file_and_directory_paths import posixpath_converter
-from pytools.operative_systems.os_operations import exec_shell_command
-from pytools.strings.information_output_formatters import format_string
+from pyutils.files_and_directories.file_and_directory_paths import posixpath_converter
+from pyutils.operative_systems.os_operations import exec_shell_command
+from pyutils.strings.information_output_formatters import format_string
 
 #------------------#
 # Define functions #

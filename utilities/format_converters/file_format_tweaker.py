@@ -8,12 +8,12 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
-from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
-from pytools.parameters_and_constants.global_parameters import common_delim_list
-import pytools.operative_systems.os_operations as os_module_operations
-from pytools.strings import string_handler, information_output_formatters
-from pytools.utilities.introspection_utils import get_caller_method_args
+from pyutils.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
+from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pyutils.parameters_and_constants.global_parameters import common_delim_list
+import pyutils.operative_systems.os_operations as os_module_operations
+from pyutils.strings import string_handler, information_output_formatters
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

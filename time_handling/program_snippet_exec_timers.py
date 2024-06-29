@@ -15,9 +15,9 @@ import timeit
 # Import custom modules #
 #-----------------------#
 
-from pytools.strings import information_output_formatters, string_handler
-from pytools.time_formatters import time_format_tweaker
-from pytools.utilities.introspection_utils import get_caller_method_args
+from pyutils.strings import information_output_formatters, string_handler
+from pyutils.time_formatters import time_format_tweaker
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

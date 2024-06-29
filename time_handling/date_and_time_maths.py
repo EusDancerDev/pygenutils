@@ -19,11 +19,11 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import select_array_elements
-from pytools.strings.information_output_formatters import format_string, print_format_string
-from pytools.strings.string_handler import find_substring_index
-from pytools.time_handling.time_formatters import time2seconds, time_format_tweaker
-from pytools.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
+from pyutils.strings.information_output_formatters import format_string, print_format_string
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.time_handling.time_formatters import time2seconds, time_format_tweaker
+from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 
 #------------------#
 # Define functions #

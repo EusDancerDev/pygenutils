@@ -15,11 +15,11 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import select_array_elements,\
+from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements,\
                                                              remove_elements_from_array
-from pytools.strings.information_output_formatters import format_string
-from pytools.strings.string_handler import find_substring_index
-from pytools.utilities.introspection_utils import get_obj_type_str,\
+from pyutils.strings.information_output_formatters import format_string
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.utilities.introspection_utils import get_obj_type_str,\
                                                   get_caller_method_args, \
                                                   retrieve_function_name
 

@@ -15,12 +15,12 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import count_unique_type_objects
-from pytools.pandas_data_frames import data_frame_handler
-from pytools.parameters_and_constants.global_parameters import basic_time_format_strs
-from pytools.strings.string_handler import find_substring_index, modify_obj_specs
-from pytools.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pytools.time_handling.time_formatters import time_format_tweaker
+from pyutils.arrays_and_lists.array_data_manipulation import count_unique_type_objects
+from pyutils.pandas_data_frames import data_frame_handler
+from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
+from pyutils.strings.string_handler import find_substring_index, modify_obj_specs
+from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.time_handling.time_formatters import time_format_tweaker
 
 # Create aliases #
 #----------------#

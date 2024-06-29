@@ -16,10 +16,10 @@ import shutil
 # Import custom modules #
 #-----------------------#
 
-import pytools.file_and_directory_paths as pyt_paths
-from pytools.parameters_and_constants.global_parameters import basic_object_types
-from pytools.strings import information_output_formatters, string_handler
-from pytools.utilities.introspection_utils import get_caller_method_args
+import pyutils.file_and_directory_paths as pyt_paths
+from pyutils.parameters_and_constants.global_parameters import basic_object_types
+from pyutils.strings import information_output_formatters, string_handler
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

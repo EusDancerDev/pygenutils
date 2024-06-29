@@ -10,10 +10,10 @@ Created on Fri Nov  3 09:50:30 2023
 # Import custom modules #
 #-----------------------#
 
-from pytools.files_and_directories import file_and_directory_handler, file_and_directory_paths
-from pytools.strings.string_handler import find_substring_index
-from pytools.time_handling.program_snippet_exec_timers import program_exec_timer
-from pytools.weather_and_climate import cds_tools, netcdf_handler
+from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
+from pyutils.weather_and_climate import cds_tools, netcdf_handler
 
 # Create aliases #
 #----------------#
@@ -99,7 +99,7 @@ extension = return_file_extension(file_format)
 #------------------#
 
 # Document containing directory #
-repo_path = "/home/jonander/Documents/gordetegiak/pytools/"
+repo_path = "/home/jonander/Documents/gordetegiak/pyutils."
 
 # Project (main) directory #
 project_dir = f"{repo_path}/test-base_programs/{project_name}"
