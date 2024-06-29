@@ -5,12 +5,12 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
-from pytools.files_and_directories.file_and_directory_handler import rename_objects
-from pytools.operative_systems.os_operations import exec_shell_command
-from pytools.parameters_and_constants import global_parameters
-from pytools.strings import information_output_formatters, string_handler
-from pytools.weather_and_climate import netcdf_handler 
+from pyutils.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
+from pyutils.files_and_directories.file_and_directory_handler import rename_objects
+from pyutils.operative_systems.os_operations import exec_shell_command
+from pyutils.parameters_and_constants import global_parameters
+from pyutils.strings import information_output_formatters, string_handler
+from pyutils.weather_and_climate import netcdf_handler 
 
 # Create aliases #
 #----------------#

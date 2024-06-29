@@ -5,11 +5,11 @@
 # Import custom modules #
 #-----------------------#
 
-from pytools.strings import information_output_formatters
-from pytools.files_and_directories import file_and_directory_handler, file_format_tweaker
+from pyutils.strings import information_output_formatters
+from pyutils.files_and_directories import file_and_directory_handler, file_format_tweaker
 
-from pytools.parameters_and_constants.global_parameters import basic_four_rules
-from pytools.operative_systems.os_operations import exec_shell_command
+from pyutils.parameters_and_constants.global_parameters import basic_four_rules
+from pyutils.operative_systems.os_operations import exec_shell_command
 
 # Create aliases #
 #----------------#
