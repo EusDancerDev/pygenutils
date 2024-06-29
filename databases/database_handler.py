@@ -16,12 +16,12 @@ from datetime import datetime as dt
 # Import custom modules #
 #-----------------------#
 
-from pytools.pandas_data_frames.data_frame_handler import csv2df, excel_handler, ods_handler
+from pyutils.pandas_data_frames.data_frame_handler import csv2df, excel_handler, ods_handler
 
-from pytools.strings.information_output_formatters import format_string
-from pytools.strings.string_handler import find_substring_index, get_obj_specs
+from pyutils.strings.information_output_formatters import format_string
+from pyutils.strings.string_handler import find_substring_index, get_obj_specs
 
-from pytools.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
+from pyutils.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
 
 #----------------#
 # Create objects #
@@ -427,7 +427,9 @@ def df_loader(df, table_name, engine, if_exists="replace", import_index=False):
     Example
     -------
     >>> df_loader(df, 'my_table', engine)
-    'Data successfully loaded: Database: my_database Table: my_table'
+    'Data successfully loaded:
+    Database : my_database
+    Table : my_table'
     """
     
     try:
