@@ -49,6 +49,7 @@ def modify_obj_permissions(path,
                            extensions2skip="",
                            attr_id=664):
     
+    # FIXME: hobeto ulertu 'attr_id'-en ingurukoa, ez baita unix sistemaren bera
     """
     Default permission ID configuration (as when touching files
     or creating directories) is as follows:
