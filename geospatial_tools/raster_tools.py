@@ -6,7 +6,6 @@
 #----------------#
 
 from osgeo import gdal
-import numpy as np
 
 #-----------------------#
 # Import custom modules #
@@ -172,7 +171,7 @@ def merge_independent_rasters(raster_files_dict,
                 data = in_band.ReadAsArray()
                 
                 if nodata_value is not None:
-                    data[data == nodata_value] = np.nan
+                    data[data == nodata_value] = float('nan')
                     out_band.SetNoDataValue(nodata_value)
                 
                 out_band.WriteArray(data)
