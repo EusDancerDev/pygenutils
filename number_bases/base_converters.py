@@ -13,8 +13,8 @@ arbitrary bases.
 # Define custom functions #
 #-------------------------#
 
-# Quality control functions #
-#---------------------------#
+# Validation functions #
+#----------------------#
 
 def check_input_number_format(x):
     """
@@ -52,8 +52,8 @@ def method_checker(arg):
     if arg not in method_opts:
         raise ValueError(f"Unsupported method. Choose one from {method_opts}.")
         
-# Operations with frequently used bases #
-#---------------------------------------#
+# Frequently used bases #
+#-----------------------#
 
 def base2bin(n, method="format_string", zero_pad=4):
     """
@@ -197,8 +197,8 @@ def hex2dec(n_hex):
         n = int(n_hex, base=16)
     return n
 
-# Operations with arbitrary bases #
-#---------------------------------#
+# Arbitrary bases #
+#-----------------#
 
 def arbitrary_base_to_dec(x, base=10):
     """
