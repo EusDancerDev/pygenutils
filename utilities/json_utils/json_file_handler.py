@@ -19,11 +19,11 @@ from pyutils.strings.string_handler import aux_ext_adder, get_obj_specs
 # Define functions #
 #------------------#
 
-# JSON-supported objects #
-#------------------------#
-
 # Read from and write to JSON files #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#-----------------------------------#
+
+# Dictionaries #
+#-#-#-#-#-#-#-#-
 
 def dict2json(dictionary, 
               out_file_path=None,
@@ -146,8 +146,8 @@ def json2dict(in_file_path):
         raise FileNotFoundError(f"File '{in_file_path}' not found.") from e
         
         
-# Read from JSON files and convert data to a Pandas Dataframe #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# Pandas Dataframe #
+#------------------#
 
 def json2df(json_file_list, encoding="utf-8"):
     
