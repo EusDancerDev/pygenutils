@@ -7,8 +7,6 @@
 
 import datetime
 
-import json
-
 import numpy as np
 import pandas as pd
 
@@ -897,25 +895,6 @@ def merge_excel_files(input_file_list,
     else:
         return all_file_data_dict
         
-        
-# JSON files #
-#-#-#-#-#-#-#-
-
-def json2df(json_file_list, encoding="latin1"):
-    
-    if isinstance(json_file_list, str):
-        json_file_list = [json_file_list]
-    
-    df = pd.DataFrame()
-
-    for json_file in json_file_list:        
-        with open(json_file, "r", encoding=encoding) as jsf:
-            data = json.load(jsf)
-            next_df = pd.json_normalize(data)
-            df = pd.concat([df, next_df],ignore_index=True)
- 
-    return df
-
 
 # CSV files #
 #-#-#-#-#-#-#
