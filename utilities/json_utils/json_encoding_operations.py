@@ -5,8 +5,8 @@
 # Define functions #
 #------------------#
 
-# Encoding and decoding functions for unsupported object types #
-#--------------------------------------------------------------#
+# Unsupported object types #
+#--------------------------#
 
 def to_json(python_object):
     if isinstance(python_object, bytes):
