@@ -5,6 +5,7 @@
 # Import modules # 
 #----------------#
 
+import os.path as ospth
 from pathlib import Path
 
 import numpy as np
@@ -15,7 +16,9 @@ import re
 # Import custom modules # 
 #-----------------------#
 
-from pyutils.utilities.introspection_utils import get_obj_type_str, get_caller_method_args
+from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
+from pyutils.utilities.general.introspection_utils import get_obj_type_str, get_caller_method_args
+
 
 #------------------#
 # Define functions #
@@ -284,15 +287,28 @@ def return_search_obj_spec_aux(string, substring, re_obj_str,
 # Main method #
 #-#-#-#-#-#-#-#
 
-def obj_path_specs(obj_path, splitdelim=None):
+def obj_path_specs(obj_path, module="os", splitdelim=None):
+    # TODO: if-elif baldintzak 'switch_dict' bidez gauzatzea ez da oso praktikoa?
     
-    obj_PATH = Path(obj_path)
+    path_specs_retrieval_modules = filesystem_context_modules[:2]
     
-    obj_path_parent = obj_PATH.parent
-    obj_path_name = obj_PATH.name
-    obj_path_name_noext = obj_PATH.stem
-    obj_path_ext = obj_PATH.suffix[1:]
+    if module not in path_specs_retrieval_modules:
+        raise ValueError("Unsupported module. "
+                         f"Choose one from {path_specs_retrieval_modules}.")
     
+    if module == "Path":
+        obj_PATH = Path(obj_path)
+        obj_path_parent = obj_PATH.parent
+        obj_path_name = obj_PATH.name
+        obj_path_name_noext = obj_PATH.stem
+        obj_path_ext = obj_PATH.suffix[1:]
+        
+    elif module == "os":
+        obj_path_parent = ospth.dirname(obj_path)
+        obj_path_name = ospth.basename(obj_path)
+        obj_path_name_noext = ospth.splitext(obj_path_name)[0]
+        obj_path_ext =  ospth.splitext(obj_path_name)[1][1:]
+        
     obj_specs_dict = {
         obj_specs_keylist[0] : obj_path_parent,
         obj_specs_keylist[1] : obj_path_name,
@@ -302,8 +318,8 @@ def obj_path_specs(obj_path, splitdelim=None):
     
     if splitdelim is not None:
         obj_path_name_noext_parts = obj_path_name_noext.split(splitdelim)
-        addItemDict = {obj_specs_keylist[3] : obj_path_name_noext_parts}
-        obj_specs_dict.update(addItemDict)
+        item_dict_to_add = {obj_specs_keylist[3] : obj_path_name_noext_parts}
+        obj_specs_dict.update(item_dict_to_add)
         
     return obj_specs_dict
 
@@ -426,7 +442,8 @@ def join_obj_path_specs(obj_specs_dict):
     if obj_path_parent is None:
         joint_obj_path = f"{obj_path_name_noext}.{obj_path_ext}"
     else:
-        joint_obj_path = f"{obj_path_parent}/{obj_path_name_noext}.{obj_path_ext}"
+        joint_obj_path_noext = ospth.join(obj_path_parent, obj_path_name_noext)
+        joint_obj_path = f"{joint_obj_path_noext}.{obj_path_ext}"
         
     return joint_obj_path
     
@@ -539,33 +556,38 @@ obj_specs_keylist_essential = obj_specs_keylist[2:]
 # Substring search available method list #
 combined_case_search_method_list = ['default', 'numpy_basic', 'numpy_advanced']
 
+# Search matching object's indexing options #
+match_obj_index_option_keys = ["lo", "hi", "span", False]
+
+# String case handling options #
+case_modifier_option_keys = ["lower", "upper", "capitalize", "title"]
+
+# String stripping options #
+strip_option_keys = ["strip", "lstrip", "rstrip"]
+
 # Switch-type dictionaries #
 #--------------------------#
 
 # Search matching object's indexing options #
 match_obj_index_option_dict = {
-    "lo"   : lambda span: span[0],
-    "hi"   : lambda span: span[-1],
-    "span" : lambda span: span
+    match_obj_index_option_keys[0] : lambda span: span[0],
+    match_obj_index_option_keys[1] : lambda span: span[-1],
+    match_obj_index_option_keys[2] : lambda span: span
 }
-
-match_obj_index_option_keys = list(match_obj_index_option_dict.keys()) + [False]
 
 # String case handling #
 case_modifier_option_dict = {
-    "lower"      : lambda string : string.lower(),
-    "upper"      : lambda string : string.upper(),
-    "capitalize" : lambda string : string.capitalize(),
-    "title"      : lambda string : string.title()
+    case_modifier_option_keys[0] : lambda string : string.lower(),
+    case_modifier_option_keys[1] : lambda string : string.upper(),
+    case_modifier_option_keys[2] : lambda string : string.capitalize(),
+    case_modifier_option_keys[3] : lambda string : string.title()
     }
 
 case_modifier_option_keys = list(case_modifier_option_dict.keys())
 
 # String stripping #
 strip_option_dict = {
-    "strip": lambda string, chars: string.strip(chars),
-    "lstrip": lambda string, chars: string.lstrip(chars),
-    "rstrip": lambda string, chars: string.rstrip(chars),
+    strip_option_keys[0] : lambda string, chars: string.strip(chars),
+    strip_option_keys[1] : lambda string, chars: string.lstrip(chars),
+    strip_option_keys[2] : lambda string, chars: string.rstrip(chars),
 }
-
-strip_option_keys = list(strip_option_dict.keys())
