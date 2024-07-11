@@ -9,9 +9,9 @@ The supported bases include binary, octal, decimal, and hexadecimal, as well as
 arbitrary bases.
 """
 
-#-------------------------#
-# Define custom functions #
-#-------------------------#
+#------------------#
+# Define functions #
+#------------------#
 
 # Validation functions #
 #----------------------#
