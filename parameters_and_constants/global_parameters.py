@@ -59,7 +59,7 @@ month_number_dict = {
     12 : "D"
 }
 
-season_timeFreq_dict = {
+season_time_freq_dict = {
     1  : "Q-JAN",
     2  : "Q-FEB",
     3  : "Q-MAR",
@@ -101,7 +101,11 @@ operations_sets_list = ["union", "difference", "intersection",
 # Operative Systems #
 #-------------------# 
 
-basic_object_types = ["file", "directory"]
+# All filesystem operation related modules #
+filesystem_context_modules = ["os", "Path", "shutil", "subprocess"] # 'Path' from 'pathlib' module
+
+# Storage entities #
+storage_entity_types = ["file", "directory"]
 
 #---------------------------------# 
 # Widely used regular expressions #
