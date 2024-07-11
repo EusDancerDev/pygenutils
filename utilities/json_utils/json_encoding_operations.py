@@ -8,6 +8,8 @@
 # Unsupported object types #
 #--------------------------#
 
+# TODO: docstring-ak idatzi
+
 def to_json(python_object):
     if isinstance(python_object, bytes):
         json_dict = {'__class__':'bytes', '__value__': list(python_object)}
