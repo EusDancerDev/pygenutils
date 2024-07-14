@@ -1,11 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#----------------#
+# Import modules #
+#----------------#
+
+import os
+
 #-------------------------#
 # Define custom functions #
 #-------------------------#
 
-def cat(path):
+def cat(path, mode="r"):
     
     """
     Prints the content of a file specified in an absolute or relative path
@@ -15,6 +21,9 @@ def cat(path):
     ----------
     path : str or PosixPath
         Absolute or relative path.
+    mode : str, optional
+        Specify the IO mode for output when supplying a path.
+        Default value is 'r' (read-only).
           
     Returns
     -------
@@ -23,18 +32,17 @@ def cat(path):
     of the specified path, else throws a FileNotFoundError.
     """
     
-    try:
-        file_obj = open(path)
-        
-    except FileNotFoundError:
-        print("No such file or directory. "
-              "Try fixing misspellings or check path's components.")
+    path_exists = os.path.exists(path)
+    
+    if path_exists:
+        with open(path, mode=mode) as file_obj:
+            for line in file_obj:
+                line_no_extra_whitespaces = line.strip()
+                print(line_no_extra_whitespaces)
         
     else:
-        for line in file:
-            line_no_extra_whitespaces = line.strip()
-            print(line_no_extra_whitespaces)
-        file.close()
+        raise FileNotFoundError("No such file or directory. "
+                                "Try fixing misspellings or check path's components.")        
         
 #-------------------#
 # Call the function #
