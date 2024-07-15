@@ -128,7 +128,8 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
 def format_table_from_list(dict_list,
                            keys=None,
                            display_index=True,
-                           index_header='Index'):
+                           index_header='Index',
+                           custom_start_index=1):
     """
     Format a list of dictionaries into a table string with specific formatting rules.
     
@@ -162,6 +163,9 @@ def format_table_from_list(dict_list,
     index_header : str, optional
         If display_index= True, use this name for the column that contains indices.
         Default name is 'Index'.
+    custom_start_index : int
+        If display_index = True, set the number for the index to start from.
+        Default value is 1.
         
     
     Raises
@@ -176,6 +180,9 @@ def format_table_from_list(dict_list,
     """
     if not dict_list:
         raise ValueError("The dictionary list is empty.")
+    else:
+        if isinstance(dict_list, dict):
+            dict_list = [dict_list]
     
     # Ensure all dictionaries are of the same length
     first_len = len(dict_list[0])
@@ -215,7 +222,7 @@ def format_table_from_list(dict_list,
     
     # Build the content rows
     content_rows = []
-    for idx, subdict in enumerate(dict_list, start=1):
+    for idx, subdict in enumerate(dict_list, start=custom_start_index):
         if display_index:
             row = [f"{idx:^{column_widths[index_header]}}"]
         else:
@@ -257,7 +264,10 @@ def format_table_from_list(dict_list,
 
 
 
-def format_table_from_lists(keys, values, display_index=True, index_header='Index'):
+def format_table_from_lists(keys, values,
+                            display_index=True, 
+                            index_header='Index',
+                            custom_start_index=1):
     """
     Format two lists into a table string with specific formatting rules.
     
@@ -275,8 +285,11 @@ def format_table_from_lists(keys, values, display_index=True, index_header='Inde
     display_index : bool, optional
         Whether to display the index column. Default is True.
     index_header : str, optional
-        If display_index= True, use this name for the column that contains indices.
+        If display_index = True, use this name for the column that contains indices.
         Default name is 'Index'.
+    custom_start_index : int
+        If display_index = True, set the number for the index to start from.
+        Default value is 1.
     
     Raises
     ------
@@ -312,7 +325,7 @@ def format_table_from_lists(keys, values, display_index=True, index_header='Inde
     
     # Build the content rows
     content_rows = []
-    for idx, value in enumerate(values, start=1):
+    for idx, value in enumerate(values, start=custom_start_index):
         if display_index:
             row = [f"{idx:^{column_widths[index_header]}}"]
         else:
