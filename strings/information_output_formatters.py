@@ -125,13 +125,10 @@ def print_format_string(string2format, arg_obj, end="\n"):
     """
     try:
         formatted_string = format_string(string2format, arg_obj)
+    except Exception as e:
+        raise Exception(f"An error occurred: {e}") from e
+    else:
         print(formatted_string, end=end)
-    except TypeError:
-        raise TypeError(type_error_str1)
-    except IndexError:
-        raise IndexError(index_error_str)
-    except SyntaxError:
-        raise SyntaxError(syntax_error_str)
 
     
 # %-strings (percent-strings) #
@@ -170,7 +167,6 @@ def print_percent_string(string2format, arg_obj):
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
-
 
 # Frequent input data types for string formatting #
 main_input_dtype_list_strfmt = ["list", "ndarray", "tuple"]
