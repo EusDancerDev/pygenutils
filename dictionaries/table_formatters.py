@@ -56,7 +56,8 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
     # Ensure all subdictionaries are of the same length
     first_len = len(next(iter(nested_dict.values())))
     if not all(len(subdict) == first_len for subdict in nested_dict.values()):
-        raise ValueError("All subdictionaries in the nested dictionary must be of the same length.")
+        raise ValueError("All subdictionaries in the nested dictionary must be "
+                         "of the same length.")
     
     # Use the keys from the first subdictionary if not provided
     if keys is None:
@@ -64,7 +65,8 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
     else:
         # Ensure the provided keys list length matches the subdictionaries' keys length
         if len(keys) != first_len:
-            raise ValueError("The length of the keys list must match the length of the subdictionaries' keys.")
+            raise ValueError("The length of the keys list must match the length "
+                             "of the subdictionaries' keys.")
     
     # Calculate max width for each column
     column_widths = {key: len(key) for key in keys}
@@ -186,7 +188,8 @@ def format_table_from_list(dict_list,
     else:
         # Ensure the provided keys list length matches the dictionaries' keys length
         if len(keys) != first_len:
-            raise ValueError("The length of the keys list must match the length of the dictionaries' keys.")
+            raise ValueError("The length of the keys list must match the length "
+                             "of the dictionaries' keys.")
     
     # Calculate max width for each column
     column_widths = {key: len(key) for key in keys}
