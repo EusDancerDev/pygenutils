@@ -97,17 +97,19 @@ def serialize_dict_to_json(dictionary,
                     f"at directory '{out_file_parent}' already exists.\n"
                     "Overwrite it? (y/n) "
                     )
-                while overwrite_stdin not in ["y", "n"]:
+                while (overwrite_stdin not in ["y", "n"]):
                     overwrite_stdin = \
                     input("\nPlease enter 'y' for 'yes' or 'n' for 'no': ")
                 
                 if overwrite_stdin == "n":
                     print("File not overwritten.")
                     return None  # Do not overwrite file
-
-            # Write JSON string to file
-            with open(out_file_path, 'w') as f:
-                json.dump(dictionary, f, **kwargs)
+                
+            else:
+                # Either if chosen not to overwrite or file initially inexistent,
+                # write JSON string to new file
+                with open(out_file_path, 'w') as f:
+                    json.dump(dictionary, f, **kwargs)
 
             return out_file_path
 
@@ -433,7 +435,7 @@ def serialize_df_to_json(df,
         raise FileNotFoundError(f"File path not found or invalid: '{out_path}'")
     
     except IOError as e:
-        raise IOError(f"Cannot write to file: '{out_path}'") from e
+        raise IOError(f"Cannot write to file '{out_path}': {e}") from e
     
     except ValueError as e:
         raise ValueError(f"An error occurred while converting DataFrame to JSON: {str(e)}") from e
