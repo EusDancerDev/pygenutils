@@ -238,17 +238,17 @@ def format_table_from_list(dict_list,
     return table
 
 # # Example usage
-# dict_list = [
-#     {'key1': 'val11', 'key2': 'val12'},
-#     {'key1': 'val21', 'key2': 'val22'},
-#     {'key1': 'val31', 'key2': 'val32'}
-# ]
-
 # # dict_list = [
-# #     {'bayern': 'alemania', 'leipzig': 'alemania'},
-# #     {'olaizola': 'aimar', 'irujo': 'juan'},
-# #     {'ziskar II': 'karlos', 'lujan': 'vladimir'}
+# #     {'key1': 'val11', 'key2': 'val12'},
+# #     {'key1': 'val21', 'key2': 'val22'},
+# #     {'key1': 'val31', 'key2': 'val32'}
 # # ]
+
+# dict_list = [
+#     {'bayern': 'alemania', 'leipzig': 'alemania'},
+#     {'olaizola': 'aimar', 'irujo': 'juan'},
+#     {'ziskar II': 'karlos', 'lujan': 'vladimir'}
+# ]
 
 # # Print the table with the index
 # print(format_table_from_list(dict_list, display_index=True))
@@ -261,8 +261,6 @@ def format_table_from_list(dict_list,
 # # Print the table with custom headers
 # custom_keys = ['Futbola', 'Esku pilota edo pala']
 # print(format_table_from_list(dict_list, keys=custom_keys, display_index=True))
-
-
 
 def format_table_from_lists(keys, values,
                             display_index=True, 
@@ -301,17 +299,28 @@ def format_table_from_lists(keys, values,
     table : str
         The formatted table string.
     """
-    if len(keys) != len(values):
-        raise ValueError("The length of keys and values lists must be the same.")
     
+    # Determine if values contain multiple rows or just one
+    if all(isinstance(v, list) for v in values):
+        rows = values
+        # Check if all rows have the same length as keys
+        for i, row in enumerate(rows):
+            if len(row) != len(keys):
+                raise ValueError(f"Length of keys and values row at index {i} do not match.")
+    else:
+        if len(values) != len(keys):
+            raise ValueError("Length of keys and values do not match.")
+        rows = [values]
+
     # Calculate max width for each column
     column_widths = {key: len(key) for key in keys}
-    for key, value in zip(keys, values):
-        column_widths[key] = max(column_widths[key], len(str(value)))
+    for row in rows:
+        for key, value in zip(keys, row):
+            column_widths[key] = max(column_widths[key], len(str(value)))
 
     # Create the header row
     if display_index:
-        max_index_width = len(str(len(values)))
+        max_index_width = len(str(len(rows)))
         column_widths[index_header] = max(len(index_header), max_index_width)
         headers = [index_header] + keys
     else:
@@ -325,18 +334,20 @@ def format_table_from_lists(keys, values,
     
     # Build the content rows
     content_rows = []
-    for idx, value in enumerate(values, start=custom_start_index):
+    for idx, row in enumerate(rows, start=custom_start_index):
         if display_index:
-            row = [f"{idx:^{column_widths[index_header]}}"]
+            row_content = [f"{idx:^{column_widths[index_header]}}"]
         else:
-            row = []
-        for key in keys:
-            row.append(f"{str(value):^{column_widths[key]}}")
-        content_rows.append('|' + '|'.join(row) + '|')
+            row_content = []
+        for key, value in zip(keys, row):
+            row_content.append(f"{str(value):^{column_widths[key]}}")
+        content_rows.append('|' + '|'.join(row_content) + '|')
     
     # Combine all parts
     table = '\n'.join([header_row, underline_row] + content_rows)
     return table
+
+
 
 # # Example usage
 # keys = ['Key1', 'Key2', 'Key3']
