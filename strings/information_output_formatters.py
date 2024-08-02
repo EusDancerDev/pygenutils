@@ -162,7 +162,32 @@ def print_percent_string(string2format, arg_obj):
         
     except SyntaxError:
         raise SyntaxError(syntax_error_str)
+        
 
+# String font effects #
+#---------------------#
+
+# TODO: begizta optimizatu
+# TODO: docstring-a idatzi
+
+def string_underliner(string, underline_char):
+    multiline = "\n" in string
+    
+    if multiline:
+        word_list = string.split("\n")
+        str_underlined = ""
+        for word in word_list:
+            len_word = len(word)
+            str_underlined += f"{word}\n{underline_char:{underline_char}^{len_word}}\n"
+            
+        # Remove the last newline character #
+        str_underlined = str_underlined.rstrip('\n')
+        
+    else:
+        len_string = len(string)
+        str_underlined = f"{string}\n{underline_char:{underline_char}^{len_string}}"
+
+    return str_underlined
 
 #--------------------------#
 # Parameters and constants #
