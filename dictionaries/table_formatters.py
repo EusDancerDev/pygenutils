@@ -267,37 +267,46 @@ def format_table_from_lists(keys, values,
                             index_header='Index',
                             custom_start_index=1):
     """
-    Format two lists into a table string with specific formatting rules.
+    Format a list of keys and corresponding list of values into a neatly aligned table.
     
-    Note
-    ----
-    If specific values are given in the `keys` list, the header may be long,
-    and no key filtering is performed as in other methods.
-
     Parameters
     ----------
     keys : list of str
-        A list of keys to use as column names.
-    values : list
-        A list of values corresponding to each key.
+        A list of column headers for the table.
+    values : list or list of lists
+        A list containing the row values. If each element of `values` is a list,
+        then it is treated as a row; otherwise, `values` is treated as a single row.
     display_index : bool, optional
-        Whether to display the index column. Default is True.
+        Whether to display an index column in the table. Default is True.
     index_header : str, optional
-        If display_index = True, use this name for the column that contains indices.
-        Default name is 'Index'.
-    custom_start_index : int
-        If display_index = True, set the number for the index to start from.
-        Default value is 1.
+        The header name for the index column, if `display_index` is True. Default is 'Index'.
+    custom_start_index : int, optional
+        The starting number for the index column, if `display_index` is True. Default is 1.
     
     Raises
     ------
     ValueError
-        If the length of `keys` does not match the length of `values`.
+        If the number of keys does not match the number of elements in any row of `values`.
     
     Returns
     -------
     table : str
-        The formatted table string.
+        The formatted table as a string.
+    
+    Examples
+    --------
+    Single row:
+    >>> format_table_from_lists(['Key1', 'Key2'], ['Value1', 'Value2'])
+    | Key1 | Key2 |
+    |======|======|
+    |Value1|Value2|
+    
+    Multiple rows:
+    >>> format_table_from_lists(['Key1', 'Key2'], [['Value1', 'Value2'], ['Value3', 'Value4']])
+    | Key1 | Key2 |
+    |======|======|
+    |Value1|Value2|
+    |Value3|Value4|
     """
     
     # Determine if values contain multiple rows or just one
