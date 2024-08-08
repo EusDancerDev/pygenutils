@@ -5,7 +5,11 @@
 # Define functions #
 #------------------#
 
-def format_table(nested_dict, keys=None, display_index=True, index_header='Index'):
+def format_table(nested_dict,
+                 keys=None, 
+                 display_index=True,
+                 index_header='Index',
+                 column_delimiter="|"):
     """
     Format a nested dictionary into a table string with specific formatting rules.
     
@@ -39,6 +43,8 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
     index_header : str, optional
         If display_index= True, use this name for the column that contains indices.
         Default name is 'Index'.
+    column_delimiter : str
+        Character to delimit the columns, applying both for the header and the content.
     
     Raises
     ------
@@ -85,10 +91,10 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
         headers = keys
     
     # Build the header string
-    header_row = '|' + '|'.join(f"{header:^{column_widths[header]}}" for header in headers) + '|'
+    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" for header in headers) + column_delimiter
     
     # Build the header underline string
-    underline_row = '|' + '|'.join('=' * column_widths[header] for header in headers) + '|'
+    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
     
     # Build the content rows
     content_rows = []
@@ -101,7 +107,7 @@ def format_table(nested_dict, keys=None, display_index=True, index_header='Index
             original_key = list(subdict.keys())[keys.index(key)]
             value = subdict.get(original_key, "")
             row.append(f"{str(value):^{column_widths[key]}}")
-        content_rows.append('|' + '|'.join(row) + '|')
+        content_rows.append(column_delimiter + column_delimiter.join(row) + column_delimiter)
     
     # Combine all parts
     table = '\n'.join([header_row, underline_row] + content_rows)
@@ -129,7 +135,8 @@ def format_table_from_list(dict_list,
                            keys=None,
                            display_index=True,
                            index_header='Index',
-                           custom_start_index=1):
+                           custom_start_index=1,
+                           column_delimiter="|"):
     """
     Format a list of dictionaries into a table string with specific formatting rules.
     
@@ -166,6 +173,8 @@ def format_table_from_list(dict_list,
     custom_start_index : int
         If display_index = True, set the number for the index to start from.
         Default value is 1.
+    column_delimiter : str
+        Character to delimit the columns, applying both for the header and the content.    
         
     
     Raises
@@ -215,10 +224,10 @@ def format_table_from_list(dict_list,
         headers = keys
     
     # Build the header string
-    header_row = '|' + '|'.join(f"{header:^{column_widths[header]}}" for header in headers) + '|'
+    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" for header in headers) + column_delimiter
     
     # Build the header underline string
-    underline_row = '|' + '|'.join('=' * column_widths[header] for header in headers) + '|'
+    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
     
     # Build the content rows
     content_rows = []
@@ -231,7 +240,7 @@ def format_table_from_list(dict_list,
             original_key = list(subdict.keys())[keys.index(key)]
             value = subdict.get(original_key, "")
             row.append(f"{str(value):^{column_widths[key]}}")
-        content_rows.append('|' + '|'.join(row) + '|')
+        content_rows.append(column_delimiter + column_delimiter.join(row) + column_delimiter)
     
     # Combine all parts
     table = '\n'.join([header_row, underline_row] + content_rows)
@@ -265,7 +274,8 @@ def format_table_from_list(dict_list,
 def format_table_from_lists(keys, values,
                             display_index=True, 
                             index_header='Index',
-                            custom_start_index=1):
+                            custom_start_index=1,
+                            column_delimiter="|"):
     """
     Format a list of keys and corresponding list of values into a neatly aligned table.
     
@@ -282,7 +292,9 @@ def format_table_from_lists(keys, values,
         The header name for the index column, if `display_index` is True. Default is 'Index'.
     custom_start_index : int, optional
         The starting number for the index column, if `display_index` is True. Default is 1.
-    
+    column_delimiter : str
+        Character to delimit the columns, applying both for the header and the content.
+            
     Raises
     ------
     ValueError
@@ -336,10 +348,11 @@ def format_table_from_lists(keys, values,
         headers = keys
     
     # Build the header string
-    header_row = '|' + '|'.join(f"{header:^{column_widths[header]}}" for header in headers) + '|'
+    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" 
+                                                          for header in headers) + column_delimiter
     
     # Build the header underline string
-    underline_row = '|' + '|'.join('=' * column_widths[header] for header in headers) + '|'
+    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
     
     # Build the content rows
     content_rows = []
@@ -350,7 +363,7 @@ def format_table_from_lists(keys, values,
             row_content = []
         for key, value in zip(keys, row):
             row_content.append(f"{str(value):^{column_widths[key]}}")
-        content_rows.append('|' + '|'.join(row_content) + '|')
+        content_rows.append(column_delimiter + column_delimiter.join(row_content) + column_delimiter)
     
     # Combine all parts
     table = '\n'.join([header_row, underline_row] + content_rows)
