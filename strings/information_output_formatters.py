@@ -8,6 +8,8 @@ This module provides functions to handle different types of string formatting:
 - F-strings using Python's format method
 - %-strings (percent-strings) using old-style string formatting
 
+Additionally, it contains simple tools to beautify the output format of strings
+
 Functions
 ---------
 - format_string(string2format, arg_obj):
@@ -18,23 +20,9 @@ Functions
     
 - print_percent_string(string2format, arg_obj):
     Formats and prints a string using old-style percent formatting (%-strings).
-
-Constants
----------
-- main_input_dtype_list_strfmt
-    List of frequent input data types suitable for string formatting.
     
-- type_error_str1
-    Error string raised for TypeError in format_string and print_format_string.
-    
-- type_error_str2
-    Error string raised for TypeError in print_percent_string.
-    
-- index_error_str
-    Error string raised for IndexError in format_string and print_format_string.
-    
-- syntax_error_str
-    Error string raised for SyntaxError in format_string and print_format_string.
+- string_underliner(string, underline_char):
+    Underlines a single- or multiple-line string, using the given character.
 """
 
 #-----------------------#
