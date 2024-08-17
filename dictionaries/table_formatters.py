@@ -91,10 +91,16 @@ def format_table(nested_dict,
         headers = keys
     
     # Build the header string
-    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" for header in headers) + column_delimiter
+    header_row = column_delimiter + \
+                 column_delimiter.join(f"{header:^{column_widths[header]}}" 
+                                       for header in headers) + \
+                 column_delimiter
     
     # Build the header underline string
-    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
+    underline_row = column_delimiter + \
+                    column_delimiter.join('=' * column_widths[header]
+                                          for header in headers) + \
+                    column_delimiter
     
     # Build the content rows
     content_rows = []
@@ -224,10 +230,17 @@ def format_table_from_list(dict_list,
         headers = keys
     
     # Build the header string
-    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" for header in headers) + column_delimiter
+    header_row = column_delimiter + \
+                 column_delimiter.join(f"{header:^{column_widths[header]}}" 
+                                       for header in headers) + \
+                 column_delimiter
     
     # Build the header underline string
-    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
+    underline_row = column_delimiter + \
+                    column_delimiter.join('=' * column_widths[header] 
+                                          for header in headers) + \
+                    column_delimiter
+    
     
     # Build the content rows
     content_rows = []
@@ -352,7 +365,10 @@ def format_table_from_lists(keys, values,
                                                           for header in headers) + column_delimiter
     
     # Build the header underline string
-    underline_row = column_delimiter + column_delimiter.join('=' * column_widths[header] for header in headers) + column_delimiter
+    underline_row = column_delimiter + \
+                    column_delimiter.join('=' * column_widths[header]
+                                          for header in headers) + \
+                    column_delimiter
     
     # Build the content rows
     content_rows = []
