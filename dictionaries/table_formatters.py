@@ -284,6 +284,7 @@ def format_table_from_list(dict_list,
 # custom_keys = ['Futbola', 'Esku pilota edo pala']
 # print(format_table_from_list(dict_list, keys=custom_keys, display_index=True))
 
+
 def format_table_from_lists(keys, values,
                             display_index=True, 
                             index_header='Index',
@@ -343,7 +344,9 @@ def format_table_from_lists(keys, values,
                 raise ValueError(f"Length of keys and values row at index {i} do not match.")
     else:
         if len(values) != len(keys):
-            raise ValueError("Length of keys and values do not match.")
+            raise ValueError("Length of keys and values do not match. "
+                             "If values contain multiple rows, ensure "
+                             "all components are lists.")
         rows = [values]
 
     # Calculate max width for each column
@@ -386,10 +389,9 @@ def format_table_from_lists(keys, values,
     return table
 
 
-
 # # Example usage
-# keys = ['Key1', 'Key2', 'Key3']
-# values = ['Value1', 'Value2', 'Value3']
+# keys = ['Key1', 'Key2']
+# values = [['Value1', 'Value2'], ['Value3', 'Value4']]
 
 # # Print the table with the index
 # print(format_table_from_lists(keys, values, display_index=True))
