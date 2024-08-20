@@ -776,29 +776,24 @@ def hdy_interpolation(hdy_df,
         = pd.unique(hdy_interp[(hdy_interp.date.dt.year == hdy_years[i+1])
                         &(hdy_interp.date.dt.month == hdy_months[i+1])].date.dt.day)
         
-        pmltr = np.array(previous_month_last_time_range.split(splitdelim), "i")
-        pmltr1 = pmltr[0]
-        pmltr2 = pmltr[-1]
-        
-        nmftr = np.array(next_month_first_time_range.split(splitdelim), "i")
-        nmftr1 = nmftr[0]
-        nmftr2 = nmftr[-1]
+        pml1, pml2 = np.array(previous_month_last_time_range.split(splitdelim), "i")
+        nmf1, nmf2 = np.array(next_month_first_time_range.split(splitdelim), "i")
     
         ymdh_first1\
         = f"{hdy_years[i]:04d}-{hdy_months[i]:02d}-{days_slice_prev[-1]:02d} "\
-          f"T{pmltr1:02d}"
+          f"T{pml1:02d}"
           
         ymdh_last1\
         = f"{hdy_years[i]:04d}-{hdy_months[i]:02d}-{days_slice_prev[-1]:02d} "\
-          f"T{pmltr2:02d}"
+          f"T{pml2:02d}"
           
         ymdh_first2\
         = f"{hdy_years[i+1]:04d}-{hdy_months[i+1]:02d}-{days_slice_next[0]:02d} "\
-          f"T{nmftr1:02d}"
+          f"T{nmf1:02d}"
           
         ymdh_last2\
         = f"{hdy_years[i+1]:04d}-{hdy_months[i+1]:02d}-{days_slice_next[0]:02d} "\
-          f"T{nmftr2:02d}"
+          f"T{nmf2:02d}"
         
         df_slice1 = hdy_interp[(hdy_interp.date >= ymdh_first1)&
                                (hdy_interp.date <= ymdh_last1)]

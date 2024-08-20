@@ -5,7 +5,7 @@
 # Import modules # 
 #----------------#
 
-import os.path as ospth
+import os.path
 from pathlib import Path
 
 import numpy as np
@@ -304,10 +304,10 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
         obj_path_ext = obj_PATH.suffix[1:]
         
     elif module == "os":
-        obj_path_parent = ospth.dirname(obj_path)
-        obj_path_name = ospth.basename(obj_path)
-        obj_path_name_noext = ospth.splitext(obj_path_name)[0]
-        obj_path_ext =  ospth.splitext(obj_path_name)[1][1:]
+        obj_path_parent = os.path.dirname(obj_path)
+        obj_path_name = os.path.basename(obj_path)
+        obj_path_name_noext = os.path.splitext(obj_path_name)[0]
+        obj_path_ext =  os.path.splitext(obj_path_name)[1][1:]
         
     obj_specs_dict = {
         obj_specs_keylist[0] : obj_path_parent,
@@ -442,7 +442,7 @@ def join_obj_path_specs(obj_specs_dict):
     if obj_path_parent is None:
         joint_obj_path = f"{obj_path_name_noext}.{obj_path_ext}"
     else:
-        joint_obj_path_noext = ospth.join(obj_path_parent, obj_path_name_noext)
+        joint_obj_path_noext = os.path.join(obj_path_parent, obj_path_name_noext)
         joint_obj_path = f"{joint_obj_path_noext}.{obj_path_ext}"
         
     return joint_obj_path

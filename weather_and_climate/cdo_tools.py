@@ -168,9 +168,7 @@ def cdo_mergetime(file_list,
                                                           region,
                                                           extension)
     
-    start_year = f"{period.split(splitdelim2)[0]}"
-    end_year = f"{period.split(splitdelim2)[-1]}"
-    
+    start_year, end_year = period.split(splitdelim2)    
     fsk = "name_noext_parts"
     
     file_list_selyear\
@@ -482,7 +480,7 @@ def cdo_periodic_statistics(nc_file_name, statistic, isclimatic, freq, season_st
     
     """Special case for seasonal time frequency"""
     if season_str is not None:
-        statname_season = f"{statname.split()[0]}_{statname[-3:]}"
+        statname_season = f"{str(statname)}_{statname[-3:]}"
         string2add = f"{splitdelim1}{statname_season}"
         file_path_name_longer = add_str_to_aux_path(file_path_name, string2add)
         

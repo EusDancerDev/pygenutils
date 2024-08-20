@@ -66,7 +66,7 @@ dfstr= """323777.707872328	4005618.05802184
 359551.563331395	3998231.41077723"""
 
 l0=dfstr.split("\n")
-l=[[l0[i].split("\t")[0],l0[i].split("\t")[1]] for i in range(len(l0))]
+l=[l0[i].split("\t") for i in range(len(l0))]
 df=pd.DataFrame(l)
 df.columns=['x','y']
 df=df.astype(np.float64).round(0).astype('i')
