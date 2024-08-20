@@ -182,9 +182,7 @@ def pdf_file_tweaker(path, cat_out_obj):
         if splitdelim not in cat_out_obj:
             raise SyntaxError(syntax_error_str)
             
-        cat_str = cat_out_obj.split(splitdelim)[0]
-        output_path_aux = cat_out_obj.split(splitdelim)[1]
-        
+        cat_str, output_path_aux = cat_out_obj.split(splitdelim)        
         output_path = aux_ext_adder(output_path_aux, extensions[0])        
         tweak_pages(path, cat_str, output_path)
         
