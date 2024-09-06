@@ -8,7 +8,8 @@
 import os.path
 from pathlib import Path
 
-import numpy as np
+from numpy import array, vectorize, char
+
 import pandas as pd
 import re
 
@@ -90,13 +91,13 @@ def find_substring_index(string,
             substr_match_obj = string.find(substring)
 
     
-    elif isinstance(string, (list, np.ndarray, tuple)):
+    elif get_obj_type_str(string) in ["list", "ndarray", "tuple"]:
         if isinstance(substring, str):
     
             if not advanced_search:
-                if isinstance(string, np.ndarray):
-                    substr_match_obj_nofilter = np.char.find(string, substring,
-                                                              start=start, end=end)
+                if get_obj_type_str(string) == "ndarray":
+                    substr_match_obj_nofilter = char.find(string, substring,
+                                                          start=start, end=end)
                     
                     substr_match_obj = [idx
                                          for idx in substr_match_obj_nofilter
@@ -120,11 +121,10 @@ def find_substring_index(string,
                                      for n in substr_match_obj_no_filter
                                      if n != -1]
                 
-
-        elif isinstance(substring, (list, np.ndarray, tuple)):  
+        elif get_obj_type_str(substring) in ["list", "ndarray", "tuple"]:
             if not advanced_search:
                 substr_match_obj_no_filter = \
-                np.char.find(string, substring, start=start, end=end)  
+                char.find(string, substring, start=start, end=end)  
             else:   
                 substr_match_obj_no_filter = advanced_pattern_searcher(string, substring,
                                                                        return_match_index,
@@ -244,8 +244,8 @@ def advanced_pattern_searcher(string, substring,
         all_matches
     ]
     
-    if isinstance(string, (list, np.ndarray, tuple)):
-        match_obj_spec = np.vectorize(return_search_obj_spec_aux)(*arg_list)
+    if get_obj_type_str(string) in ["list", "ndarray", "tuple"]:        
+        match_obj_spec = vectorize(return_search_obj_spec_aux)(*arg_list)
     else:
         match_obj_spec = return_search_obj_spec_aux(*arg_list)
         
@@ -254,6 +254,7 @@ def advanced_pattern_searcher(string, substring,
 
 # Complementary functions #
 #-#-#-#-#-#-#-#-#-#-#-#-#-#
+
 def return_search_obj_spec_aux(string, substring, re_obj_str,
                                return_match_index, return_match_str,
                                iterator_considered, case_sensitive,
@@ -463,10 +464,10 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
         if isinstance(string, str):
             string_replaced = string.replace(string2find, string2replace, count_std)
             
-        elif isinstance(string, (list, np.ndarray)):
+        elif get_obj_type_str(string) in ["list", "ndarray"]:
             if isinstance(string, list):
-                string = np.array(string)
-            string_replaced = np.char.replace(string, string2find, string2replace)
+                string = array(string)
+            string_replaced = char.replace(string, string2find, string2replace)
             
         elif get_obj_type_str(string) == "DataFrame":
             string_replaced = pd.DataFrame.replace(string, string2find, string2replace)
