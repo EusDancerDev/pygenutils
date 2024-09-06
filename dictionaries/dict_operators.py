@@ -8,6 +8,8 @@
 from pyutils.dictionaries.dict_handler import sort_dictionary_by_keys
 from pyutils.parameters_and_constants.global_parameters import basic_four_rules
 
+from functools import reduce
+
 #-------------------------#
 # Define custom functions #
 #-------------------------#
@@ -15,85 +17,85 @@ from pyutils.parameters_and_constants.global_parameters import basic_four_rules
 # Mathematical operations #
 #-------------------------#
 
-def sum_dict_values(dict1, dict2):
-    sum_dict = {key:
-                dict1[key] + dict2[key]
-                for key in dict1.keys() & dict2}
-    return sum_dict
-    
-def subtr_dict_values(dict1, dict2):
-    subtr_dict = {key:
-                  dict1[key] - dict2[key]
-                  for key in dict1.keys() & dict2}
-    return subtr_dict
-
-def mult_dict_values(dict1, dict2):
-    mult_dict = {key:
-                 dict1[key] * dict2[key]
-                 for key in dict1.keys() & dict2}
-    return mult_dict
-
-def div_dict_values(dict1, dict2):
-    div_dict = {key:
-                dict1[key] / dict2[key]
-                for key in dict1.keys() & dict2}
-    return div_dict
-    
-
-def dict_value_basic_operator(dict1, dict2, 
-                              basic_math_operator,
+def dict_value_basic_operator(dict_list,
+                              math_operator,
                               return_sorted_keys=False):
     """
-    Performs basic mathematical operations between two dictionaries,
-    calling the specific function for the chosen mathematical operator.
-    It is not necessary for both dictionaries' to be sorted
-    (always referring to the keys) because the same key is referred to them.    
-    
+    Perform a mathematical operation between dictionaries in a list.
+
+    This function applies the specified mathematical operation to values
+    of common keys across dictionaries. It supports basic operations and
+    includes floor division and exponentiation.
+
     Parameters
     ----------
-    dict1 : dict
-        First dictionary containing some values.
-    dict2 : dict
-        Second dictionary containing some values.
-    basic_math_operator : {'+', '-', '*', '/'}
-    return_sorted_keys : bool
-        Determines whether to return the resulting dictionary with sorted keys.
-        Defaults to False.
-    
+    dict_list : list of dicts
+        A list of dictionaries with float or int values.
+    math_operator : {'+', '-', '*', '/', '//', '**'}
+        The mathematical operation to perform. Must be one of the specified operators.
+    return_sorted_keys : bool, optional
+        If True, returns the resulting dictionary with sorted keys. Default is False.
+
     Returns
     -------
-    result_dict : dict
-        Dictionary with common key's values operated according to the
-        chosen mathematical operator.
-        Depending on the value of 'return_sorted_keys', the dictionary's
-        keys will be sorted.
-    
-    Note
-    ----
-    As aforementioned, this function uses the specific ones for the 
-    chosen mathematical operators, which are defined to operate
-    among common keys to both dictionaries.
-    
-    Then, defining two dictionaries with different lengths will not
-    trigger an error as it is a Python's natively accepted operation,
-    but it has to be taken into account to avoid misinterpretations.    
+    dict
+        A dictionary with the result of the operation applied to values of common keys.
+        Keys will be sorted if `return_sorted_keys` is True.
+
+    Raises
+    ------
+    TypeError
+        If `dict_list` is not a list of dictionaries.
+    ValueError
+        If `dict_list` contains fewer than two dictionaries
+        or if an invalid `math_operator` is provided.
+
+    Notes
+    -----
+    The function assumes that all dictionaries in `dict_list` have at least some common keys.
+    The operation is only performed on these common keys.
     """
     
-    # Quality control #
-    if basic_math_operator not in basic_four_rules:
+    # Input validation #
+    #------------------#
+    
+    # Validate input data type #
+    if not (isinstance(dict_list, list)) or not all((isinstance(element, dict) for element in dict_list)):
+        raise TypeError("Unsupported object type. Must be a list composed "
+                        "only of dictionaries.")
+    
+    # Validate number of dictionaries in the list #
+    if len(dict_list) < 2:
+        raise ValueError("At least two dictionaries must be provided.")
+    
+    # Validate mathematical operator #
+    if math_operator not in allowed_calc_dict:
         raise ValueError ("Invalid basic operator sign. "
-                          f"Choose one from {basic_four_rules}.")
-         
-    accepted_operation_dict = {
-        basic_four_rules[0] : sum_dict_values(dict1, dict2),
-        basic_four_rules[1] : subtr_dict_values(dict1, dict2),
-        basic_four_rules[2] : mult_dict_values(dict1, dict2),
-        basic_four_rules[3] : div_dict_values(dict1, dict2)
-        }
+                          f"Choose one from {list(allowed_calc_dict.keys())}.")
     
-    result_dict = accepted_operation_dict.get(basic_math_operator)
+    # Operations #
+    #------------#
     
+    # Perform the computation #
+    operation = allowed_calc_dict.get(math_operator)
+    result_dict = reduce(operation, dict_list)
+    
+    # Order resulting dictionary's keys if desired #
     if return_sorted_keys: 
         result_dict = sort_dictionary_by_keys(result_dict)
         
     return result_dict
+
+#--------------------------#
+# Parameters and constants #
+#--------------------------#
+
+# Basic calculator operations #
+allowed_calc_dict = {
+    basic_four_rules[0] : lambda d1, d2 : {k : d1[k]+d2[k] for k in d1.ks() & d2},
+    basic_four_rules[1] : lambda d1, d2 : {k : d1[k]-d2[k] for k in d1.ks() & d2},
+    basic_four_rules[2] : lambda d1, d2 : {k : d1[k]*d2[k] for k in d1.ks() & d2},
+    basic_four_rules[3] : lambda d1, d2 : {k : d1[k]/d2[k] for k in d1.ks() & d2},
+    "//" : lambda d1, d2 : {k : d1[k]//d2[k] for k in d1.ks() & d2},
+    "**" : lambda d1, d2 : {k : d1[k]**d2[k] for k in d1.ks() & d2}
+}
