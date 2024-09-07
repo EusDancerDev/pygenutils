@@ -6,78 +6,14 @@
 #----------------#
 
 import itertools as it
-import more_itertools as mit
-
-import numpy as np
-
-#-----------------------#
-# Import custom modules #
-#-----------------------#
-
-from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
+from numpy import array as np_arr
 
 #------------------#
 # Define functions #
 #------------------#
 
-# Matrix algebra #
-#----------------#
-
-def count_consecutive(array, calculate_max_consec=False):    
-    """
-    Function that counts:
-        1 : consecutive numbers in an array or pandas series,
-            also distinguishing them by blocks.
-        2 : maximum consecutive number subset length
-            starting from an array that already satisfies certain condition,
-            i.e. boolean array.
-    
-    Example 1
-    ---------
-    random_list = [45, 46, 47, 48, 80, 81, 83, 87]
-    
-    As can be seen, the first four numbers are consecutive,
-    it stops there and another two consecutive number sequence begins.
-    
-    The result is then the following array:
-    consec_times_array = [4, 2]
-    
-    Example 2
-    ---------
-    bool_array = [False, False, True, True, True, True, True, False, True, True]
-    consec_times_array = [5, 2]
-    max_consec_num = 5
-    """
-    
-    if not calculate_max_consec:
-        
-        consec_times_array_byGroups_lengths\
-        = [len(list(group)) for group in mit.consecutive_groups(array)]
-        
-        if len(consec_times_array_byGroups_lengths) > 1:
-            consec_times_array_byGroups_lengths_gt1\
-            = [lng for lng in consec_times_array_byGroups_lengths if lng >1]
-            return consec_times_array_byGroups_lengths_gt1
-            
-        elif len(consec_times_array_byGroups_lengths) == 1:
-            return consec_times_array_byGroups_lengths
-        
-        else:
-            return None
-    
-    else:
-    
-        bool_groups = [list(group) for _, group in it.groupby(array)]
-        
-        consec_times_array_byGroups_lengths_gt1\
-        = [len(group) for group in bool_groups if group[0] and len(group)>1]
-        
-        if len(consec_times_array_byGroups_lengths_gt1) > 0:
-            max_consec_num = np.max(consec_times_array_byGroups_lengths_gt1)
-            return max_consec_num
-        else:
-            return None
-
+# Combinatorial operations #
+#--------------------------#
 
 def calc_all_unique_pairs(array_like, library="python-default"):    
     """
@@ -89,19 +25,17 @@ def calc_all_unique_pairs(array_like, library="python-default"):
     arr = [1,7,4]
     
     Having 3 items in the list, there are fact(3) = 6 combinations
-    Manually, one can deduce the following ones:
+    Manually, one can deduce the following pairs:
     
     1-7, 1-4, 4-1, 7-1, 7-4, 4-7
     
-    but since the order is unimportant, actual number of combos is
-    fact(3)/2 = 3.
-    In this case, pairs number 3, 4 and 6 can be ruled out, 
-    remaining these combos:
+    Since the order is unimportant, actual number of combos is fact(3) / 2 = 3.
+    In this case, pairs number 3, 4 and 6 can be ruled out, remaining these combos:
         
     1-7, 1-4 and 4-7
     
     Programatically, this function is designed to store each possible
-    pair in a tuple, conforming a list thereof, so for this case
+    pair in a tuple, conforming a list of them, so for this case
     the output would be:
         
     [(1,7), (1,4), (4,7)]
@@ -131,15 +65,19 @@ def calc_all_unique_pairs(array_like, library="python-default"):
             
     Returns
     -------
-    all_pair_combo_arr : list or array of tuples
+    TypeError
+        If not all elements inside the array are of the same type.
+    ValueError
+        If an unsupported library is chosen.
+    all_pair_combo_arr : list or numpy.array of tuples
         The resulting list or array (depending the library used) of tuples.    
     """
     
-    # Parameter correctness checkings #
-    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+    # Input validations #
+    #-#-#-#-#-#-#-#-#-#-#
     
     # Input array #
-    array = np.array(array_like)
+    array = np_arr(array_like)
     data_type = array.dtype
 
     if data_type == 'O':       
@@ -158,131 +96,27 @@ def calc_all_unique_pairs(array_like, library="python-default"):
                          f"Choose one from {return_pairs_library_list}.")
     
     
-    # Number pair computations #
+    # Compute pairs of numbers #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-
     
     all_pair_combo_arr = return_pairs_opt_dict.get(library)(array)
     return all_pair_combo_arr
 
 
-def approach_value_in_array(array, given_value):    
-    """
-    endds the index of the nearest numerical value 
-    compared to the original one in the given array.
-    
-    Parameters
-    ----------
-    array : list, numpy.ndarray or pandas.DataFrame
-        or pandas.Series
-        Array or Pandas DataFrame or series containing the values.
-    
-    given_value : float
-        Value which to compare with those contained in the 'array' parameter.
-    
-    Returns
-    -------
-    value_approach : int or float
-        Closest value in array to the given value.
-    value_approach_idx : int or float or tuple
-        Index of the closest value.
-        If the array or pandas series is of 1D, it returns a float
-        number where the closest value is located.
-        If the array or pandas series is of 2D, it returns a tuple
-        containing the rows and columns where the closest value is located.
-    """
-    
-    if not isinstance(array, list):
-        shape = array.shape
-        lsh = len(shape)
-        
-        if "pandas" in str(type(array)):
-            array = array.values
-        
-        diff_array = abs(array - given_value)
-        
-        value_approach_idx = np.where(array==np.min(diff_array))     
-        if lsh == 1:        
-            value_approach_idx = value_approach_idx[0][0]
-            
-        value_approach = array[value_approach_idx]
-            
-    else:
-        shape = len(array)        
-        diff_array = [abs(array[i] - given_value)
-                      for i in range(shape)]
-        value_approach_idx = [j
-                              for j in range(shape) 
-                              if diff_array[j]==min(diff_array)]
-        
-        if isinstance(value_approach_idx, list):
-            value_approach_idx = value_approach_idx[0]
-            
-        value_approach = select_array_elements(array, value_approach_idx)
-            
-    return (value_approach, value_approach_idx)
-
-    
-
-# Time arrays #
-#-------------#
- 
-def decompose_24h_cumulative_data(array, zeros_dtype='d'):    
-    """
-    Function that obtains the 1-hour time step cumulative data,
-    subtracting to the next cumulative data, the previous cumulative value.
-    It is only intended for 24-hour time step hourly data.
-    
-    The methodology, by its nature, gives negative values every 24 hours.
-    Assuming that data follow a cumulative distribution
-    and is definite positive, then those negative values
-    are considered as spurious and they are substituted by
-    arrays of zeroes.
-    It suffices to encounter a single negative value
-    along the n-1 dimensional array (for a time index) to set it to zero.
-    
-    Parameters
-    ----------
-    array : numpy.ndarray
-        Multi-dimensional array which contains data,
-        being the first index corresponding to 'time' dimension.
-    zeros_dtype : str or numpy type (e.g. numpy.int, numpy.float64)
-        Sets the precision of the array composed of zeroes.
-    
-    Returns
-    -------
-    hour_TS_array : numpy.ndarray
-        Multi dimensional array containing
-        1-hour time step cumulative data.
-    """
-    
-    records = len(array)
-    array_shape = array.shape
-    
-    unmet_case_values = np.zeros(array_shape, dtype=zeros_dtype)
-    
-    hour_TS_array\
-    = np.array([array[t+1] - array[t]
-                if np.all((res :=array[t+1] - array[t])\
-                          [~np.isnan(res)] >= 0.
-                          )
-                else unmet_case_values
-                for t in range(records-1)])
-           
-    hour_TS_array = np.append(hour_TS_array,
-                              np.mean(hour_TS_array[-2:], axis=0)[np.newaxis,:],
-                              axis=0)
-
 #--------------------------#
-# Parameters and constants #return_pairs_options
+# Parameters and constants #
 #--------------------------#
 
-# Pair-combo calculation function #
-#---------------------------------#
+# Supported options #
+#-------------------#
 
 # Method options #
 return_pairs_library_list = ["python-default", "itertools-comb"]
 
-# Switch-type operation dictionary #
+# Switch case dictionaries #
+#--------------------------#
+
+# Pair combo calculation functions #
 return_pairs_opt_dict = {
     return_pairs_library_list[0]: lambda arr: [(i, j) 
                                                for i_aux, i in enumerate(arr)
