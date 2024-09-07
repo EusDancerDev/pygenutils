@@ -8,7 +8,7 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
+from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 import pyutils.operative_systems.os_operations as os_module_operations
@@ -212,7 +212,7 @@ def pdf_file_tweaker(path, cat_out_obj):
 
 def merge_pdf_files(in_path_list, out_path=None):
     
-    all_in_paths_string = condense_array_content_as_string(in_path_list)
+    all_in_paths_string = flatten_content_to_string(in_path_list)
     
     if out_path is None:
         out_path_noext = "merged_doc"

@@ -24,7 +24,7 @@ from pyutils.utilities.introspection_utils import get_caller_method_args
 # Create aliases #
 #----------------#
 
-condense_array_content_as_string = string_handler.file_list_to_str
+flatten_content_to_string = string_handler.file_list_to_str
 find_substring_index = string_handler.find_substring_index
 get_obj_specs = string_handler.get_obj_specs
 modify_obj_specs = string_handler.modify_obj_specs
@@ -1244,7 +1244,7 @@ def grib2netcdf(grib_file_list, on_shell=False, option_str=None):
             nc_file_new = modify_obj_specs(grib_file_list, "ext", extensions[0])
             
         else:
-            grib_allfile_info_str = condense_array_content_as_string(grib_file_list)
+            grib_allfile_info_str = flatten_content_to_string(grib_file_list)
             nc_file_new_noext = input("Please introduce a name "
                                       "for the netCDF file, "
                                       "WITHOUT THE EXTENSION: ")

@@ -190,7 +190,8 @@ def list_array_to_std_array(array_of_lists):
     return array
 
 
-def condense_array_content_as_string(obj, delim=None, add_final_space=False):
+# TODO: berrizendatu 'flatten_content_to_string'-era
+def flatten_content_to_string(obj, delim=None, add_final_space=False):
     method_name = retrieve_function_name()
     
     if get_obj_type_str(obj) not in ["list", "ndarray", "DataFrame", "Series"]:

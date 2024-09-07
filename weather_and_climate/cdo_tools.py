@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import condense_array_content_as_string
+from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories.file_and_directory_handler import rename_objects
 from pyutils.operative_systems.os_operations import exec_shell_command
 from pyutils.parameters_and_constants import global_parameters
@@ -181,7 +181,7 @@ def cdo_mergetime(file_list,
     
     
     
-    allfiles_string = condense_array_content_as_string(file_list_selyear)
+    allfiles_string = flatten_content_to_string(file_list_selyear)
     mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                         f"{standardized_output_file_name}"
     exec_shell_command(mergetime_command)
@@ -191,7 +191,7 @@ def custom_cdo_mergetime(file_list,
                          custom_output_file_name,
                          create_temporal_file=False):
     
-    allfiles_string = condense_array_content_as_string(file_list)
+    allfiles_string = flatten_content_to_string(file_list)
     
     if not create_temporal_file:
         mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
