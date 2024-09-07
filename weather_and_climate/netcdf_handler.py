@@ -7,7 +7,7 @@
 
 from pathlib import Path
 
-import numpy as np
+from numpy import array, round as rnd, unique
 import xarray as xr
 
 #-----------------------#
@@ -528,7 +528,7 @@ def infer_full_period_of_time(nc_file):
         
     date_key = find_time_dimension(ds)
     
-    years = np.unique(ds[date_key].dt.year)
+    years = unique(ds[date_key].dt.year)
     full_period = f"{years[0]-years[-1]}"
     
     return full_period
@@ -1210,11 +1210,11 @@ def find_nearest_coordinates(nc_file_name, lats_obs, lons_obs):
     coord_varlist = find_coordinate_variables(nc_file_name)
     
     ds = xr.open_dataset(nc_file_name)    
-    lats_ds = np.array(ds[coord_varlist[0]], 'd')
-    lons_ds = np.array(ds[coord_varlist[1]], 'd')
+    lats_ds = array(ds[coord_varlist[0]], 'd')
+    lons_ds = array(ds[coord_varlist[1]], 'd')
     
-    lats_obs = np.array(lats_obs, 'd')
-    lons_obs = np.array(lons_obs, 'd')
+    lats_obs = array(lats_obs, 'd')
+    lons_obs = array(lons_obs, 'd')
         
     nearest_lats = []
     nearest_lons = []
@@ -1231,8 +1231,8 @@ def find_nearest_coordinates(nc_file_name, lats_obs, lons_obs):
         
     ds.close()
     
-    nearest_lats = np.round(nearest_lats, 3)
-    nearest_lons = np.round(nearest_lons, 3)
+    nearest_lats = rnd(nearest_lats, 3)
+    nearest_lons = rnd(nearest_lons, 3)
         
     return (nearest_lats, nearest_lons)
 
