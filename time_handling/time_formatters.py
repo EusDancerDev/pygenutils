@@ -405,7 +405,7 @@ def datetime_object_type_converter(time_obj, module=None, time_fmt_str=None):
     if module not in supported_modules_switch_case:
         raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
     
-    # Get the function or lambda from the dictionary using getattr
+    # Get the function or lambda from the dictionary
     func_or_lambda = datetime_obj_dict.get(module)
     
     if func_or_lambda is None:

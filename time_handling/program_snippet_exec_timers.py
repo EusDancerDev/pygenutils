@@ -5,7 +5,7 @@
 # Import modules #
 #----------------#
 
-import numpy as np
+from numpy import round as rnd
 
 import os
 import time
@@ -106,7 +106,7 @@ def snippet_exec_timer(snippet_str,
             if not isinstance(roundoff, int):
                 raise TypeError(format_string(type_error_str, f'{all_arg_names[roundoff_arg_pos]}'))
             else:
-                exec_time_norep = np.round(exec_time_norep, roundoff)
+                exec_time_norep = rnd(exec_time_norep, roundoff)
         
         if not format_time_str:
             time_unit_str = sec_time_unit_str
@@ -130,7 +130,7 @@ def snippet_exec_timer(snippet_str,
             if not isinstance(roundoff, int):
                 raise TypeError(format_string(type_error_str, f'{all_arg_names[roundoff_arg_pos]}'))
             else:
-                exec_time_rep = np.round(exec_time_rep, roundoff)
+                exec_time_rep = rnd(exec_time_rep, roundoff)
                 time_unit_str = sec_time_unit_str
         
         if not format_time_str:
@@ -147,7 +147,7 @@ def snippet_exec_timer(snippet_str,
         if not return_best_time:
             print_format_string(rep_exec_time_info_str, arg_tuple_exec_timer2)
         else:
-            best_time = np.min(exec_time_rep)
+            best_time = min(exec_time_rep)
             arg_tuple_exec_timer3 = (exec_timer2_str, best_time)
             print_format_string(rep_exec_time_info_best_str, arg_tuple_exec_timer3)
     
