@@ -22,8 +22,8 @@ from pyutils.utilities.instrospection_utils import get_caller_method_args
 
 def define_interval(left_limit, right_limit, constructor="pandas", closed="both"):
     
-    # Quality control #
-    #-----------------#
+    # Input validation #
+    #------------------#
     
     # Main argument names and their position on the function's definition #    
     all_arg_names = get_caller_method_args()    
@@ -55,8 +55,8 @@ def basic_interval_operator(interval_array,
                             operator="union", 
                             force_union=False):
     
-    # Quality control #
-    #-----------------#
+    # Input validation #
+    #------------------#
     
     # Main argument names and their position on the function's definition #    
     all_arg_names = get_caller_method_args()
