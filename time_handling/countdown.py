@@ -32,7 +32,7 @@ def countdown(t, time_fmt_str=None, print_str=False):
             time_dt = time_format_tweaker(t, method="model_datetime",
                                           time_fmt_str=time_fmt_str)
         
-        for s2find_1, s2replace_1 in zip(string_arr1[:,0], string_arr1[:,1]):
+        for s2find_1, s2replace_1 in string_arr1:
             time_fmt_str = substring_replacer(time_fmt_str, 
                                               s2find_1, 
                                               s2replace_1)
@@ -43,9 +43,7 @@ def countdown(t, time_fmt_str=None, print_str=False):
             
             else:
                 if zero_pad_ans == "n":
-                    for s2find_2, s2replace_2 in zip(string_arr2[:,0], 
-                                                     string_arr2[:,1]):
-                        
+                    for s2find_2, s2replace_2 in string_arr2:                        
                         time_fmt_str = substring_replacer(time_fmt_str, 
                                                           s2find_2,
                                                           s2replace_2)
@@ -79,15 +77,19 @@ def countdown(t, time_fmt_str=None, print_str=False):
 # Parameters and constants #
 #--------------------------#
 
-string_arr1 = np.array([["%d", "%d-1"],
-                        ["%m", "%m-1"],
-                        ["%Y", "%Y-1"],
-                        ["%y", "%y-1"]])
+string_arr1 = [
+    ["%d", "%d-1"],
+    ["%m", "%m-1"],
+    ["%Y", "%Y-1"],
+    ["%y", "%y-1"]
+]
 
-string_arr2 = np.array([["%d", "%-d"],
-                        ["%m", "%-m"],
-                        ["%Y", "%-Y"],
-                        ["%y", "%-y"]])
+string_arr2 = [
+    ["%d", "%-d"],
+    ["%m", "%-m"],
+    ["%Y", "%-Y"],
+    ["%y", "%-y"]
+]
 
 #---------------#
 # Function gear #
