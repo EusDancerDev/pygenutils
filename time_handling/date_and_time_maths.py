@@ -267,7 +267,7 @@ def clock_time_average(clock_obj_list,
 
     # Date and/or time list format control and its length #
     all_arg_names = get_caller_method_args()
-    obj_list_pos = all_arg_names.index("clock_obj_list")
+    obj_list_pos = find_substring_index("clock_obj_list")
     
     if isinstance(clock_obj_list, str):
         raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
