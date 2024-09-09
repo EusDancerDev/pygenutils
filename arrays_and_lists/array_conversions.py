@@ -189,8 +189,6 @@ def list_array_to_std_array(array_of_lists):
         
     return array
 
-
-# TODO: berrizendatu 'flatten_content_to_string'-era
 def flatten_content_to_string(obj, delim=None, add_final_space=False):
     method_name = retrieve_function_name()
     
