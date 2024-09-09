@@ -10,7 +10,6 @@ import time
 
 import os
 
-import numpy as np
 import pandas as pd
 
 #-----------------------#
@@ -102,7 +101,8 @@ def get_current_datetime(dtype, time_fmt_str=None):
 
 def get_obj_operation_datetime(obj_list,
                                attr="modification",
-                               time_fmt_str="%Y-%m-%d %H:%M:%S"):
+                               time_fmt_str="%Y-%m-%d %H:%M:%S",
+                               want_numpy_array=True):
     """
     Returns a 2D numpy array where each row contains an object (file path)
     from obj_list and its corresponding time attribute (creation, modification,
@@ -117,16 +117,28 @@ def get_obj_operation_datetime(obj_list,
     time_fmt_str : str, optional
         Format string for formatting the time attribute using .strftime(). 
         Defaults to '%Y-%m-%d %H:%M:%S'.
-
+    want_numpy_array : bool
+        Determines whether to convert the final object to a 2D Numpy array.
+        If True, a 2D Numpy array is returned, else a list composed of lists.
+        Defaults to True.
+        
     Returns
     -------
-    obj_timestamp_arr : numpy.ndarray
-        2D array where each row contains [file path, formatted time attribute].
+    obj_timestamp_container : list of lists or numpy.ndarray
+        If 'want_numpy_array' is False, a list of lists, where each of the latter
+        contains the [file path, formatted time attribute], else a 2D Numpy array.
 
     Raises
     ------
     AttributeError
         If attr is not one of the valid options ('creation', 'modification', 'access').
+        
+    Note
+    ----
+    By default, 'want_numpy_array' is set to True, because
+    it is expected to perform high-level operations with arrays frequently.
+    However, this is a large library an since it's used only minimally in this module,
+    lazy and selective import will be made.
     """
     # Validate the type of time attribute #
     all_arg_names = get_caller_method_args()
@@ -141,17 +153,21 @@ def get_obj_operation_datetime(obj_list,
     if isinstance(obj_list, str):
         obj_list = [obj_list]
     
-    # Retrieve operation times and format into array #
-    obj_timestamp_arr = []
+    # Retrieve operation times #
+    obj_timestamp_container = []
     
     for obj in obj_list:
         struct_time_attr_obj = struct_time_attr_dict.get(attr)(obj)
         timestamp_str_attr_obj = time.strftime(time_fmt_str, struct_time_attr_obj)
         info_list = [obj, timestamp_str_attr_obj]
-        obj_timestamp_arr.append(info_list)
+        obj_timestamp_container.append(info_list)
         
-    obj_timestamp_arr = np.array(obj_timestamp_arr)
-    return obj_timestamp_arr
+    # Format the result into a Numpy array if desired #
+    if want_numpy_array:
+        from numpy import array
+        return array(obj_timestamp_container)
+    else:
+        return obj_timestamp_container    
 
 #%%
 
