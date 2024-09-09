@@ -21,16 +21,18 @@ import time
 # Import custom modules #
 #-----------------------#
 
-from arrays_and_lists import array_data_manipulation
-from files_and_directories import file_and_directory_handler, file_and_directory_paths
-from strings.string_handler import flatten_content_to_string, find_substring_index
+from pyutils.arrays_and_lists import array_conversions, array_data_manipulation, array_patterns
+from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
+from pyutils.strings.string_handler import find_substring_index
 
 # Create aliases #
 #----------------#
 
-basic_value_data_type_converter = array_data_manipulation.basic_value_data_type_converter
-select_array_elements = array_data_manipulation.select_array_elements
-remove_elements_from_array = array_data_manipulation.remove_elements_from_array
+basic_value_data_type_converter = array_conversions.basic_value_data_type_converter
+flatten_content_to_string = array_conversions.flatten_content_to_string
+
+remove_elements = array_data_manipulation.remove_elements
+select_array_elements = array_patterns.select_array_elementss
 
 copy_files = file_and_directory_handler.copy_files
 remove_files_by_globstr = file_and_directory_handler.remove_files_by_globstr
@@ -45,7 +47,7 @@ find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 docpath = "/home/jonander/Documents/"
 exts = ["jpg", "pdf", "zip"]
 
-keyWord = "kopiatu"
+key_word = "kopiatu"
 
 kw_del_list = ["kopiatu", "RDT"]
 
@@ -120,7 +122,7 @@ else:
     del_file_idx = delFileObj
 
 
-files2delete = remove_elements_from_array(file_list_cwd, del_file_idx)
+files2delete = remove_elements(file_list_cwd, del_file_idx)
 files2delete = basic_value_data_type_converter(files2delete, 'U', 'O', 
                                                convert_to_list=True)
 
