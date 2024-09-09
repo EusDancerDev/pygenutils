@@ -8,7 +8,7 @@
 #----------------#
 
 import numpy as np
-import pandas as pd
+from pandas import Series
 
 #-----------------------#
 # Import custom modules #
@@ -424,8 +424,8 @@ def sort_array_columns_by_row(array, nrow, sort_order="ascending"):
         raise TypeError(format_string(incompat_operation_obj_type, array_dtype))
         
 
-# Value inserts and removals #
-#----------------------------#
+# Insert and remove values #
+#--------------------------#
 
 def insert_values(x, index, values, axis=None):    
     """
@@ -510,6 +510,7 @@ def extend_array(obj, obj2extend, np_axis=None):
     return obj_extended
 
 
+# FIXME: 'remove_elements_from_array' metodoa -> rename -> 'remove_elements'
 def remove_elements_from_array(array, idx2access, axis=None):    
     """
     Function that removes certain elements either from a list or NumPy array,
@@ -619,7 +620,7 @@ sort_order_ops = ["ascending", "descending"]
 
 obj_conversion_opt_dict = {
     modules_adaptation[0] : lambda obj: np.array(obj),
-    modules_adaptation[1] : lambda obj: pd.Series(obj)
+    modules_adaptation[1] : lambda obj: Series(obj)
     }
 
 # Preformatted strings #
