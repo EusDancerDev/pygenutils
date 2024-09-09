@@ -1,4 +1,4 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
@@ -677,16 +677,16 @@ def calculate_and_apply_deltas(observed_series,
         
         """Acronyms used in the following lines:
             
-        obj2C === object (can either be a Pandas DataFrame or a xarray data set)
+        obj2correct === object (can either be a Pandas DataFrame or a xarray data set)
                   to be corrected
-        objD === delta object
+        obj_delta === delta object
         """
     
         # Seasonal time-frequency #
         ###########################
         
         if time_freq == "seasonal":
-            obj2C = obj_aux[obj_aux[date_key].dt.month.isin(season_months)]
+            obj2correct = obj_aux[obj_aux[date_key].dt.month.isin(season_months)]
             
             # Delta application #
             arg_tuple_delta5 = (
@@ -699,10 +699,10 @@ def calculate_and_apply_deltas(observed_series,
             and get_obj_type_str(reanalysis_series) == "DataFrame"): 
                 
                 if delta_type == "absolute":    
-                    obj_aux.loc[obj2C.index, delta_cols]\
+                    obj_aux.loc[obj2correct.index, delta_cols]\
                     += delta_obj.loc[:, delta_cols].values
                 else:
-                    obj_aux.loc[obj2C.index, delta_cols]\
+                    obj_aux.loc[obj2correct.index, delta_cols]\
                     *= delta_obj.loc[:, delta_cols].values
                     
             elif (get_obj_type_str(observed_series) == "Dataset"
@@ -711,9 +711,9 @@ def calculate_and_apply_deltas(observed_series,
                     and get_obj_type_str(reanalysis_series) == "DataArray"):
                     
                 if delta_type == "absolute":
-                    obj_aux.loc[obj2C.time] += delta_obj.values
+                    obj_aux.loc[obj2correct.time] += delta_obj.values
                 else:
-                    obj_aux.loc[obj2C.time] *= delta_obj.values
+                    obj_aux.loc[obj2correct.time] *= delta_obj.values
                  
         
         # Monthly time-frequency #
@@ -722,8 +722,8 @@ def calculate_and_apply_deltas(observed_series,
         elif time_freq == "monthly":
             
             for m in months_delta:            
-                obj2C = obj_aux[obj_aux[date_key].dt.month==m]
-                objD = delta_obj[delta_obj[date_key].dt.month==m]
+                obj2correct = obj_aux[obj_aux[date_key].dt.month==m]
+                obj_delta = delta_obj[delta_obj[date_key].dt.month==m]
                 
                 # Delta application #
                 arg_tuple_delta6 = (
@@ -736,11 +736,11 @@ def calculate_and_apply_deltas(observed_series,
                 and get_obj_type_str(reanalysis_series) == "DataFrame"):
                 
                     if delta_type == "absolute":
-                        obj_aux.loc[obj2C.index, delta_cols]\
-                        += objD.loc[:, delta_cols].values
+                        obj_aux.loc[obj2correct.index, delta_cols]\
+                        += obj_delta.loc[:, delta_cols].values
                     else:
-                        obj_aux.loc[obj2C.index, delta_cols]\
-                        *= objD.loc[:, delta_cols].values
+                        obj_aux.loc[obj2correct.index, delta_cols]\
+                        *= obj_delta.loc[:, delta_cols].values
                         
                 elif (get_obj_type_str(observed_series) == "Dataset"
                       and get_obj_type_str(reanalysis_series) == "Dataset")\
@@ -748,9 +748,9 @@ def calculate_and_apply_deltas(observed_series,
                         and get_obj_type_str(reanalysis_series) == "DataArray"):
                         
                     if delta_type == "absolute":
-                        obj_aux.loc[obj2C.time] += objD.values
+                        obj_aux.loc[obj2correct.time] += obj_delta.values
                     else:
-                        obj_aux.loc[obj2C.time] *= objD.values
+                        obj_aux.loc[obj2correct.time] *= obj_delta.values
                     
                 
         # Daily time-frequency #
@@ -761,14 +761,14 @@ def calculate_and_apply_deltas(observed_series,
             for m in months_delta: 
                 for d in days_delta:
                         
-                    obj2C = obj_aux[(obj_aux[date_key].dt.month==m)&
+                    obj2correct = obj_aux[(obj_aux[date_key].dt.month==m)&
                                     (obj_aux[date_key].dt.day==d)]
                     
-                    objD = delta_obj[(delta_obj[date_key].dt.month==m)&
+                    obj_delta = delta_obj[(delta_obj[date_key].dt.month==m)&
                                      (delta_obj[date_key].dt.day==d)]
                     
                     # Delta application #
-                    if len(obj2C) > 0 and len(objD) > 0:
+                    if len(obj2correct) > 0 and len(obj_delta) > 0:
                         arg_tuple_delta7 = (
                             f"Applying deltas over the {preference_over} series...",
                             freq_abbr,m,d,"all"
@@ -779,12 +779,12 @@ def calculate_and_apply_deltas(observed_series,
                         and get_obj_type_str(reanalysis_series) == "DataFrame"):
                         
                             if delta_type == "absolute":
-                                obj_aux.loc[obj2C.index, delta_cols] \
-                                += objD.loc[:, delta_cols].values
+                                obj_aux.loc[obj2correct.index, delta_cols] \
+                                += obj_delta.loc[:, delta_cols].values
                             
                             else:
-                                obj_aux.loc[obj2C.index, delta_cols] \
-                                *= objD.loc[:, delta_cols].values
+                                obj_aux.loc[obj2correct.index, delta_cols] \
+                                *= obj_delta.loc[:, delta_cols].values
                                 
                         elif (get_obj_type_str(observed_series) == "Dataset"
                               and get_obj_type_str(reanalysis_series) == "Dataset")\
@@ -792,9 +792,9 @@ def calculate_and_apply_deltas(observed_series,
                                 and get_obj_type_str(reanalysis_series) == "DataArray"):
                                 
                             if delta_type == "absolute":
-                                obj_aux.loc[obj2C.time] += objD.values
+                                obj_aux.loc[obj2correct.time] += obj_delta.values
                             else:
-                                obj_aux.loc[obj2C.time] *= objD.values
+                                obj_aux.loc[obj2correct.time] *= obj_delta.values
                         
                     else:
                         pass
@@ -808,16 +808,16 @@ def calculate_and_apply_deltas(observed_series,
                 for d in days_delta:
                     for h in hours_delta:
                         
-                        obj2C = obj_aux[(obj_aux[date_key].dt.month==m)&
+                        obj2correct = obj_aux[(obj_aux[date_key].dt.month==m)&
                                         (obj_aux[date_key].dt.day==d)&
                                         (obj_aux[date_key].dt.hour==h)]
                        
-                        objD = delta_obj[(delta_obj[date_key].dt.month==m)&
+                        obj_delta = delta_obj[(delta_obj[date_key].dt.month==m)&
                                          (delta_obj[date_key].dt.day==d)&
                                          (delta_obj[date_key].dt.hour==h)]
                        
                         # Delta application #
-                        if len(obj2C) > 0 and len(objD) > 0:
+                        if len(obj2correct) > 0 and len(obj_delta) > 0:
                             arg_tuple_delta8 = (
                                 f"Applying deltas over the {preference_over} series...",
                                 freq_abbr,m,d,h
@@ -828,11 +828,11 @@ def calculate_and_apply_deltas(observed_series,
                             and get_obj_type_str(reanalysis_series) == "DataFrame"):
                             
                                 if delta_type == "absolute":
-                                    obj_aux.loc[obj2C.index, delta_cols] \
-                                    += objD.loc[:, delta_cols].values
+                                    obj_aux.loc[obj2correct.index, delta_cols] \
+                                    += obj_delta.loc[:, delta_cols].values
                                 else:
-                                    obj_aux.loc[obj2C.index, delta_cols] \
-                                    *= objD.loc[:, delta_cols].values
+                                    obj_aux.loc[obj2correct.index, delta_cols] \
+                                    *= obj_delta.loc[:, delta_cols].values
                                     
                             elif (get_obj_type_str(observed_series) == "Dataset"
                                   and get_obj_type_str(reanalysis_series) == "Dataset")\
@@ -840,9 +840,9 @@ def calculate_and_apply_deltas(observed_series,
                                     and get_obj_type_str(reanalysis_series) == "DataArray"):
                                 
                                 if delta_type == "absolute":
-                                    obj_aux.loc[obj2C.time] += objD.values
+                                    obj_aux.loc[obj2correct.time] += obj_delta.values
                                 else:
-                                    obj_aux.loc[obj2C.time] *= objD.values
+                                    obj_aux.loc[obj2correct.time] *= obj_delta.values
                        
                         else:
                             pass
