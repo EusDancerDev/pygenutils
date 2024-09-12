@@ -68,9 +68,9 @@ def meteorological_wind_direction(u, v):
         v = [v]
             
     else:
-        if u.dtype == 'O':
+        if u.dtype.str == 'O':
             u = u.astype('d')
-        if v.dtype == 'O':
+        if v.dtype.str == 'O':
             v = v.astype('d')
     
     u_records = len(u)
