@@ -30,7 +30,7 @@ from pyutils.utilities.introspection_utils import get_obj_type_str,\
 # TODO: proiektuaren atal nahikoa handia
 #       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
 #       1. Zein sarrera mota nahi ditudan
-#       2. Horietako bakoitza zer motatara bihurtu nahi ditudan
+#       2. Horietako bakoitza zer motatara bihurtu nahi dudan
 #       3. Kontsideratu, hala badagokio, data- edo denbora-zatiak erakustea
 #       4. Erakuste formatoa zehaztu <-> 'output_format' aldagaia
 #       5. Galdetu ChatGPT-ri, ONGI ATERAKO DA
@@ -160,7 +160,7 @@ def time_format_tweaker(t,
                     
         return t_res
                     
-    
+    # %%
     elif isinstance(t, str):
 
         if time_fmt_str is None:
@@ -212,7 +212,7 @@ def time_format_tweaker(t,
             t_res = datetime_object_type_converter(t, module, time_fmt_str)
             return t_res
                   
-      
+  # %%
     elif (isinstance(t, tuple)) and\
         not(isinstance(t, tuple) and isinstance(t, time.struct_time)):
         
@@ -473,7 +473,7 @@ def hour_range_standardizer(time_obj):
         time_obj_fixed = fix_24_hour_format(time_series).to_numpy()
 
     elif isinstance(time_obj, pd.DataFrame):
-        time_obj_fixed = time_obj.apply(lambda col: fix_24_hour_format(col) if col.dtype == 'O' else col)
+        time_obj_fixed = time_obj.apply(lambda col: fix_24_hour_format(col) if col.dtype.str == 'O' else col)
 
     elif isinstance(time_obj, pd.Series):
         time_obj_fixed = fix_24_hour_format(time_obj)
