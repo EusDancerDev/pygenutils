@@ -1,11 +1,13 @@
-#! /usr/bin/env python3
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 #----------------#
 # Import modules #
 #----------------#
 
-import datetime
+import arrow
+from datetime import datetime
+from dateutil import parser
 import time
 
 import numpy as np
@@ -15,585 +17,915 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements,\
-                                                             remove_elements_from_array
+from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
-from pyutils.strings.string_handler import find_substring_index
-from pyutils.utilities.introspection_utils import get_obj_type_str,\
-                                                  get_caller_method_args, \
-                                                  retrieve_function_name
+from pyutils.time_handling.date_and_time_operators import parse_floated_nanotime
+from pyutils.utilities.general.introspection_utils import get_obj_type_str, retrieve_function_name
+
+#----------------#
+# Define aliases #
+#----------------#
+
+numpy_unit_list = global_parameters.numpy_unit_list
+pandas_unit_list = global_parameters.pandas_unit_list
+unit_factor_dict = global_parameters.unit_factor_dict
 
 #------------------#
 # Define functions #
 #------------------#
 
-# TODO: proiektuaren atal nahikoa handia
-#       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
-#       1. Zein sarrera mota nahi ditudan
-#       2. Horietako bakoitza zer motatara bihurtu nahi dudan
-#       3. Kontsideratu, hala badagokio, data- edo denbora-zatiak erakustea
-#       4. Erakuste formatoa zehaztu <-> 'output_format' aldagaia
-#       5. Galdetu ChatGPT-ri, ONGI ATERAKO DA
-#       6. Docstring-a
-        
-def time_format_tweaker(t,
-                        time_fmt_str=None,
-                        return_str=False,
-                        return_days=False,
-                        module="datetime",
-                        standardize_hour_range=False):
-    
+# %% INPUT VALIDATION STREAMLINERS
+
+def _validate_option(explanation, option, allowed_options):
     """
+    Validate if the given option is within the list of allowed options.
+
     Parameters
     ----------
-    t: int, float, str or tuple, 
-        time.struct_time or datetime.[datetime, date, time],
-        array-like, pandas.Series or xarray.DataArray 
-    In either case, the object containg the dates and times.
-    
-    module : {"numpy_generic", "numpy_dt64",
-              "pandas", 
-              "datetime", "model_datetime"}
-    
-        Method to use in order to give to the time (t) object.
-    
-        If "pandas" is selected, then the dates are treated as strings,
-        so the function gives the date time format using 
-        pd.to_datetime formatter.
-    
-        If "datetime", then the format is given using
-        the built-in "datetime" module's datetime.strptime attribute.
-    
-        Lastly, the option "model_datetime" is designed in order
-        to use again "datetime" module, 
-        but creating a model (or generic) date and time where the year
-        is 1, for example in model or calendar year calculations
-        in climate change; that is to say the year is unimportant.         
+    explanation : str
+        A brief description or context of the validation.
+    option : object
+        The option to be validated.
+    allowed_options : list/iterable
+        A list or iterable of valid options.
 
-    Returns
-    -------
-    t_res : str, tuple, datetime.datetime,
-        array-like or pandas.[DatetimeIndex, DataFrame, Series]
-    
-    Array containg the reformatted date times.
-    If the type of calendar used in the original time array
-    is different of Gregorian, it converts to that one.
-    Otherwise the calendar type remains as Gregorian, unchanged.
+    Raises
+    ------
+    ValueError: 
+        If the option is not in the list of allowed options, with a detailed explanation.
     """
-    
-    module_name = retrieve_function_name()
-    all_arg_names = get_caller_method_args()
-    
-    print_arg_pos = find_substring_index(all_arg_names, "return_str")
-    t_arg_pos = find_substring_index(all_arg_names, "t")
-    module_arg_pos = find_substring_index(all_arg_names, "module")
-    
-    return_str_options = [False, "basic", "extended"]
-    
-    
-    if return_str not in return_str_options:
-        arg_tuple_tweaker1 = (all_arg_names[print_arg_pos], return_str_options)
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker1))
-        
-    if module not in supported_modules:
-        arg_tuple_tweaker2 = (all_arg_names[module_arg_pos], supported_modules)
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker2))
+    if option not in allowed_options:
+        raise ValueError(f"{explanation} '{option}' not supported for this operation. "
+                         f"Choose one from {allowed_options}.")
 
-    if isinstance(t, (float, int)):
-        
-        # This part assumes that the input 't' time is expressed in seconds #
-        if t < 0:
-            # If the seconds match the next day's midnight,
-            # set the hour to zero instead of 24.
-            hours = (t // 3600) % 24
-        else:
-            hours = t // 3600
-            
-        minutes = (t % 3600) // 60
-        seconds = t % 60
-        
-        t_res = hours, minutes, seconds
-    
-        if return_days:
-            days = hours // 24
-            hours %= 24
-            t_res = days, hours, minutes, seconds
-            
-        # Time printing cases #
-        #---------------------#
-            
-        if return_str == "basic" and not return_days:
-            
-            if isinstance(t, float):
-                hours = int(hours)
-                minutes = int(minutes)
-                seconds = int(seconds)
-                
-            t_res_timetuple = datetime.time(hours, minutes, seconds)
-            t_res = str(t_res_timetuple)
-            
-        elif return_str == "basic" and return_days:
-            time_str_format_specCase\
-            = f"{days:d}:{hours:.0f}:{minutes:.0f}:{seconds:.0f}"
-            t_res = time_str_format_specCase
-            
-        elif return_str == "extended" and return_days:
-            t_res = f"{days:.0f} days "\
-                    f"{hours:.0f} hours "\
-                    f"{minutes:.0f} minutes "\
-                    f"{seconds:6.3f} seconds"
-                    
-        elif return_str == "extended" and not return_days:
-            if hours != 0:
-                t_res = f"{hours:.0f} hours "\
-                        f"{minutes:.0f} minutes "\
-                        f"{seconds:6.3f} seconds"
-                
-            else:
-                if minutes != 0:
-                    t_res = f"{minutes:.0f} minutes "\
-                            f"{seconds:6.3f} seconds"
-                  
-                else:
-                    t_res = f"{seconds:6.3f} seconds"
-                    
-                    
-        return t_res
-                    
-    # %%
-    elif isinstance(t, str):
-
-        if time_fmt_str is None:
-            arg_tuple_tweaker3 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
-            raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker3))
-
-        particular_allowed_modules = select_array_elements(supported_modules, [0,3,4])
-        if module not in particular_allowed_modules:
-            arg_tuple_tweaker4 = (all_arg_names[module_arg_pos],
-                                  module,
-                                  all_arg_names[t_arg_pos],
-                                  get_obj_type_str(all_arg_names[t_arg_pos]),
-                                  particular_allowed_modules)
-            
-            raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker4))
-        
-    
-        if module == "model_datetime":
-            t_res = datetime_object_type_converter(t,
-                                                   module="datetime",
-                                                   time_fmt_str=time_fmt_str)
-            
-            if ("%Y" not in time_fmt_str or "%y" not in time_fmt_str)\
-                and "%m" not in time_fmt_str\
-                and "%d" not in time_fmt_str:
-                    
-                t_res_aux = datetime.datetime(1, 1, 1,
-                                              t_res.hour, t_res.minute, t_res.second)
-                t_res = t_res_aux
-                
-            elif ("%Y" not in time_fmt_str or "%y" not in time_fmt_str)\
-                  and "%m" not in time_fmt_str\
-                  and "%d" in time_fmt_str:
-    
-                t_res_aux = datetime.datetime(1, 1, t_res.day, 
-                                              t_res.hour, t_res.minute, t_res.second)
-                t_res = t_res_aux
-                
-            elif ("%Y" not in time_fmt_str or "%y" not in time_fmt_str)\
-                  and "%m" in time_fmt_str:
-            
-                t_res_aux = datetime.datetime(1, t_res.month, t_res.day, 
-                                              t_res.hour, t_res.minute, t_res.second)
-                t_res = t_res_aux
-                
-            return t_res
-        
-        else:
-            t_res = datetime_object_type_converter(t, module, time_fmt_str)
-            return t_res
-                  
-  # %%
-    elif (isinstance(t, tuple)) and\
-        not(isinstance(t, tuple) and isinstance(t, time.struct_time)):
-        
-        if time_fmt_str is None:
-            arg_tuple_tweaker5 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
-            raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker5))
-        else:
-            t_res = datetime.datetime(*t).strftime(time_fmt_str) 
-            
-        if module == "pandas":    
-            arg_tuple_tweaker6 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
-            raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker6))
-            
-        return t_res
-        
-    
-    elif isinstance(t, tuple) and isinstance(t, time.struct_time):
-        if time_fmt_str is None:
-            arg_tuple_tweaker7 = (all_arg_names[0], t_arg_pos, get_obj_type_str(t), module_name)
-            raise ValueError(format_string(no_str_format_error_str, arg_tuple_tweaker7))
-        else:
-            t_res = datetime.datetime(*t[:-3]).strftime(time_fmt_str)
-            
-        if module == "pandas":
-            arg_tuple_tweaker8 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
-            raise Exception(format_string(non_satisfactory_dt_obj_error_str, arg_tuple_tweaker8))
-            
-        return t_res
-        
-        
-    elif (isinstance(t, datetime.datetime)\
-        or isinstance(t, datetime.date)\
-        or isinstance(t, datetime.time))\
-        and not isinstance(t, pd.Timestamp):
-            
-        if not return_days:
-            module = "pandas"
-            t_res = datetime_object_type_converter(t, module, time_fmt_str) 
-        else:
-            t_res = datetime.datetime.strftime(t, time_fmt_str)
-        
-        return t_res
-
-
-    elif isinstance(t, pd.Timestamp):
-        
-        if not return_str:        
-            particular_allowed_modules = select_array_elements(supported_modules, [2, -3, -1])
-            if module not in particular_allowed_modules:  
-                arg_tuple_tweaker9 = (all_arg_names[module_arg_pos],
-                                      module,
-                                      all_arg_names[t_arg_pos],
-                                      get_obj_type_str(all_arg_names[t_arg_pos]),
-                                      particular_allowed_modules)
-                
-                raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker9))
-            
-            else:
-                t_res = datetime_object_type_converter(t, module)
-                return t_res
-        
-        elif return_str == "extended":
-            arg_tuple_tweaker10 = (all_arg_names[print_arg_pos],
-                                   return_days,
-                                   all_arg_names[t_arg_pos],
-                                   get_obj_type_str(all_arg_names[t_arg_pos]),
-                                   particular_allowed_modules)
-
-            raise ValueError(format_string(value_error_for_type_str, arg_tuple_tweaker10))
-            
-        elif return_str == "basic" :
-            t_res = t.strftime(time_fmt_str)
-            return t_res
-        
-    elif isinstance(t, np.datetime64):
-        
-        if module == "datetime_tolist":
-            t_res = datetime_object_type_converter(t, module)
-        if return_str:
-            t_res = str(t)
-        return t_res
-    
-
-    
-    else:                
-        if standardize_hour_range:
-            try:
-                t_res = hour_range_standardizer(t)
-            except Exception:        
-                arg_tuple_tweaker11 = (all_arg_names[t_arg_pos], get_obj_type_str(t))
-                raise TypeError(format_string(unstandardizable_error_str, arg_tuple_tweaker11))
-            else:
-                return t_res
-                
-        else:   
-            particular_allowed_modules = select_array_elements(supported_modules, [4, -2])
-            if module not in particular_allowed_modules:
-                arg_tuple_tweaker12 = (all_arg_names[module_arg_pos],
-                                       module,
-                                       all_arg_names[t_arg_pos],
-                                       get_obj_type_str(all_arg_names[t_arg_pos]),
-                                       particular_allowed_modules)
-                
-                raise ValueError(format_string(value_error_for_type_str,
-                                               arg_tuple_tweaker12))
-            
-                t_res = datetime_object_type_converter(t, module, time_fmt_str)
-                return t_res
-            
-            
-            else:
-                if isinstance(t, (pd.DataFrame, pd.Series)):
-                    t_res = t.dt.strftime(time_fmt_str) 
-                    if len(t_res) == 1:
-                        return t_res[0]
-                    else:
-                        return t_res
-                    
-                elif isinstance(t_res, np.ndarray):
-                    t_res = t.astype('U')
-                    if len(t_res) == 1:
-                        return t_res[0]
-                    else:
-                        return t_res
-                else:
-                    try:
-                        t_res  = t.strftime(time_fmt_str)
-                    except:
-                        arg_tuple_tweaker13 = (all_arg_names[t_arg_pos, get_obj_type_str(t_res)])
-                        raise Exception(format_string(unconverteable_pandas_dt_obj_error_str,
-                                                      arg_tuple_tweaker13))
-                    else:
-                        return t_res
-                            
-            
-    if return_str:
-        if isinstance(t_res, pd.Series):
-            t_res = t_res.dt.strftime(time_fmt_str) 
-            return t_res
-        if isinstance(t_res, pd.DataFrame):
-            for col in t_res.columns:
-                t_res.loc[:, col] = t_res.loc[:, col].dt.strftime(time_fmt_str)                
-            return t_res
-        elif isinstance(t_res, np.ndarray):
-            t_res = t_res.astype('U')
-            return t_res
-        else:
-            try:
-                t_res  = t_res.strftime(time_fmt_str)
-            except:
-                arg_tuple_tweaker14 = (all_arg_names[t_arg_pos, get_obj_type_str(t_res)])
-                raise Exception(format_string(unconverteable_pandas_dt_obj_error_str,
-                                              arg_tuple_tweaker14))
-            else:
-                return t_res
-                    
-                
-def datetime_object_type_converter(time_obj, module=None, time_fmt_str=None):
+def _validate_precision(frac_precision, option, min_prec=0, max_prec=9):
     """
-    Convert datetime objects between different types using specified modules.
+    Validate the precision level for a floating-point number and ensure it is within a valid range.
     
     Parameters
     ----------
-    time_obj : datetime.datetime or list-like
-        The datetime object(s) or list of datetime objects to convert.
-    module : {'datetime', 'datetime_tolist', 'datetime_pydt', 'pandas',
-              'numpy_dt64', 'numpy_dt64_array', 'numpy_generic'}, optional
-        Module name specifying the type of conversion.
-    time_fmt_str : str, optional
-        Format string specifying the format of datetime objects. Required
-        only for certain conversions.
-        
-    Returns
-    -------
-    converted_obj : object
-        Converted datetime object or array based on the specified module.
-        
+    frac_precision : int or None
+        The desired fractional precision to validate.
+    option : str
+        Specifies the type of object or library (e.g., "pandas") that supports higher precision.
+    min_prec : int, optional
+        The minimum allowed precision. Default is 0.
+    max_prec : int, optional
+        The maximum allowed precision. Default is 9.
+    
     Raises
     ------
     ValueError
-        If an unsupported module option is provided.
+        If `frac_precision` is outside the range [min_prec, max_prec] or
+        `frac_precision` is greater than or equal to 7 but `option` is not "pandas".
     """
-    
-    # Get all argument names of the caller method
-    all_arg_names = get_caller_method_args()
-    module_arg_pos = find_substring_index(all_arg_names, "module")
-    arg_tuple_tweaker15 = (all_arg_names[module_arg_pos], supported_modules_switch_case)
-    
-    # Validate 'module' argument
-    if module not in supported_modules_switch_case:
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
-    
-    # Get the function or lambda from the dictionary
-    func_or_lambda = datetime_obj_dict.get(module)
-    
-    if func_or_lambda is None:
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
-    
-    # Perform conversion based on the selected module
-    if callable(func_or_lambda):
-        # Handle callable lambdas directly
-        if module == "datetime":
-            dtobj = func_or_lambda(time_obj, time_fmt_str)
-        else:
-            dtobj = func_or_lambda(time_obj)
-    elif isinstance(func_or_lambda, str):
-        # Handle string functions (e.g., for pandas)
-        dtobj = eval(func_or_lambda)
-    else:
-        # Handle unsupported options (though ideally this should not occur)
-        raise ValueError(format_string(value_error_str, arg_tuple_tweaker15))
-    
-    return dtobj
-    
-
-
-def hour_range_standardizer(time_obj):
+    if ((frac_precision is not None) and not (min_prec <= frac_precision <= max_prec)):
+        raise ValueError(f"Fractional precision must be between {min_prec} and {max_prec}.")
+    if ((7 <= frac_precision <= max_prec) and option != "pandas"):
+        raise ValueError(f"Only option 'pandas' supports precision={frac_precision}.")
+        
+def _validate_unit(unit, module):
     """
-    Function that checks whether the range of hours contained in an object 
-    (numpy, pandas, or xarray) is the 24-hour standard 0-23. Converts hours in 
-    the range 1-24 to 0-23.
-
-    For the task, the date and times in the input object must only be of type 
-    string, otherwise it is not possible to define non-standard hour ranges 
-    like 1-24 with Timestamp-like attributes.
-
-    Time 24:00 is assumed to mean the next day, so it is converted to string 
-    23:00 and then an hour time delta is added to it.
+    Validates the date unit based on the module.
 
     Parameters
     ----------
-    time_obj : array-like of strings, pandas.DataFrame, pandas.Series,
-               xarray.Dataset, or xarray.DataArray
-        Object containing the date and times to be checked.
+    unit : str
+        Time unit for the floated time. 
+        Only applicable if the module is 'numpy' or 'pandas'.
+    module : {"numpy", "pandas"}
+        The module used for parsing the floated time.
+
+    Raises
+    ------
+    ValueError
+        If `unit` is not supported for the specified `module`.
+    """
+    
+    # Define allowed date units for each module    
+    if module == "numpy" and unit not in numpy_unit_list:
+        raise ValueError(f"Unsupported date unit for numpy.datetime64 objects. Choose one from {numpy_unit_list}.")
+        
+    if module == "pandas" and unit not in pandas_unit_list:
+        raise ValueError(f"Unsupported date unit for pandas.Timestamp objects. Choose one from {pandas_unit_list}.")
+
+
+
+# %% SIMPLE DATA PARSING
+
+# Input format: str #
+#-------------------#
+
+def parse_time_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
+    """
+    Convert a time string to a date/time object using a specified library.
+    
+    Parameters
+    ----------
+    datetime_str : str
+        A string representing the date and/or time.    
+    dt_fmt_str : str
+        A format string that defines the structure of `datetime_str`. 
+        Must follow the format required by the chosen module.     
+    module : {"datetime", "dateutil", "pandas", "numpy", "arrow"}, default 'datetime'
+        Specifies the library used for conversion. 
+        If 'numpy', datetime_str must be in ISO 8601 date or datetime format.
+    unit : str, optional
+        Applies only if ``module`` is either 'numpy' or 'pandas'.
+        Denotes which unit ``floated_time`` is expressed in.
+        
+        For Pandas, allowed units are {'D', 's', 'ms', 'us', 'ns'}.
+        For NumPy, allowed units are {'Y', 'M', 'D', 'h', 'm', 's' , 'ms', 'us', 'ns'}.
+       
+        According the standards, this parameter defaults to 'ns' for Pandas 
+        and 'us' for NumPy.
+        Then, in order to maintain compatibility, the largest common time unit 'us'
+        has been defined as default in this method.
+    
+    Returns
+    -------
+    datetime_obj : object
+        The converted date/time object, as per the chosen module.
+    
+    Raises
+    ------
+    ValueError
+        If the module is not supported or if the time string does not match
+        the provided format.
+    """
+    
+    # Input validation #
+    ####################
+    
+    # Module #
+    allowed_modules = list(time_str_parsing_dict.keys())
+    _validate_option("Module", module, allowed_modules)
+    
+    # Formatting string #
+    if not dt_fmt_str:
+        raise ValueError("A datetime format string must be provided.")
+        
+    # Time string parsing #
+    #######################
+    
+    try:
+        parse_func = time_str_parsing_dict.get(module)
+        datetime_obj = parse_func(datetime_str, dt_fmt_str, unit) \
+                       if module == "pandas"\
+                       else parse_func(datetime_str, dt_fmt_str)
+    except ValueError:
+        raise ValueError("The time string does not match the format string provided.")
+    else:
+        return datetime_obj
+    
+# %% 
+
+# Input format: int, float #
+#--------------------------#
+
+# Main method #
+#-#-#-#-#-#-#-#
+
+def parse_float_time(datetime_float, 
+                     frac_precision=None,
+                     origin="unix", 
+                     unit="us", 
+                     dt_fmt_str=None, 
+                     module="datetime"):
+    """
+    Converts an integer or float time to a date/time object.
+    It also converts to a string representation if requested.
+    
+    datetime_float : int or float
+        Time representing a time unit relative to an origin.
+    frac_precision : int [0,9] or None 
+        Precision of the fractional part of the seconds.
+        If not None, this part is rounded to the desired number of decimals,
+        which must be between 0 and 9. For decimals in [7,9], nanoscale
+        datetime is generated, supported only by 'pandas'.
+        Raises a ValueError if 7 <= frac_precision <= 9 and module is not 'pandas'.        
+        Defaults to None, i.e., the original precision is used.
+    origin : {"arbitrary", "unix"}, default 'unix'
+        Determines whether to compute time relative to an arbitrary origin 
+        or to the Unix epoch start (1970-01-01 00:00:00).
+        For example, the elapsed time for a program to execute has its origin at 
+        the moment of execution, whereas for clock times, seconds are counted 
+        from the epoch time.
+    unit : str, optional
+        Applies only if ``origin='unix'`` and ``convert_to={'numpy', 'pandas'}``.
+        Denotes which unit ``datetime_str`` is expressed in. 
+        
+        For Pandas, allowed units are {'D', 's', 'ms', 'us', 'ns'}.
+        For NumPy, allowed units are {'Y', 'M', 'D', 'h', 'm', 's', 'ms', 'us', 'ns'}.
+        Defaults to 'ns' for Pandas and 'us' for NumPy.
+    dt_fmt_str : str
+        Format string to convert the date/time object to a string.
+    module : {"datetime", "time", "pandas", "numpy", "arrow", "str"}, default 'datetime'.
+         The module or class used to parse the floated time. 
+         If 'numpy', datetime_float represents an offset from the Unix epoch start.
+      
+    Returns
+    -------
+    object
+        The converted date/time object or string representation.
+    
+    Raises
+    ------
+    ValueError
+        If parameters are invalid or the conversion fails.
+    """        
+    
+    # Input validation #
+    ####################
+    
+    # Module #
+    allowed_modules = ["str"] + list(floated_time_parsing_dict.keys())
+    _validate_option("Object type conversion", module, allowed_modules)
+    
+    # Time formatting string #
+    if module != "str" and not dt_fmt_str:
+        raise ValueError("You must provide a formatting string.")
+
+    # Fractional second precision #
+    _validate_precision(frac_precision, module)
+
+    # Date unit #
+    _validate_unit(unit, module)
+
+    # Floated time parsing #
+    ########################
+
+    if module == "str":
+        return _parse_float_to_string(datetime_float,
+                                     frac_precision, 
+                                     origin,
+                                     dt_fmt_str,
+                                     unit,
+                                     module)
+    else:
+        return _float_time_parser(datetime_float, module, unit)
+    
+    
+# Auxiliary methods #
+#-#-#-#-#-#-#-#-#-#-#
+
+def _parse_float_to_string(floated_time, 
+                          frac_precision, 
+                          origin, 
+                          dt_fmt_str, 
+                          unit,
+                          module):
+    """        
+    Converts a floated time to its string representation.
+
+    Parameters
+    ----------
+    floated_time : int or float
+        Time representing a time unit relative to an origin.
+    frac_precision : int [0,9] or None
+        Precision of the fractional seconds.
+        Only supported by 'pandas' for high precision.
+    origin : {"arbitrary", "unix"}
+        Origin of the time measurement.
+    dt_fmt_str : str
+        Format string for the string representation.
+    unit : str, optional
+        Time unit for `floated_time` if `origin='unix'` and `module` in {'numpy', 'pandas'}.
+    module : {"datetime", "time", "pandas", "numpy", "arrow"}
+        Module used for parsing.
 
     Returns
     -------
-    time_obj_fixed : array-like of strings, pandas.DataFrame, pandas.Series,
-                     xarray.Dataset, or xarray.DataArray
-        Object containing fixed dates and times.
+    str
+        The formatted string representation of the floated time.
     """
     
-    # Define anidated functions for easier manipulations #
-    #----------------------------------------------------#
-    
-    def fix_24_hour_format(time_series):
-        twenty_four_hour_idx = time_series.str.contains("24:0")
-        time_series_no24hour = time_series.str.replace("24:0", "23:0", regex=False)
-        time_series_fixed = pd.to_datetime(time_series_no24hour, format="%H:%M")
-        time_series_fixed[twenty_four_hour_idx] += pd.Timedelta(hours=1)
-        return time_series_fixed
-
-    # Operations depending on the type of the input object #
-    #------------------------------------------------------#
-
-    if isinstance(time_obj, np.ndarray):
-        time_series = pd.Series(time_obj)
-        time_obj_fixed = fix_24_hour_format(time_series).to_numpy()
-
-    elif isinstance(time_obj, pd.DataFrame):
-        time_obj_fixed = time_obj.apply(lambda col: fix_24_hour_format(col) if col.dtype.str == 'O' else col)
-
-    elif isinstance(time_obj, pd.Series):
-        time_obj_fixed = fix_24_hour_format(time_obj)
-
-    elif (get_obj_type_str(time_obj) == "Dataset"
-          or get_obj_type_str(time_obj) == "DataArray"):
-        
-        time_obj_fixed = time_obj.copy()
-        time_series = time_obj_fixed.to_series().reset_index(drop=True)
-        time_series_fixed = fix_24_hour_format(time_series)
-        time_obj_fixed.values = time_series_fixed.values.reshape(time_obj_fixed.shape)
-    
-    else:
-        raise TypeError("Unsupported object type. Supported types are "
-                        "array-like of strings, pandas.DataFrame, pandas.Series, "
-                        "xarray.Dataset, or xarray.DataArray.")
-    
-    return time_obj_fixed
-
-
-
-def time2seconds(t, time_fmt_str=None):
-    
-    # TODO: proiektuaren atal nahikoa handia
-    #       ONDO BERRAZTERTU ETA AURREIKUSI (gehien gauzatzen ditudan eragiketen arabera) BERE NEURRIAN:
-    #       1. Allowed types: string, datetime.datetime, datetime.date, datetime.time
-    #                         np.datetime64, pd.Timestamp and time.struct_time
-    #       2. Horietako bakoitza, AHAL DELA 'time_format_tweaker' erabiliz,
-    #          beti bihurtu 'timedelta' batera --> lehenetsi datetime.timedelta
-    #          zeren azkarragoa eta memoria-erabilera txikiagokoa baita, 
-    #          pd.Timedelta baino (izatez, ondoko hau datetime-ren gainean dago eraikita).
-    #       3. Irteera-formatoa: BETI FLOAT, '.total_seconds()' ezaugarria 
-    #          deituko baita, non emaitza segundoak besterik ez diren.
-    #       4. Galdetu ChatGPT-ri, ONGI ATERAKO DA
-    #       5. Docstring-a
-   
-    method_name = retrieve_function_name()
-    
-    if isinstance(t, str):
-        t_datetime_tuple = time_format_tweaker(t, time_fmt_str)
-        
-        days = t_datetime_tuple.day
-        hours = t_datetime_tuple.hour
-        minutes = t_datetime_tuple.minute
-        seconds = t_datetime_tuple.second        
-        t_secs = days*86400 + hours*3600 + minutes*60 + seconds
-        return(t_secs)
-        
-    elif isinstance(t, tuple):
-        
-        lt = len(t)        
-        if lt == 4:
-            days = t[0]
-            hours = t[1]
-            minutes = t[2]
-            seconds = t[3]            
-            t_secs = days*86400 + hours*3600 + minutes*60 + seconds
-            
-        elif lt == 3:
-            hours = t[0]
-            minutes = t[1]
-            seconds = t[2]            
-            t_secs = hours*3600 + minutes*60 + seconds
-            
+    if origin == "arbitrary":
+        return _format_arbitrary_time(floated_time)
+       
+    elif origin == "unix":
+        # Accommodation of the fractional second #
+        if frac_precision is not None:
+            if frac_precision <= 6:
+                dt_seconds = round(floated_time)
+                dt_obj = _float_time_parser(dt_seconds, module, unit)
+                dt_str = dt_obj.strftime(dt_fmt_str)
+            elif 7 <= frac_precision <= 9:
+                return parse_floated_nanotime(floated_time, module)
+        # Keep the original precision #
         else:
-            raise ValueError(f"Method '{method_name}' does neither accept "
-                              "years nor months. "
-                              "Time tuple structure must be the following:\n"
-                              "([days,] hours, minutes, seconds)")
+            dt_str = _float_time_parser(floated_time, module, unit).strftime(dt_fmt_str)
+    
+        return dt_str  
+
+    
+def _float_time_parser(floated_time, module, unit):
+    """
+    Parses a floated time into a date/time object.
+    
+    Parameters
+    ----------
+    floated_time : int or float
+        Time representing a time unit relative to an origin.
+    module : {"datetime", "time", "pandas", "numpy", "arrow"}
+        Module used for parsing.
+    unit : str, optional
+        Time unit for `floated_time` if `module` in {'numpy', 'pandas'}.
+    
+    Returns
+    -------
+    datetime_obj : object
+        The parsed date/time object.
+    """
+    
+    # Input validation #
+    ####################
+    
+    # Module #
+    allowed_modules = list(floated_time_parsing_dict.keys())
+    _validate_option("Object type conversion", module, allowed_modules)
+
+    # Date unit #
+    _validate_unit(unit, module)
+    
+    # Calculate datetime object #
+    #############################
+    
+    datetime_obj = floated_time_parsing_dict.get(module)(floated_time, unit)
+    return datetime_obj
+
+
+def _format_arbitrary_time(floated_time):
+    """
+    Formats an arbitrary time (in seconds) into a string representation based on the provided format.
+    
+    Parameters
+    ----------
+    floated_time : int or float
+        Time representing a time unit relative to an arbitrary origin.
+    dt_fmt_str : str
+        Format string that specifies how to format the time.
+    
+    Returns
+    -------
+    str
+        The formatted time string.
+    
+    Raises
+    ------
+    ValueError
+        If the format string is invalid or not supported.
+        
+    Notes
+    -----
+    Negative times or hours over 24 represent seconds matching 
+    the next day's midnight. If so, set the hour to zero instead of 24.
+    """
+
+    # Compute time components #
+    days, hours = divmod(floated_time // 3600, 24)
+    minutes, seconds = divmod(floated_time % 3600, 60)
+   
+    # Format time parts according to 'dt_fmt_str' #
+    try:
+        if days > 0:
+            time_tuple = (days, hours, minutes, seconds)
+            time_parts_string = format_string(_time_str_parts_fmts[0], time_tuple)
+        else:
+            time_tuple = (hours, minutes, seconds)
+            time_parts_string = format_string(_time_str_parts_fmts[1], time_tuple)
+    except (KeyError, IndexError, ValueError) as e:
+        raise ValueError(f"Invalid format string or time components: {e}")
+    return time_parts_string 
+        
+
+# %% PARSING AMONG COMPLEX DATA OBJECTS
+
+# Main methods #
+#--------------#
+
+# All except 'float' #
+#--------------------#
+
+def datetime_obj_converter(datetime_obj,
+                           convert_to,
+                           unit="ns",
+                           float_class="d", 
+                           int_class="int"):
+    """
+    Convert a date/time object to another, including float.
+    If float, it represents seconds since the Unix epoch.
+    
+    Parameters
+    ----------
+    datetime_obj : object
+        The date/time object to be converted. Accepted objects by library are:
+            datetime : `datetime.datetime`, 
+            numpy : `np.datetime64`, `np.ndarray`,
+            pandas : `pd.Timestamp`, `pd.DataFrame`, `pd.Series`
+            arrow : `arrow`, 
+            time : `time.struct_time`, 
+        
+    convert_to : str
+        The target type to convert `datetime_obj` to.
+        Accepted values depend on the input type.
+        For example, if `datetime_obj` is a `datetime`, `convert_to` could be
+        `datetime64`, `Timestamp`, etc.
+    unit : str
+        The date unit for conversion, applicable to certain types. Default is `"ns"` (nanoseconds).
+    float_class : str or numpy class
+        The float precision class. Default is `"d"` (double precision).
+    int_class : str or numpy class
+        The integer precision class. Default is `"int"` (signed integer type).
+
+    Returns
+    -------
+    The converted date/time object in the format/type specified by `convert_to`.
+
+    Raises
+    ------
+    ValueError
+        If `convert_to` is not a valid target type for the given `datetime_obj`.
+    RuntimeError
+        If there is an error during the conversion process.
+        
+    Conversion Options:   
+    +------------------+---------+--------------+---------------+------------+--------------+---------+
+    | Input Type       | `float` | `datetime`   | `struct_time` | `Timestamp`| `datetime64` | `arrow` |
+    +------------------+---------+--------------+---------------+------------+--------------+---------+
+    | `datetime`       | Yes     | Yes          | Yes           | Yes        | Yes          | Yes     |
+    | `datetime64`     | Yes     | Yes          | Yes           | Yes        | No           | Yes     |
+    | `Timestamp`      | Yes     | Yes          | Yes           | No         | Yes          | Yes     |
+    | `arrow`          | Yes     | Yes          | Yes           | Yes        | Yes          | No      |
+    | `struct_time`    | Yes     | Yes          | No            | Yes        | Yes          | Yes     |
+    | `DataFrame`      | Yes     | Yes          | No            | No         | No           | No      |
+    | `Series`         | Yes     | Yes          | No            | No         | No           | No      |
+    | `ndarray`        | Yes     | Yes          | No            | No         | No           | No      |
+    +------------------+---------+--------------+---------------+------------+--------------+---------+
+
+    Notes
+    -----
+    - "Yes" in above table indicates that the conversion from the input type
+      to the specified type is supported.
+    - If the input object is whichever of types [`DataFrame`, `Series`, `ndarray`]
+      and ``convert_to='float'``, the resulting object type will also be array-like,
+      but an attempt will be made to convert its all values to float.
+    """
+
+    # Input validation #
+    ####################
+    
+    # Object type to convert to #
+    if not convert_to:
+        raise ValueError("Argument 'convert_to' not provided.")
+    
+    # Helper function to perform conversion and handle exceptions
+    def perform_conversion(conversion_dict, obj, *args):
+        try:
+            return conversion_dict.get(convert_to)(obj, *args)
+        except Exception as err:
+            raise RuntimeError(f"Error during conversion to {convert_to}: {err}")
+              
+    # Date unit factor #
+    allowed_factors = list(unit_factor_dict.keys())
+    _validate_option("Time unit factor", unit, allowed_factors)
             
-        return(t_secs)
+    # Numpy precision classes #
+    _validate_option("Numpy float precision class", float_class, float_class_list)
+    _validate_option("Numpy integer precision class", int_class, int_class_list)
+    
+    # Operations #
+    ##############
+    
+    # Get the object type's name #
+    obj_type = get_obj_type_str(datetime_obj).lower()
+    
+    # Enumerate switch case dictionaries to use, depending on the input object type #
+    conversion_opt_dict = {
+        "datetime": datetime_obj_conversion_dict,
+        "datetime64": datetime64_obj_conversion_dict,
+        "timestamp": timestamp_obj_conversion_dict,
+        "arrow": arrow_obj_conversion_dict,
+        "struct_time": time_stt_obj_conversion_dict,
+        "dataframe": _df_obj_conversion_dict,
+        "series": _df_obj_conversion_dict, # Same functionalities as in pd.DataFrame
+        "ndarray": _np_obj_conversion_dict
+    }
+    
+    # Perform the conversion #
+    allowed_general_options = list(conversion_opt_dict.keys())
+    if obj_type in allowed_general_options:
+        _validate_option("Object type conversion", convert_to, 
+                        list(conversion_opt_dict[obj_type].keys()))
+        conversion_dict = conversion_opt_dict[obj_type]
+        return perform_conversion(conversion_dict, datetime_obj, unit)
+    else:
+        _validate_option("Object type conversion", convert_to, allowed_general_options)
+        raise ValueError(f"Unsupported object type for conversion: {obj_type}.\n"
+                         f"Options are {allowed_general_options}")
+        
+        
+# Auxiliary methods #
+#-------------------#
+
+# Exclusively to 'float' #
+#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+# Scalar complex data #
+def _total_time_unit(datetime_obj, unit, float_class, int_class):
+    """
+    Convert a datetime object into total time based on the specified unit
+    (e.g., seconds, microseconds, nanoseconds).
+    
+    Parameters
+    ----------
+    datetime_obj: 
+        The datetime object to be converted. Can be of various types
+        (e.g., `datetime`, `datetime64`, `Timestamp`).
+    unit: 
+        The time unit for conversion (e.g., "seconds", "microseconds", "nanoseconds"). 
+        The actual unit factors are provided by the `unit_factor_dict`.
+    float_class: 
+        Specifies the precision class to use for floating-point results.
+    int_class: 
+        Specifies the precision class to use for integer results.
+    
+    Returns
+    -------
+    The total time in the specified unit, converted based on the object's type.
+    
+    Raises
+    ------
+    ValueError: 
+        If the object type is unsupported for conversion.
+    RuntimeError: 
+        If an error occurs during the conversion process.
+    """
+    # Input validation #
+    #------------------#
+    
+    # Current method name #
+    current_method = retrieve_function_name()
+    
+    # Operations #
+    #------------#
+    
+    unit_factor = unit_factor_dict.get(unit)
+    obj_type = get_obj_type_str(datetime_obj).lower()  
+  
+    try:
+        conversion_func = _total_time_unit_dict.get(obj_type)
+        if conversion_func is None:
+            raise ValueError(f"Unsupported object type, method '{current_method}': {obj_type}")
+        return conversion_func(datetime_obj, unit, float_class, int_class, unit_factor)
+    except Exception as err:
+        raise RuntimeError(f"Error in conversion process, method '{current_method}': {err}")
+        
+        
+# Array-like complex data #
+def _total_time_complex_data(datetime_obj, int_class, unit_factor):
+    """
+    Calculate total time in a given unit for complex data types,
+    such as Series and DataFrames, by converting all values to float.
+
+    Parameters
+    ----------
+    datetime_obj: 
+        The complex data object to be processed. Can be a `pd.Series` or `pd.DataFrame`.
+    int_class: 
+        Specifies the precision class to use for integer results.
+    unit_factor: 
+        The factor by which to multiply the converted values to get the
+        total time in the specified unit.
+
+    Returns
+    -------
+    pd.Series or pd.DataFrame
+        The input data object with all values converted to total time in the specified unit.
+
+    Raises
+    ------
+    RuntimeError: 
+        If an error occurs during the conversion process for
+        `Series` or `DataFrame` type objects.
+    """
+    # Input validation #
+    current_method = retrieve_function_name()
+    
+    # Operations #
+    obj_type = get_obj_type_str(datetime_obj).lower()
+    dt_obj_aux = datetime_obj.copy()
+    
+    if obj_type == "series":
+        try:
+            return dt_obj_aux.astype(int_class) * unit_factor
+        except (ValueError, Exception) as err:
+            raise RuntimeError(f"Error in '{current_method}' method "
+                               f"for 'Series' type object:\n{err}.")
+
+    elif obj_type == "dataframe":
+        try:
+            for col in datetime_obj.columns:
+                try:
+                    dt_obj_aux[col] = dt_obj_aux[col].astype(int_class) * unit_factor
+                except ValueError:
+                    pass
+            return dt_obj_aux
+        except Exception as err:
+            raise RuntimeError(f"Error in '{current_method}' method "
+                               f"for 'DataFrame' type object:\n{err}.")
+
+
+# Timezone aware information #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+def _tzinfo_remover(dt_obj):
+    """
+    Remove timezone information from a datetime object if present.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The datetime object from which timezone information should be removed.
+
+    Returns
+    -------
+    datetime-like
+        The datetime object without timezone information.
+    """
+    if hasattr(dt_obj, "tzinfo"):
+        return dt_obj.replace(tzinfo=None)
+    else:
+        return dt_obj
     
 
+# Conversions among different complex data #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+# Scalar complex data #
+def _to_float(dt_obj, unit, float_class):
+    """
+    Convert a datetime object to a float representing the total time in the specified unit.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The datetime object to be converted.
+    unit: str
+        The unit for conversion (e.g., "s" for seconds, "ms" for milliseconds).
+    float_class: str, optional
+        The precision class for the float result.
+
+    Returns
+    -------
+    float
+        The converted value in the specified unit.
+    """
+    obj_type = get_obj_type_str(dt_obj).lower()
+    if obj_type == "datetime64":
+        return dt_obj.astype(f"timedelta64[{unit}]").astype(float_class)
+    if hasattr(dt_obj, 'timestamp'):
+        return dt_obj.timestamp()  # works for datetime and pandas
+    return float(dt_obj.float_timestamp)  # arrow
+
+def _to_datetime(dt_obj):
+    """
+    Convert a given datetime-like object to a standard Python datetime object.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The object to be converted to a Python datetime object.
+
+    Returns
+    -------
+    datetime
+        The converted Python datetime object.
+    """
+    obj_type = get_obj_type_str(dt_obj).lower()
+    if obj_type == "datetime64":
+        return dt_obj.astype(datetime)
+    if obj_type == "timestamp":
+        return dt_obj.to_pydatetime()
+    if hasattr(dt_obj, 'fromtimestamp'):
+        return dt_obj.fromtimestamp(dt_obj.float_timestamp)  # arrow
+    return datetime(*dt_obj[:6])  # time.struct_time
+
+def _to_time_struct(dt_obj):
+    """
+    Convert a datetime-like object to a time.struct_time object.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The object to be converted to time.struct_time.
+
+    Returns
+    -------
+    time.struct_time
+        The converted time.struct_time object.
+    """
+    return _to_datetime(dt_obj).timetuple()
+
+def _to_pandas(dt_obj, unit):
+    """
+    Convert a datetime-like object to a pandas Timestamp object with the specified unit.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The object to be converted to a pandas Timestamp.
+    unit: str, optional
+        The unit for conversion.
+
+    Returns
+    -------
+    pd.Timestamp
+        The converted pandas Timestamp object.
+    """
+    return pd.to_datetime(_to_datetime(dt_obj), unit=unit)
+
+def _to_numpy(dt_obj, unit):
+    """
+    Convert a datetime-like object to a NumPy datetime64 object with the specified unit.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The object to be converted to a NumPy datetime64.
+    unit: str, optional
+        The unit for conversion (default is "ns" for nanoseconds).
+
+    Returns
+    -------
+    np.datetime64
+        The converted NumPy datetime64 object.
+    """
+    dt_obj = _to_datetime(dt_obj)
+    return np.datetime64(_tzinfo_remover(dt_obj), unit)
+
+def _to_arrow(dt_obj):
+    """
+    Convert a datetime-like object to an Arrow object.
+
+    Parameters
+    ----------
+    dt_obj: datetime-like
+        The object to be converted to an Arrow object.
+
+    Returns
+    -------
+    arrow.Arrow
+        The converted Arrow object.
+    """
+    dt_obj = _to_datetime(dt_obj)
+    return arrow.get(dt_obj)
+
+
+# Array-like complex data #
+def _unify_complex_data(datetime_obj, unit):
+    """
+    Convert all columns or series in a DataFrame or Series to datetime using 
+    the specified unit.
+
+    Parameters
+    ----------
+    datetime_obj: pd.DataFrame or pd.Series
+        The DataFrame or Series to be converted to datetime.
+    unit: str
+        The unit for conversion (e.g., "ns" for nanoseconds).
+
+    Returns
+    -------
+    pd.DataFrame or pd.Series
+        The input DataFrame or Series with all values converted to datetime 
+        in the specified unit.
+    """
+
+    dt_obj_aux = datetime_obj.copy()
+    obj_type = get_obj_type_str(datetime_obj).lower()
+    
+    if obj_type == "dataframe":
+        for col in datetime_obj.columns:
+            try:
+                dt_obj_aux[col] = _to_datetime(dt_obj_aux[col], unit=unit)
+            except ValueError:
+                pass
+    elif obj_type == "series":
+        try:
+            dt_obj_aux = _to_datetime(dt_obj_aux, unit=unit)
+        except ValueError:
+            pass
+    return dt_obj_aux
+        
+
+
+# %% PARAMETERS AND CONSTANTS
+
+# Precision classes for number integer or floating precision #
+float_class_list = [np.float16, np.float32, "f", np.float64, "float", "d", np.float128]
+int_class_list = [np.int8, np.int16, "i", np.float32, "int", np.int64]
+
+# Switch case dictionaries #
 #--------------------------#
-# Parameters and constants #
-#--------------------------#
 
-# Supported module options #
-supported_modules = ["datetime", "datetime_tolist", "datetime_pydt", "model_datetime",
-                     "pandas", 
-                     "numpy_dt64", "numpy_dt64_array", "numpy_generic"]
+# Time parsing #
+#--------------#
 
-supported_modules_switch_case = remove_elements_from_array(supported_modules, 3)
+# String #    
+#-#-#-#-#-
 
-# Extension list #
-extensions = ["csv", "xlsx", "nc"]
+time_str_parsing_dict = {
+    "datetime" : lambda datetime_str, dt_fmt_str: datetime.strptime(datetime_str, dt_fmt_str),
+    "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
+    "pandas"   : lambda datetime_str, dt_fmt_str, unit: pd.to_datetime(datetime_str, 
+                                                                            format=dt_fmt_str,
+                                                                            unit=unit),
+    "numpy"    : lambda datetime_str, dt_fmt_str, unit: np.datetime64(datetime_str, unit),
+    "arrow"    : lambda datetime_str, dt_fmt_str: arrow.get(datetime_str, dt_fmt_str)
+}
+
+# Floated #
+#-#-#-#-#-#
+
+floated_time_parsing_dict = {
+    "datetime" : lambda floated_time, _ : datetime.fromtimestamp(floated_time),
+    "time"     : lambda floated_time : datetime(*tuple(time.localtime(floated_time))[:6]),
+    "pandas"   : lambda floated_time, unit : pd.to_datetime(floated_time, unit=unit),
+    "numpy"    : lambda floated_time, unit : np.datetime64(floated_time, unit),
+    "arrow"    : lambda floated_time, _ : arrow.get(floated_time)
+}
+
+# Complex data # 
+#-#-#-#-#-#-#-#-
+
+# To other objects #
+datetime_obj_conversion_dict = {
+    "float"  : lambda dt_obj, _: dt_obj.timestamp(),
+    "time"   : lambda dt_obj, _: dt_obj.timetuple(),
+    "pandas" : lambda dt_obj, unit: pd.to_datetime(_tzinfo_remover(dt_obj), unit=unit),
+    "numpy"  : lambda dt_obj, unit: np.datetime64(_tzinfo_remover(dt_obj), unit),
+    "arrow"  : lambda dt_obj, _: arrow.get(dt_obj)
+}
+
+datetime64_obj_conversion_dict = {
+    "float"    : lambda dt_obj, unit, _: _to_float(dt_obj, unit),
+    "datetime" : lambda dt_obj, _: _to_datetime(dt_obj),
+    "time"     : lambda dt_obj, _: _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, unit: _to_pandas(dt_obj, unit),
+    "arrow"    : lambda dt_obj, _: _to_arrow(dt_obj)
+}
+
+timestamp_obj_conversion_dict = {
+    "float"    : lambda dt_obj: _to_float(dt_obj),
+    "datetime" : lambda dt_obj: _to_datetime(dt_obj),
+    "time"     : lambda dt_obj: _to_time_struct(dt_obj),
+    "numpy"    : lambda dt_obj: dt_obj.to_numpy(),
+    "arrow"    : lambda dt_obj: _to_arrow(dt_obj)
+}
+
+arrow_obj_conversion_dict = {
+    "float"    : lambda dt_obj, _: _to_float(dt_obj),
+    "datetime" : lambda dt_obj, _: _to_datetime(dt_obj),
+    "time"     : lambda dt_obj, _: _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, unit: _to_pandas(dt_obj, unit),
+    "numpy"    : lambda dt_obj, unit: _to_numpy(dt_obj, unit)
+}
+
+time_stt_obj_conversion_dict = {
+    "float"    : lambda dt_obj, _: _to_float(dt_obj),
+    "datetime" : lambda dt_obj, _: _to_datetime(dt_obj),
+    "pandas"   : lambda dt_obj, unit: pd.Timestamp(*dt_obj[:6], unit=unit),
+    "numpy"    : lambda dt_obj, unit: np.datetime64(datetime(*dt_obj[:6]), unit),
+    "arrow"    : lambda dt_obj, _: _to_arrow(dt_obj)
+}
+
+_df_obj_conversion_dict = {
+    "float"  : lambda dt_obj, unit : _total_time_unit(dt_obj, unit),
+    "pandas" : lambda dt_obj, unit : _unify_complex_data(dt_obj, unit)
+}
+
+_np_obj_conversion_dict = {
+    "float"  : lambda dt_obj, unit : _total_time_unit(dt_obj, unit),
+    "pandas" : lambda dt_obj, unit : pd.to_datetime(dt_obj, unit=unit)
+}
+        
+
+# Exclusively to floated time #
+_total_time_unit_dict = {
+    "datetime"    : lambda dt_obj, _ : dt_obj.timestamp(),
+    "datetime64"  : lambda dt_obj, unit, float_class: dt_obj.astype(f"timedelta64[{unit}]").astype(float_class),
+    "struct_time" : lambda dt_obj, unit : datetime(*dt_obj[:6]),
+    "arrow"       : lambda dt_obj, unit : dt_obj.float_timestamp,
+    "dataframe"   : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
+    "series"      : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
+    "ndarray"     : lambda dt_obj, unit, float_class, _ : dt_obj.astype(f"datetime64[{unit}]").astype(float_class)  
+    }
 
 # Preformatted strings #
 #----------------------#
 
-# Error strings #
-no_str_format_error_str = \
-"""For argument '{}' (position {}) of type '{}', 
-'{}' method is designed to output a time string.
-Please provide a time string format identifier.
-"""
-
-value_error_str = """Unsupported '{}' option. Options are {}."""
-value_error_for_type_str = """'{}'=='{}' not allowed for argument '{}' of type '{}'.
-Options are {}."""
-
-non_satisfactory_dt_obj_error_str = \
-"""Argument '{}' of type '{}' will not give a satisfactory \
-pandas's timestamp containing object."""
-
-unstandardizable_error_str = \
-"""Cannot handle hour range standardization with Argument '{}' of type '{}'."""
-
-unconverteable_pandas_dt_obj_error_str = \
-"""Cannot convert Argument '{}' of type '{}' to pandas's timestamp containing object."""
-
-# Switch dictionaries #
-#---------------------#
-
-datetime_obj_dict = {
-    supported_modules_switch_case[0] : lambda t, time_fmt_str: datetime.datetime.strptime(t, time_fmt_str),
-    supported_modules_switch_case[1] : lambda t: t.tolist(),
-    supported_modules_switch_case[2] : lambda t: t.to_pydatetime(),
-    supported_modules_switch_case[3] : "pd.to_datetime(time_obj, format=time_fmt_str)",
-    supported_modules_switch_case[4] : np.datetime64,
-    supported_modules_switch_case[5] : lambda t: np.array(t, dtype=np.datetime64),
-    supported_modules_switch_case[6] : np.asarray,
-}
+_time_str_parts_fmts = [
+    "{} days {} hours {} minutes {} seconds",
+    "{} hours {} minutes {} seconds",
+]
