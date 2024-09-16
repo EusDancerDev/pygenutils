@@ -491,8 +491,8 @@ def datetime_obj_converter(datetime_obj,
     _validate_option("Time unit factor", unit, allowed_factors)
             
     # Numpy precision classes #
-    _validate_option("Numpy float precision class", float_class, float_class_list)
-    _validate_option("Numpy integer precision class", int_class, int_class_list)
+    _validate_option("Numpy float precision class", float_class, _float_class_list)
+    _validate_option("Numpy integer precision class", int_class, _int_class_list)
     
     # Operations #
     ##############
@@ -823,8 +823,8 @@ def _unify_complex_data(datetime_obj, unit):
 # %% PARAMETERS AND CONSTANTS
 
 # Precision classes for number integer or floating precision #
-float_class_list = [np.float16, np.float32, "f", np.float64, "float", "d", np.float128]
-int_class_list = [np.int8, np.int16, "i", np.float32, "int", np.int64]
+_float_class_list = [np.float16, np.float32, "f", np.float64, "float", "d", np.float128]
+_int_class_list = [np.int8, np.int16, "i", np.float32, "int", np.int64]
 
 # Switch case dictionaries #
 #--------------------------#
