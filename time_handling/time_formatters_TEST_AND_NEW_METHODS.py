@@ -18,9 +18,6 @@ import pandas as pd
 #-----------------------#
 
 from pyutils.parameters_and_constants import global_parameters
-# from pyutils.parameters_and_constants.global_parameters import numpy_unit_list, \
-#                                                                pandas_unit_list, \
-#                                                                unit_factor_dict
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.time_handling.date_and_time_operators import parse_floated_nanotime
 from pyutils.utilities.general.introspection_utils import get_obj_type_str, retrieve_function_name
