@@ -5,11 +5,12 @@
 # Import modules #
 #----------------#
 
-import datetime
+from datetime import datetime, timedelta
 import time
 
 import os
 
+from numpy import float128
 import pandas as pd
 
 #-----------------------#
@@ -18,8 +19,8 @@ import pandas as pd
 
 from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.time_handling.time_formatters import time_format_tweaker
-from pyutils.utilities.introspection_utils import get_caller_method_args
+from pyutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
+from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 
 # Create aliases #
 #----------------#
@@ -33,9 +34,47 @@ find_substring_index = string_handler.find_substring_index
 # Define functions #
 #------------------#
 
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-
 #%%
+        
+# Input validation streamliner #
+#------------------------------#
+
+def _validate_option(option, allowed_options, error_class, error_str, arg_iterable):
+    """
+    Validate if the given option is within the list of allowed options.
+    Specific for printing customised error messages.
+
+    Parameters
+    ----------
+    option : object
+        The option to be validated.
+    allowed_options : list/iterable
+        A list or iterable of valid options.
+    error_class : {"value", "attribute"}
+        Abreviature of Python error classes ValueError and AttributeError, respectively.
+    error_str : str
+        Single or multiple line string denoting an error.
+    arg_iterable : str, list or tuple
+        Iterable consisting of elements to map into error_str.
+
+    Raises
+    ------
+    ValueError: 
+        If the option is not in the list of allowed options, with a detailed explanation.
+    """
+    all_arg_names = get_caller_method_args()
+    err_clas_arg_pos = find_substring_index(all_arg_names, "error_class")
+    
+    if error_class not in common_error_class_list :
+        raise ValueError(f"Error class '{all_arg_names[err_clas_arg_pos]}' not provided. "
+                         f"Choose one from {common_error_class_list}.")
+    
+    if option not in allowed_options:
+        if error_class == "value":
+            raise ValueError(format_string(error_str, arg_iterable))
+        elif error_class == "attribute":
+            raise AttributeError(format_string(error_str, arg_iterable))
+            
 
 # Dates and times #
 #-----------------#
@@ -64,6 +103,8 @@ def get_current_datetime(dtype, time_fmt_str=None):
     - If dtype is not one of the valid options ('datetime', 'str', 'timestamp').
     - If 'time_fmt_str' is provided and dtype is 'str' (which returns a string),
       as strings do not have .strftime() attribute.
+    RuntimeError
+        Possible only if ``dtype='str'``, if there is an error during the conversion process.
 
     Returns
     -------
@@ -72,27 +113,161 @@ def get_current_datetime(dtype, time_fmt_str=None):
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """
     
-    # Valid data type selection control #
-    all_arg_names = get_caller_method_args()
-    if dtype not in current_time_type_options:
-        arg_tuple_current_time = (dtype, current_time_type_options)
-        raise ValueError(format_string(unsupported_option_str, arg_tuple_current_time))
+    # Validate string representing the data type #
+    arg_tuple_current_time = (dtype, dt_dtype_options)
+    _validate_option(*arg_tuple_current_time, "value", unsupported_option_str, arg_tuple_current_time)
     
     # Get the current date and time #
     current_time = current_datetime_dict.get(dtype)
     
     # A string does not have .strftime attribute, warn accordingly #
+    all_arg_names = get_caller_method_args()
     fmt_str_arg_pos = find_substring_index(all_arg_names, "time_fmt_str")
     if (isinstance(current_time, str) and time_fmt_str is not None):
         raise ValueError("Current time is already a string. "
                          f"Choose another data type or "
-                         f"set {all_arg_names[fmt_str_arg_pos]} to None.")
+                         f"set '{all_arg_names[fmt_str_arg_pos]}' to None.")
     
     # Format the object based on 'time_fmt_str' variable, if provided #
     if time_fmt_str is not None:
-        current_time = current_time.strftime(time_fmt_str)
+        try:
+            current_time = datetime_obj_converter(current_time, convert_to="str")
+        except Exception as err:
+            raise RuntimeError(f"Error during conversion to 'str'': {err}")
+        else:
+            return current_time
+
+
+# Nanoscale datetimes #
+#-#-#-#-#-#-#-#-#-#-#-#
+
+def get_nano_datetime(t=None, module="datetime"):
+    """
+    Get the current or specified time in nanoseconds, formatted as a datetime string.
     
-    return current_time
+    Parameters
+    ----------
+    t : int, float, or None, optional
+        Time value in nanoseconds. If None, the current time is used.
+    module : {"datetime", "time", "pandas", "numpy", "arrow"}, default "datetime"
+        Module used to parse the floated time.
+
+    Returns
+    -------
+    nano_dt_str : str
+        The formatted datetime string with nanoseconds.
+    """
+    if t is not None and not isinstance(t, (float, int)):
+        raise TypeError("Time value must either be integer or float.")
+    
+    # Use current time if none is provided
+    if t is None:
+        t = time.time_ns()  # Get current time in nanoseconds
+    
+    # Ensure we handle floating-point times by converting to int
+    if isinstance(t, float):
+        t = int(str(t).replace(".", ""))
+        
+    floated_nanotime_str = _nano_floated_time_str(t)
+    nano_dt_str = _convert_floated_time_to_datetime(floated_nanotime_str, module)
+    return nano_dt_str
+
+
+def _convert_floated_time_to_datetime(floated_time, module):
+    """
+    Convert a floated time value to a datetime object with nanosecond precision.
+
+    Parameters
+    ----------
+    floated_time : float or int
+        The floated time value to be converted.
+    module : str
+        Module used to parse the floated time.
+
+    Returns
+    -------
+    nano_dt_str : str
+        The formatted datetime string with nanoseconds.
+    """
+    # Validate the module
+    _validate_option("module", module, list(floated_time_parsing_dict.keys()))
+
+    # Convert to float if input is a string
+    if isinstance(floated_time, str):
+        floated_time = float128(floated_time)
+        
+    # Split into seconds and nanoseconds
+    seconds = int(floated_time)
+    nanoseconds = int((floated_time - seconds) * 1_000_000_000)
+
+    # Convert the seconds part into a datetime object
+    dt = floated_time_parsing_dict[module](floated_time, date_unit="ns")
+    
+    # Add the nanoseconds part and return the formatted string
+    dt_with_nanos = dt + timedelta(microseconds=nanoseconds / 1_000)
+    dt_with_nanos_str = datetime_obj_converter(dt_with_nanos, 
+                                               convert_to="str",
+                                               dt_fmt_str='%Y-%m-%dT%H:%M:%S')
+    nano_dt_str = f"{dt_with_nanos_str}.{nanoseconds:09d}"
+    return nano_dt_str
+
+
+def _nano_floated_time_str(time_ns):
+    """
+    Convert a time value in nanoseconds to a formatted floating-point time string.
+
+    Parameters
+    ----------
+    time_ns : int
+        Time value in nanoseconds.
+
+    Returns
+    -------
+    str
+        The floating-point time string with nanosecond precision.
+    """
+    # Convert nanoseconds to seconds and nanoseconds parts
+    seconds = time_ns // 1_000_000_000
+    nanoseconds = time_ns % 1_000_000_000
+
+    # Format the floating-point time with nanosecond precision
+    return f"{seconds}.{nanoseconds:09d}"
+
+
+# Date/time attributes #
+#-#-#-#-#-#-#-#-#-#-#-#-
+
+def get_datetime_object_unit(dt_obj):
+    """
+    Retrieve the time unit of a numpy.datetime64 or similar datetime object.
+
+    Parameters
+    ----------
+    dt_obj : object
+        The datetime-like object from which the unit is to be retrieved. 
+        Must have a 'dtype' attribute, such as numpy.datetime64 or pandas.Timestamp.
+
+    Returns
+    -------
+    str
+        The time unit of the datetime object (e.g., "ns" for nanoseconds).
+    
+    Raises
+    ------
+    AttributeError
+        If the object does not have a 'dtype' attribute or is not of a supported type.
+    ValueError
+        If the string parsing fails
+    """
+    obj_type = get_obj_type_str(dt_obj)
+    if hasattr(dt_obj, "dtype"):
+        dtype_str = str(dt_obj.dtype)
+        if ("[" in dtype_str and "]" in dtype_str):
+            return dtype_str.split("[", 1)[1].split("]", 1)[0]
+        else:
+            raise ValueError(f"Could not determine unit from dtype: '{dtype_str}'")
+    else:
+        raise AttributeError(f"Object of type '{obj_type}' has no attribute 'dtype'.")
 
 #%%
 
@@ -140,14 +315,13 @@ def get_obj_operation_datetime(obj_list,
     However, this is a large library an since it's used only minimally in this module,
     lazy and selective import will be made.
     """
-    # Validate the type of time attribute #
-    all_arg_names = get_caller_method_args()
-    attr_arg_pos = find_substring_index(all_arg_names, "attr")
     
-    if attr not in attr_options:
-        arg_tuple_operation_datetime = (attr_arg_pos, attr_options)
-        raise AttributeError(format_string(attribute_error_str, 
-                                           arg_tuple_operation_datetime))
+    # Validate the type of time attribute #
+    arg_tuple_operation_datetime = (attr, attr_options)
+    _validate_option(*arg_tuple_operation_datetime,
+                     "attribute", 
+                     attribute_error_str,
+                     arg_tuple_operation_datetime)
     
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
@@ -175,9 +349,8 @@ def get_obj_operation_datetime(obj_list,
 #--------------------------------------#
 
 def merge_datetime_dataframes(df1, df2,
-                              operator,
-                              time_fmt_str=None,
-                              return_str=False):
+                              operator="inner",
+                              time_fmt_str=None):
     """
     Merges two datetime objects (either pandas.DataFrames or named/unnamed pandas.Series) 
     based on a specified operator, and optionally formats the datetime columns.
@@ -188,14 +361,11 @@ def merge_datetime_dataframes(df1, df2,
         The first datetime object.
     df2 : pandas.DataFrame or pandas.Series
         The second datetime object.
-    operator : {'inner', 'outer', 'left', 'right'}
+    operator : {'inner', 'outer', 'left', 'right'}, default 'inner'
         The type of merge to be performed.
     time_fmt_str : str, optional
         Format string for formatting the datetime columns using .strftime(). 
         Defaults to None.
-    return_str : bool, optional
-        If True, convert datetime to string using the format specified in time_fmt_str. 
-        Defaults to False.
 
     Returns
     -------
@@ -213,8 +383,8 @@ def merge_datetime_dataframes(df1, df2,
         If df2 is a pandas.Series and does not have a name attribute.
     """
     
-    # Parameter validations #
-    #-#-#-#-#-#-#-#-#-#-#-#-#
+    # Input validations #
+    #-#-#-#-#-#-#-#-#-#-#
     
     # Get the main argument names and their position on the function's arg list #    
     all_arg_names = get_caller_method_args()
@@ -223,8 +393,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # Convert Series to DataFrame if necessary and standardize the column name #
     if isinstance(df1, pd.Series):
-        df1 = df1.to_frame(name=df1.name if df1.name else "Date")
-        
+        df1 = df1.to_frame(name=df1.name if df1.name else "Date")        
     if isinstance(df2, pd.Series):
         df2 = df2.to_frame(name=df2.name if df2.name else "Date")
         
@@ -250,12 +419,13 @@ def merge_datetime_dataframes(df1, df2,
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
         df2.columns = df2_cols
-        
-        
+                
     # Operator argument choice #    
-    if operator not in dt_range_operators:
-        arg_tuple_dt_range_op1 = (operator, dt_range_operators)
-        raise ValueError(format_string(unsupported_option_str, arg_tuple_dt_range_op1))
+    arg_tuple_dt_range_op1 = (operator, dt_range_operators)
+    _validate_option(*arg_tuple_dt_range_op1,
+                     "value", 
+                     unsupported_option_str, 
+                     arg_tuple_dt_range_op1)
         
     # Operations #
     #-#-#-#-#-#-#-
@@ -271,7 +441,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # Optionally format datetime values #
     if time_fmt_str is not None:
-        res_dts = time_format_tweaker(res_dts, time_fmt_str, return_str=return_str)
+        res_dts = datetime_obj_converter(res_dts, convert_to="str", dt_fmt_str=time_fmt_str)
         
     return res_dts
 
@@ -284,8 +454,9 @@ def merge_datetime_dataframes(df1, df2,
 
 # Option lists #
 dt_range_operators = ["inner", "outer", "cross", "left", "right"]
-current_time_type_options = ["datetime", "str", "timestamp"]
+dt_dtype_options = ["datetime", "str", "timestamp"]
 attr_options = ["creation", "modification", "access"]
+common_error_class_list = ["value", "attribute"]
 
 # Preformatted strings #
 #----------------------#
@@ -308,7 +479,7 @@ struct_time_attr_dict = {
 
 # Dictionary mapping current time provider methods to the corresponding methods #
 current_datetime_dict = {
-    current_time_type_options[0] : datetime.datetime.now(),
-    current_time_type_options[1] : time.ctime(),
-    current_time_type_options[2] : pd.Timestamp.now()
+    dt_dtype_options[0] : datetime.datetime.now(),
+    dt_dtype_options[1] : time.ctime(),
+    dt_dtype_options[2] : pd.Timestamp.now()
     }
