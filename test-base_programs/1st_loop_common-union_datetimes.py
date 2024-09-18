@@ -25,13 +25,11 @@ from time_handling import datetime_operators, time_formatters
 merge_datetime_dataframes = datetime_operators.merge_datetime_dataframes
 natural_year = datetime_operators.natural_year
 
-time_format_tweaker = time_formatters.time_format_tweaker
+datetime_obj_converter = time_formatters.datetime_obj_converter
 
 #------------#
 # Parameters #
 #------------#
-
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
 
 # Time format strings and frequency 
 customizing_tfs1 = "%d/%m/%Y %H:%M"
@@ -52,9 +50,9 @@ dt_dict = {
 dt_dict_keys = list(dt_dict.keys())
 
 for eddk in dt_dict.keys():
-    unformatted_timeList = dt_dict[eddk].copy()
-    dt_dict[eddk] = [time_format_tweaker(ut, time_fmt_str=customizing_tfs1)
-                     for ut in unformatted_timeList]
+    unformatted_time_list = dt_dict[eddk].copy()
+    dt_dict[eddk] = [datetime_obj_converter(ut, dt_fmt_str=customizing_tfs1)
+                     for ut in unformatted_time_list]
                    
 # Indices and station names #
 stat_name_dict = {
@@ -86,9 +84,9 @@ date_ranges_child = pd.DataFrame(pd.date_range(extreme_dates_child[0],
                                   columns=[time_col])
 
 # Times in common #
-common_times = datetime_range_operator(date_ranges_parent, 
-                                       date_ranges_child,
-                                       operator="inner")
+common_times = merge_datetime_dataframes(date_ranges_parent, 
+                                         date_ranges_child,
+                                         operator="inner")
 try:
     common_times_start = common_times.iloc[0]
 except:
@@ -97,33 +95,31 @@ except:
                      "have no times in common.")
     
 else:
-    custom_common_times_start1 = time_format_tweaker(common_times_start,
-                                                     time_fmt_str=customizing_tfs2)
-    custom_common_times_start2 = time_format_tweaker(common_times_start,
-                                                     time_fmt_str=customizing_tfs3)
+    custom_common_times_start1 = datetime_obj_converter(common_times_start, 
+                                                        dt_fmt_str=customizing_tfs2)
+    custom_common_times_start2 = datetime_obj_converter(common_times_start,
+                                                        dt_fmt_str=customizing_tfs3)
     
     common_times_end = common_times.iloc[-1]
-    custom_common_times_end1 = time_format_tweaker(common_times_end,
-                                                  time_fmt_str=customizing_tfs2)
-    custom_common_times_end2 = time_format_tweaker(common_times_end,
-                                                  time_fmt_str=customizing_tfs3)
+    custom_common_times_end1 = datetime_obj_converter(common_times_end, dt_fmt_str=customizing_tfs2)
+    custom_common_times_end2 = datetime_obj_converter(common_times_end, dt_fmt_str=customizing_tfs3)
 
 # Extension times #
-extension_times = datetime_range_operator(date_ranges_parent, 
-                                          date_ranges_child,
-                                          operator="outer")
+extension_times = merge_datetime_dataframes(date_ranges_parent, 
+                                            date_ranges_child,
+                                            operator="outer")
 
 extension_times_start = extension_times.iloc[0]
-custom_extension_times_start1 = time_format_tweaker(extension_times_start,
-                                                    time_fmt_str=customizing_tfs2)
-custom_extension_times_start2 = time_format_tweaker(extension_times_start,
-                                                    time_fmt_str=customizing_tfs3)
+custom_extension_times_start1 = datetime_obj_converter(extension_times_start,
+                                                       dt_fmt_str=customizing_tfs2)
+custom_extension_times_start2 = datetime_obj_converter(extension_times_start,
+                                                       dt_fmt_str=customizing_tfs3)
 
 extension_times_end = extension_times.iloc[-1]
-custom_extension_times_end1 = time_format_tweaker(extension_times_end,
-                                                  time_fmt_str=customizing_tfs2)
-custom_extension_times_end2 = time_format_tweaker(extension_times_end,
-                                                  time_fmt_str=customizing_tfs3)
+custom_extension_times_end1 = datetime_obj_converter(extension_times_end,
+                                                     dt_fmt_str=customizing_tfs2)
+custom_extension_times_end2 = datetime_obj_converter(extension_times_end,
+                                                     dt_fmt_str=customizing_tfs3)
 
 # Time deltas #
 #-------------#
