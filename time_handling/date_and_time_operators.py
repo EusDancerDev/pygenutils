@@ -39,41 +39,42 @@ find_substring_index = string_handler.find_substring_index
 # Input validation streamliner #
 #------------------------------#
 
-def _validate_option(option, allowed_options, error_class, error_str, arg_iterable):
+def _validate_option(arg_iterable, error_class, error_str):
     """
     Validate if the given option is within the list of allowed options.
     Specific for printing customised error messages.
 
     Parameters
     ----------
-    option : object
-        The option to be validated.
-    allowed_options : list/iterable
-        A list or iterable of valid options.
-    error_class : {"value", "attribute"}
-        Abreviature of Python error classes ValueError and AttributeError, respectively.
+    arg_iterable : str, list or tuple
+        Iterable consisting of elements to map into error_str, 
+        particularly the option and the iterable of allowed ones.
+    error_class : {ValueError, AttributeError}
+        Error class to raise if option is not in the list of allowed ones.
     error_str : str
         Single or multiple line string denoting an error.
-    arg_iterable : str, list or tuple
-        Iterable consisting of elements to map into error_str.
 
     Raises
-    ------
-    ValueError: 
+    ------    
+    ValueError or AttributeError: 
         If the option is not in the list of allowed options, with a detailed explanation.
+    KeyError
+        If error_class is not within the possible errors.
+        It is preferred to raise this error rather than another ValueError
+        to avoid confusion with the above case.
     """
     all_arg_names = get_caller_method_args()
     err_clas_arg_pos = find_substring_index(all_arg_names, "error_class")
     
-    if error_class not in common_error_class_list :
-        raise ValueError(f"Error class '{all_arg_names[err_clas_arg_pos]}' not provided. "
-                         f"Choose one from {common_error_class_list}.")
+    if error_class not in error_class_list :
+        raise KeyError(f"Unsupported error class '{all_arg_names[err_clas_arg_pos]}'. "
+                       f"Choose one from {error_class_list}.")
+    
+    option = arg_iterable[0]
+    allowed_options = arg_iterable[1]
     
     if option not in allowed_options:
-        if error_class == "value":
-            raise ValueError(format_string(error_str, arg_iterable))
-        elif error_class == "attribute":
-            raise AttributeError(format_string(error_str, arg_iterable))
+        raise error_class(format_string(error_str, arg_iterable))
             
 
 # Dates and times #
@@ -115,7 +116,7 @@ def get_current_datetime(dtype, time_fmt_str=None):
     
     # Validate string representing the data type #
     arg_tuple_current_time = (dtype, dt_dtype_options)
-    _validate_option(*arg_tuple_current_time, "value", unsupported_option_str, arg_tuple_current_time)
+    _validate_option(arg_tuple_current_time, ValueError, unsupported_option_str)
     
     # Get the current date and time #
     current_time = current_datetime_dict.get(dtype)
@@ -189,8 +190,9 @@ def _convert_floated_time_to_datetime(floated_time, module):
     nano_dt_str : str
         The formatted datetime string with nanoseconds.
     """
-    # Validate the module
-    _validate_option("module", module, list(floated_time_parsing_dict.keys()))
+    # Validate the module #
+    arg_tuple_float_time_to_dt = (module, list(floated_time_parsing_dict.keys()))
+    _validate_option(arg_tuple_float_time_to_dt, ValueError, unsupported_option_str)
 
     # Convert to float if input is a string
     if isinstance(floated_time, str):
@@ -318,10 +320,7 @@ def get_obj_operation_datetime(obj_list,
     
     # Validate the type of time attribute #
     arg_tuple_operation_datetime = (attr, attr_options)
-    _validate_option(*arg_tuple_operation_datetime,
-                     "attribute", 
-                     attribute_error_str,
-                     arg_tuple_operation_datetime)
+    _validate_option(arg_tuple_operation_datetime, AttributeError, attribute_error_str)
     
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
@@ -403,8 +402,9 @@ def merge_datetime_dataframes(df1, df2,
     # First object
     try:
         dt_colname = find_date_key(df1)
-    except:
-        print_format_string(date_colname_not_found_err, all_arg_names[df1_arg_pos])
+    except Exception as err:
+        arg_tuple_df1 = (err, all_arg_names[df1_arg_pos])
+        print_format_string(date_colname_not_found_warning, arg_tuple_df1)
         
         df1_cols = list(df1.columns)
         df1_cols[0] = std_date_colname
@@ -413,8 +413,9 @@ def merge_datetime_dataframes(df1, df2,
     # Second object
     try:
         dt_colname = find_date_key(df2)
-    except:
-        print_format_string(date_colname_not_found_err, all_arg_names[df2_arg_pos])
+    except Exception as err:
+        arg_tuple_df2 = (err, all_arg_names[df2_arg_pos])
+        print_format_string(date_colname_not_found_warning, arg_tuple_df2)
         
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
@@ -422,10 +423,7 @@ def merge_datetime_dataframes(df1, df2,
                 
     # Operator argument choice #    
     arg_tuple_dt_range_op1 = (operator, dt_range_operators)
-    _validate_option(*arg_tuple_dt_range_op1,
-                     "value", 
-                     unsupported_option_str, 
-                     arg_tuple_dt_range_op1)
+    _validate_option(arg_tuple_dt_range_op1, ValueError, unsupported_option_str)
         
     # Operations #
     #-#-#-#-#-#-#-
@@ -456,16 +454,16 @@ def merge_datetime_dataframes(df1, df2,
 dt_range_operators = ["inner", "outer", "cross", "left", "right"]
 dt_dtype_options = ["datetime", "str", "timestamp"]
 attr_options = ["creation", "modification", "access"]
-common_error_class_list = ["value", "attribute"]
+error_class_list = [ValueError, AttributeError]
 
 # Preformatted strings #
 #----------------------#
 
 # Error strings #
 unsupported_option_str = """Unsupported option '{}'. Options are {}."""
-attribute_error_str = "Wrong attribute option at position {}. Options are {}. "
-date_colname_not_found_err = """Standard time column name not found at object \
-f"'{all_arg_names[df1_arg_pos]}.\nSetting default name 'Date' to column number 0."""
+attribute_error_str = "Invalid attribute '{}'. Options are {}. "
+date_colname_not_found_warning = """{} at object '{}'.
+Setting default name 'Date' to column number 0."""
 
 # Switch dictionaries #
 #---------------------#
