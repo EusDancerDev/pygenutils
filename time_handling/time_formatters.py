@@ -303,7 +303,7 @@ def _parse_float_to_string(floated_time,
     """
     
     if origin == "arbitrary":
-        return _format_arbitrary_time(floated_time)
+        return _format_arbitrary_time(floated_time, frac_precision)
        
     elif origin == "unix":
         # Accommodation of the fractional second #
@@ -357,7 +357,7 @@ def _float_time_parser(floated_time, module, unit):
     return datetime_obj
 
 
-def _format_arbitrary_time(floated_time):
+def _format_arbitrary_time(floated_time, frac_precision):
     """
     Formats an arbitrary time (in seconds) into a string representation
     based on the provided format.
@@ -366,8 +366,13 @@ def _format_arbitrary_time(floated_time):
     ----------
     floated_time : int or float
         Time representing a time unit relative to an arbitrary origin.
-    dt_fmt_str : str
-        Format string that specifies how to format the time.
+    frac_precision : int [0,6] or None
+        Precision of the fractional seconds.
+        This parameter is originally set in 'parse_float_time' method,
+        which allows integers in [0,9], because for 6 < frac_precision <=9 
+        it performs optional nanoscale time computing, unlike this internal method.
+        So in order to maintain organization, the upper bound for the precision
+        will be 6.
     
     Returns
     -------
@@ -388,8 +393,14 @@ def _format_arbitrary_time(floated_time):
     # Compute time components #
     days, hours = divmod(floated_time // 3600, 24)
     minutes, seconds = divmod(floated_time % 3600, 60)
+    
+    # Maintain precisions higher than 6 in the upper bound #
+    if frac_precision > 6:
+        frac_precision = 6
+        
+    seconds = round(seconds, frac_precision)
    
-    # Format time parts according to 'dt_fmt_str' #
+    # Format time parts #
     try:
         if days > 0:
             time_tuple = (days, hours, minutes, seconds)
