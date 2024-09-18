@@ -19,7 +19,7 @@ import xarray as xr
 from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.time_handling.time_formatters import time_format_tweaker
+from pyutils.time_handling.time_formatters import datetime_obj_converter
 from pyutils.utilities.introspection_utils import get_obj_type_str
 from pyutils.weather_and_climate.netcdf_handler import find_time_dimension
 
@@ -161,7 +161,7 @@ def periodic_statistics(obj, statistic, freq,
     else:
         raise ValueError("Cannot operate with this data type.")
   
-# OPTIMIZE: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia  
+
 def climat_periodic_statistics(obj,
                                statistic,
                                time_freq,
@@ -349,8 +349,7 @@ def climat_periodic_statistics(obj,
         # Store climatological data into the data frame #
         climat_arr = np.append(climat_dates, climat_vals, axis=1)
         obj_climat = pd.DataFrame(climat_arr, columns=climat_obj_cols)
-        obj_climat.iloc[:, 0] = time_format_tweaker(obj_climat.iloc[:, 0],
-                                                    module="pandas")        
+        obj_climat.iloc[:, 0] = datetime_obj_converter(obj_climat.iloc[:, 0], "pandas")        
         
     elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):          
         if time_freq == "hourly":
