@@ -32,7 +32,7 @@ from pyutils.time_handling import datetime_operators, program_snippet_exec_timer
 # Create aliases #
 #----------------#
 
-list_array_to_std_array = array_data_manipulation.arrayOfList_to_array
+list_array_to_std_array = array_data_manipulation.list_array_to_std_array
 select_list_elements = array_data_manipulation.select_list_elements
 sort_array_rows_by_column = array_data_manipulation.sort_array_rows_by_column
 
@@ -43,15 +43,12 @@ merge_excel_files = data_frame_handler.merge_excel_files
 save2excel = data_frame_handler.save2excel
 
 get_obj_operation_datetime = datetime_operators.get_obj_operation_datetime
-time_format_tweaker = datetime_operators.time_format_tweaker
 
 program_exec_timer = program_snippet_exec_timers.program_exec_timer
 
 #------------------#
 # Define functions #
 #------------------#
-
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
 
 def df_to_structured_array(df):
     records = df.to_records(index=False)
@@ -359,7 +356,7 @@ def assign_sigma_to_original_data(original_array,
             df_varcase_idx\
             = ws_binned_df[ws_binned_df[sigma2fill_df_cols[0]]==ws_bin].index
             sigma_mean_bin_idx\
-            = sigma_filled_df[sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin].index
+            = sigma_filled_df[sigma_filled_df[sigma2fill_df_cols[0]]==ws_bin].index
              
         elif lkvil == 1:   
             df_varcase_idx\
@@ -367,7 +364,7 @@ def assign_sigma_to_original_data(original_array,
                            & (ws_binned_df[sigma2fill_df_cols[1]]==key_var_index_list[0])].index
             
             sigma_mean_bin_idx\
-            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+            = sigma_filled_df[(sigma_filled_df[sigma2fill_df_cols[0]]==ws_bin)
                                   & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])].index          
             
         elif lkvil == 2:
@@ -377,7 +374,7 @@ def assign_sigma_to_original_data(original_array,
                            & (ws_binned_df[sigma2fill_df_cols[2]]==key_var_index_list[1])].index
             
             sigma_mean_bin_idx\
-            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+            = sigma_filled_df[(sigma_filled_df[sigma2fill_df_cols[0]]==ws_bin)
                             & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
                             & (sigma_filled_df[sigma2fill_df_cols[2]]==key_var_index_list[1])].index    
             
@@ -389,7 +386,7 @@ def assign_sigma_to_original_data(original_array,
                            & (ws_binned_df[sigma2fill_df_cols[3]]==key_var_index_list[2])].index
             
             sigma_mean_bin_idx\
-            = sigma_filled_df[(sigmaFilledDf[sigma2fill_df_cols[0]]==ws_bin)
+            = sigma_filled_df[(sigma_filled_df[sigma2fill_df_cols[0]]==ws_bin)
                             & (sigma_filled_df[sigma2fill_df_cols[1]]==key_var_index_list[0])
                             & (sigma_filled_df[sigma2fill_df_cols[2]]==key_var_index_list[1])
                             & (sigma_filled_df[sigma2fill_df_cols[3]]==key_var_index_list[2])].index  
@@ -1389,7 +1386,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     if save_sigma_filled_as_file:
         
         if sigma_nan_to_num:
-            fsdf_nan_idx = sigma_filled_df[pd.isna(sigmaFilledDf[ws_mean_sigma_col])].index 
+            fsdf_nan_idx = sigma_filled_df[pd.isna(sigma_filled_df[ws_mean_sigma_col])].index 
             sigma_filled_df.loc[fsdf_nan_idx, ws_mean_sigma_col] = invalid_sigma_value
         
         print("Saving sigma filled data frame into an Excel file...")
