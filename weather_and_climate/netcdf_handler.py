@@ -5,9 +5,9 @@
 # Import modules #
 #----------------#
 
-from pathlib import Path
+import os
 
-from numpy import array, round as rnd, unique
+from numpy import array, round as np_rnd, unique
 import xarray as xr
 
 #-----------------------#
@@ -1045,9 +1045,9 @@ def get_model_list(path_list, split_pos):
                  else path
                  for path in path_list]
     
-    unique_model_list = np.unique([f.split(splitdelim)[split_pos]
-                                   for f in grib_file_list
-                                   if len(grib_file_list) > 0])
+    unique_model_list = unique([f.split(splitdelim)[split_pos]
+                                for f in grib_file_list
+                                if len(grib_file_list) > 0])
     
     return unique_model_list
 
@@ -1231,8 +1231,8 @@ def find_nearest_coordinates(nc_file_name, lats_obs, lons_obs):
         
     ds.close()
     
-    nearest_lats = rnd(nearest_lats, 3)
-    nearest_lons = rnd(nearest_lons, 3)
+    nearest_lats = np_rnd(nearest_lats, 3)
+    nearest_lons = np_rnd(nearest_lons, 3)
         
     return (nearest_lats, nearest_lons)
 
@@ -1288,7 +1288,7 @@ def grib2netcdf(grib_file_list, on_shell=False, option_str=None):
 #--------------------------#
 
 # Directory from where this code is being called #
-code_call_dir = Path.cwd()
+code_call_dir = os.getcwd()
 
 # File extensions #
 extensions = ["nc", "csv"]
