@@ -266,9 +266,9 @@ def dt_time_average(dt_obj_list,
     # Operations #
     ##############
         
-    angles = [time_to_radians(dt_obj) for dt_obj in dt_obj_list]
-    avg_angle = average_angle(angles)    
-    time_average = radians_to_time_of_day(avg_angle)
+    angles = [_time_to_radians(dt_obj) for dt_obj in dt_obj_list]
+    avg_angle = _average_angle(angles)    
+    time_average = _radians_to_time_of_day(avg_angle)
     
     # Return the result in the specified output format #
     time_average_formatted = time_output_format_dict.get(output_format)(time_average)
@@ -278,7 +278,7 @@ def dt_time_average(dt_obj_list,
 # Auxiliary methods #
 #####################
 
-def time_to_radians(t, convert_to="datetime", time_fmt_str=None):
+def _time_to_radians(t, convert_to="datetime", time_fmt_str=None):
     """
     Convert a time object to radians.
     
@@ -327,7 +327,7 @@ def time_to_radians(t, convert_to="datetime", time_fmt_str=None):
     radians = seconds_from_midnight / (24 * 60 * 60) * 2 * np.pi
     return radians
 
-def average_angle(angles):
+def _average_angle(angles):
     """
     Calculate the average of a list of angles in RADIANS.
     
@@ -350,7 +350,7 @@ def average_angle(angles):
     return np.arctan2(x_mean, y_mean)  
  
 
-def radians_to_time_of_day(rads):
+def _radians_to_time_of_day(rads):
     """
     Convert an angle in radians to a time of day.
     
@@ -466,7 +466,7 @@ def sum_date_objects(date_list,
     total_date = parse_time_string(date_list[0], dt_fmt_str)
     for obj in date_list[1:]:
         date_obj = extract_datetime_part(obj, part="date")
-        total_date = add_dates_with_year_gap(total_date, date_obj, operation=operation)
+        total_date = _add_dates_with_year_gap(total_date, date_obj, operation=operation)
     
     # Return the result in the specified output format #
     total_date_formatted = date_output_format_dict.get(output_format)(total_date)
@@ -495,7 +495,7 @@ def return_date_part(datetime_obj, arg_list=None):
         date_obj = datetime_obj.date(*arg_list)
     return date_obj
 
-def add_dates_with_year_gap(date1, date2, operation):
+def _add_dates_with_year_gap(date1, date2, operation):
     """
     Add or subtract two dates with consideration for year gaps 
     and handle overflow/underflow.
@@ -645,7 +645,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     # Check if there is at least a whole year gap between the two objects #  
     #######################################################################
     
-    min_one_year_gap = has_at_least_one_year_gap(dt_start_std, dt_end_std)
+    min_one_year_gap = _has_at_least_one_year_gap(dt_start_std, dt_end_std)
     
     # If so, adjust the starting datetime object so that its day is 1
     # and sum a whole year to it in order to obtain the end datetime
@@ -664,8 +664,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     # Choose whether to return the date part of the time objects #
     ##############################################################
     if return_date_only:
-        dt_start_natural = return_date_part(dt_start_std)
-        dt_end_natural = return_date_part(dt_end_std)
+        dt_start_natural = extract_datetime_part(dt_start_std, part="date")
+        dt_end_natural = extract_datetime_part(dt_end_std, part="date")
         
     # Choose between returning the results as strings or datetime dt_objects #     
     #############################################################################
@@ -695,7 +695,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
                 )
     
     
-def has_at_least_one_year_gap(dt1, dt2):
+def _has_at_least_one_year_gap(dt1, dt2):
     # Ensure dt1 is earlier than dt2 #
     if dt1 > dt2:
         dt1, dt2 = dt2, dt1
