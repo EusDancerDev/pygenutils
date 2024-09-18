@@ -412,10 +412,11 @@ def _format_arbitrary_time(floated_time):
 
 def datetime_obj_converter(datetime_obj,
                            convert_to,
-                           unit="ns",
+                           unit="s",
                            float_class="d", 
                            int_class="int",
                            dt_fmt_str=None):
+    
     """
     Convert a date/time object to another, including float and string representation.
     If float, it represents seconds since the Unix epoch.
@@ -426,6 +427,7 @@ def datetime_obj_converter(datetime_obj,
         The date/time object to be converted.
         Accepted objects by library are:
         - datetime : `datetime.datetime`, 
+        - time: `datetime.time`, 
         - numpy : `np.datetime64`, `np.ndarray`,
         - pandas : `pd.Timestamp`, `pd.DataFrame`, `pd.Series`
         - arrow : `arrow`, 
@@ -438,7 +440,7 @@ def datetime_obj_converter(datetime_obj,
         `datetime64`, `Timestamp`, etc.
     unit : str
         The date unit for conversion, applicable to certain types.
-        Default is `"ns"` (nanoseconds).
+        Default is `"s"` (seconds).
     float_class : str or numpy class
         The float precision class. Default is `"d"` (double precision).
     int_class : str or numpy class
@@ -463,6 +465,7 @@ def datetime_obj_converter(datetime_obj,
     +------------------+---------+--------------+---------------+------------+--------------+---------+-------+
     | `datetime`       | Yes     | Yes          | Yes           | Yes        | Yes          | Yes     | Yes   |
     | `datetime64`     | Yes     | Yes          | Yes           | Yes        | No           | Yes     | Yes   |
+    | `time`           | Yes     | Yes          | Yes           | Yes        | Yes          | Yes     | Yes   |
     | `Timestamp`      | Yes     | Yes          | Yes           | No         | Yes          | Yes     | Yes   |
     | `arrow`          | Yes     | Yes          | Yes           | Yes        | Yes          | No      | Yes   |
     | `struct_time`    | Yes     | Yes          | No            | Yes        | Yes          | Yes     | No    |
@@ -735,9 +738,32 @@ def _to_float(dt_obj, unit, float_class):
     obj_type = get_obj_type_str(dt_obj).lower()
     if obj_type == "datetime64":
         return dt_obj.astype(f"timedelta64[{unit}]").astype(float_class)
+    elif obj_type == "time": # datetime.time
+        return __time_component_to_float(dt_obj)
     if hasattr(dt_obj, 'timestamp'):
         return dt_obj.timestamp()  # works for datetime and pandas
     return float(dt_obj.float_timestamp)  # arrow
+
+
+def __time_component_to_float(t):
+    """
+    Convert a time object to seconds since Unix epoch start.
+
+    Parameters
+    ----------
+    t : datetime.time
+        The time object to be converted.
+
+    Returns
+    -------
+    time_component_float : int
+        Seconds relative to the Unix epoch.
+    """
+    time_component_float = datetime.timedelta(hours=t.hour,
+                                              minutes=t.minute, 
+                                              seconds=t.second,
+                                              microseconds=t.microsecond)
+    return time_component_float
 
 
 def _to_datetime(dt_obj, unit):
@@ -756,12 +782,22 @@ def _to_datetime(dt_obj, unit):
     -------
     datetime, pd.DataFrame, or pd.Series
         The converted Python datetime object, DataFrame, or Series.
+        
+    Note
+    ----
+    For datetime.time objects a datetime.datetime object is returned.
+    Since the date is arbitrary, then to maintain some organisation,
+    the current date will be placed in its date part.
     """
     obj_type = get_obj_type_str(dt_obj).lower()
     
     # Array-like with datetime-like values
     if obj_type == "dataframe":
         return dt_obj.map(lambda df_col: _to_datetime_aux(df_col, unit))
+    elif obj_type == "time":
+        current_date = datetime.today().date()
+        return datetime(current_date.year, current_date.month, current_date.day,
+                        dt_obj.hour, dt_obj.minute, dt_obj.second, dt_obj.microsecond)
         
     elif obj_type == "series":
         return dt_obj.apply(lambda df_col: _to_datetime_aux(df_col, unit))
@@ -930,6 +966,16 @@ datetime64_obj_conversion_dict = {
     "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(_to_datetime(dt_obj), dt_fmt_str)
 }
 
+datetime_time_obj_conversion_dict = {
+    "float"    : lambda dt_obj, _ : _to_float(dt_obj),
+    "datetime" : lambda dt_obj, _ : _to_datetime(dt_obj),
+    "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, _ : _to_pandas(_to_datetime(dt_obj)),
+    "numpy"    : lambda dt_obj, _ : _to_numpy(_to_datetime(dt_obj)),
+    "arrow"    : lambda dt_obj, _ : _to_arrow(dt_obj),
+    "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(dt_obj, dt_fmt_str)
+    }
+
 timestamp_obj_conversion_dict = {
     "float"    : lambda dt_obj, _ : _to_float(dt_obj),
     "datetime" : lambda dt_obj, unit, _ : _to_datetime(dt_obj, unit),
@@ -966,6 +1012,7 @@ _dt_like_obj_conversion_dict = {
 conversion_opt_dict = {
     "datetime": datetime_obj_conversion_dict,
     "datetime64": datetime64_obj_conversion_dict,
+    "time" : datetime_time_obj_conversion_dict,
     "timestamp": timestamp_obj_conversion_dict,
     "arrow": arrow_obj_conversion_dict,
     "struct_time": time_stt_obj_conversion_dict,
@@ -984,7 +1031,6 @@ _total_time_unit_dict = {
     "series"      : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
     "ndarray"     : lambda dt_obj, unit, float_class, _ : dt_obj.astype(f"datetime64[{unit}]").astype(float_class)  
     }
-
 
 
 # Preformatted strings #
