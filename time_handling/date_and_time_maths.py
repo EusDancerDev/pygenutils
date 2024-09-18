@@ -4,7 +4,7 @@
 **Goal**
 
 This module aims to perform basic mathematical operations regarding
-Pandas, Numpy date and time clock_objects.
+Pandas, Numpy date and date/time objects.
 """
 
 #----------------#
@@ -22,16 +22,56 @@ import pandas as pd
 from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.time_handling.time_formatters import time2seconds, time_format_tweaker
+from pyutils.time_handling.time_formatters import datetime_obj_converter,\
+                                                  parse_float_time, \
+                                                  parse_time_string
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 
 #------------------#
 # Define functions #
 #------------------#
 
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-
 #%%
+
+# Input validation streamliner #
+#------------------------------#
+        
+def _validate_option(arg_iterable, error_class, error_str):
+    """
+    Validate if the given option is within the list of allowed options.
+    Specific for printing customised error messages.
+
+    Parameters
+    ----------
+    arg_iterable : str, list or tuple
+        Iterable consisting of elements to map into error_str, 
+        particularly the option and the iterable of allowed ones.
+    error_class : {TypeError, ValueError}
+        Error class to raise if option is not in the list of allowed ones.
+    error_str : str
+        Single or multiple line string denoting an error.
+
+    Raises
+    ------    
+    TypeError or ValueError: 
+        If the option is not in the list of allowed options, with a detailed explanation.
+    KeyError
+        If error_class is not within the possible errors.
+        It is preferred to raise this error rather than another ValueError
+        to avoid confusion with the above case.
+    """
+    all_arg_names = get_caller_method_args()
+    err_clas_arg_pos = find_substring_index(all_arg_names, "error_class")
+    
+    if error_class not in error_class_list :
+        raise KeyError(f"Unsupported error class '{all_arg_names[err_clas_arg_pos]}'. "
+                       f"Choose one from {error_class_list}.")
+    
+    option = arg_iterable[0]
+    allowed_options = arg_iterable[1]
+    
+    if option not in allowed_options:
+        raise error_class(format_string(error_str, arg_iterable))
 
 # Times #
 #-------#
@@ -40,27 +80,25 @@ from pyutils.utilities.introspection_utils import get_caller_method_args, get_ob
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Main method #
-def sum_clock_times(clock_obj_list,
-                    operation="sum", 
-                    time_fmt_str="%H:%M:%S",
-                    output_format="standard"):
+def sum_dt_times(dt_obj_list,
+                 dt_fmt_str="%H:%M:%S",
+                 operation="sum",
+                 output_format="standard"):
     """
     Calculate the sum or difference of a list of clock times
     and format the output accordingly.
 
     Parameters
     ----------
-    clock_obj_list : list, tuple, or numpy.ndarray
+    dt_obj_list : list, tuple, or numpy.ndarray
         A list, tuple, or numpy.ndarray containing time objects as strings 
         that follow the format specified in 'time_fmt_str'.
     operation : str, optional
         The operation to perform on the clock times. Supported operations 
         are "sum" (default) and "subtr" for subtraction.
-    time_fmt_str : str, optional
-        The format string that specifies the format of the time objects. 
-        This only affects objects that are strings. Default is "%H:%M:%S".
-        Note that all strings must have at least the detecteable part 
-        by the given string.
+    dt_fmt_str : str, optional
+        A format string that defines the structure of each object in 'dt_obj_list'. 
+        Default is '%H:%M:%S'.
     output_format : str, optional
         The format of the output. Supported options:
         - 'standard': Returns the total time as a pandas.Timedelta object (default).
@@ -77,9 +115,9 @@ def sum_clock_times(clock_obj_list,
     Raises
     ------
     TypeError
-        If 'clock_obj_list' is not a list, tuple, or numpy.ndarray.
+        If 'dt_obj_list' is not a list, tuple, or numpy.ndarray.
     ValueError
-        If 'clock_obj_list' contains fewer than 2 elements or if an unsupported 
+        If 'dt_obj_list' contains fewer than 2 elements or if an unsupported 
         operation or output format is specified.
     """
 
@@ -88,33 +126,33 @@ def sum_clock_times(clock_obj_list,
 
     # Date and/or time list format control and its length #
     all_arg_names = get_caller_method_args()
-    obj_list_pos = all_arg_names.index("clock_obj_list")
+    obj_list_pos = all_arg_names.index("dt_obj_list")
     
-    if isinstance(clock_obj_list, str):
+    if isinstance(dt_obj_list, str):
         raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
                         f"(position {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
-    elif (isinstance(clock_obj_list, (list, tuple, np.ndarray)) and len(clock_obj_list) < 2):
+    elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
         raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
                          "must contain at least two objects.")
     
-    # Operation argument control #
-    if operation not in basic_math_opt_list:
-        raise ValueError(invalid_math_operation_error)
+    # Operation argument control #        
+    arg_tuple_math_op = (operation, basic_math_opt_list)
+    _validate_option(arg_tuple_math_op, ValueError, invalid_math_operation_error)
         
-    # Output format parameter control #
-    if output_format not in time_output_format_options:
-        raise ValueError(f"Unsupported output format '{output_format}'. "
-                         f"Supported options are: {time_output_format_options}")
+    # Output format parameter control         
+    arg_iterable_output_format = (output_format, time_output_format_options)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
     
     # Operations #
     ##############
     
     # Time delta object conversions #
     timedelta_list = []
-    for clock_obj in clock_obj_list:
-        time_obj = convert_to_time(clock_obj, time_fmt_str=time_fmt_str)
-        timedelta_obj = time_to_timedelta(time_obj)
+    for dt_obj in dt_obj_list:
+        dt_obj = parse_time_string(dt_obj, dt_fmt_str)
+        time_obj = extract_datetime_part(dt_obj)
+        timedelta_obj = datetime_obj_converter(time_obj, "float")
         timedelta_list.append(timedelta_obj)
         
     # Perform the arithmetical operations #
@@ -126,93 +164,37 @@ def sum_clock_times(clock_obj_list,
     
 
 # Auxiliary methods #
-def convert_to_time(clock_obj, time_fmt_str):
+def extract_datetime_part(datetime_obj, part="time", arg_list=None):
     """
-    Convert various representations of time objects to datetime.time.
+    Return the time or date part of a datetime object.
 
     Parameters
     ----------
-    clock_obj : str, numpy.datetime64, time.struct_time, 
-                datetime.datetime, datetime.time, or pandas.Timestamp
-        The input time object to be converted.
-    time_fmt_str : str
-        The format string that specifies the format of the string time objects.
-
-    Returns
-    -------
-    datetime.time
-        The converted time object.
+    datetime_obj : datetime.datetime
+        The datetime object from which to extract the time part.
+    part : {'time', 'date'}
+        The part of the datetime object to be returned.
+        If 'time', the object returned is of type datetime.time 
+        and if 'date' a datetime.date object.
+        Default value is 'time'.
+    arg_list : list, optional
+        List containing specific parts of the datetime object.
         
     Raises
     ------
-    TypeError
-        If the input object type is not supported.
-    """
-    if isinstance(clock_obj, str):
-        datetime_obj = time_format_tweaker(clock_obj, time_fmt_str=time_fmt_str)
-        time_obj = return_time_part(datetime_obj)
-        return time_obj
-    elif isinstance(clock_obj, np.datetime64):
-        datetime_obj = time_format_tweaker(clock_obj, method="datetime_tolist")
-        time_obj = return_time_part(datetime_obj)
-        return time_obj
-    elif get_obj_type_str(clock_obj) == "struct_time":
-        datetime_obj = clock_obj
-        dt_parts_list = [clock_obj.tm_hour, clock_obj.tm_min, clock_obj.tm_sec]
-        time_obj = return_time_part(datetime_obj, dt_parts_list)
-        return time_obj
-    elif isinstance(clock_obj, datetime.datetime):
-        time_obj = return_time_part(clock_obj)
-        return time_obj
-    elif isinstance(clock_obj, datetime.time):
-        return clock_obj
-    elif isinstance(clock_obj, pd.Timestamp):
-        time_obj = return_time_part(clock_obj)
-        return time_obj    
-    else:
-        time_conv_arg_list = ["time or datetime", "time"]
-        raise TypeError(format_string(unsupported_obj_type_str1, time_conv_arg_list))
-        
-        
-def return_time_part(dt_start_std, arg_list=None):
-    """
-    Return the time part of a datetime object.
-
-    Parameters
-    ----------
-    dt_start_std : datetime.datetime
-        The datetime object from which to extract the time part.
-    arg_list : list, optional
-        List containing specific parts of the datetime object.
+    ValueError
+        If 'part' is neither 'time' nor 'date'.
 
     Returns
     -------
-    datetime.time
-        The time part of the datetime object.
+    datetime.time or datetime.date
+        The time or date part of the datetime object, depending on the
+        value of 'part'.
     """
-    if arg_list is None:
-        time_obj = dt_start_std.time()
-    else:
-        time_obj = dt_start_std.time(*arg_list)
-    return time_obj
-
-
-def time_to_timedelta(t):
-    """
-    Convert a time object to a timedelta object.
-
-    Parameters
-    ----------
-    t : datetime.time
-        The time object to be converted.
-
-    Returns
-    -------
-    pd.Timedelta
-        The time represented as a timedelta object.
-    """
-    timedelta_obj = pd.Timedelta(hours=t.hour, minutes=t.minute, seconds=t.second)
-    return timedelta_obj
+    arg_tuple_extract = (part, ["time", "date"])
+    _validate_option(arg_tuple_extract, ValueError, invalid_output_format_str)
+    
+    return datetime_object_part_dict.get(part)(datetime_obj, arg_list)
 
 
 # Time average #
@@ -224,7 +206,7 @@ def time_to_timedelta(t):
 # Main method #
 ###############
 
-def clock_time_average(clock_obj_list, 
+def dt_time_average(dt_obj_list, 
                        time_fmt_str="%H:%M:%S",
                        output_format="standard"):
     """
@@ -233,7 +215,7 @@ def clock_time_average(clock_obj_list,
     
     Parameters
     ----------
-    clock_obj_list : list, tuple, or numpy.ndarray
+    dt_obj_list : list, tuple, or numpy.ndarray
         A collection of date and/or time objects or strings that follow 
         the format specified in 'time_fmt_str'.
     time_fmt_str : str, optional
@@ -257,9 +239,9 @@ def clock_time_average(clock_obj_list,
     Raises
     ------
     TypeError
-        If 'clock_obj_list' is not a list, tuple, or numpy.ndarray.
+        If 'dt_obj_list' is not a list, tuple, or numpy.ndarray.
     ValueError
-        If 'clock_obj_list' contains fewer than 2 elements
+        If 'dt_obj_list' contains fewer than 2 elements
         or if an unsupported output format is specified.
     """    
     # Argument adecuacy controls #
@@ -267,25 +249,24 @@ def clock_time_average(clock_obj_list,
 
     # Date and/or time list format control and its length #
     all_arg_names = get_caller_method_args()
-    obj_list_pos = find_substring_index("clock_obj_list")
+    obj_list_pos = find_substring_index("dt_obj_list")
     
-    if isinstance(clock_obj_list, str):
+    if isinstance(dt_obj_list, str):
         raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
                         f"(position {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
-    elif (isinstance(clock_obj_list, (list, tuple, np.ndarray)) and len(clock_obj_list) < 2):
+    elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
         raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
                          "must contain at least two objects.")
         
     # Output format parameter control #
-    if output_format not in time_output_format_options:
-        raise ValueError(f"Unsupported output format '{output_format}'. "
-                         f"Supported options are: {time_output_format_options}")
+    arg_iterable_output_format = (output_format, time_output_format_options)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
         
     # Operations #
     ##############
         
-    angles = [time_to_radians(clock_obj) for clock_obj in clock_obj_list]
+    angles = [time_to_radians(dt_obj) for dt_obj in dt_obj_list]
     avg_angle = average_angle(angles)    
     time_average = radians_to_time_of_day(avg_angle)
     
@@ -297,7 +278,7 @@ def clock_time_average(clock_obj_list,
 # Auxiliary methods #
 #####################
 
-def time_to_radians(t, time_fmt_str):
+def time_to_radians(t, convert_to="datetime", time_fmt_str=None):
     """
     Convert a time object to radians.
     
@@ -306,6 +287,12 @@ def time_to_radians(t, time_fmt_str):
     t : str, numpy.datetime64, time.struct_time, datetime.datetime, 
         datetime.time, or pandas.Timestamp.
         The input time object to be converted.
+    convert_to : str
+        The target type to convert `datetime_obj` to.
+        Accepted values depend on the input type, but as a first attempt,
+        default value 'datetime' has been established.
+        For example, if `datetime_obj` is a `datetime`, `convert_to` could be
+        `datetime64`, `Timestamp`, etc.
     time_fmt_str : str
         The format string that specifies the format of the time objects. 
         This only affects objects that are strings.
@@ -320,13 +307,23 @@ def time_to_radians(t, time_fmt_str):
     Radians are calculated using a 24-hour circle,
     starting at north (midnight) and moving clockwise.
     """
-    # TODO: 'time2seconds' funtzioa behar bezala diseinatutakoan deskomentatu ondoko lerroa
-    # seconds_from_midnight = time2seconds(time_of_day)
     
-    time_obj = convert_to_time(t, time_fmt_str=time_fmt_str)
-    time_of_day = time_to_timedelta(time_obj)
+    if isinstance(t, str):
+        try:
+            dt_obj = parse_time_string(t, dt_fmt_str=time_fmt_str, unit="s")
+        except Exception as e:
+            raise RuntimeError(f"Error during string time parse to a datetime object: {e}.")
+    else:
+        try:
+            dt_obj = datetime_obj_converter(t, convert_to)
+        except Exception as e:
+            obj_type = get_obj_type_str(t)
+            convert_to = get_caller_method_args()[1]
+            raise RuntimeError("Error during parse of object type "
+                               f"'{obj_type}' to '{convert_to}': {e}.")
     
-    seconds_from_midnight = time_of_day.total_seconds()
+    seconds_from_midnight = \
+    datetime_obj_converter(extract_datetime_part(dt_obj), "float")
     radians = seconds_from_midnight / (24 * 60 * 60) * 2 * np.pi
     return radians
 
@@ -350,7 +347,8 @@ def average_angle(angles):
     x_mean = x_sum / len(angles)
     y_mean = y_sum / len(angles)
     
-    return np.arctan2(x_mean, y_mean)   
+    return np.arctan2(x_mean, y_mean)  
+ 
 
 def radians_to_time_of_day(rads):
     """
@@ -387,10 +385,7 @@ def radians_to_time_of_day(rads):
     # If the seconds match the next day's midnight,
     # set the hour to zero instead of 24.
     # Minutes and seconds are calculated on the 60th basis.
-    hour, minute, second = time_format_tweaker(seconds_from_midnight_int)
-    
-    time_of_day = datetime.time(hour, minute, second)
-    
+    time_of_day = extract_datetime_part(parse_float_time(seconds_from_midnight_int))
     return time_of_day
 
 #%%
@@ -403,7 +398,7 @@ def radians_to_time_of_day(rads):
 
 def sum_date_objects(date_list, 
                      operation="sum", 
-                     time_fmt_str="%Y-%m-%d",
+                     dt_fmt_str="%Y-%m-%d",
                      output_format="default"):
     
     """
@@ -418,9 +413,9 @@ def sum_date_objects(date_list,
     operation : str, optional
         The operation to perform on the dates. Supported operations 
         are "sum" (default) and "subtr" for subtraction.
-    time_fmt_str : str, optional
-        The format string that specifies the format of the date objects.
-        This only affects objects that are strings. Default is "%Y-%m-%d".
+    dt_fmt_str : str, optional
+        A format string that defines the structure of each object in 'date_list'. 
+        Default is '%Y-%m-%d'.
     output_format : str, optional
         The format of the output. Supported options:
         - 'default': Returns the total date as a datetime.date object (default).
@@ -457,75 +452,25 @@ def sum_date_objects(date_list,
         raise ValueError(format_string(too_few_arg_error_str, "time"))
     
     # Operation argument control #
-    if operation not in basic_math_opt_list:
-        raise ValueError(invalid_math_operation_error)
+    arg_tuple_math_op = (operation, basic_math_opt_list)
+    _validate_option(arg_tuple_math_op, ValueError, invalid_math_operation_error)
         
     # Output format parameter control #
-    if output_format not in date_output_format_options:
-        raise ValueError(f"Unsupported output format '{output_format}'. "
-                         f"Supported options are: {date_output_format_options}")
+    arg_iterable_output_format = (output_format, time_output_format_options)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
     
     # Operations #
     ##############
    
     # Perform the aritmethical operations #
-    total_date = convert_to_date(date_list[0], time_fmt_str=time_fmt_str)
+    total_date = parse_time_string(date_list[0], dt_fmt_str)
     for obj in date_list[1:]:
-        date_obj = convert_to_date(obj, time_fmt_str=time_fmt_str)
+        date_obj = extract_datetime_part(obj, part="date")
         total_date = add_dates_with_year_gap(total_date, date_obj, operation=operation)
     
     # Return the result in the specified output format #
     total_date_formatted = date_output_format_dict.get(output_format)(total_date)
     return total_date_formatted
-        
-
-
-def convert_to_date(obj, time_fmt_str):
-    """
-    Convert an object to a date object.
-
-    Parameters
-    ----------
-    obj : str, numpy.datetime64, time.struct_time, 
-          datetime.datetime, datetime.date, or pandas.Timestamp
-        The input time object to be converted.
-    time_fmt_str : str
-        The format string that specifies the format of the object if it's a string.
-
-    Returns
-    -------
-    datetime.date
-        The date object corresponding to the input object.
-
-    Raises
-    ------
-    TypeError
-        If the object type is not supported for conversion.
-    """
-    if isinstance(obj, str):
-        datetime_obj = time_format_tweaker(obj, time_fmt_str=time_fmt_str)
-        date_obj = return_date_part(datetime_obj)
-        return date_obj
-    elif isinstance(obj, np.datetime64):
-        datetime_obj = time_format_tweaker(obj, method="datetime_tolist")
-        date_obj = return_date_part(datetime_obj)
-        return date_obj
-    elif get_obj_type_str(obj) == "struct_time":
-        datetime_obj = obj
-        dt_parts_list = [obj.tm_year, obj.tm_mon, obj.tm_mday]
-        date_obj = return_date_part(datetime_obj, dt_parts_list)
-        return date_obj
-    elif isinstance(obj, datetime.datetime):
-        date_obj = return_date_part(obj)
-        return date_obj
-    elif isinstance(obj, datetime.date):
-        return obj
-    elif isinstance(obj, pd.Timestamp):
-        date_obj = return_date_part(obj)
-        return date_obj    
-    else:
-        date_conv_arg_list = ["date or datetime", "date"]
-        raise TypeError(format_string(unsupported_obj_type_str1, date_conv_arg_list))
         
         
 def return_date_part(datetime_obj, arg_list=None):
@@ -633,7 +578,7 @@ def add_dates_with_year_gap(date1, date2, operation):
 # Natural years #
 #-#-#-#-#-#-#-#-#
 
-def natural_year(dt_start, dt_end, time_fmt_str=None,
+def natural_year(dt_start, dt_end, dt_fmt_str=None,
                  method="pandas",
                  output_format="default",
                  return_date_only=False):
@@ -647,7 +592,7 @@ def natural_year(dt_start, dt_end, time_fmt_str=None,
         The starting date of the period.
     dt_end : str, datetime.datetime, numpy.datetime64, pandas.Timestamp, time.struct_time
         The ending date of the period.
-    time_fmt_str : str, optional
+    dt_fmt_str : str, optional
         The format string for parsing dates if dt_start or dt_end are strings.
     method : str, optional
         The method for converting the date objects, default is "pandas".
@@ -669,18 +614,16 @@ def natural_year(dt_start, dt_end, time_fmt_str=None,
     ValueError
         If the output_format is not supported.
     TypeError
-        If the return_date_only parameter is not a boolean.
-    TypeError
-        If dt_start or dt_end are not in a supported format.
+        - If the return_date_only parameter is not a boolean.
+        - If dt_start or dt_end are not in a supported format.
     """
     
     # Argument adecuacy controls #
     #·#·#·#·#·#·#·#·#·#·#·#·#·#·#·
     
     # Output format parameter control #
-    if output_format not in date_output_format_options:
-        raise ValueError(f"Unsupported output format '{output_format}'. "
-                         f"Supported options are: {date_output_format_options}")
+    arg_iterable_output_format = (output_format, time_output_format_options)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
     
     # Date-only return option #
     all_arg_names = get_caller_method_args()
@@ -696,37 +639,8 @@ def natural_year(dt_start, dt_end, time_fmt_str=None,
     # Convert input objects to datetime objects #
     #############################################
     
-    # Starting point #
-    if isinstance(dt_start, str):
-        dt_start_std = time_format_tweaker(dt_start, time_fmt_str=time_fmt_str)
-    elif isinstance(dt_start, np.datetime64):
-        dt_start_std = time_format_tweaker(dt_start, method="datetime_tolist")
-    elif get_obj_type_str(dt_start) == "struct_time":
-        dt_start_std = pd.Timestamp(dt_start.tm_year,
-                                    dt_start.tm_mon,
-                                    dt_start.tm_mday,
-                                    dt_start.tm_hour,
-                                    dt_start.tm_min,
-                                    dt_start.tm_sec,)
-    else:
-        raise TypeError(unsupported_obj_type_str2)
-        
-        
-    # End point #
-    if isinstance(dt_end, str):
-        dt_end_std = time_format_tweaker(dt_end, time_fmt_str=time_fmt_str)
-    elif isinstance(dt_end, np.datetime64):
-        dt_end_std = time_format_tweaker(dt_end, method="datetime_tolist")
-    elif get_obj_type_str(dt_end) == "struct_time":
-        dt_end_std = pd.Timestamp(dt_end.tm_year,
-                                  dt_end.tm_mon,
-                                  dt_end.tm_mday,
-                                  dt_end.tm_hour,
-                                  dt_end.tm_min,
-                                  dt_end.tm_sec,)
-    else:
-        raise TypeError(unsupported_obj_type_str2)
-        
+    dt_start_std = datetime_obj_converter(dt_start, "datetime", dt_fmt_str=dt_fmt_str)
+    dt_end_std = datetime_obj_converter(dt_end, "datetime", dt_fmt_str=dt_fmt_str)       
 
     # Check if there is at least a whole year gap between the two objects #  
     #######################################################################
@@ -753,7 +667,7 @@ def natural_year(dt_start, dt_end, time_fmt_str=None,
         dt_start_natural = return_date_part(dt_start_std)
         dt_end_natural = return_date_part(dt_end_std)
         
-    # Choose between returning the results as strings or datetime clock_objects #     
+    # Choose between returning the results as strings or datetime dt_objects #     
     #############################################################################
     if output_format == "default":
         return (dt_start_natural, dt_end_natural)
@@ -806,6 +720,9 @@ def has_at_least_one_year_gap(dt1, dt2):
 # Option lists #
 #--------------#
 
+# Valid option exceptions #
+error_class_list = [TypeError, ValueError]
+
 # Abbreviated mathematical operations #
 basic_math_opt_list = ["sum", "subtr"]
 
@@ -819,6 +736,8 @@ select_array_elements(time_output_format_options, [0,1,-1])
 
 # Error #
 type_error_str = "Argument '{}' at position {} must be of type '{}'."
+
+invalid_output_format_str = """Unsupported output format '{}'. Options are: {}"""
         
 unsupported_obj_type_str1 = """Unsupported {} type. Supported types are:
     - string
@@ -878,4 +797,9 @@ date_output_format_dict = {
     date_output_format_options[2] : lambda d_obj: (d_obj.year,
                                                    d_obj.month, 
                                                    d_obj.day)
+}
+
+datetime_object_part_dict = {
+    "time" : lambda dt_start_std, arg_list : dt_start_std.time() if arg_list is None else dt_start_std.time(*arg_list),
+    "date" : lambda dt_start_std, arg_list : dt_start_std.date() if arg_list is None else dt_start_std.date(*arg_list)
 }
