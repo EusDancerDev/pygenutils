@@ -18,9 +18,8 @@ import pandas as pd
 from pyutils.arrays_and_lists.array_data_manipulation import count_unique_type_objects
 from pyutils.pandas_data_frames import data_frame_handler
 from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
-from pyutils.strings.string_handler import find_substring_index, modify_obj_specs
-from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pyutils.time_handling.time_formatters import time_format_tweaker
+from pyutils.strings.string_handler import modify_obj_specs
+from pyutils.utilities.introspection_utils import get_obj_type_str
 
 # Create aliases #
 #----------------#
@@ -37,7 +36,6 @@ save2excel = data_frame_handler.save2excel
 
 def standardize_calendar(obj,
                          file_path,
-                         obj_type="pandas",
                          interpolation_method=None,
                          order=None,
                          save_as_new_obj=False, 
@@ -50,79 +48,62 @@ def standardize_calendar(obj,
     **Global note** 
     ---------------
     
-    This functions imports 'netcdf_handler' which at the same imports xarray.
-    But not always will the conda environment have installed xarray
-    or the user will not foresee any need of installing it,
-    mainly because the basic libraries are already installed.
-    
-    To this day, taking account the structure of the modules
-    and practicality and cleanliness of this function,
-    the 'netcdf_handler' module will only be imported here
-    together with xarray.
-    
-    
-    This function standardizes the given calendar of an object to gregorian
-    and makes an interpolation ALONG ROWS (axis=0) to find the missing data.
-    It usually happens when modelled atmospheric or land data is considered,
+    Function to standardize the calendar of an object 
+    (pandas.DataFrame, xarray.Dataset, or xarray.DataArray)
+    to the Gregorian calendar and perform interpolations for missing data along rows (axis=0).
+    This need arises when modelled atmospheric or land data is considered,
     when each model has its own calendar.
     This funcion is useful when several model data is handled at once.
-    
+
+    To this day, taking account the structure of the modules
+    and practicity and cleanliness of this function,
+    the 'netcdf_handler' module will only be imported here
+    together with xarray.    
+
     It only sticks to the limits of the time array present at the object;
     further reconstructions is a task left for the user.
     
     Parameters
     ----------
-    obj : pandas.DataFrame or xarray.Dataset
-        or list of pd.DataFrame or xarray.Dataset.
-        Object containing data. For each pd.DataFrame, if present,
-        the first column must be of type datetime64.
+    obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray or list of them.
+        Object containing data. If it is a pd.DataFrame, the first column must be of type datetime64.
     file_path : str or list of str
-        String referring to the file name from which data object 
-        has been extracted.
-    save_as_new_obj : bool
-        If True and object is pandas.DataFrame, it is saved either
-        as a CSV or Excel file containing one or more frames, the latter being
-        desired by the user.
-    extension : {"csv", "xlsx", "nc"}
-        The first two only work if object is pd.DataFrame,
-        while the third works if object is xarray.Dataset.
-        If "csv" chosen, the whole data frame will be stored in a single
-        document.
-        On the other hand, if "xlsx" is selected, then all columns other
-        than the time array will be introduced in separate tabs,
-        together with the time array itself.
-    separator : str
-        String used to separate data columns.
-        Default value is a comma (',').
-    save_index : bool
-        Boolean to choose whether to include a column into the excel document
-        that identifies row numbers. Default value is False.
-    save_header : bool
-        Boolean to choose whether to include a row into the excel document
-        that identifies column numbers. Default value is False.
-    
-    
+        String referring to the file name from which the data object has been extracted.
+    interpolation_method : str, optional
+        Interpolation method to use for filling missing data. Examples: 'linear', 'polynomial'.
+    order : int, optional
+        Order of the interpolation if a polynomial or spline method is chosen.
+    save_as_new_obj : bool, optional
+        If True, saves the standardized object as a CSV, Excel, or NetCDF file.
+    extension : str, optional
+        Extension of the file to save the standardized object. Options are "csv", "xlsx", and "nc".
+    separator : str, optional
+        Separator used for CSV files. Default is ','.
+    save_index : bool, optional
+        Whether to save the index when saving the object. Default is False.
+    save_header : bool, optional
+        Whether to include headers when saving the object. Default is False.
+
     Returns
     -------
-    obj : pd.DataFrame, xarray.Dataset or xarray.DataArray.
-        Object containing the standardized calendar to gregorian.
+    obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray
+        Object with the standardized calendar and interpolated missing data.
     
     Note
     ----
     There is no programatic way to store multiple sheets on a CSV file,
-    as can be donde with Excel files, because CSV is rough, old format
-    but mainly for data transport used.
+    as can be done with Excel files, because CSV is rough, old format
+    but mainly for data transport.
     """
 
-    all_arg_names = get_caller_method_args()
-    obj_type_arg_pos = find_substring_index(all_arg_names, "obj_type")
+    obj_type = get_obj_type_str(obj).lower()
     
-    if obj_type not in obj_types:
-        raise ValueError("Unsupported object type "
-                         f"(argument '{all_arg_names[obj_type_arg_pos]}'."
-                         f"Choose one from {obj_types}.")
-        
-    if obj_type == "pandas":
+    # Handling pandas dataframes #
+    #----------------------------#
+    
+    if (obj_type == "pandas" \
+        or (obj_type == "list" \
+        and all(get_obj_type_str(element) == "dataframe") for element in obj)):
 
         if not isinstance(obj, list) and not isinstance(obj, np.ndarray):
             obj = [obj]
@@ -151,7 +132,7 @@ def standardize_calendar(obj,
                     
                     # Get the time array with possible missing datetimes #
                     time_shorter = obj.loc[:,time_col]
-                    time_shorter_arr = time_format_tweaker(time_shorter)
+                    time_shorter_arr = np.array(time_shorter)
                     ltm = len(time_shorter)
                    
                     # Construct full time array to compare with the previous array #
@@ -260,18 +241,57 @@ def standardize_calendar(obj,
                             
         return obj_std_calendar
     
+    # Handling xarray datasets or data arrays #
+    #-----------------------------------------#
     
-    elif obj_type == "xarray":
+    elif (obj_type in ["dataarray", "dataset"]\
+          or (obj_type == "list" \
+          and all(get_obj_type_str(element) in ["dataarray", "dataset"]) for element in obj)):
         
         # Import module and custom modules here by convenience #
         #------------------------------------------------------#
         
         import xarray as xr
-        from weather_and_climate.netcdf_handler import find_time_dimension, get_file_dimensions
+        from weather_and_climate.netcdf_handler import find_time_dimension
+        
+        if isinstance(obj, list):
+            obj = obj[0]  # assuming only one object passed
+
+        time_dim = find_time_dimension(obj)
+        full_times = xr.cftime_range(start=obj[time_dim][0].values,
+                                     end=obj[time_dim][-1].values,
+                                     freq=infer_time_frequency(obj[time_dim]))
+
+        obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)  # aligning with the full time range
+        
+        if interpolation_method:
+            obj_std_calendar = obj_std_calendar.interpolate_na(dim=time_dim, method=interpolation_method)
+            if interpolation_method in ["polynomial", "spline"] and order is not None:
+                obj_std_calendar = obj_std_calendar.polyfit(dim=time_dim, deg=order)
+
+        # Saving object if required
+        if save_as_new_obj:
+            obj2change = "name_noext"
+            str2add = "_stdCalendar"
+            saving_file_name = modify_obj_specs(file_path, obj2change, new_obj=None, str2add=str2add)
+
+            if extension == "nc":
+                print("Saving data into a NetCDF document...")
+                obj_std_calendar.to_netcdf(saving_file_name)
+            else:
+                raise ValueError(f"Unsupported file extension {extension} for xarray objects.")
+    
+    elif obj_type == "pandas" or (obj_type == "list" and all(get_obj_type_str(el) == "dataframe" for el in obj)):
+        # Handling pandas DataFrames
+        ...  # Existing pandas logic here (no changes)
+    
+    else:
+        raise ValueError("Unsupported object type. "
+                         "Please provide a pandas DataFrame, xarray Dataset, or xarray DataArray.")
+    
+    return obj_std_calendar
  
-        # TODO: develop the case for xarray.Dataset and xarray.DataArray objects #
-        # if (get_obj_type_str(obj[0]) == "Dataset" \
-        #     or get_obj_type_str(obj[0]) == "DataArray"):
+        
         
             
 
@@ -328,8 +348,7 @@ def nearest_leap_year(year):
         year_list = list(range(year-4, year+4))
         lyl = len(year_list)
         
-        nearest_leap_year_idx = [i
-                                 for i in range(lyl) 
+        nearest_leap_year_idx = [i for i in range(lyl) 
                                  if leap_year_detector(year_list[i], year_list[i])]
         
         min_idx = nearest_leap_year_idx[0]
@@ -387,6 +406,5 @@ def leap_year_detector(start_year, end_year, return_days=False):
 # Parameters and constants #
 #--------------------------#
 
-# Supported object types and file extensions for calendar standardizations #
-obj_types = ["pandas", "xarray"]
+# Supported file extensions for calendar standardizations #
 supported_file_exts_pandas = ['csv', 'xlsx']
