@@ -1,120 +1,108 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+"""
+Created on Tue Sep 10 13:43:27 2024
+
+@author: jonander
+"""
+
+# TODO: optimizatu dena <-> ChatGPT
 
 #----------------#
 # Import modules #
 #----------------#
 
-import datetime
+from datetime import timedelta as td
 import time
-
-import numpy as np
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings.string_handler import substring_replacer
-from pyutils.time_handling.time_formatters import time_format_tweaker
+from pyutils.strings.string_handler import find_substring_index
+from pyutils.strings.information_output_formatters import print_format_string
+from pyutils.time_handling.time_formatters import parse_time_string
 
 #------------------#
 # Define functions #
 #------------------#
 
-# TODO: 'time_format_tweaker' optimizatutakoan, berrikusi hura deitzeko sintaxia
-
-def countdown(t, time_fmt_str=None, print_str=False):
+def return_time_string_parts(datetime_str, dt_fmt_str):
     
-    if isinstance(t, str):
-        time_dt = time_format_tweaker(t, time_fmt_str=time_fmt_str)
-      
-        if "%Y" not in time_fmt_str:
-            time_dt = time_format_tweaker(t, method="model_datetime",
-                                          time_fmt_str=time_fmt_str)
-        
-        for s2find_1, s2replace_1 in string_arr1:
-            time_fmt_str = substring_replacer(time_fmt_str, 
-                                              s2find_1, 
-                                              s2replace_1)
-                    
-            zero_pad_ans = input("Would you like to include zero padding? [y/n] ")
-            while (zero_pad_ans != "y" and zero_pad_ans != "n"):
-                zero_pad_ans = input("Please write 'y' for 'yes' or 'n' for 'no' ")
-            
-            else:
-                if zero_pad_ans == "n":
-                    for s2find_2, s2replace_2 in string_arr2:                        
-                        time_fmt_str = substring_replacer(time_fmt_str, 
-                                                          s2find_2,
-                                                          s2replace_2)
-                        
-                
-                while (t):
-                    try:
-                        time_str = time_dt.strftime(time_fmt_str)  
-                        time_dt -= datetime.timedelta(seconds=1)  
-                    except OverflowError:
-                        raise OverflowError(  )
-                    else:
-                        print(time_str, end="\r")
-                        time.sleep(1)
-                        
-              
-    elif isinstance(t, int):
-        t_secs = time_format_tweaker(t)
-        
-        while (t_secs):
-            time_str = time_format_tweaker(t_secs, print_str=True)
-            print(time_str, end="\r")
-            
-            time.sleep(1)
-            t_secs -= 1
-	
+    """
+    Returns relevant and mostrly operable parts of a string 
+    identifiable with a time (day part may be included).
+    """
+    
+    hour_formatter_index = find_substring_index(dt_fmt_str, "%d", return_match_index="hi")
+    if hour_formatter_index != -1:
+        try:
+            days, time_str, time_fmt_str = (
+                datetime_str[:hour_formatter_index],
+                datetime_str[hour_formatter_index:].strip(),
+                dt_fmt_str[hour_formatter_index:].strip()
+                )
+        except ValueError:
+            raise ValueError("Non-numeric values encountered in the datetime string.")
         else:
-            print("Time up!")
+            dt_obj = parse_time_string(time_str, time_fmt_str)
+            return days, dt_obj
+    else:
+        days, time_str, time_fmt_str = (0, datetime_str, dt_fmt_str)
+        time_obj = parse_time_string(time_str, time_fmt_str)
+        return days, time_obj 
+    
 
+def _check_digit(datetime_str):
+    return datetime_str.isdigit()
+
+        
+def __countdown(time_str, time_fmt_str):
+    days, time_obj = return_time_string_parts(time_str, time_fmt_str)
+    
+    hours, minutes, seconds = time_obj.hour, time_obj.minute, time_obj.second
+    while ((hours, minutes, seconds, days) != (0,0,0,0)):
+        # Recalculate the time components
+        hours, minutes, seconds = time_obj.hour, time_obj.minute, time_obj.second
+        if days > 0:
+            dt_args_day = [days, hours, minutes, seconds]
+            print_format_string(time_str_parts_fmts[0], dt_args_day)
+        else:            
+            dt_args_noday = [hours, minutes, seconds]
+            print_format_string(time_str_parts_fmts[1], dt_args_noday)
+            
+        # Subtract one second to the datetime object while simulating one second pass
+        time.sleep(1)
+        time_obj -= td(seconds=1)
+        if ((hours, minutes, seconds) == (0,0,0)):
+            days -= 1
+        
+    else:
+        print("Time up!")
+
+#-------------------------#
+# Countdown functionality #
+#-------------------------#
+
+# Ask for the datetime input #
+datetime_str = input("Introduce any time: ")    
+is_str_digit = _check_digit(datetime_str)
+
+if is_str_digit:
+    print_str = input("Convertible time format detected. "
+                      "Would you like to print the time in string format? [y/n] ")
+else: 
+    dt_fmt_str = input("String format detected. "
+                       "Introduce the formatting string without quotes: ")
+
+# Start the countdown #
+try:
+    __countdown(datetime_str, dt_fmt_str)
+except KeyboardInterrupt:
+    print("\nCountdown stopped.")
+    
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
 
-string_arr1 = [
-    ["%d", "%d-1"],
-    ["%m", "%m-1"],
-    ["%Y", "%Y-1"],
-    ["%y", "%y-1"]
-]
-
-string_arr2 = [
-    ["%d", "%-d"],
-    ["%m", "%-m"],
-    ["%Y", "%-Y"],
-    ["%y", "%-y"]
-]
-
-#---------------#
-# Function gear #
-#---------------#
-
-t = input("Introduce any time: ")
-
-if t.isdigit():
-    print_str = input("Convertible time format detected. "
-                      "Would you like to print the time in string format? [y/n] ")
-    
-    while (print_str != "y" and print_str != "n"):
-        print_str = input("Please write 'y' for 'yes' or 'n' for 'no' ")
-    else: 
-        try:            
-            countdown(t, print_str=print_str)    
-        except KeyboardInterrupt:
-            print("\nCountdown stopped.")
-            
-else:
-    time_fmt_str = input("String format detected. "
-                         "Introduce the formatting string without quotes: ")
-    try:
-        countdown(t, time_fmt_str=time_fmt_str)
-    except OverflowError:
-        print("Time up!")
-    except KeyboardInterrupt:
-        print("\nCountdown stopped.")
+time_str_parts_fmts = ["{} days {}:{}:{}", "{}:{}:{}"]
