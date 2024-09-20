@@ -7,10 +7,11 @@
 
 import os.path
 from pathlib import Path
+from sys import maxsize
 
 from numpy import array, vectorize, char
+from pandas import DataFrame, Series
 
-import pandas as pd
 import re
 
 #-----------------------#
@@ -19,7 +20,6 @@ import re
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
 from pyutils.utilities.general.introspection_utils import get_obj_type_str, get_caller_method_args
-
 
 #------------------#
 # Define functions #
@@ -41,18 +41,42 @@ def find_substring_index(string,
                          case_sensitive=False,
                          find_whole_words=False,
                          all_matches=False):
-    
-    # TODO: add docstring (ChatGPT)
+
     
     """
-    substring: str or [list, np.ndarray, tuple] of str
-          If 'str' then it can either be as is or a regex.
-          In the latter case, there is no need to explicitly define as so,
-          because it connects with Python's built-in 're' module.
+    Finds the index or matched substring in a string, list, numpy.ndarray, or tuple.
+    
+    Parameters
+    ----------
+    string : str, list, np.ndarray, or tuple
+        The input object to search within.
+    substring : str or list-like of str
+        The substring or list of substrings to search for. Can be a regex pattern.
+    start : int, optional
+        Start index for search. Default is 0.
+    end : int, optional
+        End index for search. If None, it searches to the end of the string or collection. 
+    return_match_index : str, optional
+        Defines which match index to return ('lo', 'hi', or 'both').
+    return_match_str : bool, optional
+        If True, returns the matched substring instead of the index.
+    advanced_search : bool, optional
+        If True, uses advanced search with support for regex and special options.
+    case_sensitive : bool, optional
+        If True, the search is case-sensitive.
+    find_whole_words : bool, optional
+        If True, matches whole words only.
+    all_matches : bool, optional
+        If True, finds all matches rather than the first one.
+    
+    Returns
+    -------
+    int, list, or str
+        Returns the index or the matching substring depending on the arguments passed.
     """
     
-    # Proper argument selection control #
-    #-----------------------------------#
+    # Argument validation #
+    #---------------------#
     
     all_arg_names = get_caller_method_args()
     match_index_pos = all_arg_names.index("return_match_index")
@@ -61,97 +85,90 @@ def find_substring_index(string,
     if return_match_index and return_match_str:
         raise ValueError(f"Arguments '{all_arg_names[match_index_pos]}' "
                          f"and '{all_arg_names[match_index_str_pos]}' "
-                         "cannot be True at the same time.")
+                         "cannot both be True.")
         
-    else:
-        if return_match_index and not (return_match_index in match_obj_index_option_keys):
-            raise ValueError(f"Invalid indexation name, argument '{all_arg_names[match_index_pos]}'. "
-                             f"Choose one name from {match_obj_index_option_keys}.")
-            
-        if not (isinstance(return_match_str, bool)):
-            raise ValueError("Argument '{all_arg_names[match_index_str_pos]}' "
-                             "must be a boolean.")
+    if return_match_index and not (return_match_index in match_obj_index_option_keys):
+        raise ValueError(f"Invalid '{all_arg_names[match_index_pos]}' value. "
+                         f"Choose from {match_obj_index_option_keys}.")
+        
+    if not (isinstance(return_match_str, bool)):
+        raise ValueError("Argument '{all_arg_names[match_index_str_pos]}' "
+                         "must be a boolean.")
     
     # Case studies #
     #--------------#
     
     if (isinstance(string, str) and isinstance(substring, str)):
         if advanced_search:
-            substr_match_obj = advanced_pattern_searcher(string, substring, 
-                                                         return_match_index,
-                                                         return_match_str,
-                                                         case_sensitive,
-                                                         find_whole_words,
-                                                         all_matches)
+            substr_match_obj = _advanced_pattern_searcher(string, substring, 
+                                                          return_match_index,
+                                                          return_match_str,
+                                                          case_sensitive,
+                                                          find_whole_words,
+                                                          all_matches)
         else:
-            """
-            Do not use np.char.find for this simplest case, 
-            simplify and save computation time.
-            """
-            substr_match_obj = string.find(substring)
+            return string.find(substring)
 
     
     elif get_obj_type_str(string) in ["list", "ndarray", "tuple"]:
         if isinstance(substring, str):
     
+            # Simple search without advanced features
             if not advanced_search:
                 if get_obj_type_str(string) == "ndarray":
-                    substr_match_obj_nofilter = char.find(string, substring,
-                                                          start=start, end=end)
-                    
-                    substr_match_obj = [idx
-                                         for idx in substr_match_obj_nofilter
-                                         if idx != -1]
-                    
+                    match_indices = char.find(string, substring, start=start, end=end)
+                    return [idx for idx in match_indices if idx != -1]
+                
                 else:
                     if end is None:
-                        end = 9223372036854775807 # Highest defined index for a tuple
+                        end = maxsize # Highest defined index for a tuple
                     substr_match_obj = string.index(substring, start, end)
                     
                 
             else:
-                substr_match_obj_no_filter = advanced_pattern_searcher(string, substring,
-                                                                       return_match_index,
-                                                                       return_match_str,
-                                                                       case_sensitive, 
-                                                                       find_whole_words,
-                                                                       all_matches)
+                match_indices = _advanced_pattern_searcher(string, substring,
+                                                           return_match_index,
+                                                           return_match_str,
+                                                           case_sensitive, 
+                                                           find_whole_words,
+                                                           all_matches)
       
-                substr_match_obj = [n
-                                     for n in substr_match_obj_no_filter
-                                     if n != -1]
+                return [n for n in match_indices if n != -1]
                 
         elif get_obj_type_str(substring) in ["list", "ndarray", "tuple"]:
             if not advanced_search:
-                substr_match_obj_no_filter = \
-                char.find(string, substring, start=start, end=end)  
+                return char.find(string, substring, start=start, end=end)  
             else:   
-                substr_match_obj_no_filter = advanced_pattern_searcher(string, substring,
-                                                                       return_match_index,
-                                                                       return_match_str,
-                                                                       case_sensitive, 
-                                                                       find_whole_words,
-                                                                       all_matches)
+                match_indices = _advanced_pattern_searcher(string, substring,
+                                                           return_match_index,
+                                                           return_match_str,
+                                                           case_sensitive, 
+                                                           find_whole_words,
+                                                           all_matches)
       
-            substr_match_obj = [n
-                                 for n in substr_match_obj_no_filter
-                                 if n != -1]
+            return [n for n in match_indices if n != -1]
                 
-            
+    # Handle case: search in pandas Series #
+    #--------------------------------------#
+    
     elif get_obj_type_str(string) == "Series":
         try:
-            substr_match_obj_no_filter = string.str.contains(substring)
+            match_series = string.str.contains(substring)
         except AttributeError:
-            substr_match_obj_no_filter = string.iloc[:,0].str.contains[substring]
-        
-        substr_match_obj = \
-        list(substr_match_obj_no_filter[substr_match_obj_no_filter].index)
+            match_series = string.iloc[:, 0].str.contains(substring)
+        return list(match_series[match_series].index)
        
 
-    if isinstance(substr_match_obj, list) and len(substr_match_obj) == 0:
-        return -1
-    elif isinstance(substr_match_obj, list) and len(substr_match_obj) == 1:
-        return substr_match_obj[0]
+    # Handle the return based on the result type #
+    #--------------------------------------------#
+    
+    if isinstance(substr_match_obj, list):
+        if len(substr_match_obj) == 0:
+            return -1
+        elif len(substr_match_obj) == 1:
+            return substr_match_obj[0]
+        else:
+            return substr_match_obj
     else:
         return substr_match_obj
 
@@ -159,12 +176,12 @@ def find_substring_index(string,
 # Core method #
 #-#-#-#-#-#-#-#
 
-def advanced_pattern_searcher(string, substring,
-                              return_match_index,
-                              return_match_str,
-                              case_sensitive,
-                              find_whole_words,
-                              all_matches):
+def _advanced_pattern_searcher(string, substring,
+                               return_match_index,
+                               return_match_str,
+                               case_sensitive,
+                               find_whole_words,
+                               all_matches):
     """
     Perform advanced pattern searching on the input string or list of strings.
 
@@ -245,20 +262,21 @@ def advanced_pattern_searcher(string, substring,
     ]
     
     if get_obj_type_str(string) in ["list", "ndarray", "tuple"]:        
-        match_obj_spec = vectorize(return_search_obj_spec_aux)(*arg_list)
+        match_obj_spec = vectorize(_return_search_obj_spec)(*arg_list)
     else:
-        match_obj_spec = return_search_obj_spec_aux(*arg_list)
+        match_obj_spec = _return_search_obj_spec(*arg_list)
         
     return match_obj_spec
        
 
-# Complementary functions #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+# Auxiliary functions #
+#-#-#-#-#-#-#-#-#-#-#-#
 
-def return_search_obj_spec_aux(string, substring, re_obj_str,
-                               return_match_index, return_match_str,
-                               iterator_considered, case_sensitive,
-                               find_whole_words, all_matches):
+# TODO: docstring-a gehitu
+def _return_search_obj_spec(string, substring, re_obj_str,
+                            return_match_index, return_match_str,
+                            iterator_considered, case_sensitive,
+                            find_whole_words, all_matches):
     """
     Auxiliary function to handle the pattern searching and result extraction.
     """
@@ -281,177 +299,331 @@ def return_search_obj_spec_aux(string, substring, re_obj_str,
     
     return indices, match_strings
  
+# %%
    
 # PosixPath string management #
 #-----------------------------#
 
-# Main method #
-#-#-#-#-#-#-#-#
+# Main methods #
+#-#-#-#-#-#-#-#-
+
+# Specifications of a file or directory path #
+##############################################
 
 def obj_path_specs(obj_path, module="os", splitdelim=None):
-    # TODO: if-elif baldintzak 'switch_dict' bidez gauzatzea ez da oso praktikoa?
+    """
+    Retrieve the specifications of a file or directory path.
     
+    This function identifies different parts of the provided path string, such as
+    the parent directory, file name, file name without extension, and file extension.
+    It works with either the 'os' module or 'pathlib.Path'.
+
+    Parameters
+    ----------
+    obj_path : str
+        The file or directory path string to process.
+    module : str, optional
+        The module to use for path processing. Options are 'os' (default) and 'Path' (from pathlib).
+    splitdelim : str, optional
+        Delimiter for splitting the file name (without extension) into parts. If None, no splitting is performed.
+
+    Returns
+    -------
+    obj_specs_dict : dict
+        A dictionary containing the following path components:
+        - 'parent': The parent directory of the path.
+        - 'name': The full name of the file or directory.
+        - 'name_noext': The file or directory name without the extension.
+        - 'ext': The file extension (without the dot).
+        - 'name_noext_parts' (optional): A list of parts if the file name (without extension) is split by `splitdelim`.
+
+    Raises
+    ------
+    ValueError
+        If an unsupported module is provided.
+    """
+
+    # List of supported modules for path specification retrieval
     path_specs_retrieval_modules = filesystem_context_modules[:2]
     
+    # Check if the specified module is valid
     if module not in path_specs_retrieval_modules:
-        raise ValueError("Unsupported module. "
+        raise ValueError(f"Unsupported module '{module}'. "
                          f"Choose one from {path_specs_retrieval_modules}.")
-    
-    if module == "Path":
-        obj_PATH = Path(obj_path)
-        obj_path_parent = obj_PATH.parent
-        obj_path_name = obj_PATH.name
-        obj_path_name_noext = obj_PATH.stem
-        obj_path_ext = obj_PATH.suffix[1:]
         
-    elif module == "os":
-        obj_path_parent = os.path.dirname(obj_path)
-        obj_path_name = os.path.basename(obj_path)
-        obj_path_name_noext = os.path.splitext(obj_path_name)[0]
-        obj_path_ext =  os.path.splitext(obj_path_name)[1][1:]
-        
-    obj_specs_dict = {
-        obj_specs_keylist[0] : obj_path_parent,
-        obj_specs_keylist[1] : obj_path_name,
-        obj_specs_keylist[2] : obj_path_name_noext,
-        obj_specs_keylist[4] : obj_path_ext
+    # Use a dictionary to switch between 'os' and 'Path' modules
+    path_functions = {
+        'os': lambda: {
+            'parent': os.path.dirname(obj_path),
+            'name': os.path.basename(obj_path),
+            'name_noext': os.path.splitext(os.path.basename(obj_path))[0],
+            'ext': os.path.splitext(os.path.basename(obj_path))[1][1:]
+        },
+        'Path': lambda: {
+            'parent': Path(obj_path).parent,
+            'name': Path(obj_path).name,
+            'name_noext': Path(obj_path).stem,
+            'ext': Path(obj_path).suffix[1:]
         }
+    }
     
-    if splitdelim is not None:
-        obj_path_name_noext_parts = obj_path_name_noext.split(splitdelim)
-        item_dict_to_add = {obj_specs_keylist[3] : obj_path_name_noext_parts}
-        obj_specs_dict.update(item_dict_to_add)
+    # Retrieve path specifications based on the chosen module
+    obj_specs_dict = path_functions[module]()
+    
+    # Optionally, split the file name without extension by the specified delimiter
+    if splitdelim:
+        obj_specs_dict['name_noext_parts'] = obj_specs_dict['name_noext'].split(splitdelim)
         
     return obj_specs_dict
 
 
-# Part picker #
-#-#-#-#-#-#-#-#
+# Specific component retrieval #
+################################
 
-def get_obj_specs(obj_path,
-                  obj_spec_key=None,
-                  splitdelim=None):
+def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
+    """
+    Retrieve a specific component of a file or directory path.
+
+    This function returns the desired part of the path string, such as the parent directory,
+    file name, file name without extension, or file extension.
+    It can also split the file name (without extension) into parts based on a delimiter.
+
+    Parameters
+    ----------
+    obj_path : str or dict
+        The file or directory path string to process, 
+        or a dictionary with pre-extracted path components.
+    obj_spec_key : str
+        The part of the path to retrieve. Must be one of the following keys:
+        - 'parent': The parent directory.
+        - 'name': The full name of the file or directory.
+        - 'name_noext': The file name without the extension.
+        - 'name_noext_parts': The file name without extension, split by `splitdelim`.
+        - 'ext': The file extension (without the dot).
+    splitdelim : str, optional
+        Delimiter for splitting the file name (without extension) into parts. 
+        Required if `obj_spec_key` is 'name_noext_parts'.
+
+    Returns
+    -------
+    obj_spec : str or list
+        The requested part of the path string, 
+        or a list of parts if `obj_spec_key` is 'name_noext_parts'.
+
+    Raises
+    ------
+    ValueError
+        If `obj_spec_key` is invalid or if `splitdelim` is not provided when required.
+    """
     
-    # Proper argument selection control #
+    # Ensure the provided obj_spec_key is valid #
     all_arg_names = get_caller_method_args()
     osk_arg_pos = find_substring_index(all_arg_names, "obj_spec_key")
     
     if obj_spec_key not in obj_specs_keylist:
-        raise ValueError(f"Invalid path object name, argument '{all_arg_names[osk_arg_pos]}'. "
-                         f"Choose one from {obj_specs_keylist}.")
+        raise ValueError(f"Invalid '{all_arg_names[osk_arg_pos]}' key. "
+                         f"Choose from {obj_specs_keylist}.")
         
-    # Get the object specification name #
+    # If obj_path is not already a dictionary, get the path specifications
     if not isinstance(obj_path, dict):
-        obj_specs_dict = obj_path_specs(obj_path, splitdelim)
-    
-    if obj_spec_key == obj_specs_keylist[3] and splitdelim is None:
-        raise ValueError("You must specify a string-splitting character "
-                         f"if '{all_arg_names[osk_arg_pos]}' == '{obj_spec_key}'.")
+        obj_specs_dict = obj_path_specs(obj_path, splitdelim=splitdelim)
     else:
-        obj_spec = obj_specs_dict.get(obj_spec_key)
-        return obj_spec
+        obj_specs_dict = obj_path
+    
+    # If obj_spec_key is 'name_noext_parts', ensure that splitdelim is provided
+    if obj_spec_key == obj_specs_keylist[3] and not splitdelim:
+        raise ValueError("You must specify a splitting character "
+                         f"if 'obj_spec_key' == '{obj_spec_key}'.")
+    
+    # Return the requested path component
+    obj_spec = obj_specs_dict.get(obj_spec_key)
+    return obj_spec
 
 
 # Path parts modifier #
-#-#-#-#-#-#-#-#-#-#-#-#
+#######################
 
-def modify_obj_specs(target_path_obj,
-                     obj2modify,
-                     new_obj=None,
-                     str2add=None):
-    
+def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):    
     """
+    Modify a specified part of a file path string, such as the parent directory, 
+    filename, or extension. Changes can include replacing the object or 
+    appending a string to the existing part. Returns the modified path.
+
+    Parameters
+    ----------
     target_path_obj : str or dict
+        The original file path to modify, or a dictionary containing path specifications.
+    obj2modify : str
+        Specifies which part of the path to modify. Must be one of ['parent', 'name', 'name_noext', 'ext'].
+    new_obj : str, optional
+        The new object to replace the specified part of the path. For 'name_noext', must be a tuple with (old, new) values.
+    str2add : str, optional
+        A string to append to the specified part of the path (if applicable).
+    
+    Returns
+    -------
+    new_obj_path_joint : str
+        The modified file path.
+    
+    Raises
+    ------
+    ValueError
+        If obj2modify is invalid or new_obj is missing for certain modifications.
+    TypeError
+        If new_obj is not a tuple when modifying 'name_noext'.
     """
      
-    # Proper argument selection control #
+    # Argument validation and control #
     all_arg_names = get_caller_method_args()
     obj2ch_arg_pos = find_substring_index(all_arg_names, "obj2modify")
     new_obj_arg_pos = find_substring_index(all_arg_names, "new_obj")
     str2add_arg_pos = find_substring_index(all_arg_names, "str2add")
     
+    if not isinstance(str2add, str):
+        str2add = str(str2add)
     
-    if obj2modify not in obj_specs_keylist:
+    # Validate object part to modify (arg 'obj2modify') #
+    obj_specs_keylist_practical = obj_specs_keylist[:3] + [obj_specs_keylist[-1]]
+    if obj2modify not in obj_specs_keylist_practical:
         raise ValueError("Invalid object name to modify, "
                          f"argument '{all_arg_names[obj2ch_arg_pos]}'. "
                          f"Choose one from {obj_specs_keylist}.")
     
-    # Get the object specification name #
+    # Get path specifications as a dict if input is a path string
     if not isinstance(target_path_obj, dict):
         obj_specs_dict = obj_path_specs(target_path_obj)
+    else:
+        obj_specs_dict = target_path_obj
         
     obj_spec = obj_specs_dict.get(obj2modify)
     
+    # Modifying essential components (name_noext, ext)
+    obj_specs_keylist_essential = obj_specs_keylist_practical[2:]
     if obj2modify in obj_specs_keylist_essential:
-        if obj2modify != obj_specs_keylist_essential[1]:
-            if str2add is not None:
+        if obj2modify != obj_specs_keylist_essential[1]:  # Not 'name_noext_parts'
+            if str2add:
                 new_obj = obj_spec + str2add
                 
         else:
             if not isinstance(new_obj, tuple):
-                raise TypeError(f"If the object to modify is '{obj_specs_keylist[3]}', "
-                                "then the provided new object must also be of type 'tuple'")
-            
+                raise TypeError(f"If modifying '{obj_specs_keylist[2]}', "
+                                f"'{all_arg_names[new_obj_arg_pos]}' must be a tuple.")
             else:
-                name_noext = get_obj_specs(target_path_obj, obj_spec)
+                name_noext = get_obj_specs(target_path_obj, obj2modify)
                 new_obj = substring_replacer(name_noext, new_obj[0], new_obj[1])
                 
     else:
+        # Handle other cases like 'parent' and 'name'
         if new_obj is None:
-            raise ValueError(f"For '{all_arg_names[obj2ch_arg_pos]}' = '{obj2modify}', "
-                             f"'{all_arg_names[str2add_arg_pos]}' argument is ambiguous; "
-                             "you must provide yourself the new path object "
-                             f"(argument '{all_arg_names[new_obj_arg_pos]}') .")
-            
-       
-    item2updateDict = {obj2modify : new_obj}
-    obj_specs_dict.update(item2updateDict)
+            raise ValueError(f"Ambiguous '{all_arg_names[obj2ch_arg_pos]}' = '{obj2modify}' "
+                             f"modification with argument '{all_arg_names[str2add_arg_pos]}' "
+                             "being provided.\n"
+                             "You must provide the new value "
+                             f"(argument '{all_arg_names[new_obj_arg_pos]}').")
     
-    new_obj_path_joint = join_obj_path_specs(obj_specs_dict)
+    # Update the path specifications with the modified part
+    obj_specs_dict.update({obj2modify: new_obj})
+    
+    # Join the modified parts and return the final path
+    new_obj_path_joint = _join_obj_path_specs(obj_specs_dict)
     return new_obj_path_joint
 
 
-# Auxiliar string part addition methods #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
-
-def add_str_to_aux_path(path2tweak, str2add):
-    obj2change = "name_noext"
-    output_path_aux = modify_obj_specs(path2tweak, obj2change, str2add=str2add)
-    return output_path_aux
-
-
-def aux_ext_adder(path2tweak, extension):
-    obj2change = "ext"
-    path_ext = get_obj_specs(path2tweak, obj2change)
-    
-    if len(path_ext) == 0:
-        output_path = modify_obj_specs(path2tweak, obj2change, str2add=extension)
-    else:
-        output_path = path2tweak
-    return output_path
-
+# Auxiliary methods #
+#-#-#-#-#-#-#-#-#-#-#-
 
 # Separate parts joiner #
-#-#-#-#-#-#-#-#-#-#-#-#-#
+#########################
 
-def join_obj_path_specs(obj_specs_dict):
-           
-    obj_path_ext = obj_specs_dict.get(obj_specs_keylist[-1])
-    obj_path_name_noext = obj_specs_dict.get(obj_specs_keylist[2])
-  
-    obj_path_parent = obj_specs_dict.get(obj_specs_keylist[0])  
+def _join_obj_path_specs(obj_specs_dict):
+    """
+    Joins the parts of a path specification dictionary into a complete file path string.
+
+    Parameters
+    ----------
+    obj_specs_dict : dict
+        A dictionary containing parts of a path, such as 'parent', 'name_noext', and 'ext'.
+
+    Returns
+    -------
+    joint_obj_path : str
+        The complete file path string based on the provided parts.
+    """
+    obj_path_ext = obj_specs_dict.get(obj_specs_keylist[-1])  # 'ext'
+    obj_path_name_noext = obj_specs_dict.get(obj_specs_keylist[2])  # 'name_noext'
+    obj_path_parent = obj_specs_dict.get(obj_specs_keylist[0])  # 'parent'
+    
     if obj_path_parent is None:
+        # If there is no parent directory, join name_noext and ext
         joint_obj_path = f"{obj_path_name_noext}.{obj_path_ext}"
     else:
+        # Join parent, name_noext, and ext
         joint_obj_path_noext = os.path.join(obj_path_parent, obj_path_name_noext)
         joint_obj_path = f"{joint_obj_path_noext}.{obj_path_ext}"
         
     return joint_obj_path
+
+# %%
+
+# String part addition methods #
+#------------------------------#
+
+def add_str_to_path(path2tweak, str2add):
+    """
+    Adds a user-defined string to the part of the path without the extension.
+
+    Parameters
+    ----------
+    path2tweak : str or dict
+        The path object (either a string or dictionary with path components) 
+        to which the string should be added.
+    str2add : str
+        The string to add to the path part without the extension.
+
+    Returns
+    -------
+    str
+        The modified path with the string added to the part without the extension.
+    """
+    obj2change = "name_noext"
+    return modify_obj_specs(path2tweak, obj2change, str2add=str2add)
+
+
+def ext_adder(path2tweak, extension):
+    """
+    Adds an extension to the path if it does not already have one.
+
+    Parameters
+    ----------
+    path2tweak : str or dict
+        The path object (either a string or dictionary with path components) 
+        to which the extension should be added.
+    extension : str
+        The extension to add if the path does not already have one.
+
+    Returns
+    -------
+    output_path : str
+        The modified path with the extension added, or the original path 
+        if it already has one.
+    """
+    obj2change = "ext"
     
+    # Retrieve the current extension from the path
+    path_ext = get_obj_specs(path2tweak, obj2change)
+    
+    # If the path has no extension, add the provided extension
+    if not path_ext:
+        output_path = modify_obj_specs(path2tweak, obj2change, str2add=extension)
+    else:
+        output_path = path2tweak  # Return the original path if it already has an extension
+    return output_path
+
 
 # Substring replacements #
 #------------------------#
 
+# TODO: docstring-a gehitu
 def substring_replacer(string, string2find, string2replace, count_std=-1,
                        advanced_search=False,
                        count_adv=0,
@@ -470,10 +642,10 @@ def substring_replacer(string, string2find, string2replace, count_std=-1,
             string_replaced = char.replace(string, string2find, string2replace)
             
         elif get_obj_type_str(string) == "DataFrame":
-            string_replaced = pd.DataFrame.replace(string, string2find, string2replace)
+            string_replaced = DataFrame.replace(string, string2find, string2replace)
             
         elif get_obj_type_str(string) == "Series":
-            string_replaced = pd.Series.replace(string, string2find, string2replace)
+            string_replaced = Series.replace(string, string2find, string2replace)
             
         return string_replaced
             
@@ -531,10 +703,16 @@ def strip(string, strip_option='strip', chars=None):
     strip_option: {'strip', 'lstrip', 'lstrip' 'title'} or None
         Location of the white spaces or substring to strip.
         Default option is the widely used 'strip'.
+        
+    Raises
+    ------
+    ValueError
+        If 'strip_option' is not within the allowed options.
           
     Returns
     -------
-    String with the specified characters surrounding it removed.
+    string_stripped : str
+        String with the specified characters surrounding it removed.
     """
     
     if (strip_option is None or strip_option not in strip_option_keys):
@@ -552,10 +730,6 @@ def strip(string, strip_option='strip', chars=None):
 
 # Standard and essential name lists #
 obj_specs_keylist = ['parent', 'name', 'name_noext', 'name_noext_parts', 'ext']
-obj_specs_keylist_essential = obj_specs_keylist[2:]
-
-# Substring search available method list #
-combined_case_search_method_list = ['default', 'numpy_basic', 'numpy_advanced']
 
 # Search matching object's indexing options #
 match_obj_index_option_keys = ["lo", "hi", "span", False]
@@ -568,13 +742,6 @@ strip_option_keys = ["strip", "lstrip", "rstrip"]
 
 # Switch-type dictionaries #
 #--------------------------#
-
-# Search matching object's indexing options #
-match_obj_index_option_dict = {
-    match_obj_index_option_keys[0] : lambda span: span[0],
-    match_obj_index_option_keys[1] : lambda span: span[-1],
-    match_obj_index_option_keys[2] : lambda span: span
-}
 
 # String case handling #
 case_modifier_option_dict = {
