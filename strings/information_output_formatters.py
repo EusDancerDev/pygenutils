@@ -155,27 +155,67 @@ def print_percent_string(string2format, arg_obj):
 # String font effects #
 #---------------------#
 
-# TODO: begizta optimizatu
-# TODO: docstring-a idatzi
-
-def string_underliner(string, underline_char):
-    multiline = "\n" in string
+def string_underliner(string, underline_char="-"):
+    """
+    Underlines a given string with the specified character.
+    
+    If the string contains multiple lines, each line will be underlined
+    individually with the same character, keeping the length of the underline
+    consistent with each line's length.
+    
+    Parameters
+    ----------
+    string : str
+        The string to be underlined. It can be single or multiline.
+        
+    underline_char : str, optional
+        The character used to underline the string.
+        Defaults to a dash ("-").
+    
+    Returns
+    -------
+    str
+        The original string with an underline applied to each line. 
+        For multiline strings, each line is individually underlined.
+    
+    Example
+    -------
+    For a single-line string:
+    
+    >>> string_underliner("Hello", "*")
+    'Hello\n*****'
+    
+    For a multiline string:
+    
+    >>> string_underliner("Hello\nWorld", "*")
+    'Hello\n*****\nWorld\n*****'
+    """
+    
+    # Check if the string contains newlines, indicating a multiline string
+    newline_char = "\n"
+    multiline = newline_char in string
     
     if multiline:
-        word_list = string.split("\n")
+        # Split the string into individual lines
+        word_list = string.split(newline_char)
+        
+        # Build the underlined string by iterating over each line
         str_underlined = ""
         for word in word_list:
             len_word = len(word)
-            str_underlined += f"{word}\n{underline_char:{underline_char}^{len_word}}\n"
-            
-        # Remove the last newline character #
-        str_underlined = str_underlined.rstrip('\n')
+            # Underline each word with the specified character repeated to match the word's length
+            str_underlined += f"{word}\n{underline_char * len_word}\n"
+        
+        # Remove the last newline character to avoid an extra empty line
+        str_underlined = str_underlined.rstrip(newline_char)
         
     else:
+        # For a single-line string, simply apply the underline
         len_string = len(string)
-        str_underlined = f"{string}\n{underline_char:{underline_char}^{len_string}}"
+        str_underlined = f"{string}\n{underline_char * len_string}"
 
     return str_underlined
+
 
 #--------------------------#
 # Parameters and constants #
