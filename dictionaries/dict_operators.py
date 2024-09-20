@@ -10,9 +10,9 @@ from pyutils.parameters_and_constants.global_parameters import basic_four_rules
 
 from functools import reduce
 
-#-------------------------#
-# Define custom functions #
-#-------------------------#
+#------------------#
+# Define functions #
+#------------------#
 
 # Mathematical operations #
 #-------------------------#
@@ -57,7 +57,7 @@ def dict_value_basic_operator(dict_list,
     """
     
     # Input validation #
-    #------------------#
+    #-#-#-#-#-#-#-#-#-#-
     
     # Validate input data type #
     if not (isinstance(dict_list, list)) or not all((isinstance(element, dict) for element in dict_list)):
@@ -74,7 +74,7 @@ def dict_value_basic_operator(dict_list,
                           f"Choose one from {list(allowed_calc_dict.keys())}.")
     
     # Operations #
-    #------------#
+    #-#-#-#-#-#-#-
     
     # Perform the computation #
     operation = allowed_calc_dict.get(math_operator)
