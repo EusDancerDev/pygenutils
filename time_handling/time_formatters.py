@@ -548,7 +548,7 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     
     Parameters
     ----------
-    datetime_obj : 
+    datetime_obj : object
         The datetime object to be converted. Can be of various types
         (e.g., `datetime`, `datetime64`, `Timestamp`).
     unit : str 
