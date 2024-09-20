@@ -1,14 +1,11 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# TODO: optimizatu dena, ahal bada
-
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.general.introspection_utils import \
-get_obj_type_str, get_caller_method_args
+from pyutils.utilities.general.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #
