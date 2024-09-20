@@ -551,7 +551,7 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     datetime_obj: 
         The datetime object to be converted. Can be of various types
         (e.g., `datetime`, `datetime64`, `Timestamp`).
-    unit: str
+    unit: 
         The time unit for conversion (e.g., "seconds", "microseconds", "nanoseconds"). 
         The actual unit factors are provided by the `unit_factor_dict`.
     float_class: 
