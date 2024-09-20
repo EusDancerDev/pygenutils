@@ -77,7 +77,7 @@ def infer_time_frequency(df_or_index):
     try:
         date_key = find_date_key(df_or_index)
         time_freq = pd.infer_freq(df_or_index[date_key])
-    except:
+    except (TypeError, ValueError):
         time_freq = pd.infer_freq(df_or_index)
         
     if time_freq is None:
@@ -313,7 +313,7 @@ def insert_row_in_df(df, index_row, values=np.nan, reset_indices=False):
     else:
         try:
             time_freq = pd.infer_freq(idx)
-        except:
+        except (TypeError, ValueError):
             time_freq = pd.infer_freq(idx[100])
             
         time_abbrs = basic_time_format_strs
