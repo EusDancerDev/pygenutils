@@ -438,7 +438,7 @@ def datetime_obj_converter(datetime_obj,
         The date/time object to be converted.
         Accepted objects by library are:
         - datetime : `datetime.datetime`, 
-        - time: `datetime.time`, 
+        - time : `datetime.time`, 
         - numpy : `np.datetime64`, `np.ndarray`,
         - pandas : `pd.Timestamp`, `pd.DataFrame`, `pd.Series`
         - arrow : `arrow`, 
@@ -452,9 +452,9 @@ def datetime_obj_converter(datetime_obj,
     unit : str
         The date unit for conversion, applicable to certain types.
         Default is `"s"` (seconds).
-    float_class : str or numpy class
+    float_class : str or numpy float class
         The float precision class. Default is `"d"` (double precision).
-    int_class : str or numpy class
+    int_class : str or numpy int class
         The integer precision class. Default is `"int"` (signed integer type).
     dt_fmt_str : str
         Format string to convert the date/time object to a string.
@@ -548,15 +548,15 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     
     Parameters
     ----------
-    datetime_obj: 
+    datetime_obj : 
         The datetime object to be converted. Can be of various types
         (e.g., `datetime`, `datetime64`, `Timestamp`).
-    unit: 
+    unit : str 
         The time unit for conversion (e.g., "seconds", "microseconds", "nanoseconds"). 
         The actual unit factors are provided by the `unit_factor_dict`.
-    float_class: 
+    float_class : str or numpy float class
         Specifies the precision class to use for floating-point results.
-    int_class: 
+    int_class : str or numpy int class
         Specifies the precision class to use for integer results.
     
     Returns
@@ -598,11 +598,11 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
 
     Parameters
     ----------
-    datetime_obj: 
-        The complex data object to be processed. Can be a `pd.Series` or `pd.DataFrame`.
-    int_class: 
+    datetime_obj : pandas.{DataFrame, Series}
+        The complex data object to be processed.
+    int_class : str
         Specifies the precision class to use for integer results.
-    unit_factor: str
+    unit_factor : str
         The factor by which to multiply the converted values to get the
         total time in the specified unit.
 
@@ -652,7 +652,7 @@ def _tzinfo_remover(dt_obj):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The datetime object from which timezone information should be removed.
 
     Returns
@@ -734,11 +734,11 @@ def _to_float(dt_obj, unit, float_class):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The datetime object to be converted.
-    unit: str
+    unit : str
         The unit for conversion (e.g., "s" for seconds, "ms" for milliseconds).
-    float_class: str, optional
+    float_class : str or numpy float class, optional
         The precision class for the float result.
 
     Returns
@@ -784,9 +784,9 @@ def _to_datetime(dt_obj, unit):
 
     Parameters
     ----------
-    dt_obj: datetime-like, pd.DataFrame, or pd.Series
+    dt_obj : datetime-like, pd.DataFrame, or pd.Series
         The object or DataFrame/Series to be converted to a Python datetime object.
-    unit: str
+    unit : str
         The unit for conversion (e.g., "ns" for nanoseconds).
 
     Returns
@@ -835,9 +835,9 @@ def _to_datetime_aux(dt_obj, unit):
 
     Parameters
     ----------
-    dt_obj: np.datetime64
+    dt_obj : np.datetime64
         The numpy datetime object to be converted.
-    unit: str
+    unit : str
         The unit for conversion (e.g., "ns" for nanoseconds).
 
     Returns
@@ -854,7 +854,7 @@ def _to_time_struct(dt_obj):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The object to be converted to time.struct_time.
 
     Returns
@@ -870,9 +870,9 @@ def _to_pandas(dt_obj, unit):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The object to be converted to a pandas Timestamp.
-    unit: str, optional
+    unit : str, optional
         The unit for conversion.
 
     Returns
@@ -888,9 +888,9 @@ def _to_numpy(dt_obj, unit):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The object to be converted to a NumPy datetime64.
-    unit: str, optional
+    unit : str, optional
         The unit for conversion (default is "ns" for nanoseconds).
 
     Returns
@@ -907,7 +907,7 @@ def _to_arrow(dt_obj):
 
     Parameters
     ----------
-    dt_obj: datetime-like
+    dt_obj : datetime-like
         The object to be converted to an Arrow object.
 
     Returns
@@ -937,10 +937,10 @@ _int_class_list = [np.int8, np.int16, "i", np.float32, "int", np.int64]
 time_str_parsing_dict = {
     "datetime" : lambda datetime_str, dt_fmt_str: datetime.strptime(datetime_str, dt_fmt_str),
     "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
-    "pandas"   : lambda datetime_str, dt_fmt_str, unit: pd.to_datetime(datetime_str, 
+    "pandas"   : lambda datetime_str, dt_fmt_str, unit : pd.to_datetime(datetime_str, 
                                                                        format=dt_fmt_str,
                                                                        unit=unit),
-    "numpy"    : lambda datetime_str, dt_fmt_str, unit: np.datetime64(datetime_str, unit),
+    "numpy"    : lambda datetime_str, dt_fmt_str, unit : np.datetime64(datetime_str, unit),
     "arrow"    : lambda datetime_str, dt_fmt_str: arrow.get(datetime_str, dt_fmt_str)
 }
 
@@ -972,7 +972,7 @@ datetime64_obj_conversion_dict = {
     "float"    : lambda dt_obj, unit, _ : _to_float(dt_obj, unit),
     "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
     "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
-    "pandas"   : lambda dt_obj, unit: _to_pandas(dt_obj, unit),
+    "pandas"   : lambda dt_obj, unit : _to_pandas(dt_obj, unit),
     "arrow"    : lambda dt_obj, _ : _to_arrow(dt_obj),
     "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(_to_datetime(dt_obj), dt_fmt_str)
 }
@@ -1007,9 +1007,9 @@ arrow_obj_conversion_dict = {
 
 time_stt_obj_conversion_dict = {
     "float"    : lambda dt_obj, _: _to_float(dt_obj),
-    "datetime" : lambda dt_obj, unit: _to_datetime(dt_obj, unit),
-    "pandas"   : lambda dt_obj, unit: pd.Timestamp(*dt_obj[:6], unit=unit),
-    "numpy"    : lambda dt_obj, unit: np.datetime64(datetime(*dt_obj[:6]), unit),
+    "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
+    "pandas"   : lambda dt_obj, unit : pd.Timestamp(*dt_obj[:6], unit=unit),
+    "numpy"    : lambda dt_obj, unit : np.datetime64(datetime(*dt_obj[:6]), unit),
     "arrow"    : lambda dt_obj, _: _to_arrow(dt_obj),
 }
 
@@ -1035,7 +1035,7 @@ conversion_opt_dict = {
 # Exclusively to floated time #
 _total_time_unit_dict = {
     "datetime"    : lambda dt_obj, _ : dt_obj.timestamp(),
-    "datetime64"  : lambda dt_obj, unit, float_class: dt_obj.astype(f"timedelta64[{unit}]").astype(float_class),
+    "datetime64"  : lambda dt_obj, unit, float_class : dt_obj.astype(f"timedelta64[{unit}]").astype(float_class),
     "struct_time" : lambda dt_obj, unit : datetime(*dt_obj[:6]),
     "arrow"       : lambda dt_obj, unit : dt_obj.float_timestamp,
     "dataframe"   : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
