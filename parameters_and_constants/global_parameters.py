@@ -80,6 +80,19 @@ time_frequencies_complete = ["year", "season", "month", "day", "hour", "minute",
 time_frequencies_short_1 = ["yearly", "seasonal", "monthly", "daily", "hourly"]
 time_frequencies_shorter_1 = ["year", "seas", "mon", "day", "hour"]
 
+# Supported Pandas date units #
+pandas_date_unit_list = ['D', 'ms', 'ns', 's', 'us']
+# Supported Numpy date units #
+numpy_date_unit_list = ['Y', 'M', 'D', 'h', 'm', 's', 'ms', 'us', 'ns']
+
+unit_factor_dict = {
+    "D"  : 1000,
+    "s"  : 1,
+    "ms" : 1e-3,
+    "us" : 1e-6,
+    "ns" : 1e-9
+}
+
 #%% MATHEMATICAL CONCEPTS
  
 #-----------------# 
