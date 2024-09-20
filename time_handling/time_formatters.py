@@ -602,7 +602,7 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
         The complex data object to be processed. Can be a `pd.Series` or `pd.DataFrame`.
     int_class: 
         Specifies the precision class to use for integer results.
-    unit_factor: 
+    unit_factor: str
         The factor by which to multiply the converted values to get the
         total time in the specified unit.
 
