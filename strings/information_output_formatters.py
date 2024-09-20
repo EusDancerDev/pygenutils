@@ -174,7 +174,7 @@ def string_underliner(string, underline_char="-"):
     
     Returns
     -------
-    str
+    str_underlined : str
         The original string with an underline applied to each line. 
         For multiline strings, each line is individually underlined.
     
