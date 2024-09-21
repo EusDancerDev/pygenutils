@@ -41,10 +41,9 @@ def find_substring_index(string,
                          case_sensitive=False,
                          find_whole_words=False,
                          all_matches=False):
-
-    
     """
-    Finds the index or matched substring in a string, list, numpy.ndarray, or tuple.
+    Finds the index and/or matched string for a specified substring within a given string,
+    with support for advanced pattern matching.
     
     Parameters
     ----------
@@ -56,25 +55,30 @@ def find_substring_index(string,
         Start index for search. Default is 0.
     end : int, optional
         End index for search. If None, it searches to the end of the string or collection. 
-    return_match_index : str, optional
-        Defines which match index to return ('lo', 'hi', or 'both').
+    return_match_index :  {"lo", "hi", "both"}, optional
+        Defines which match index to return.
     return_match_str : bool, optional
         If True, returns the matched substring instead of the index.
     advanced_search : bool, optional
         If True, uses advanced search with support for regex and special options.
     case_sensitive : bool, optional
-        If True, the search is case-sensitive.
+        Specifies whether the search should be case-sensitive.
+        Defaults to False (case-insensitive).
     find_whole_words : bool, optional
-        If True, matches whole words only.
+        Ensures that only whole words are matched, avoiding partial word matches.
     all_matches : bool, optional
-        If True, finds all matches rather than the first one.
+        If True, finds all occurrences of the substring.
+        Otherwise, only the first match is returned.
     
     Returns
     -------
     int, list, or str
-        Returns the index or the matching substring depending on the arguments passed.
-    """
+        Returns the index or the matching substring depending on the arguments passed
     
+    Notes
+    -----
+    This method relies on the internal `_advanced_pattern_searcher` to perform the pattern search, which itself uses `_return_search_obj_spec` for handling regular expression matching and result extraction.
+    """
     # Argument validation #
     #---------------------#
     
@@ -156,7 +160,8 @@ def find_substring_index(string,
             match_series = string.str.contains(substring)
         except AttributeError:
             match_series = string.iloc[:, 0].str.contains(substring)
-        return list(match_series[match_series].index)
+        else:
+            return list(match_series[match_series].index)
        
 
     # Handle the return based on the result type #
@@ -183,31 +188,37 @@ def _advanced_pattern_searcher(string, substring,
                                find_whole_words,
                                all_matches):
     """
-    Perform advanced pattern searching on the input string or list of strings.
-
+    Performs an advanced pattern search based on specified criteria,
+    with options for regex, case-sensitivity, and whole word matching,
+    and returns indices and/or match strings.
+    
     Parameters
     ----------
     string : str, list, np.ndarray, or tuple
-        The input string or collection of strings to search within.
-    substring : str
-        The substring pattern to search for.
-    return_match_index : bool
-        If True, return the start index of the match.
+        The input object to search within.
+    substring : str or list-like of str
+        The substring or list of substrings to search for. Can include regex patterns.
+    return_match_index : {"lo", "hi", "both"}
+        Defines which match index to return.
     return_match_str : bool
-        If True, return the matched substring.
+        If True, returns the matched substring instead of the index.
     case_sensitive : bool
-        If True, the search is case-sensitive.
+        Whether the search is case-sensitive. Defaults to False.
     find_whole_words : bool
-        If True, match the whole word exactly.
+        If True, matches whole words only.
     all_matches : bool
-        If True, find all matches instead of just the first one.
-
+        If True, finds all matches; otherwise, only the first is returned.
+    
     Returns
     -------
-    match_obj_spec : list or array
-        A list or array of matching results based on the input arguments.
-    """
-    
+    list or tuple
+        A list or tuple of matching indices and/or matched substrings.
+        
+    Notes
+    -----    
+    This method serves as an auxiliary to `find_substring_index`, 
+    utilizing `_return_search_obj_spec` for detailed pattern matching and result extraction.
+    """    
     # Determine if the input string is multi-line
     multiline = '\n' in string \
                 if isinstance(string, str) \
@@ -272,23 +283,61 @@ def _advanced_pattern_searcher(string, substring,
 # Auxiliary functions #
 #-#-#-#-#-#-#-#-#-#-#-#
 
-# TODO: docstring-a gehitu
 def _return_search_obj_spec(string, substring, re_obj_str,
                             return_match_index, return_match_str,
                             iterator_considered, case_sensitive,
                             find_whole_words, all_matches):
     """
-    Auxiliary function to handle the pattern searching and result extraction.
+    Handles the regular expression search and result extraction for advanced search.
+    
+    Parameters
+    ----------
+    string : str
+        The string to search in.
+    substring : str
+        The pattern or substring to search for.
+    re_obj_str : callable
+        A callable that performs the actual pattern search using regex or custom logic.
+    return_match_index :  {"lo", "hi", "both"}
+        Defines which match index to return.
+    return_match_str : bool
+        If True, returns the matched substrings.
+    iterator_considered : bool
+        If True, collects all matches in an iterable.
+    case_sensitive : bool
+        Whether or not to perform a case-sensitive match.
+    find_whole_words : bool
+        Match whole words only if set to True.
+    all_matches : bool
+        If True, finds all matches rather than just the first.
+    
+    Returns
+    -------
+    tuple
+        A tuple of indices and matched substrings. Its components are:
+        - indices : list of int
+              The start positions of matches.
+        - match_strings : list of str
+              The matched substrings.
+              
+    Notes
+    -----
+    This is a helper function used by `_advanced_pattern_searcher`
+    to finalize the search and process the results.
     """
+    
+    # Create the match object using the provided regex search function
     match_obj = re_obj_str(substring, string)
     
+    # If iterator is considered, extract all matches; otherwise, handle single match
     if iterator_considered:
         matches = [m for m in match_obj]
     else:
         matches = [match_obj] if match_obj else []
     
-    if return_match_index:
-        indices = [m.start() for m in matches] if matches else []
+    # Use the appropriate action for returning indices based on return_match_index
+    if return_match_index in match_index_action_dict:
+        indices = match_index_action_dict[return_match_index](matches)
     else:
         indices = []
     
@@ -350,25 +399,9 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
     if module not in path_specs_retrieval_modules:
         raise ValueError(f"Unsupported module '{module}'. "
                          f"Choose one from {path_specs_retrieval_modules}.")
-        
-    # Use a dictionary to switch between 'os' and 'Path' modules
-    path_functions = {
-        'os': lambda: {
-            'parent': os.path.dirname(obj_path),
-            'name': os.path.basename(obj_path),
-            'name_noext': os.path.splitext(os.path.basename(obj_path))[0],
-            'ext': os.path.splitext(os.path.basename(obj_path))[1][1:]
-        },
-        'Path': lambda: {
-            'parent': Path(obj_path).parent,
-            'name': Path(obj_path).name,
-            'name_noext': Path(obj_path).stem,
-            'ext': Path(obj_path).suffix[1:]
-        }
-    }
     
     # Retrieve path specifications based on the chosen module
-    obj_specs_dict = path_functions[module]()
+    obj_specs_dict = path_functions[module](obj_path)
     
     # Optionally, split the file name without extension by the specified delimiter
     if splitdelim:
@@ -623,49 +656,74 @@ def ext_adder(path2tweak, extension):
 # Substring replacements #
 #------------------------#
 
-# TODO: docstring-a gehitu
-def substring_replacer(string, string2find, string2replace, count_std=-1,
+def substring_replacer(string, substr2find, substr2replace, count_std=-1,
                        advanced_search=False,
                        count_adv=0,
                        flags=0):
+    """
+    Replaces occurrences of a specified substring in a given object
+    (string, list, numpy.ndarray, pandas DataFrame, or pandas Series) 
+    using either a simple replace method or advanced regex techniques.
+
+    Parameters
+    ----------
+    string : str, list, numpy.ndarray, pd.DataFrame, or pd.Series
+        The input object where the substring will be replaced.
+    substr2find : str
+        The substring to search for in the input object.
+    substr2replace : str
+        The substring to replace the found occurrences.
+    count_std : int, optional
+        The maximum number of occurrences to replace in standard replace mode. 
+        Default is -1, which means replace all occurrences.
+    advanced_search : bool, optional
+        If True, uses regular expressions for more complex search and replace. Default is False.
+    count_adv : int, optional
+        The maximum number of occurrences to replace when using advanced search. Default is 0.
+        If 0, all occurrences will be replaced.
+    flags : int, optional
+        Flags to modify the behavior of the regex operation. Default is 0.
+
+    Returns
+    -------
+    str, list, numpy.ndarray, pd.DataFrame, or pd.Series
+        Returns the modified object with the specified replacements.
+
+    Notes
+    -----
+    - If `advanced_search` is True, the function employs regex substitutions, which can be 
+      used for strings only. For lists, numpy.ndarray, DataFrames, or Series, 
+      the built-in `replace` method is applied, allowing more flexibility in replacements.
+    - If `advanced_search` is False, the function uses the built-in `replace` method 
+      for all supported input types, enabling straightforward substring replacements.
+    """
     
-    all_arg_names = get_caller_method_args()
-    adv_search_arg_pos = find_substring_index(all_arg_names, "advanced_search")
+    obj_type = get_obj_type_str(string).lower()
+    
+    if obj_type not in str_repl_obj_types:
+        raise TypeError("Input object must be of type 'string', 'list', "
+                        "'numpy.ndarray', 'DataFrame', or 'Series'.")
             
     if not advanced_search:
-        if isinstance(string, str):
-            string_replaced = string.replace(string2find, string2replace, count_std)
-            
-        elif get_obj_type_str(string) in ["list", "ndarray"]:
-            if isinstance(string, list):
-                string = array(string)
-            string_replaced = char.replace(string, string2find, string2replace)
-            
-        elif get_obj_type_str(string) == "DataFrame":
-            string_replaced = DataFrame.replace(string, string2find, string2replace)
-            
-        elif get_obj_type_str(string) == "Series":
-            string_replaced = Series.replace(string, string2find, string2replace)
-            
+        string_replaced = replace_actions[obj_type](string, substr2find, substr2replace, count_std)
         return string_replaced
             
     else:
-        if not isinstance(string, str):
-            raise ValueError("Input object must only be of type 'string' "
-                             f"if '{all_arg_names[adv_search_arg_pos]}' is True.")
+        if isinstance(string, str):
+            string_replaced = re.sub(substr2find, substr2replace, 
+                                     string, count_adv, flags)
         else:
-            string_replaced = re.sub(string2find, string2replace, 
-                                     string,
-                                     count_adv,
-                                     flags)
-        
-            return string_replaced
-        
+            # Apply regex replacement to each element in lists/arrays
+            string_replaced = [
+                re.sub(substr2find, substr2replace, elem, count_adv, flags) 
+                for elem in string
+            ]
+        return string_replaced
+    
 # Case handling #
 #---------------#
         
-def case_modifier(string, case=None):
-    
+def case_modifier(string, case=None):    
     """
     Function to modify the given string case.
     
@@ -728,11 +786,14 @@ def strip(string, strip_option='strip', chars=None):
 # Parameters and constants #
 #--------------------------#
 
+# Allowed options #
+#-----------------#
+
 # Standard and essential name lists #
 obj_specs_keylist = ['parent', 'name', 'name_noext', 'name_noext_parts', 'ext']
 
 # Search matching object's indexing options #
-match_obj_index_option_keys = ["lo", "hi", "span", False]
+match_obj_index_option_keys = ["lo", "hi", "both"]
 
 # String case handling options #
 case_modifier_option_keys = ["lower", "upper", "capitalize", "title"]
@@ -740,7 +801,10 @@ case_modifier_option_keys = ["lower", "upper", "capitalize", "title"]
 # String stripping options #
 strip_option_keys = ["strip", "lstrip", "rstrip"]
 
-# Switch-type dictionaries #
+# Object types for string replacements #
+str_repl_obj_types = ["str", "list", "ndarray", "dataframe", "series"]
+
+# Switch case dictionaries #
 #--------------------------#
 
 # String case handling #
@@ -759,3 +823,36 @@ strip_option_dict = {
     strip_option_keys[1] : lambda string, chars: string.lstrip(chars),
     strip_option_keys[2] : lambda string, chars: string.rstrip(chars),
 }
+
+# File or directory path specifications retrieval #
+path_functions = {
+    'os': lambda obj_path : {
+        'parent': os.path.dirname(obj_path),
+        'name': os.path.basename(obj_path),
+        'name_noext': os.path.splitext(os.path.basename(obj_path))[0],
+        'ext': os.path.splitext(os.path.basename(obj_path))[1][1:]
+    },
+    'Path': lambda obj_path : {
+        'parent': Path(obj_path).parent,
+        'name': Path(obj_path).name,
+        'name_noext': Path(obj_path).stem,
+        'ext': Path(obj_path).suffix[1:]
+    }
+}
+
+# Index return types for pattern matches #
+match_index_action_dict = {
+    "lo" : lambda matches : [m.start() for m in matches] if matches else [],
+    "hi" : lambda matches : [m.end() for m in matches] if matches else [],
+    "both" : lambda matches : [m.span() for m in matches] if matches else [],
+    }
+
+# Substring replacement actions using simpler methods #
+replace_actions = {
+    "str": lambda s, sb2find, sb2replace, count_std : s.replace(sb2find, sb2replace, count_std),
+    "list": lambda s, sb2find, sb2replace, _ : char.replace(array(s), sb2find, sb2replace),
+    "ndarray": lambda s, sb2find, sb2replace, _ : char.replace(s, sb2find, sb2replace),
+    "dataframe": lambda s, sb2find, sb2replace, _ : DataFrame.replace(s, sb2find, sb2replace),
+    "series": lambda s, sb2find, sb2replace, _ : Series.replace(s, sb2find, sb2replace),
+}
+    
