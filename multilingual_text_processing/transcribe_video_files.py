@@ -29,7 +29,7 @@ from pyutils.strings import string_handler, information_output_formatters
 # Create aliases #
 #----------------#
 
-aux_ext_adder = string_handler.aux_ext_adder
+ext_adder = string_handler.ext_adder
 modify_obj_specs = string_handler.modify_obj_specs
 
 print_format_string = information_output_formatters.print_format_string
@@ -41,7 +41,7 @@ print_format_string = information_output_formatters.print_format_string
 def save_transcription_in_file(transcript, relative_path_noext, ext="txt"):
     
     # Add the extension to the input file #
-    relative_path = aux_ext_adder(relative_path_noext, ext)
+    relative_path = ext_adder(relative_path_noext, ext)
     
     # Create the file object #
     file_object = open(relative_path, "w")

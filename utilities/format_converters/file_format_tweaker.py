@@ -28,8 +28,8 @@ format_string = information_output_formatters.format_string
 catch_shell_prompt_output = os_module_operations.catch_shell_prompt_output
 exec_shell_command = os_module_operations.exec_shell_command
 
-aux_ext_adder = string_handler.aux_ext_adder
-add_str_to_aux_path = string_handler.add_str_to_aux_path
+ext_adder = string_handler.ext_adder
+add_str_to_path = string_handler.add_str_to_aux_path
 get_obj_specs = string_handler.get_obj_specs
 obj_path_specs = string_handler.obj_path_specs
 find_substring_index = string_handler.find_substring_index
@@ -49,11 +49,11 @@ def tweak_pages(file, cat_str, output_path="default"):
     
     if output_path == default_arg:
         str2add_1 = f"_{cat_str}"
-        output_path_aux_1 = add_str_to_aux_path(output_path, str2add_1)
+        output_path_aux_1 = add_str_to_path(output_path, str2add_1)
         
         if len(output_path_aux_1) > 60:
             str2add_2 = "_lotsOfPagesTweaked"
-            output_path_aux_2 = add_str_to_aux_path(output_path, str2add_2)
+            output_path_aux_2 = add_str_to_path(output_path, str2add_2)
             output_path = output_path_aux_2
             
         else:
@@ -183,7 +183,7 @@ def pdf_file_tweaker(path, cat_out_obj):
             raise SyntaxError(syntax_error_str)
             
         cat_str, output_path_aux = cat_out_obj.split(splitdelim)        
-        output_path = aux_ext_adder(output_path_aux, extensions[0])        
+        output_path = ext_adder(output_path_aux, extensions[0])        
         tweak_pages(path, cat_str, output_path)
         
         
@@ -192,7 +192,7 @@ def pdf_file_tweaker(path, cat_out_obj):
         cat_str_list = list(cat_out_obj.values())
         
         for output_path_aux, cat_str in zip(output_pathlist, cat_str_list):
-            output_path = aux_ext_adder(output_path_aux, extensions[0])
+            output_path = ext_adder(output_path_aux, extensions[0])
             tweak_pages(path, cat_str, output_path)
         
     elif isinstance(path, list) and isinstance(cat_out_obj, list):
@@ -202,7 +202,7 @@ def pdf_file_tweaker(path, cat_out_obj):
             cat_str_list = list(cat_out_obj.values())
             
             for output_path_aux, cat_str in zip(output_pathlist, cat_str_list):
-                output_path = aux_ext_adder(output_path_aux, extensions[0])
+                output_path = ext_adder(output_path_aux, extensions[0])
                 tweak_pages(p, cat_str, output_path)            
         
     else:
@@ -216,7 +216,7 @@ def merge_pdf_files(in_path_list, out_path=None):
     
     if out_path is None:
         out_path_noext = "merged_doc"
-        out_path = aux_ext_adder(out_path_noext, extensions[0])
+        out_path = ext_adder(out_path_noext, extensions[0])
     
     arg_tuple_pdfunite = (all_in_paths_string, out_path)
     pdfunite_command = format_string(pdfunite_command_prefmt, arg_tuple_pdfunite)
@@ -287,7 +287,7 @@ def pdf_file_compressor(in_path, out_path=None):
     
         if op_aux is None:
             op_aux = "compressed_doc"            
-        op = aux_ext_adder(op_aux, extensions[0])
+        op = ext_adder(op_aux, extensions[0])
     
         ps2pdf_command\
         = f"{essential_command_list[0]} -dPDFSETTINGS=/ebook {ip} {op}"

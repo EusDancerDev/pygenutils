@@ -26,7 +26,7 @@ get_file_variables = netcdf_handler.get_file_variables
 find_time_dimension_raise_none = netcdf_handler.find_time_dimension_raise_none
 get_times = netcdf_handler.get_times
 
-add_str_to_aux_path = string_handler.add_str_to_aux_path
+add_str_to_path = string_handler.add_str_to_aux_path
 find_substring_index = string_handler.find_substring_index
 obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
@@ -197,7 +197,7 @@ def custom_cdo_mergetime(file_list,
         mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                             f"{custom_output_file_name}"
     else:
-        temp_file = add_str_to_aux_path(file_list[0])
+        temp_file = add_str_to_path(file_list[0])
         mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                             f"{temp_file}"
                      
@@ -271,7 +271,7 @@ def cdo_shifttime(file_list,
                   shift_value):
                        
     for file in file_list:
-        temp_file = add_str_to_aux_path(file)
+        temp_file = add_str_to_path(file)
         shifttime_command = f"cdo shifttime,{shift_value} '{file}' '{temp_file}'"
         exec_shell_command(shifttime_command)
         
@@ -289,7 +289,7 @@ def cdo_inttime(file_list,
     
     for file in file_list:
         
-        temp_file = add_str_to_aux_path(file)
+        temp_file = add_str_to_path(file)
         star_date_format = f"{year0}-{month0}-{day0} "\
                            f"{hour0:2d}:{minute0:2d}:{second0:2d}"
         
@@ -320,7 +320,7 @@ def cdo_rename(file_list,
         print(f"Renaming original variable '{var_file}' to '{var_std}' "
               f"on file {file_num} out of {lfl}...")
     
-        file_name_chname = add_str_to_aux_path(file_name, 
+        file_name_chname = add_str_to_path(file_name, 
                                                      splitdelim1)
         chname_command = f"cdo chname,{var_file},{var_std} "\
                          f"'{file_name}' '{file_name_chname}'"
@@ -476,17 +476,17 @@ def cdo_periodic_statistics(nc_file_name, statistic, isclimatic, freq, season_st
             
     # Get the file name for string manipulation #
     file_path_name\
-    = add_str_to_aux_path(nc_file_name, return_file_name_noext=True)
+    = add_str_to_path(nc_file_name, return_file_name_noext=True)
     
     """Special case for seasonal time frequency"""
     if season_str is not None:
         statname_season = f"{str(statname)}_{statname[-3:]}"
         string2add = f"{splitdelim1}{statname_season}"
-        file_path_name_longer = add_str_to_aux_path(file_path_name, string2add)
+        file_path_name_longer = add_str_to_path(file_path_name, string2add)
         
     else:
         string2add = f"{splitdelim1}{statname}"
-        file_path_name_longer = add_str_to_aux_path(file_path_name, string2add)
+        file_path_name_longer = add_str_to_path(file_path_name, string2add)
         
     # Define the output file name based on the configuration chosen #
     obj2change = "name_noext"
@@ -505,7 +505,7 @@ def calculate_periodic_deltas(projected_ncfile,
                               proj_model=None):
     
     period_abbr_idx = find_substring_index(time_freqs_delta, delta_period) 
-    delta_calc_filename = add_str_to_aux_path(historical_ncfile, 
+    delta_calc_filename = add_str_to_path(historical_ncfile, 
                                               return_file_name_noext=True)
 
     if proj_model is None:
@@ -524,7 +524,7 @@ def calculate_periodic_deltas(projected_ncfile,
     proj_mean_command = f"-y{period_abbr}mean {projected_ncfile}"
 
     string2add = f"{period_abbr}Deltas_{proj_model}.nc"
-    delta_calc_filename_longer = add_str_to_aux_path(delta_calc_filename, string2add)
+    delta_calc_filename_longer = add_str_to_path(delta_calc_filename, string2add)
     
     if operator not in basic_four_rules:
         raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta2))
@@ -547,7 +547,7 @@ def apply_periodic_deltas(projected_ncfile,
     
     
     period_abbr_idx = find_substring_index(time_freqs_delta, delta_period)
-    delta_apply_fn = add_str_to_aux_path(historical_ncfile, 
+    delta_apply_fn = add_str_to_path(historical_ncfile, 
                                          return_file_name_noext=True)
     
     if proj_model is None:
@@ -564,7 +564,7 @@ def apply_periodic_deltas(projected_ncfile,
         period_abbr = freq_abbrs_delta[period_abbr_idx]
         
     string2add = f"{period_abbr}DeltaApplied_{proj_model}.nc"
-    delta_apply_fn_longer = add_str_to_aux_path(delta_apply_fn, string2add)
+    delta_apply_fn_longer = add_str_to_path(delta_apply_fn, string2add)
     
     hist_mean_command = f"-y{period_abbr}mean {historical_ncfile}"
     

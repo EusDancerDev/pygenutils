@@ -18,7 +18,7 @@ format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
 
 rename_objects = file_and_directory_handler.rename_objects
-add_str_to_aux_path = file_format_tweaker.add_str_to_aux_path
+add_str_to_path = file_format_tweaker.add_str_to_aux_path
 
 #-------------------------#
 # Define custom functions #
@@ -35,7 +35,7 @@ def modify_variable_units_and_values(file_list,
     lfl = len(file_list)    
         
     for file_num, file_name in enumerate(file_list, start=1): 
-        temp_file = add_str_to_aux_path(file_name, str2add=file_name)
+        temp_file = add_str_to_path(file_name, str2add=file_name)
         
         isactuallyfloat = (abs(value-int(value)) == 0)
         isactuallyfloat_int = int(isactuallyfloat)
@@ -82,7 +82,7 @@ def modify_coordinate_values_by_threshold(file_list,
     lfl = len(file_list) 
     
     for file_num, file_name in enumerate(file_list, start=1):
-        temp_file = add_str_to_aux_path(file_name, str2add=file_name)
+        temp_file = add_str_to_path(file_name, str2add=file_name)
         
         isactuallyfloat = (abs(value-int(value)) == 0)
         isactuallyfloat_int = int(isactuallyfloat)
@@ -134,7 +134,7 @@ def modify_coordinate_all_values(file_list,
     lfl = len(file_list) 
     
     for file_num, file_name in enumerate(file_list, start=1): 
-        temp_file = add_str_to_aux_path(file_name, str2add=file_name)
+        temp_file = add_str_to_path(file_name, str2add=file_name)
         
         isactuallyfloat = (abs(value-int(value)) == 0)
         isactuallyfloat_int = int(isactuallyfloat)
