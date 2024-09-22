@@ -7,7 +7,7 @@ Created on Sun Sep 22 12:35:48 2024
 
 ** DISCLAIMER **
 This program serves as a module to store configuration data
-like credentials, host info, etc.,
+like credentials, host info, etc.
 
 *GLOBAL PARAMETERS MODULE STRUCTURE*
 
