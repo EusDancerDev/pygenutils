@@ -23,6 +23,8 @@ from pyutils.strings.string_handler import find_substring_index, get_obj_specs
 
 from pyutils.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
 
+from pyutils.parameters_and_constants.global_parameters import data_uploading_error_dict
+
 #----------------#
 # Create objects #
 #----------------#
@@ -531,12 +533,3 @@ db_alias_dict = {
     "postgresql" : "postgresql",
     "sqlite" : "sqlite"
 }
-
-# Data uploading error messages #
-data_uploading_error_dict = {
-	"1007" : "Database already exists",
-    "1045" : "Wrong username",
-    "1049" : "Unknown database name",
-    "1698" : "Wrong password",
-    "2003" : "Wrong host name"
-    }
