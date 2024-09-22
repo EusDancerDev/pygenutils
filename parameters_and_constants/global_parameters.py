@@ -7,14 +7,14 @@ Created on Thu Jun  9 12:14:15 2022
 
 ** DISCLAIMER **
 This program serves as a module to store parameters that are used frequently or globally.
+
+*GLOBAL PARAMETERS MODULE STRUCTURE*
+
+1. Time-Related Parameters
+2. Mathematical Concepts
+3. Programming Concepts
+4. Socio-Economical Concepts
 """
-
-#%% GLOBAL PARAMETERS MODULE STRUCTURE
-
-# 1. Time-Related Parameters
-# 2. Mathematical Concepts
-# 3. Programming Concepts
-# 4. Socio-Economical Concepts
 
 #%% 1. TIME-RELATED PARAMETERS
 
@@ -105,13 +105,6 @@ regex_passwords = r"^(?=.{8,})(?=.*[a-z\s])(?=.*[A-Z\s])(?=.*\d)(?=.*[_\W]).+$"
 common_delim_list = ["_", "-", ";", ",", "\n", "\t", " "]
 
 # Databases
-config_dict = {
-    "username": "username",
-    "password": "cool-password",
-    "host": "host",
-    "database_name": "dbname"
-}
-
 data_uploading_error_dict = {
     "1007": "Database already exists",
     "1045": "Wrong username",
