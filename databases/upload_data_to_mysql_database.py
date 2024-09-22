@@ -46,7 +46,7 @@ Data Files
 from pyutils.databases.database_handler import load_file_to_sql
 from pyutils.files_and_directories.file_and_directory_paths import find_files_by_globstr
 from pyutils.files_and_directories.file_and_directory_paths import find_files_by_ext
-from pyutils.parameters_and_constants.global_parameters import config_dict
+from pyutils.parameters_and_constants.config_params import config_dict
 
 #-------------------#
 # Define parameters #
