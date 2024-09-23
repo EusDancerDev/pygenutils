@@ -510,8 +510,7 @@ def extend_array(obj, obj2extend, np_axis=None):
     return obj_extended
 
 
-# FIXME: 'remove_elements_from_array' metodoa -> rename -> 'remove_elements'
-def remove_elements_from_array(array, idx2access, axis=None):    
+def remove_elements(array, idx2access, axis=None):    
     """
     Function that removes certain elements either from a list or NumPy array,
     selected by indices, which can be integers or booleans.

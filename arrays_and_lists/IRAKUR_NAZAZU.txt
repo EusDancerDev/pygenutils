@@ -1,0 +1,3 @@
+# SOILIK push guztiak eguneratutakoan gauzatu #
+1. Berrizendatu artxibo guztiak, 'array_' aurreizkia ezabatuz
+2. Aldaketa horiek eragiten dien artxiboetan patroi hori detektatu eta aldaketak gauzatu
