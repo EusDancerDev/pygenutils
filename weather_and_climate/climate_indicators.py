@@ -28,7 +28,7 @@ from pyutils.weather_and_climate import climate_statistics, \
 
 select_array_elements = array_data_manipulation.select_array_elements
 sort_array_rows_by_column = array_data_manipulation.sort_array_rows_by_column
-remove_elements_from_array = array_data_manipulation.remove_elements_from_array
+remove_elements = array_data_manipulation.remove_elements
 
 count_consecutive = array_numerical_operations.count_consecutive
 
@@ -763,7 +763,7 @@ def hdy_interpolation(hdy_df,
     
     # Remove 'ws10' variable from the list of variables to be interpolated #
     ws10_idx = find_substring_index(varlist_to_interpolate, "ws10")
-    varlist_to_interpolate = remove_elements_from_array(varlist_to_interpolate, 
+    varlist_to_interpolate = remove_elements(varlist_to_interpolate, 
                                                         ws10_idx)
 
     for i in range(lhdy_m-1):
