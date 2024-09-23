@@ -11,7 +11,7 @@
 from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
-import pyutils.operative_systems.os_operations as os_module_operations
+from pyutils.operative_systems.os_operations import print_exit_info, run_system_command
 from pyutils.strings import string_handler, information_output_formatters
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
@@ -24,9 +24,6 @@ find_files_by_ext = file_and_directory_paths.find_files_by_ext
 find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 
 format_string = information_output_formatters.format_string
-
-catch_shell_prompt_output = os_module_operations.catch_shell_prompt_output
-exec_shell_command = os_module_operations.exec_shell_command
 
 ext_adder = string_handler.ext_adder
 add_str_to_path = string_handler.add_str_to_aux_path
@@ -61,8 +58,9 @@ def tweak_pages(file, cat_str, output_path="default"):
        
     zsh_pdftk_command = f"{essential_command_list[1]} '{file}' cat {cat_str} "\
                         f"output '{output_path}'"
-                        
-    exec_shell_command(zsh_pdftk_command)
+    
+    process_exit_status = run_system_command(zsh_pdftk_command, encoding="utf-8")
+    print_exit_info(process_exit_status)
 
 
 def pdf_file_tweaker(path, cat_out_obj):
@@ -220,8 +218,9 @@ def merge_pdf_files(in_path_list, out_path=None):
     
     arg_tuple_pdfunite = (all_in_paths_string, out_path)
     pdfunite_command = format_string(pdfunite_command_prefmt, arg_tuple_pdfunite)
-    exec_shell_command(pdfunite_command)
     
+    process_exit_status = run_system_command(pdfunite_command, encoding="utf-8")
+    print_exit_info(process_exit_status)
     
         
 def pdf_file_compressor(in_path, out_path=None):
@@ -292,8 +291,9 @@ def pdf_file_compressor(in_path, out_path=None):
         ps2pdf_command\
         = f"{essential_command_list[0]} -dPDFSETTINGS=/ebook {ip} {op}"
     
-        exec_shell_command(ps2pdf_command)
-    
+        process_exit_status = run_system_command(ps2pdf_command, encoding="utf-8")
+        print_exit_info(process_exit_status)
+        
   
 def check_essential_prog_installation():
     
@@ -303,7 +303,7 @@ def check_essential_prog_installation():
     Not all of them have an APT candidate, but 'dpkg',
     so in order to check if a program is installed,
     that command will be used, piped with grep,
-    'which in turn will be 'grepped with 'lc' line counter.
+    which in turn will be grepped with 'lc' line counter.
     """
     
     non_installed_prog_list = []
@@ -311,9 +311,13 @@ def check_essential_prog_installation():
     for ess_prog in essential_program_list:
         apt_cache_command = f"dpkg -l | grep -i {ess_prog} | wc -l"
         
-        coincident_prog_num = catch_shell_prompt_output(apt_cache_command)
-        is_prog_installed = int(coincident_prog_num.strip()) >= 1
+        process_exit_info = run_system_command(apt_cache_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
+        coincident_prog_num = process_exit_info.get("stdout")
         
+        is_prog_installed = int(coincident_prog_num) >= 1
         if not is_prog_installed:
             non_installed_prog_list.append(ess_prog)
             
@@ -357,7 +361,9 @@ def eml2pdf(path_to_walk_into, delete_eml_files=False):
     # Convert each email to PDF #        
     for emlf in eml_files:
         eml2pdf_command = f"java -jar {converter_tool_path} '{emlf}'"
-        exec_shell_command(eml2pdf_command)
+        
+        process_exit_status = run_system_command(eml2pdf_command, encoding="utf-8")
+        print_exit_info(process_exit_status)
         
     if delete_eml_files:
         # Delete every email file #
@@ -406,7 +412,10 @@ def msg2pdf(path_to_walk_into,
     # Convert microsoft outlook message (.msg) to email (.eml) #
     for msgf in msg_files:
         msg2eml_command = f"{essential_command_list[3]} '{msgf}'"
-        exec_shell_command(msg2eml_command)
+        
+        process_exit_status = run_system_command(msg2eml_command, encoding="utf-8")
+        print_exit_info(process_exit_status)
+        
         
     # Convert email to PDF #
     eml2pdf(path_to_walk_into, delete_eml_files=delete_eml_files)

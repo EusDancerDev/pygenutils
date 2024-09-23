@@ -14,12 +14,14 @@ import shutil
 #-----------------------#
 
 from pyutils.files_and_directories.file_and_directory_paths import posixpath_converter
-from pyutils.operative_systems.os_operations import exec_shell_command
+from pyutils.operative_systems.os_operations import print_exit_info, run_system_command
 from pyutils.strings.information_output_formatters import format_string
 
 #------------------#
 # Define functions #
 #------------------#
+
+# %%
 
 # Operations involving files #
 #----------------------------#
@@ -779,6 +781,7 @@ def remove_files_by_globstr(file_strings,
         for file in string_allfiles:
             os.remove(file)
 
+# %%
 
 # Operations involving directories #
 #----------------------------------#
@@ -828,8 +831,10 @@ def rsync(source_paths,
         arg_tuple_rsync = (mode, sp, dp)
         
         rsync_command = format_string(rsync_command_prefmt, arg_tuple_rsync)
-        exec_shell_command(rsync_command)
-    
+        
+        process_exit_info = run_system_command(rsync_command, encoding="utf-8")
+        print_exit_info(process_exit_info)
+            
 
 def move_entire_directories(directories, destination_directories):
     
@@ -925,7 +930,9 @@ def copy_entire_directories(directories,
             
             for dirc in directories:
                 for dd in destination_directories:
-                    exec_shell_command(format_string(cp_command_str, (dirc, dd)))
+                    process_exit_info = \
+                    run_system_command(format_string(cp_command_str, (dirc, dd)), encoding="utf-8")
+                    print_exit_info(process_exit_info)
                         
         elif isinstance(directories, list)\
         and isinstance(destination_directories, list)\
@@ -939,22 +946,38 @@ def copy_entire_directories(directories,
                                  "are not of the same length.")
             else:
                 for dirc, dd in zip(directories, destination_directories):
-                    exec_shell_command(format_string(cp_command_str, (dirc, dd)))
+                    process_exit_info = \
+                    run_system_command(format_string(cp_command_str, 
+                                                     (dirc, dd)),
+                                       encoding="utf-8")
+                    print_exit_info(process_exit_info)
                     
         elif isinstance(directories, list)\
         and not isinstance(destination_directories, list):
             for dirc in directories:
-                exec_shell_command(format_string(cp_command_str, (dirc, 
-                                                              destination_directories)))
+                process_exit_info = \
+                run_system_command(format_string(cp_command_str, 
+                                                 (dirc, destination_directories)),
+                                   encoding="utf-8")
+                print_exit_info(process_exit_info)
                     
         elif not isinstance(directories, list)\
         and isinstance(destination_directories, list):        
             for dd in destination_directories:
-                exec_shell_command(format_string(cp_command_str, (directories, dd)))
+                process_exit_info = \
+                run_system_command(format_string(cp_command_str, 
+                                                 (directories, dd)), 
+                                   encoding="utf-8")
+                print_exit_info(process_exit_info)
                     
         else:
-            exec_shell_command(format_string(cp_command_str, (directories,
-                                                          destination_directories)))
+            process_exit_info = \
+            run_system_command(format_string(cp_command_str, 
+                                             (directories, destination_directories)),
+                               encoding="utf-8")
+            print_exit_info(process_exit_info)
+
+# %%
 
 # Operations involving both files and directories #
 #-------------------------------------------------#
@@ -1016,7 +1039,10 @@ def rename_objects(relative_paths, renaming_relative_paths):
                 
     else:
         raise TypeError(objtype_error_str)
-                         
+        
+        
+# %%
+
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
@@ -1032,9 +1058,15 @@ arg_tuple_rename_objs = ("Files", "renaming file")
 # Preformatted strings #
 #----------------------#
 
+# System commands #
 cp_command_str = """cp -rv {}/* {}""" # TODO: 'bash' agindua saihes daiteke?
+
+# Errors #
 not_equal_length_error_str = """{} and {} lists are not of the same length."""
 objtype_error_str = "Both input arguments must either be strings or lists simultaneously."
+
+# Switch case dictionaries #
+#--------------------------#
 
 # 'rsync' command switch case dictionary #
 rsync_command_dict = {

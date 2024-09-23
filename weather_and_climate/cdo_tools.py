@@ -7,7 +7,7 @@
 
 from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories.file_and_directory_handler import rename_objects
-from pyutils.operative_systems.os_operations import exec_shell_command
+from pyutils.operative_systems.os_operations import run_system_command, print_exit_info
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.weather_and_climate import netcdf_handler 
@@ -146,7 +146,10 @@ def cdo_sellonlatbox(file_list,
         
         sellonlatbox_command = f"cdo sellonlatbox,{coordinate_list} "\
                                f"'{file}' {standardized_output_file_name}"
-        exec_shell_command(sellonlatbox_command)
+        process_exit_info = run_system_command(sellonlatbox_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
 
 
 def cdo_mergetime(file_list,
@@ -184,7 +187,12 @@ def cdo_mergetime(file_list,
     allfiles_string = flatten_content_to_string(file_list_selyear)
     mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                         f"{standardized_output_file_name}"
-    exec_shell_command(mergetime_command)
+    process_exit_info = run_system_command(mergetime_command,
+                                           capture_output=True,
+                                           encoding="utf-8")
+    print_exit_info(process_exit_info)
+    
+    
     
     
 def custom_cdo_mergetime(file_list,
@@ -201,8 +209,10 @@ def custom_cdo_mergetime(file_list,
         mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                             f"{temp_file}"
                      
-    exec_shell_command(mergetime_command)
-        
+    process_exit_info = run_system_command(mergetime_command,
+                                           capture_output=True,
+                                           encoding="utf-8")
+    print_exit_info(process_exit_info)
     
 def cdo_selyear(file_list,
                 selyear_string,
@@ -239,7 +249,10 @@ def cdo_selyear(file_list,
      
         selyear_command = f"cdo selyear,{selyear_string_cdo} "\
                           f"'{file}' {standardized_output_file_name}"
-        exec_shell_command(selyear_command)
+        process_exit_info = run_system_command(selyear_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
         
     
 def cdo_anomalies(input_file_full_time,
@@ -264,7 +277,10 @@ def cdo_anomalies(input_file_full_time,
  
     anomaly_calc_command = f"cdo sub '{input_file_freq_avg}' '{input_file_full_time}' "\
                            f"{standardized_output_file_name}"
-    exec_shell_command(anomaly_calc_command)
+    process_exit_info = run_system_command(anomaly_calc_command,
+                                           capture_output=True,
+                                           encoding="utf-8")
+    print_exit_info(process_exit_info)
 
 
 def cdo_shifttime(file_list,
@@ -273,8 +289,10 @@ def cdo_shifttime(file_list,
     for file in file_list:
         temp_file = add_str_to_path(file)
         shifttime_command = f"cdo shifttime,{shift_value} '{file}' '{temp_file}'"
-        exec_shell_command(shifttime_command)
-        
+        process_exit_info = run_system_command(shifttime_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
         rename_objects(temp_file, file)
         
         
@@ -295,8 +313,10 @@ def cdo_inttime(file_list,
         
         inttime_command = f"cdo inttime,{star_date_format},{time_step} "\
                           f"'{file}' '{temp_file}'"
-        exec_shell_command(inttime_command)
-        
+        process_exit_info = run_system_command(inttime_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
         rename_objects(temp_file, file)
   
     
@@ -324,7 +344,10 @@ def cdo_rename(file_list,
                                                      splitdelim1)
         chname_command = f"cdo chname,{var_file},{var_std} "\
                          f"'{file_name}' '{file_name_chname}'"
-        exec_shell_command(chname_command)
+        process_exit_info = run_system_command(chname_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
     
         # Rename the cdo output file name to the original one #
         rename_objects(file_name_chname, file_name)
@@ -353,8 +376,10 @@ def cdo_time_mean(input_file,
  
     time_mean_command = f"cdo -{calculation_method} '{input_file}' "\
                         f"{standardized_output_file_name}"
-    exec_shell_command(time_mean_command)
-    
+    process_exit_info = run_system_command(time_mean_command,
+                                           capture_output=True,
+                                           encoding="utf-8")
+    print_exit_info(process_exit_info)
 
 def cdo_remap(file_list,
               remap_method_str,
@@ -387,7 +412,10 @@ def cdo_remap(file_list,
         for file in file_list:            
             remap_command = f"cdo {remap_method_cdo},{remap_method_str} "\
                             f"'{file}' {standardized_output_file_name}" 
-            exec_shell_command(remap_command)
+            process_exit_info = run_system_command(remap_command,
+                                                   capture_output=True,
+                                                   encoding="utf-8")
+            print_exit_info(process_exit_info)
         
         
 def create_grid_header_file(output_file, **kwargs):
@@ -495,7 +523,10 @@ def cdo_periodic_statistics(nc_file_name, statistic, isclimatic, freq, season_st
         
     # Perform the computation #
     cdo_stat_command = f"cdo {statname} {nc_file_name} {output_file_name}"
-    exec_shell_command(cdo_stat_command)
+    process_exit_info = run_system_command(cdo_stat_command,
+                                           capture_output=True,
+                                           encoding="utf-8")
+    print_exit_info(process_exit_info)
 
     
 def calculate_periodic_deltas(projected_ncfile,
@@ -536,7 +567,10 @@ def calculate_periodic_deltas(projected_ncfile,
                                            
         delta_calc_command = format_string(delta_calc_command_dict.get(operator),
                                            arg_tuple_delta_calc)
-        exec_shell_command(delta_calc_command)
+        process_exit_info = run_system_command(delta_calc_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
     
 
 def apply_periodic_deltas(projected_ncfile,
@@ -579,7 +613,10 @@ def apply_periodic_deltas(projected_ncfile,
                                            
         delta_apply_command = format_string(delta_apply_command_dict.get(operator),
                                            arg_tuple_delta_apply)
-        exec_shell_command(delta_apply_command)
+        process_exit_info = run_system_command(delta_apply_command,
+                                               capture_output=True,
+                                               encoding="utf-8")
+        print_exit_info(process_exit_info)
         
     
 #--------------------------#
