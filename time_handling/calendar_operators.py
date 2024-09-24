@@ -244,6 +244,8 @@ def standardize_calendar(obj,
     # Handling xarray datasets or data arrays #
     #-----------------------------------------#
     
+    # !!! Created by ChatGPT following pandas.DataFrame logic
+    
     elif (obj_type in ["dataarray", "dataset"]\
           or (obj_type == "list" \
           and all(get_obj_type_str(element) in ["dataarray", "dataset"]) for element in obj)):
