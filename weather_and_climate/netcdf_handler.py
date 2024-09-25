@@ -17,7 +17,7 @@ import xarray as xr
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.pandas_data_frames.data_frame_handler import save2csv
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
-from pyutils.operative_systems.os_operations import run_system_command, print_exit_info
+from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.string_handler import information_output_formatters, string_handler
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
@@ -1275,7 +1275,7 @@ def grib2netcdf(grib_file_list, on_shell=False, option_str=None):
         process_exit_info = run_system_command(grib2netcdf_comm,
                                                capture_output=True,
                                                encoding="utf-8")
-        print_exit_info(process_exit_info)    
+        exit_info(process_exit_info)    
         
     else:   
         if isinstance(grib_file_list, str):

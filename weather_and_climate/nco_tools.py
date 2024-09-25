@@ -9,7 +9,7 @@ from pyutils.strings import information_output_formatters
 from pyutils.files_and_directories import file_and_directory_handler, file_format_tweaker
 
 from pyutils.parameters_and_constants.global_parameters import basic_four_rules
-from pyutils.operative_systems.os_operations import run_system_command, print_exit_info
+from pyutils.operative_systems.os_operations import run_system_command, exit_info
 
 # Create aliases #
 #----------------#
@@ -45,7 +45,7 @@ def modify_variable_units_and_values(file_list,
         process_exit_info = run_system_command(var_chunit_command,
                                                capture_output=True,
                                                encoding="utf-8")
-        print_exit_info(process_exit_info)
+        exit_info(process_exit_info)
 
         
         if operator not in basic_four_rules:
@@ -73,7 +73,7 @@ def modify_variable_units_and_values(file_list,
             process_exit_info = run_system_command(varval_mod_command,
                                                    capture_output=True,
                                                    encoding="utf-8")
-            print_exit_info(process_exit_info)            
+            exit_info(process_exit_info)            
             rename_objects(temp_file, file_name)
             
 
@@ -128,7 +128,7 @@ def modify_coordinate_values_by_threshold(file_list,
                 process_exit_info = run_system_command(dimval_mod_command,
                                                        capture_output=True,
                                                        encoding="utf-8")
-                print_exit_info(process_exit_info)                 
+                exit_info(process_exit_info)                 
                 rename_objects(temp_file, file_name)
             
 
@@ -182,7 +182,7 @@ def modify_coordinate_all_values(file_list,
                 process_exit_info = run_system_command(dimval_mod_command,
                                                        capture_output=True,
                                                        encoding="utf-8")
-                print_exit_info(process_exit_info)    
+                exit_info(process_exit_info)    
                 rename_objects(temp_file, file_name)
 
             

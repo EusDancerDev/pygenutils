@@ -14,7 +14,7 @@ import shutil
 #-----------------------#
 
 from pyutils.files_and_directories.file_and_directory_paths import posixpath_converter
-from pyutils.operative_systems.os_operations import print_exit_info, run_system_command
+from pyutils.operative_systems.os_operations import exit_info, run_system_command
 from pyutils.strings.information_output_formatters import format_string
 
 #------------------#
@@ -833,7 +833,7 @@ def rsync(source_paths,
         rsync_command = format_string(rsync_command_prefmt, arg_tuple_rsync)
         
         process_exit_info = run_system_command(rsync_command, encoding="utf-8")
-        print_exit_info(process_exit_info)
+        exit_info(process_exit_info)
             
 
 def move_entire_directories(directories, destination_directories):
@@ -932,7 +932,7 @@ def copy_entire_directories(directories,
                 for dd in destination_directories:
                     process_exit_info = \
                     run_system_command(format_string(cp_command_str, (dirc, dd)), encoding="utf-8")
-                    print_exit_info(process_exit_info)
+                    exit_info(process_exit_info)
                         
         elif isinstance(directories, list)\
         and isinstance(destination_directories, list)\
@@ -950,7 +950,7 @@ def copy_entire_directories(directories,
                     run_system_command(format_string(cp_command_str, 
                                                      (dirc, dd)),
                                        encoding="utf-8")
-                    print_exit_info(process_exit_info)
+                    exit_info(process_exit_info)
                     
         elif isinstance(directories, list)\
         and not isinstance(destination_directories, list):
@@ -959,7 +959,7 @@ def copy_entire_directories(directories,
                 run_system_command(format_string(cp_command_str, 
                                                  (dirc, destination_directories)),
                                    encoding="utf-8")
-                print_exit_info(process_exit_info)
+                exit_info(process_exit_info)
                     
         elif not isinstance(directories, list)\
         and isinstance(destination_directories, list):        
@@ -968,14 +968,14 @@ def copy_entire_directories(directories,
                 run_system_command(format_string(cp_command_str, 
                                                  (directories, dd)), 
                                    encoding="utf-8")
-                print_exit_info(process_exit_info)
+                exit_info(process_exit_info)
                     
         else:
             process_exit_info = \
             run_system_command(format_string(cp_command_str, 
                                              (directories, destination_directories)),
                                encoding="utf-8")
-            print_exit_info(process_exit_info)
+            exit_info(process_exit_info)
 
 # %%
 

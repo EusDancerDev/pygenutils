@@ -11,7 +11,7 @@
 from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
-from pyutils.operative_systems.os_operations import print_exit_info, run_system_command
+from pyutils.operative_systems.os_operations import exit_info, run_system_command
 from pyutils.strings import string_handler, information_output_formatters
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
@@ -59,8 +59,8 @@ def tweak_pages(file, cat_str, output_path="default"):
     zsh_pdftk_command = f"{essential_command_list[1]} '{file}' cat {cat_str} "\
                         f"output '{output_path}'"
     
-    process_exit_status = run_system_command(zsh_pdftk_command, encoding="utf-8")
-    print_exit_info(process_exit_status)
+    process_exit_info = run_system_command(zsh_pdftk_command, encoding="utf-8")
+    exit_info(process_exit_info)
 
 
 def pdf_file_tweaker(path, cat_out_obj):
@@ -219,8 +219,8 @@ def merge_pdf_files(in_path_list, out_path=None):
     arg_tuple_pdfunite = (all_in_paths_string, out_path)
     pdfunite_command = format_string(pdfunite_command_prefmt, arg_tuple_pdfunite)
     
-    process_exit_status = run_system_command(pdfunite_command, encoding="utf-8")
-    print_exit_info(process_exit_status)
+    process_exit_info = run_system_command(pdfunite_command, encoding="utf-8")
+    exit_info(process_exit_info)
     
         
 def pdf_file_compressor(in_path, out_path=None):
@@ -291,8 +291,8 @@ def pdf_file_compressor(in_path, out_path=None):
         ps2pdf_command\
         = f"{essential_command_list[0]} -dPDFSETTINGS=/ebook {ip} {op}"
     
-        process_exit_status = run_system_command(ps2pdf_command, encoding="utf-8")
-        print_exit_info(process_exit_status)
+        process_exit_info = run_system_command(ps2pdf_command, encoding="utf-8")
+        exit_info(process_exit_info)
         
   
 def check_essential_prog_installation():
@@ -314,7 +314,7 @@ def check_essential_prog_installation():
         process_exit_info = run_system_command(apt_cache_command,
                                                capture_output=True,
                                                encoding="utf-8")
-        print_exit_info(process_exit_info)
+        exit_info(process_exit_info)
         coincident_prog_num = process_exit_info.get("stdout")
         
         is_prog_installed = int(coincident_prog_num) >= 1
@@ -362,8 +362,8 @@ def eml2pdf(path_to_walk_into, delete_eml_files=False):
     for emlf in eml_files:
         eml2pdf_command = f"java -jar {converter_tool_path} '{emlf}'"
         
-        process_exit_status = run_system_command(eml2pdf_command, encoding="utf-8")
-        print_exit_info(process_exit_status)
+        process_exit_info = run_system_command(eml2pdf_command, encoding="utf-8")
+        exit_info(process_exit_info)
         
     if delete_eml_files:
         # Delete every email file #
@@ -413,8 +413,8 @@ def msg2pdf(path_to_walk_into,
     for msgf in msg_files:
         msg2eml_command = f"{essential_command_list[3]} '{msgf}'"
         
-        process_exit_status = run_system_command(msg2eml_command, encoding="utf-8")
-        print_exit_info(process_exit_status)
+        process_exit_info = run_system_command(msg2eml_command, encoding="utf-8")
+        exit_info(process_exit_info)
         
         
     # Convert email to PDF #
