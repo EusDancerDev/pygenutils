@@ -19,6 +19,7 @@ from pyutils.files_and_directories import file_and_directory_handler, file_and_d
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.string_handler import ext_adder, find_substring_index, get_obj_specs
 from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
+from pyutils.time_handling.time_formatters import parse_time_string
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
@@ -320,11 +321,11 @@ def insert_row_in_df(df, index_row, values=np.nan, reset_indices=False):
         
         if isinstance(index_row, str):
             if time_freq not in time_abbrs:
-                time_format = basic_time_format_strs["H"]
+                dt_format = basic_time_format_strs["H"]
             else:
-                time_format = basic_time_format_strs[time_freq]
+                dt_format = basic_time_format_strs[time_freq]
                 
-            index_row = datetime.datetime.strptime(index_row, time_format)
+            index_row = parse_time_string(index_row, dt_format)
         
         df.loc[index_row, :] = values
         df.sort_index()
