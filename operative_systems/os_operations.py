@@ -13,7 +13,9 @@ import os
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
 from pyutils.strings.string_handler import get_obj_type_str
-from pyutils.strings.information_output_formatters import print_format_string
+from pyutils.strings.information_output_formatters import format_string
+
+# %%
 
 #------------------#
 # Define functions #
@@ -27,7 +29,8 @@ def run_system_command(command,
                        _class="run",
                        capture_output=False,
                        return_output_name=False,
-                       encoding=None):
+                       encoding=None,
+                       shell=True):
    
     """
     Execute a system command using the specified module and class combination.
@@ -58,6 +61,9 @@ def run_system_command(command,
     encoding : str, optional, default None
         The encoding to use when decoding stdout and stderr. 
         If None, no decoding is applied.
+    shell : bool, optional
+        Only applicable if (module, _class) == ("subprocess", "run").
+        If True, the command will be executed through the shell. Default is True        
         
     Raises
     ------
@@ -84,7 +90,7 @@ def run_system_command(command,
     helper_func = command_helpers.get((module, _class))
     
     # Run the command via the helper
-    result = helper_func(command, capture_output=capture_output, encoding=encoding)
+    result = helper_func(command, capture_output=capture_output, encoding=encoding, shell=shell)
     
     return result
 
@@ -174,7 +180,7 @@ def os_popen_helper(command, capture_output):
     return dict(stdout=output, return_code=None)
 
 
-def subprocess_popen_helper(command, capture_output, encoding=None):
+def subprocess_popen_helper(command, capture_output, encoding):
     """
     Helper function to execute a command using subprocess.Popen.
 
@@ -184,7 +190,7 @@ def subprocess_popen_helper(command, capture_output, encoding=None):
         The system command to execute.
     capture_output : bool, optional
         If True, captures stdout, stderr, and stdin.
-    encoding : str, optional, default: None
+    encoding : str, optional
         The encoding to use when decoding stdout and stderr.
 
     Returns:
@@ -256,7 +262,7 @@ def subprocess_call_helper(command, capture_output):
     return dict(return_code=return_code)
 
 
-def subprocess_run_helper(command, capture_output, encoding=None):
+def subprocess_run_helper(command, capture_output, encoding, shell):
     """
     Helper function to execute a command using subprocess.run.
 
@@ -285,7 +291,7 @@ def subprocess_run_helper(command, capture_output, encoding=None):
     from subprocess import run, CalledProcessError
     
     # Execute the command and capture output
-    result = run(command, capture_output=capture_output, text=bool(encoding), shell=True)
+    result = run(command, capture_output=capture_output, text=bool(encoding), shell=shell)
     
     # Decode stdout/stderr if encoding is provided
     stdout = result.stdout.strip()
@@ -298,11 +304,12 @@ def subprocess_run_helper(command, capture_output, encoding=None):
     
     return dict(stdout=stdout, stderr=stderr, return_code=result.returncode)
 
+# %%
 
 # Auxiliary methods #
 #-------------------#
 
-def print_exit_info(process_exit_info_obj):
+def exit_info(process_exit_info_obj):
     """
     Print the exit information of a process.
 
@@ -320,8 +327,9 @@ def print_exit_info(process_exit_info_obj):
     Raises
     ------
     RuntimeError
-        If the command string is interpreted as a path and fails to execute,
-        raising a FileNotFoundError.
+    - If the command string is interpreted as a path and fails to execute,
+      in which case Python would originally rise a FileNotFoundError.
+    - If an error occurs during command execution, that is, the exit status in non-zero.
 
     Prints
     ------
@@ -338,13 +346,15 @@ def print_exit_info(process_exit_info_obj):
         raise RuntimeError("Command string interpreted as a path. "
                            "Please check the command.")
     else:
-        return_code = process_exit_info_obj.returncode
+        return_code = process_exit_info_obj.get("return_code")
         if return_code == 0:
             print("Process completed succesfully")
         else:
-            err_arg_tuple = (return_code, process_exit_info_obj.stderr)
-            print_format_string(nonzero_exit_status_str, err_arg_tuple)
+            err_arg_tuple = (return_code, process_exit_info_obj.get("stderr"))
+            raise RuntimeError("An error ocurred during command execution: "
+                               f"{format_string(nonzero_exit_status_str, err_arg_tuple)}")
 
+# %%
 
 #--------------------------#
 # Parameters and constants #
