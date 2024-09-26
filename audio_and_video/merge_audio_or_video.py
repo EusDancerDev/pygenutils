@@ -42,7 +42,7 @@ output_file_name = "output.{output_ext}"
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
-ZERO_PADDING = 1
+zero_padding = 1
 quality = 1
 
 #------------#
@@ -51,10 +51,10 @@ quality = 1
 
 merge_audio_or_video_files(media_file_list,
                            output_file_name=output_file_name,
-                           ZERO_PADDING=ZERO_PADDING,
+                           zero_padding=zero_padding,
                            quality=quality)
 
 # merge_audio_or_video_files(media_name_containing_file,
 #                            output_file_name=output_file_name,
-#                            ZERO_PADDING=ZERO_PADDING,
+#                            zero_padding=zero_padding,
 #                            quality=quality)
