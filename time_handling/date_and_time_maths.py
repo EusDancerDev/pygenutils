@@ -19,7 +19,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import select_array_elements
+from pyutils.arrays_and_lists.data_manipulation import select_elements
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.time_formatters import datetime_obj_converter,\
@@ -729,7 +729,7 @@ basic_math_opt_list = ["sum", "subtr"]
 # Time object output formatting options #
 time_output_format_options = ["default", "string", "time_only", "tuple"]
 date_output_format_options = \
-select_array_elements(time_output_format_options, [0,1,-1])
+select_elements(time_output_format_options, [0,1,-1])
 
 # Preformatted strings #
 #----------------------#

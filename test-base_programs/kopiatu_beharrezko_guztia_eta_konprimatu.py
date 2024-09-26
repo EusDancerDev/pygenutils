@@ -32,7 +32,7 @@ basic_value_data_type_converter = conversions.basic_value_data_type_converter
 flatten_content_to_string = conversions.flatten_content_to_string
 
 remove_elements = data_manipulation.remove_elements
-select_array_elements = patterns.select_array_elementss
+select_elements = patterns.select_elementss
 
 copy_files = file_and_directory_handler.copy_files
 remove_files_by_globstr = file_and_directory_handler.remove_files_by_globstr
@@ -161,7 +161,7 @@ if compress_copied_and_renamed_files:
     
     file_list_2rename_str = flatten_content_to_string(file_list_2rename)
     files_excluded_from_zipping\
-    = flatten_content_to_string(select_array_elements(file_list_cwd, del_file_idx))
+    = flatten_content_to_string(select_elements(file_list_cwd, del_file_idx))
     
     zip_command = f"zip {output_zip_file} {file_list_2rename_str} -x {files_excluded_from_zipping}"
     os.system(zip_command)

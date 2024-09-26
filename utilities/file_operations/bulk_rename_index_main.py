@@ -11,7 +11,7 @@ from pathlib import Path
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import select_array_elements
+from pyutils.arrays_and_lists.data_manipulation import select_elements
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
@@ -327,7 +327,7 @@ def reorder_objs(path,
              
     else:
         
-        obj_list_uneven_slice = select_array_elements(obj_list_uneven,
+        obj_list_uneven_slice = select_elements(obj_list_uneven,
                                                       index_range)   
         
         if starting_number == "default":

@@ -231,7 +231,7 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
 # Array indexing #
 #----------------#
 
-def select_array_elements(array, idx2access):
+def select_elements(array, idx2access):
     """
     Function to select elements from an array, list, or dict.
     Supports multidimensional NumPy arrays with dimensions up to 3.
@@ -259,26 +259,26 @@ def select_array_elements(array, idx2access):
     Examples
     --------
     # Selecting from a 1D list
-    >>> select_array_elements([10, 20, 30, 40, 50], [1, 3])
+    >>> select_elements([10, 20, 30, 40, 50], [1, 3])
     [20, 40]
     
     # Selecting from a 1D NumPy array
-    >>> select_array_elements(np.array([10, 20, 30, 40, 50]), [1, 3])
+    >>> select_elements(np.array([10, 20, 30, 40, 50]), [1, 3])
     array([20, 40])
     
     # Selecting from a 2D NumPy array
-    >>> select_array_elements(np.array([[10, 20, 30], [40, 50, 60], 
+    >>> select_elements(np.array([[10, 20, 30], [40, 50, 60], 
                                         [70, 80, 90]]), [[0, 1], [2, 2]])
     array([20, 90])
     
     # Selecting from a 3D NumPy array
-    >>> select_array_elements(np.array([[[10, 20], [30, 40]],
+    >>> select_elements(np.array([[[10, 20], [30, 40]],
                                         [[50, 60], [70, 80]]]),
                               [[0, 1, 0], [1, 0, 1]])
     array([30, 60])
     
     # Selecting from a dictionary
-    >>> select_array_elements({'a': 1, 'b': 2, 'c': 3}, ['a', 'c'])
+    >>> select_elements({'a': 1, 'b': 2, 'c': 3}, ['a', 'c'])
     {'a': 1, 'c': 3}
     """
     
@@ -460,7 +460,7 @@ def approach_value_in_array(array, given_value):
         if isinstance(value_approach_idx, list):
             value_approach_idx = value_approach_idx[0]
             
-        value_approach = select_array_elements(array, value_approach_idx)
+        value_approach = select_elements(array, value_approach_idx)
             
     return (value_approach, value_approach_idx)
 

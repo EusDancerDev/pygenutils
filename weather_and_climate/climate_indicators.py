@@ -24,7 +24,7 @@ from pyutils.weather_and_climate import climate_statistics, \
 # Create aliases #
 #----------------#
 
-select_array_elements = data_manipulation.select_array_elements
+select_elements = data_manipulation.select_elements
 sort_rows_by_column = data_manipulation.sort_rows_by_column
 remove_elements = data_manipulation.remove_elements
 
