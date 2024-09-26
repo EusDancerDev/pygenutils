@@ -10,7 +10,7 @@ Created on Fri Nov  3 21:19:13 2023
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import select_from_array_element
+from pyutils.arrays_and_lists.data_manipulation import select_from_array_element
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
