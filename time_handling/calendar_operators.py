@@ -15,7 +15,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import count_unique_type_objects
+from pyutils.arrays_and_lists.data_manipulation import count_unique_type_objects
 from pyutils.pandas_data_frames import data_frame_handler
 from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
 from pyutils.strings.string_handler import modify_obj_specs
