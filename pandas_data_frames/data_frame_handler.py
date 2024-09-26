@@ -5,16 +5,14 @@
 # Import modules #
 #----------------#
 
-import datetime
-
-import numpy as np
+from numpy import array, char, unique
 import pandas as pd
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import find_duplicated_elements
+from pyutils.arrays_and_lists.data_manipulation import find_duplicated_elements
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.string_handler import ext_adder, find_substring_index, get_obj_specs
@@ -90,7 +88,7 @@ def infer_time_frequency(df_or_index):
 def infer_full_period_of_time(df):
     
     date_key = find_date_key(df)
-    years = np.unique(df[date_key].dt.year)
+    years = unique(df[date_key].dt.year)
     full_period = f"{years[0]-years[-1]}"
     
     return full_period
@@ -113,7 +111,7 @@ def find_date_key(df):
     """
     
     try:
-        df_cols = np.char.lower(df.columns.tolist())    
+        df_cols = char.lower(df.columns.tolist())    
     except AttributeError:
         input_obj_type = get_obj_type_str(df)
         raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
@@ -256,7 +254,7 @@ def insert_column_in_df(df, index_col, column_name, values):
     df.insert(index_col, column_name, values)
     
     
-def insert_row_in_df(df, index_row, values=np.nan, reset_indices=False):
+def insert_row_in_df(df, index_row, values=float('nan'), reset_indices=False):
     
     """
     Function that inserts a row on a simple, non multi-index
@@ -287,7 +285,7 @@ def insert_row_in_df(df, index_row, values=np.nan, reset_indices=False):
               
     values : single value or list or numpy.ndarray or pandas.Series
         The type of the value(s) is considered as irrelevant.
-        Default value is a row of NaNs.
+        Default value is NaN.
     """
     
     idx = df.index
@@ -1315,7 +1313,7 @@ def merge_csv_files(input_file_list,
             file_df_shape = file_df.shape
             ind_file_df_nrow_list.append(file_df_shape[0])
             
-        ind_file_df_nrow_unique = np.unique(ind_file_df_nrow_list)
+        ind_file_df_nrow_unique = unique(ind_file_df_nrow_list)
         lifdnu = len(ind_file_df_nrow_unique)
         
         # If not the case, warn respectively and prompt to merge anyway #
@@ -1582,7 +1580,7 @@ def df_to_structured_array(df):
     """
     
     records = df.to_records(index=False)
-    data = np.array(records, dtype=records.dtype.descr)
+    data = array(records, dtype=records.dtype.descr)
     return data
 
 
