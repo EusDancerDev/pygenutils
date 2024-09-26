@@ -47,120 +47,115 @@ def periodic_statistics(obj, statistic, freq,
                         season_months=None):
     
     """
-    Calculates the basic statistics (NOT CLIMATOLOGIES)
-    of the data for a certain time-frequency.
-    
+    Calculates basic statistics (not climatologies) for the given data 
+    object over a specified time frequency.
+
+    This function supports data analysis on Pandas DataFrames and 
+    xarray objects, allowing for grouping by different time frequencies 
+    such as yearly, quarterly, monthly, etc. 
+
     Parameters
     ----------
     obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray
-          The object to calculate statistics for.
-    statistic : {"max", "min", "mean", "std", "sum"}
-          The statistic to calculate.
-    freq : str
-          The frequency for resampling or grouping the data.
-          For example, "D" stands for daily data, "M" for monthly and so on.
-          See https://pandas.pydata.org/docs/user_guide/timeseries.html#timeseries-offset-aliases
-          for more details.
-    groupby_dates : bool
-          Available only if obj is xarray.Dataset 
-          or xarray.DataArray.
-          -----
-          The standard procedure to calculate time-statistics
-          is to group the dates according to a time-frequency 
-          (which technically would be to make an 'upsampling').
-          For example, if a data set which contains 30 years expressed
-          in an hourly basis and daily mean is required to compute,
-          then the result would be another data set with the equal 30 years
-          but on a daily basis.
-          -----
-          However, xarray.Dataset or xarray.DataArray includes
-          a resampling method that groups every time-frequency of all years.
-          Taking the previous example, the result would be a data set with
-          31 time steps, because it takes every day 1, day 2, etc. of all years.
-          These are not climatological values but 'groupby' values, which
-          is not that common to compute.
-          This functions incorporates this option.
-    drop_date_idx_col : bool
-          Whether to drop the date index column. Default is False.
-          If True, the dates will be kept, but the corresponding array
-          will be an index, instead of a column.
-          Defaults to False.
-    season_months : list of integers
-          List of three months defining a season, used if 'freq' is "SEAS".
-          Defaults to None.
+        The data object for which statistics are to be calculated.
     
+    statistic : {"max", "min", "mean", "std", "sum"}
+        The statistical measure to compute.
+    
+    freq : str
+        The frequency for resampling or grouping the data.
+        For example, "D" for daily, "M" for monthly, etc.
+        Refer to the Pandas documentation for more details 
+        on time frequency aliases.
+    
+    groupby_dates : bool, optional
+        Only applicable for xarray.Dataset or xarray.DataArray.
+        If True, the function will group the dates according to 
+        the specified frequency.
+    
+    drop_date_idx_col : bool, optional
+        Whether to drop the date index column from the results. 
+        Default is False, retaining the dates in the output.
+    
+    season_months : list of int, optional
+        A list of three integers representing the months of a season,
+        used if 'freq' is "SEAS". Must contain exactly three months.
+
     Returns
     -------
     pandas.DataFrame or xarray object
-        The calculated statistics.
+        The computed statistics as a DataFrame or xarray object,
+        depending on the type of input data.
+
+    Raises
+    ------
+    ValueError
+        If the specified statistic is unsupported, the frequency is 
+        invalid, or if the season_months list does not contain exactly 
+        three integers.
+
+    Notes
+    -----
+    - The function is designed to handle various data structures
+      and performs input validation to ensure proper usage.
+    - Seasonality can be analyzed by providing a list of months 
+      that define a season, which is particularly useful for seasonal
+      frequency analysis.
     """
     
-    # Quality control of parameters #     
+    # Constants
+    statistics = ["max", "min", "mean", "std", "sum"]
+    freq_abbrs1 = ["Y", "SEAS", "M", "D", "H", "min", "S"]
+
+    # Validate statistic
     if statistic not in statistics:
-        arg_tuple_stats1 = ("statistic", statistics)
-        raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stats1))
- 
-    if (get_obj_type_str(obj) == "DataFrame"):
-        date_key = find_date_key(obj)
-        
-        if freq not in freq_abbrs1 and season_months is None:
-            raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stats))
-                
-        elif freq == freq_abbrs1[1] and season_months is None:
-            raise ValueError(season_month_fmt_error_str)
-                
-        elif freq == freq_abbrs1[1] and season_months is not None:
-            if len(season_months) != 3:
-                raise ValueError(season_length_warning_str)
-            else:                
-                freq = season_time_freq_dict[season_months[-1]]
-                
-        else:        
-            grouper = pd.Grouper(key=date_key, freq=freq)
-            df_groupby = obj.groupby({grouper})
-            df_stat = \
-            getattr(df_groupby, statistic)().reset_index(drop=drop_date_idx_col)
-            return df_stat
-    
-        
-    elif ((get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray")):
-        date_key = find_time_dimension(obj)
-        
-        if groupby_dates:
-            if freq not in time_freqs1 and season_months is None:
-                arg_tuple_stats3 = ("time-frecuency", time_freqs1)
-                raise ValueError(unsupported_option_error_str, arg_tuple_stats3)
-            
-            elif freq == time_freqs1[1] and season_months is None:
-                raise ValueError(season_month_fmt_error_str)
-                    
-            elif freq == time_freqs1[1] and season_months is not None:
-                if len(season_months) != 3:
-                    raise ValueError(season_length_warning_str)
-                else:
-                    freq = season_time_freq_dict[season_months[-1]]
-                    obj_groupby = obj.groupby(f"{date_key}.dt.{freq}")
-            
-        else:
-            if freq not in freq_abbrs1 and season_months is None:
-                raise ValueError(unsupported_option_error_str, arg_tuple_stats)
-            
-            elif freq == freq_abbrs1[1] and season_months is None:
-                raise ValueError(season_month_fmt_error_str)
-                    
-            elif freq == freq_abbrs1[1] and season_months is not None:
-                if len(season_months) != 3:
-                    raise ValueError(season_length_warning_str)
-                else:
-                    freq = season_time_freq_dict[season_months[-1]]
-                    obj_groupby = obj.resample({date_key: freq})
-            
-        obj_stat = getattr(obj_groupby, statistic)()
-        return obj_stat
-            
-    else:
+        raise ValueError(format_string(unsupported_option_error_str, ("statistic", statistics)))
+
+    # Determine object type
+    obj_type = get_obj_type_str(obj).lower()
+    if obj_type not in ["dataframe", "dataset", "dataarray"]:
         raise ValueError("Cannot operate with this data type.")
-  
+    
+    # GroupBy Logic
+    if obj_type == "dataframe":
+        date_key = find_date_key(obj)
+    else:
+        date_key = find_time_dimension(obj)
+    
+    if obj_type in ["dataset", "dataarray"]:
+        groupby_key = f"{date_key}.dt.{freq}"
+    else:
+        groupby_key = date_key
+    
+    if groupby_dates and obj_type in ["dataset", "dataarray"]:
+        # Validation and Grouping Logic
+        if freq not in time_freqs1 or (freq == time_freqs1[1] and season_months is None):
+            raise ValueError(season_month_fmt_error_str)
+        if season_months and len(season_months) != 3:
+            raise ValueError(season_length_warning_str)
+        if season_months:
+            freq = season_time_freq_dict[season_months[-1]]
+        obj_groupby = obj.groupby(groupby_key)
+    else:
+        # Handle DataFrame Grouping
+        if freq not in freq_abbrs1 or (freq == freq_abbrs1[1] and season_months is None):
+            raise ValueError(unsupported_option_error_str)
+        if season_months and len(season_months) != 3:
+            raise ValueError(season_length_warning_str)
+        if season_months:
+            freq = season_time_freq_dict[season_months[-1]]
+            obj_groupby = obj.resample({date_key: freq})
+        else:
+            obj_groupby = pd.Grouper(key=date_key, freq=freq)
+
+
+    # Calculate Statistics
+    result = getattr(obj_groupby, statistic)()
+    if obj_type == "dataframe":
+        result.reset_index(drop=drop_date_idx_col)
+    else:
+        return result
+    
 
 def climat_periodic_statistics(obj,
                                statistic,
@@ -174,8 +169,7 @@ def climat_periodic_statistics(obj,
     
     Parameters
     ----------
-    obj : pandas.DataFrame, xarray.Dataset 
-        or xarray.DataArray.
+    obj : pandas.DataFrame, xarray.Dataset or xarray.DataArray.
     statistic : {"max", "min", "mean", "std", "sum"}
         The statistic to calculate.
     time_freq : str
@@ -221,13 +215,18 @@ def climat_periodic_statistics(obj,
     # Operations #
     #------------#    
     
+    # Determine object type #
+    #-#-#-#-#-#-#-#-#-#-#-#-#
+    
+    obj_type = get_obj_type_str(obj).lower()
+    
     # Identify the time dimension #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
     
-    if get_obj_type_str(obj) == "DataFrame":
+    if obj_type == "dataframe":
         date_key = find_date_key(obj)
         
-    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):    
+    elif obj_type in ["dataset", "dataarray"]:
         date_key = find_time_dimension(obj)               
     
     # Calculate statistical climatologies #
@@ -250,12 +249,11 @@ def climat_periodic_statistics(obj,
     else:
         latest_year = years[-1]
 
-    if get_obj_type_str(obj) == "DataFrame":
+    if obj_type == "dataframe":
         
         # Define the climatologic statistical data frame #
-        ncols_obj = len(obj.columns)
-        climat_obj_cols = [date_key] + [obj.columns[i]+"_climat" 
-                                        for i in range(1, ncols_obj)]
+        climat_obj_cols = \
+        [date_key] + [obj.columns[i]+"_climat" for i in range(1, len(obj.columns))]
                 
         if time_freq == "hourly":  
             climat_vals = []
@@ -351,7 +349,7 @@ def climat_periodic_statistics(obj,
         obj_climat = pd.DataFrame(climat_arr, columns=climat_obj_cols)
         obj_climat.iloc[:, 0] = datetime_obj_converter(obj_climat.iloc[:, 0], "pandas")        
         
-    elif (get_obj_type_str(obj) == "Dataset" or get_obj_type_str(obj) == "DataArray"):          
+    elif obj_type in ["dataset", "dataarray"]:
         if time_freq == "hourly":
             
             # Define the time array #
@@ -398,25 +396,19 @@ def climat_periodic_statistics(obj,
             # 'time' dimension renaming and its assignment #
             try:
                 # Rename the analogous dimension of 'time' on dimension list #
-                obj_climat\
-                = obj_climat.rename_dims({occ_time_name_temp : occ_time_name})
-                   
+                obj_climat = obj_climat.rename_dims({occ_time_name_temp : occ_time_name})
             except:
                 # Rename the analogous dimension name of 'time' to standard #
-                obj_climat\
-                = obj_climat.rename({occ_time_name_temp : occ_time_name})
+                obj_climat = obj_climat.rename({occ_time_name_temp : occ_time_name})
                 
             try:
                 # Rename the analogous dimension of 'time' on dimension list #
-                obj_climat\
-                = obj_climat.swap_dims({occ_time_name_temp : occ_time_name})
+                obj_climat = obj_climat.swap_dims({occ_time_name_temp : occ_time_name})
                 
             except:
                 try:
                     # Rename the analogous dimension name of 'time' to standard #
-                    obj_climat\
-                    = obj_climat.swap_dims({occ_time_name_temp : occ_time_name})
-                    
+                    obj_climat = obj_climat.swap_dims({occ_time_name_temp : occ_time_name})
                 except:
                     pass   
                     
@@ -424,10 +416,10 @@ def climat_periodic_statistics(obj,
             
             if keep_std_dates:
                         
-                seas_end_monthDay\
+                seas_end_dayofmonth\
                 = calendar.monthcalendar(latest_year, season_months[-1])[-1][-1]
                 climat_dates\
-                = pd.Timestamp(latest_year, season_months[-1], seas_end_monthDay)
+                = pd.Timestamp(latest_year, season_months[-1], seas_end_dayofmonth)
                 
                 occ_time_name = date_key
                 
@@ -522,22 +514,24 @@ def calculate_and_apply_deltas(observed_series,
         arg_tuple_delta2 = ("preference type", preferences_over)
         raise ValueError(format_string(unsupported_option_error_str, arg_tuple_delta2))
     
+    # Determine object type #
+    #-----------------------#
+    
+    obj_type_observed = get_obj_type_str(observed_series).lower()
+    obj_type_reanalysis = get_obj_type_str(reanalysis_series).lower()
+    
     # Identify the time dimension #
     #-----------------------------#
     
-    if (get_obj_type_str(observed_series) == "DataFrame"
-    and get_obj_type_str(reanalysis_series) == "DataFrame"):
-      
+    if (obj_type_observed, obj_type_reanalysis ) == ("dataframe", "dataframe"):      
         date_key = find_date_key(observed_series)
         date_key_rean = find_date_key(observed_series)
 
         if date_key != date_key_rean:
             reanalysis_series.columns = [date_key] + reanalysis_series.columns[1:]
 
-    elif (get_obj_type_str(observed_series) == "Dataset"
-          and get_obj_type_str(reanalysis_series) == "Dataset")\
-        or (get_obj_type_str(observed_series) == "DataArray" 
-            and get_obj_type_str(reanalysis_series) == "DataArray"):
+    elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+        or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
         
         date_key = find_time_dimension(observed_series)
         date_key_rean = find_time_dimension(observed_series)
@@ -603,8 +597,7 @@ def calculate_and_apply_deltas(observed_series,
         # Calculate deltas #
         #------------------#
     
-        if (get_obj_type_str(observed_series) == "DataFrame"
-        and get_obj_type_str(reanalysis_series) == "DataFrame"):
+        if ((obj_type_observed, obj_type_reanalysis) == ("dataframe", "dataframe")):
             
             if preference_over == "observed":
                 delta_cols = observed_series.columns[1:]
@@ -627,10 +620,8 @@ def calculate_and_apply_deltas(observed_series,
                                   axis=1)
             
         
-        elif (get_obj_type_str(observed_series) == "Dataset"
-              and get_obj_type_str(reanalysis_series) == "Dataset")\
-            or (get_obj_type_str(observed_series) == "DataArray" 
-                and get_obj_type_str(reanalysis_series) == "DataArray"):
+        elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+            or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
                 
             if preference_over == "observed":
                 
@@ -657,16 +648,11 @@ def calculate_and_apply_deltas(observed_series,
             
         else:
             
-            if (get_obj_type_str(observed_series) == "DataFrame"
-            and get_obj_type_str(reanalysis_series) == "DataFrame"):  
-                
+            if ((obj_type_observed, obj_type_reanalysis) == ("DataFrame", "DataFrame")): 
                 freq_abbr = pd.infer_freq(obs_climat[date_key])
                 
-            elif (get_obj_type_str(observed_series) == "Dataset"
-                  and get_obj_type_str(reanalysis_series) == "Dataset")\
-                or (get_obj_type_str(observed_series) == "DataArray" 
-                    and get_obj_type_str(reanalysis_series) == "DataArray"):
-                    
+            elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+                or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
                 freq_abbr = xr.infer_freq(obs_climat[date_key])
         
         if preference_over == "observed":
@@ -694,9 +680,7 @@ def calculate_and_apply_deltas(observed_series,
                 )
             print_format_string(delta_application_info_str, arg_tuple_delta5)
             
-            if (get_obj_type_str(observed_series) == "DataFrame"
-            and get_obj_type_str(reanalysis_series) == "DataFrame"): 
-                
+            if ((obj_type_observed, obj_type_reanalysis) == ("DataFrame", "DataFrame")):    
                 if delta_type == "absolute":    
                     obj_aux.loc[obj2correct.index, delta_cols]\
                     += delta_obj.loc[:, delta_cols].values
@@ -704,11 +688,8 @@ def calculate_and_apply_deltas(observed_series,
                     obj_aux.loc[obj2correct.index, delta_cols]\
                     *= delta_obj.loc[:, delta_cols].values
                     
-            elif (get_obj_type_str(observed_series) == "Dataset"
-                  and get_obj_type_str(reanalysis_series) == "Dataset")\
-                or (get_obj_type_str(observed_series) == "DataArray" 
-                    and get_obj_type_str(reanalysis_series) == "DataArray"):
-                    
+            elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+                or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
                 if delta_type == "absolute":
                     obj_aux.loc[obj2correct.time] += delta_obj.values
                 else:
@@ -731,9 +712,7 @@ def calculate_and_apply_deltas(observed_series,
                     )
                 print_format_string(delta_application_info_str, arg_tuple_delta6)
                 
-                if (get_obj_type_str(observed_series) == "DataFrame"
-                and get_obj_type_str(reanalysis_series) == "DataFrame"):
-                
+                if ((obj_type_observed, obj_type_reanalysis) == ("DataFrame", "DataFrame")):
                     if delta_type == "absolute":
                         obj_aux.loc[obj2correct.index, delta_cols]\
                         += obj_delta.loc[:, delta_cols].values
@@ -741,11 +720,9 @@ def calculate_and_apply_deltas(observed_series,
                         obj_aux.loc[obj2correct.index, delta_cols]\
                         *= obj_delta.loc[:, delta_cols].values
                         
-                elif (get_obj_type_str(observed_series) == "Dataset"
-                      and get_obj_type_str(reanalysis_series) == "Dataset")\
-                    or (get_obj_type_str(observed_series) == "DataArray" 
-                        and get_obj_type_str(reanalysis_series) == "DataArray"):
-                        
+                elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+                    or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
+
                     if delta_type == "absolute":
                         obj_aux.loc[obj2correct.time] += obj_delta.values
                     else:
@@ -774,9 +751,7 @@ def calculate_and_apply_deltas(observed_series,
                             )
                         print_format_string(delta_application_info_str, arg_tuple_delta7)
                         
-                        if (get_obj_type_str(observed_series) == "DataFrame"
-                        and get_obj_type_str(reanalysis_series) == "DataFrame"):
-                        
+                        if ((obj_type_observed, obj_type_reanalysis) == ("DataFrame", "DataFrame")):
                             if delta_type == "absolute":
                                 obj_aux.loc[obj2correct.index, delta_cols] \
                                 += obj_delta.loc[:, delta_cols].values
@@ -785,10 +760,8 @@ def calculate_and_apply_deltas(observed_series,
                                 obj_aux.loc[obj2correct.index, delta_cols] \
                                 *= obj_delta.loc[:, delta_cols].values
                                 
-                        elif (get_obj_type_str(observed_series) == "Dataset"
-                              and get_obj_type_str(reanalysis_series) == "Dataset")\
-                            or (get_obj_type_str(observed_series) == "DataArray" 
-                                and get_obj_type_str(reanalysis_series) == "DataArray"):
+                        elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+                            or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
                                 
                             if delta_type == "absolute":
                                 obj_aux.loc[obj2correct.time] += obj_delta.values
@@ -823,9 +796,7 @@ def calculate_and_apply_deltas(observed_series,
                                 )
                             print_format_string(delta_application_info_str, arg_tuple_delta8)
                             
-                            if (get_obj_type_str(observed_series) == "DataFrame"
-                            and get_obj_type_str(reanalysis_series) == "DataFrame"):
-                            
+                            if ((obj_type_observed, obj_type_reanalysis) == ("DataFrame", "DataFrame")):
                                 if delta_type == "absolute":
                                     obj_aux.loc[obj2correct.index, delta_cols] \
                                     += obj_delta.loc[:, delta_cols].values
@@ -833,11 +804,8 @@ def calculate_and_apply_deltas(observed_series,
                                     obj_aux.loc[obj2correct.index, delta_cols] \
                                     *= obj_delta.loc[:, delta_cols].values
                                     
-                            elif (get_obj_type_str(observed_series) == "Dataset"
-                                  and get_obj_type_str(reanalysis_series) == "Dataset")\
-                                or (get_obj_type_str(observed_series) == "DataArray" 
-                                    and get_obj_type_str(reanalysis_series) == "DataArray"):
-                                
+                            elif ((obj_type_observed, obj_type_reanalysis) == ("dataset", "dataset"))\
+                                or ((obj_type_observed, obj_type_reanalysis) == ("dataarray", "dataarray")):
                                 if delta_type == "absolute":
                                     obj_aux.loc[obj2correct.time] += obj_delta.values
                                 else:
@@ -879,14 +847,9 @@ def window_sum(x, N):
     
     if dims == 1:
         try:
-            sum_window = np.convolve(x,
-                                     np.ones(N, np.int64),
-                                     mode="valid")
-            
+            sum_window = np.convolve(x, np.ones(N, np.int64), mode="valid")
         except:
-            sum_window = np.convolve(x,
-                                     np.ones(N, np.float64),
-                                     mode="valid")
+            sum_window = np.convolve(x, np.ones(N, np.float64), mode="valid")
 
     elif dims > 1:   
         number_of_ones = np.append(N, np.repeat(1, dims-1))
@@ -928,9 +891,7 @@ def moving_average(x, N):
     moving_average : numpy.ndarray
         The moving average of the array.
     """
-    
-    moving_average = window_sum(x, N) / N
-    return moving_average
+    return window_sum(x, N) / N
     
 #--------------------------#
 # Parameters and constants #
