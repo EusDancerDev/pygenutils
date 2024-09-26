@@ -12,7 +12,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_maths import approach_value_in_array
+from pyutils.arrays_and_lists.maths import approach_value_in_array
 from pyutils.time_handling.calendar_attibute_operators import week_range
 
 #-------------------------#
