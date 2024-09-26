@@ -19,6 +19,7 @@ import os
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.strings import information_output_formatters
 from pyutils.time_handling.time_formatters import parse_time_string
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -37,7 +38,7 @@ format_string = information_output_formatters.format_string
 def merge_audio_and_video_files(audio_file_list_or_file, 
                                 video_file_list_or_file, 
                                 output_file_list=None, 
-                                ZERO_PADDING=1, 
+                                zero_padding=1, 
                                 quality=1):
     """
     Merges audio and video files into a single output file for each pair.
@@ -50,7 +51,7 @@ def merge_audio_and_video_files(audio_file_list_or_file,
         A list of video file paths or a path to a text file containing video file names.
     output_file_list : list, optional
         A list of output file names. If not provided, default names will be generated.
-    ZERO_PADDING : int, optional
+    zero_padding : int, optional
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1.
     quality : int, optional
@@ -69,6 +70,10 @@ def merge_audio_and_video_files(audio_file_list_or_file,
     
     # Helper functions #
     #-#-#-#-#-#-#-#-#-#-
+    
+    # Get all arguments #
+    all_arg_names = get_caller_method_args()
+    zero_pad_pos = all_arg_names.index("zero_padding")
 
     # Helper function to load file list from external file if necessary
     def load_file_list(file_or_list):
@@ -110,8 +115,9 @@ def merge_audio_and_video_files(audio_file_list_or_file,
             raise ValueError("Output file name list must match the length of input lists.")
         
     # Zero-padding
-    if not isinstance(ZERO_PADDING, int) or ZERO_PADDING < 1:
-        raise ValueError(f"ZERO_PADDING must be an integer >= 1, got {ZERO_PADDING}.")
+    if not isinstance(zero_padding, int) or zero_padding < 1:
+        raise ValueError(f"'zero_padding' (number {zero_pad_pos}) "
+                         f"must be an integer >= 1, got {zero_padding}.")
         
     # Quality input 
     if not isinstance(quality, int) or not (1 <= quality <= 10):
@@ -127,7 +133,7 @@ def merge_audio_and_video_files(audio_file_list_or_file,
     # Generate default output file names if not provided
     if output_file_list is None:
         output_file_list = [
-            f"merged_video_{str(i + 1).zfill(ZERO_PADDING)}"
+            f"merged_video_{str(i + 1).zfill(zero_padding)}"
             for i in range(len(video_file_list))
         ]
     
@@ -264,7 +270,7 @@ def cut_media_files(input_file_list_or_file,
                     start_time_list,
                     end_time_list, 
                     output_file_list=None,
-                    ZERO_PADDING=1,
+                    zero_padding=1,
                     quality=1):
     """
     Cuts media files (audio or video) based on specified start and end times.
@@ -281,7 +287,7 @@ def cut_media_files(input_file_list_or_file,
         If any set to 'end', cutting proceeds until the end of the file.
     output_file_list : list, optional
         A list of output file names. If not provided, default names will be generated.
-    ZERO_PADDING : int, optional
+    zero_padding : int, optional
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1.
     quality : int, optional
@@ -350,8 +356,8 @@ def cut_media_files(input_file_list_or_file,
                 validate_time_format(end_time)
 
     # Zero-padding
-    if not isinstance(ZERO_PADDING, int) or ZERO_PADDING < 1:
-        raise ValueError(f"ZERO_PADDING must be an integer >= 1, got {ZERO_PADDING}.")
+    if not isinstance(zero_padding, int) or zero_padding < 1:
+        raise ValueError(f"zero_padding must be an integer >= 1, got {zero_padding}.")
         
     # Quality input 
     if not isinstance(quality, int) or not (1 <= quality <= 10):
@@ -363,7 +369,7 @@ def cut_media_files(input_file_list_or_file,
     
     # If output file list is not provided, create default names
     if output_file_list is None:
-        output_file_list = [f"cut_file_{str(i + 1).zfill(ZERO_PADDING)}.mp4" 
+        output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
                             for i in range(len(file_list))]
     
     # Try multiple ffmpeg cut commands with different syntax to handle errors
