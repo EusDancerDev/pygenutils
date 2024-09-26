@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
+from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories.file_and_directory_handler import rename_objects
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.parameters_and_constants import global_parameters
