@@ -21,18 +21,18 @@ import time
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import array_conversions, array_data_manipulation, array_patterns
+from pyutils.arrays_and_lists import padding, data_manipulation, patterns
 from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
 from pyutils.strings.string_handler import find_substring_index
 
 # Create aliases #
 #----------------#
 
-basic_value_data_type_converter = array_conversions.basic_value_data_type_converter
-flatten_content_to_string = array_conversions.flatten_content_to_string
+basic_value_data_type_converter = padding.basic_value_data_type_converter
+flatten_content_to_string = padding.flatten_content_to_string
 
-remove_elements = array_data_manipulation.remove_elements
-select_array_elements = array_patterns.select_array_elementss
+remove_elements = data_manipulation.remove_elements
+select_array_elements = patterns.select_array_elementss
 
 copy_files = file_and_directory_handler.copy_files
 remove_files_by_globstr = file_and_directory_handler.remove_files_by_globstr

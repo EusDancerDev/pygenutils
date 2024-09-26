@@ -24,7 +24,7 @@ import warnings
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import array_data_manipulation
+from pyutils.arrays_and_lists import data_manipulation
 from pyutils.pandas_data_frames import data_frame_handler
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling import datetime_operators, program_snippet_exec_timers
@@ -32,9 +32,9 @@ from pyutils.time_handling import datetime_operators, program_snippet_exec_timer
 # Create aliases #
 #----------------#
 
-list_array_to_std_array = array_data_manipulation.list_array_to_std_array
-select_list_elements = array_data_manipulation.select_list_elements
-sort_array_rows_by_column = array_data_manipulation.sort_array_rows_by_column
+list_array_to_std_array = data_manipulation.list_array_to_std_array
+select_list_elements = data_manipulation.select_list_elements
+sort_array_rows_by_column = data_manipulation.sort_array_rows_by_column
 
 csv2df = data_frame_handler.csv2df
 find_date_key = data_frame_handler.find_date_key
