@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_maths import count_consecutive, decompose_24h_cumulative_data
+from pyutils.arrays_and_lists.maths import count_consecutive, decompose_24h_cumulative_data
 
 #------------------#
 # Define functions #
