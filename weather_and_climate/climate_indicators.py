@@ -25,7 +25,7 @@ from pyutils.weather_and_climate import climate_statistics, \
 #----------------#
 
 select_array_elements = data_manipulation.select_array_elements
-sort_array_rows_by_column = data_manipulation.sort_array_rows_by_column
+sort_rows_by_column = data_manipulation.sort_rows_by_column
 remove_elements = data_manipulation.remove_elements
 
 count_consecutive = array_numerical_operations.count_consecutive

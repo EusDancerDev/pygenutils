@@ -132,7 +132,7 @@ def pos_swapper(A, x, y):
 # Advanced methods #
 #-#-#-#-#-#-#-#-#-#-
 
-def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None): 
+def sort_rows_by_column(array, ncol, sort_order="ascending", order=None): 
     # TODO: ondoko azalpenei lista bat sartzen denerako kasua gehitu
     """
     Function that sorts the values in a 2D dimension array
@@ -205,7 +205,7 @@ def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None):
     Extending this mechanism to the rest of the rows,
     the result is the following:
     
-    sort_array_rows_by_column(array, ncol=0)
+    sort_rows_by_column(array, ncol=0)
     array([[3, 9, 7, 1],
            [4, 6, 4, 5],
            [6, 4, 2, 3]])
@@ -221,7 +221,7 @@ def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None):
            ['VID-20221230_305.jpg', '2022-12-30 15:10:32'],
            ['VID-20221230_320.jpg', '2022-12-30 15:10:35']], dtype='<U27')
     
-    sort_array_rows_by_column(array, ncol=1)
+    sort_rows_by_column(array, ncol=1)
     array([['VID-20221230_162.jpg', '2022-12-30 15:10:28'],
            ['VID-20221230_146.jpg', '2022-12-30 15:10:29'],
            ['VID-20221230_190.jpg', '2022-12-30 15:10:30'],
@@ -280,7 +280,7 @@ def sort_array_rows_by_column(array, ncol, sort_order="ascending", order=None):
     return sorted_array_rbc
 
 
-def sort_array_columns_by_row(array, nrow, sort_order="ascending"): 
+def sort_columns_by_row(array, nrow, sort_order="ascending"): 
     # TODO: ondoko azalpenei lista bat sartzen denerako kasua gehitu
     """
     Function that sorts the values in a 2D dimension array
@@ -364,9 +364,9 @@ def sort_array_columns_by_row(array, nrow, sort_order="ascending"):
     
     And now we apply the same method as sorting ROWS AGAINST a specified
     COLUMN, where now array === array.T, and ncol=nrow=0
-    which is performed by the 'sort_array_rows_by_column' function:
+    which is performed by the 'sort_rows_by_column' function:
     
-    >>> array1_tr=sort_array_rows_by_column(array.T, ncol=0)
+    >>> array1_tr=sort_rows_by_column(array.T, ncol=0)
     >>> array1_tr
     array([[2, 7, 4],
            [3, 1, 5],
@@ -417,7 +417,7 @@ def sort_array_columns_by_row(array, nrow, sort_order="ascending"):
     
     if hasattr(array, 'T'):
         array_tr = array.T    
-        sorted_array_cbr_tr = sort_array_rows_by_column(array_tr, nrow, sort_order)
+        sorted_array_cbr_tr = sort_rows_by_column(array_tr, nrow, sort_order)
         sorted_array_cbr = sorted_array_cbr_tr.T
         return sorted_array_cbr 
     else:

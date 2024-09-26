@@ -34,7 +34,7 @@ from pyutils.time_handling import datetime_operators, program_snippet_exec_timer
 
 list_array_to_std_array = data_manipulation.list_array_to_std_array
 select_list_elements = data_manipulation.select_list_elements
-sort_array_rows_by_column = data_manipulation.sort_array_rows_by_column
+sort_rows_by_column = data_manipulation.sort_rows_by_column
 
 csv2df = data_frame_handler.csv2df
 find_date_key = data_frame_handler.find_date_key
@@ -61,7 +61,7 @@ def customize_excel_file_merger(results_dir, merged_file_name, excel_files):
                                           attr="modification", 
                                           time_fmt_str=standard_dt_str)
     
-    excel_files = sort_array_rows_by_column(modTimes, -1)[:,0]
+    excel_files = sort_rows_by_column(modTimes, -1)[:,0]
     
     merge_excel_files(excel_files,
                       merged_file_path,
@@ -272,7 +272,7 @@ def complete_data_reach_threshold(ws_arr,
                                 """
                                 
                                 sigma_bin_toComplMinN\
-                                = sort_array_rows_by_column(arr_ws_sigma_idx, 0)[-N1:,-1]
+                                = sort_rows_by_column(arr_ws_sigma_idx, 0)[-N1:,-1]
                                 
                                 
                             elif d_bin > 0:
@@ -280,7 +280,7 @@ def complete_data_reach_threshold(ws_arr,
                                 of the considered bin.
                                 """
                                 sigma_bin_toComplMinN\
-                                = sort_array_rows_by_column(arr_ws_sigma_idx, 0)[:N1,-1]
+                                = sort_rows_by_column(arr_ws_sigma_idx, 0)[:N1,-1]
     
                                 
                             key_data_list.append((sigma_bin_toComplMinN, N1))
