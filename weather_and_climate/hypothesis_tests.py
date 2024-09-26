@@ -14,7 +14,7 @@ from scipy.cluster.vq import whiten
 #-----------------------#
 
 import pyutils.weather_and_climate.netcdf_handler as pyt_netcdf_handler
-import pyutils.arrays_and_lists.array_maths as pyt_array_maths
+import pyutils.arrays_and_lists.maths as pyt_array_maths
 
 # Create aliases #
 #----------------#
