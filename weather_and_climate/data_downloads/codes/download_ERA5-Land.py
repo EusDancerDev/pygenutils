@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Fri Nov  3 09:50:30 2023
-
-@author: jonander
-"""
 
 #-----------------------#
 # Import custom modules #
