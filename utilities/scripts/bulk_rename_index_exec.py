@@ -20,10 +20,10 @@ from pyutils.files_and_directories.bulk_rename_index_main import reorder_objs
 # Define parameters #
 #-------------------#
 
-path = "/home/jonander/Pictures/2023/Tenerife_test_rename_pyutils.
+path = "/home/jonander/Pictures/2023/Tenerife_test_rename_pyutils."
 obj_type = "file"
 
-ZERO_PADDING = 3
+zero_padding = 3
 extensions2skip = ""
 
 starting_number = "default"
@@ -40,5 +40,5 @@ reorder_objs(path,
              extensions2skip,
              index_range,
              starting_number,
-             ZERO_PADDING,
+             zero_padding,
              splitdelim=splitdelim)
