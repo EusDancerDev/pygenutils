@@ -11,7 +11,7 @@ from pathlib import Path
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
+from pyutils.arrays_and_lists.data_manipulation import select_array_elements
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
@@ -63,29 +63,28 @@ def shorten_conflicting_obj_list():
 def loop_renamer(obj_list,
                  obj_type="file",
                  starting_number="default",  
-                 zero_padding="default",
+                 zero_padding=1,
                  dry_run=False,
                  splitdelim=None):
     
     all_arg_names = list(get_caller_method_all_args().values())
     obj_type_arg_pos = find_substring_index(all_arg_names, "obj_type")
+    zero_pad_pos = find_substring_index(all_arg_names, "zero_padding")
     
     if obj_type not in basic_object_types:
         raise ValueError("Unsupported object type "
                          f"(argument '{all_arg_names[obj_type_arg_pos]}'). "
                          f"Choose one from {basic_object_types}.")
+            
+    if not isinstance(zero_padding, int) or zero_padding < 1:
+        raise ValueError(f"'zero_padding' (number {zero_pad_pos}) "
+                         f"must be an integer >= 1, got {zero_padding}.")
         
     num_formatted_objs = []
     obj2change = obj2change_dict.get(obj_type)
 
     for obj_num, obj_name in enumerate(obj_list, start=starting_number):
-        if zero_padding == "default":
-            fpn_noext = obj_path_specs(obj_name, obj_spec_key="name_noext")
-            new_zp = str(len(fpn_noext))
-            num_format = f"{obj_num:0{new_zp}d}"    
-        else:
-            num_format = f"{obj_num:0{zero_padding}d}"    
-            
+        num_format = str(obj_num).zfill(zero_padding)
         if obj_type == basic_object_types[0]:
             num_formatted_obj = modify_obj_specs(obj_name,
                                                  obj2change, 
@@ -150,8 +149,8 @@ def reorder_objs(path,
             and isinstance(zero_padding, int) 
             and zero_padding < 1)):
         raise TypeError(f"Argument '{all_arg_names[zp_arg_pos]}' "
-                        f"at position {zp_arg_pos} must either be "
-                        "an integer equal or greater than 1.\n"
+                        f"(number {zp_arg_pos}) must either be an integer "
+                        "equal or greater than 1.\n"
                         "Set to `None` if no zero padding is desired.")
           
     if path is None:
@@ -208,22 +207,22 @@ def reorder_objs(path,
             """This option lets the user choose any starting number."""
             resetting_number = starting_number
             
-        num_formatted_objs_dryRun_1 = loop_renamer(obj_list_uneven, 
-                                                   starting_number=resetting_number,
-                                                   zero_padding=zero_padding,
-                                                   dry_run=True,
-                                                   splitdelim=splitdelim)
+        num_formatted_objs_dry_run_1 = loop_renamer(obj_list_uneven, 
+                                                    starting_number=resetting_number,
+                                                    zero_padding=zero_padding,
+                                                    dry_run=True,
+                                                    splitdelim=splitdelim)
                           
         """2nd step:
         Rename directories starting from 1, now that object numbering
         is evenly spaced.
         """
         
-        num_formatted_objs_dryRun_2 = loop_renamer(num_formatted_objs_dryRun_1,
-                                                   starting_number=1, 
-                                                   zero_padding=zero_padding,
-                                                   dry_run=True,
-                                                   splitdelim=splitdelim)
+        num_formatted_objs_dry_run_2 = loop_renamer(num_formatted_objs_dry_run_1,
+                                                    starting_number=1, 
+                                                    zero_padding=zero_padding,
+                                                    dry_run=True,
+                                                    splitdelim=splitdelim)
                                         
         # Check for equally named, conflicting objects #
         #----------------------------------------------#
@@ -232,13 +231,13 @@ def reorder_objs(path,
             conflicting_objs = [find_files_by_globstr(f"*{Path(nff_dR2).stem}*",
                                                       path,
                                                       top_path_only=True)
-                                for nff_dR2 in num_formatted_objs_dryRun_2]
+                                for nff_dR2 in num_formatted_objs_dry_run_2]
             
         elif obj_type == basic_object_types[1]:
             conflicting_objs = [find_file_containing_dirs_by_globstr(f"*{Path(nff_dR2).stem}*",
                                                             path,
                                                             top_path_only=True)
-                                for nff_dR2 in num_formatted_objs_dryRun_2]
+                                for nff_dR2 in num_formatted_objs_dry_run_2]
         
         lcos = len(conflicting_objs)
         
@@ -270,7 +269,7 @@ def reorder_objs(path,
                                          time_format_str)
             
             for objname_uneven, nff_dR2, confl_obj in zip(obj_list_uneven,
-                                                          num_formatted_objs_dryRun_2,
+                                                          num_formatted_objs_dry_run_2,
                                                           conflicting_objs):
             
                 arg_tuple_reorder_objs1 = (objname_uneven, 
@@ -299,7 +298,7 @@ def reorder_objs(path,
                                                              fixed_ext)
             report_file_obj = open(report_file_path, "w")                    
             
-            for objname_uneven, nff_dR2 in zip(obj_list_uneven, num_formatted_objs_dryRun_2):
+            for objname_uneven, nff_dR2 in zip(obj_list_uneven, num_formatted_objs_dry_run_2):
                 arg_tuple_reorder_objs2 = (objname_uneven,
                                            timestamp_str_objname_uneven,
                                            nff_dR2,
@@ -324,7 +323,7 @@ def reorder_objs(path,
                 = input("Please write 'y' for 'yes' or 'n' for 'no' ")
                 
             else:
-                loop_direct_renamer(obj_list_uneven, num_formatted_objs_dryRun_2)
+                loop_direct_renamer(obj_list_uneven, num_formatted_objs_dry_run_2)
              
     else:
         
@@ -333,16 +332,16 @@ def reorder_objs(path,
         
         if starting_number == "default":
             raise ValueError(f"'{all_arg_names[start_num_arg_pos]}' argument "
-                             f"at position {start_num_arg_pos} "
+                             f"(number {start_num_arg_pos}) "
                              f"cannot be '{defaults[start_num_arg_pos]}' "
                              f"if '{ir_arg_pos}' argument is not None")
                
-        num_formatted_objs_dryRun = loop_renamer(obj_list_uneven_slice, 
-                                                 starting_number=starting_number, 
-                                                 zero_padding=zero_padding,
-                                                 dry_run=True,
-                                                 splitdelim=splitdelim)
-          
+        num_formatted_objs_dry_run = loop_renamer(obj_list_uneven_slice, 
+                                                  starting_number=starting_number, 
+                                                  zero_padding=zero_padding,
+                                                  dry_run=True,
+                                                  splitdelim=splitdelim)
+              
         # Check for equally named, conflicting objects #
         #----------------------------------------------#
         
@@ -350,13 +349,13 @@ def reorder_objs(path,
             conflicting_objs = [find_files_by_globstr(f"*{Path(nff_dR).stem}*",
                                                       path,
                                                       top_path_only=True)
-                                for nff_dR in num_formatted_objs_dryRun]
+                                for nff_dR in num_formatted_objs_dry_run]
         
         elif obj_type == basic_object_types[1]:
             conflicting_objs = [find_file_containing_dirs_by_globstr(f"*{Path(nff_dR).stem}*",
                                                             path,
                                                             top_path_only=True)
-                                for nff_dR in num_formatted_objs_dryRun]
+                                for nff_dR in num_formatted_objs_dry_run]
             
         lcos = len(conflicting_objs)
         
@@ -388,7 +387,7 @@ def reorder_objs(path,
                                          time_format_str)
             
             for objname_unevens, nff_dR, confl_obj in zip(obj_list_uneven_slice,
-                                                          num_formatted_objs_dryRun,
+                                                          num_formatted_objs_dry_run,
                                                           conflicting_objs):
             
                 arg_tuple_reorder_objs3 = (objname_unevens, 
@@ -413,7 +412,7 @@ def reorder_objs(path,
             report_file_obj = open(report_file_path, "w")                    
             
             for objname_unevens, nff_dr in zip(obj_list_uneven_slice, 
-                                               num_formatted_objs_dryRun):
+                                               num_formatted_objs_dry_run):
                 arg_tuple_reorder_objs4 = (objname_unevens, nff_dR)
                 report_file_obj.write(format_string(dry_run_info_str, arg_tuple_reorder_objs4))
                          
@@ -430,7 +429,7 @@ def reorder_objs(path,
                 ansPerformChanges\
                 = input("Please write 'y' for 'yes' or 'n' for 'no' ")
             else:
-                loop_direct_renamer(obj_list_uneven_slice, num_formatted_objs_dryRun)
+                loop_direct_renamer(obj_list_uneven_slice, num_formatted_objs_dry_run)
                            
 
 #--------------------------#
