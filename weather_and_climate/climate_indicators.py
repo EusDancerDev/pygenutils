@@ -5,8 +5,6 @@
 # Import modules #
 #----------------#
 
-import calendar
-
 import numpy as np
 import pandas as pd
 import scipy.stats as ss
@@ -15,7 +13,7 @@ import scipy.stats as ss
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import array_data_manipulation, array_numerical_operations
+from pyutils.arrays_and_lists import data_manipulation, array_numerical_operations
 from pyutils.global_parameters import common_delim_list
 from pyutils.meteorological_variables import meteorological_wind_direction
 from pyutils.string_handler import find_substring_index
@@ -26,9 +24,9 @@ from pyutils.weather_and_climate import climate_statistics, \
 # Create aliases #
 #----------------#
 
-select_array_elements = array_data_manipulation.select_array_elements
-sort_array_rows_by_column = array_data_manipulation.sort_array_rows_by_column
-remove_elements = array_data_manipulation.remove_elements
+select_array_elements = data_manipulation.select_array_elements
+sort_array_rows_by_column = data_manipulation.sort_array_rows_by_column
+remove_elements = data_manipulation.remove_elements
 
 count_consecutive = array_numerical_operations.count_consecutive
 
@@ -49,7 +47,6 @@ count_consecutive_days_mindata\
 # Define custom functions #
 #-------------------------#
 
-# TODO: ea hau linguistikoki hobeto aton daitekeen
 def calculate_biovars(tmax_monthly_climat, 
                       tmin_monthly_climat, 
                       prec_monthly_climat):
@@ -82,47 +79,47 @@ def calculate_biovars(tmax_monthly_climat,
     range_temp = tmax_monthly_climat - tmin_monthly_climat
       
     # P1. Annual Mean Temperature
-    bioclim_var_array[0,:,:] = np.mean(tavg, axis=0)
+    bioclim_var_array[0] = np.mean(tavg, axis=0)
       
     # P2. Mean Diurnal Range(Mean(period max-min))
-    bioclim_var_array[1,:,:] = np.mean(range_temp, axis=0)
+    bioclim_var_array[1] = np.mean(range_temp, axis=0)
       
     # P4. Temperature Seasonality (standard deviation)
-    bioclim_var_array[3,:,:] = np.std(tavg, axis=0) # * 100
+    bioclim_var_array[3] = np.std(tavg, axis=0) # * 100
       
     # P5. Max Temperature of Warmest Period 
-    bioclim_var_array[4,:,:] = np.max(tmax_monthly_climat, axis=0)
+    bioclim_var_array[4] = np.max(tmax_monthly_climat, axis=0)
      
     # P6. Min Temperature of Coldest Period
-    bioclim_var_array[5,:,:] = np.min(tmin_monthly_climat, axis=0)
+    bioclim_var_array[5] = np.min(tmin_monthly_climat, axis=0)
       
     # P7. Temperature Annual Range (P5 - P6)
-    bioclim_var_array[6,:,:] = bioclim_var_array[4,:,:] - bioclim_var_array[5,:,:]
+    bioclim_var_array[6] = bioclim_var_array[4] - bioclim_var_array[5]
       
     # P3. Isothermality ((P2 / P7) * 100)
-    bioclim_var_array[2,:,:] = bioclim_var_array[1,:,:] / bioclim_var_array[6,:,:] * 100
+    bioclim_var_array[2] = bioclim_var_array[1] / bioclim_var_array[6] * 100
       
     # P12. Annual Precipitation
-    bioclim_var_array[11,:,:] = np.sum(prec_monthly_climat, axis=0)
+    bioclim_var_array[11] = np.sum(prec_monthly_climat, axis=0)
       
     # P13. Precipitation of Wettest Period
-    bioclim_var_array[12,:,:] = np.max(prec_monthly_climat, axis=0)
+    bioclim_var_array[12] = np.max(prec_monthly_climat, axis=0)
       
     # P14. Precipitation of Driest Period
-    bioclim_var_array[13,:,:] = np.min(prec_monthly_climat, axis=0)
+    bioclim_var_array[13] = np.min(prec_monthly_climat, axis=0)
     
     # P15. Precipitation Seasonality(Coefficient of Variation) 
     # the "+1" is to avoid strange CVs for areas where the mean rainfall is < 1 mm)
-    bioclim_var_array[14,:,:] = ss.variation(prec_monthly_climat+1, axis=0) * 100
+    bioclim_var_array[14] = ss.variation(prec_monthly_climat+1, axis=0) * 100
     
     # precipitation by quarters (window of 3 months)
     wet = window_sum(prec_monthly_climat, N=3)
     
     # P16. Precipitation of Wettest Quarter
-    bioclim_var_array[15,:,:] = np.max(wet, axis=0)
+    bioclim_var_array[15] = np.max(wet, axis=0)
       
     # P17. Precipitation of Driest Quarter 
-    bioclim_var_array[16,:,:] = np.min(wet, axis=0)
+    bioclim_var_array[16] = np.min(wet, axis=0)
       
     # temperature by quarters (window of 3 months)
     tmp_qrt = window_sum(tavg, N=3) / 3
@@ -140,10 +137,10 @@ def calculate_biovars(tmax_monthly_climat,
             bioclim_var_array[8,i,j] = tmp_qrt[dry_qrt[i,j],i,j]
     
     # P10 Mean Temperature of Warmest Quarter 
-    bioclim_var_array[9,:,:] = np.max(tmp_qrt, axis=0)
+    bioclim_var_array[9] = np.max(tmp_qrt, axis=0)
       
     # P11 Mean Temperature of Coldest Quarter
-    bioclim_var_array[10,:,:] = np.min(tmp_qrt, axis=0)
+    bioclim_var_array[10] = np.min(tmp_qrt, axis=0)
           
     # P18. Precipitation of Warmest Quarter 
     hot_qrt = np.argmax(tmp_qrt, axis=0)
@@ -441,263 +438,102 @@ def calculate_HWD(tmax_array, tmin_array,
         HWD_characteristics = (0, None, None, None)
         return (HWD_characteristics, 0)
 
-# TODO: indexazioa azkar liteke?
-def calculate_HDY(hourly_df,
-                  varlist,
-                  varlist_primary,
-                  drop_date_idx_col=False,
-                  drop_new_idx_col=True):
+
+def calculate_HDY(hourly_df: pd.DataFrame, 
+                  varlist: list, 
+                  varlist_primary: list, 
+                  drop_new_idx_col: bool = False) -> tuple:
     """
-    Function to calculate the 'Hourly Design Year',
-    based on the ISO 15927-4 2005 (E) standard,
-    version of January 2021.
-    """
+    Calculate the Hourly Design Year (HDY) using ISO 15927-4:2005 (E) standard.
     
-    #--------------------------#
-    # Define the HDY DataFrame #
-    #--------------------------#
+    Parameters
+    ----------
+    hourly_df : pd.DataFrame
+        DataFrame containing hourly climatological data.
+    varlist : list
+        List of all variables (column names) to be considered in HDY DataFrame.
+    varlist_primary :list
+        Primary variables to be used for ranking calculations.
+    drop_new_idx_col : bool
+        Whether to drop the reset index column.
+        
+    Returns
+    -------
+    tuple: HDY DataFrame and the list of selected years for each month.
+    """
+    # Initialize the HDY DataFrame to store results
+    hdy_df = pd.DataFrame(columns=varlist)
 
-    hdy_df = pd.DataFrame(columns = varlist)
-
-    # Define input HDY parameters #
-    #-----------------------------#
-
+    # Extract unique years and months
     hist_years = pd.unique(hourly_df.date.dt.year)
-    lhy = len(hist_years)
-    
     months = pd.unique(hourly_df.date.dt.month)
-    month_names = list(calendar.month_abbr)
-    month_names.remove(month_names[0])
 
-    #-----------------------------------------------------#
-    #                     PROGRAM CORE                    #
-    # Implementation of the ISO-15927-4 2005 (E) standard #
-    #         Hourly Design Year (HDY) computation        #
-    #-----------------------------------------------------#
+    # List to store selected years for each month
+    hdy_years = []
 
-    lowest_total_rank_year_list = []
-     
-    # Define the HDY DataFrame #
-    hdy_df = pd.DataFrame(columns = varlist)
-     
-    # Perform ISO 15927-4 2005 (E) standard steps #
-    #---------------------------------------------#
-    
-    print("\nPerforming ISO 15927-4 2005 (E) standard steps...\n")
-     
     for m in months:
-
-        hdata_MONTH = hourly_df[hourly_df.date.dt.month == m].filter(items = varlist_primary)\
-                      .reset_index(drop=drop_new_idx_col)
-     
-        # Step a) #
-        
-        """The first key MUST BE 'date' """
-        varlist_prim_rank_phi = [varlist_primary[0]]
-        
-        for var in varlist_primary[1:]:
-            for i in range(3):
-                if i==0:
-                    varlist_prim_rank_phi.append(var)
-                    
-                elif i==1:
-                    var_rank = var + "_rank"
-                    varlist_prim_rank_phi.append(var_rank)
-                
-                elif i==2:
-                    var_phi = var + "_phi"
-                    varlist_prim_rank_phi.append(var_phi)
-                                
         try:
-            hdata_MONTH_dm\
-            = periodic_statistics(hdata_MONTH, 'mean', 'D', drop_date_idx_col)
-        except:
-            hdata_MONTH.loc[:,varlist_primary[1:]]\
-            = hdata_MONTH.loc[:,varlist_primary[1:]].apply(pd.to_numeric)
-        
-        hdata_MONTH_dm \
-        = periodic_statistics(hdata_MONTH, 'mean', 'D', drop_date_idx_col)
-        
-        hdata_MONTH_dm_bymonth = hdata_MONTH_dm[hdata_MONTH_dm.date.dt.month == m]\
-                                 .reset_index(drop=drop_new_idx_col)
-     
-        hdata_MONTH_rank_phi = pd.DataFrame(hdata_MONTH_dm_bymonth, 
-                                            columns = varlist_prim_rank_phi)
-        records_MONTH_dm_bymonth = len(hdata_MONTH_dm_bymonth)
-        
-        # Step b) #
+            # Filter data for the current month and calculate monthly statistics
+            hdata_MONTH = hourly_df[hourly_df.date.dt.month == m].filter(items=varlist_primary).reset_index(drop=drop_new_idx_col)
+            hdata_MONTH_rank_phi = hdata_MONTH.copy()
+            
+            # Step a: Calculate daily means for the primary variables
+            hdata_MONTH_dm_bymonth = periodic_statistics(hourly_df[hourly_df.date.dt.month == m], varlist_primary, 'day', 'mean')
+
+        except ValueError as e:
+            print(f"Error in periodic_statistics for month {m}: {e}")
+            continue  # Skip the current month if there’s an error
+
+        # Get unique days for the current month
         no_of_days = len(pd.unique(hdata_MONTH_rank_phi.date.dt.day))
-     
-        vars_rank = [var 
-                     for var in varlist_prim_rank_phi 
-                     if "rank" in var]
+
+        # Step a: Calculate rankings for each day by each primary variable
         dict_rank = {}
-     
-        vars_phi = [var 
-                    for var in varlist_prim_rank_phi 
-                    if "phi" in var]
         dict_phi = {}
-     
-        lv = len(hdata_MONTH.columns)-1
-     
-        for iv in range(lv):
-            dict_rank[vars_rank[iv]] = []
-            sorted_var = np.sort(hdata_MONTH_rank_phi[varlist_primary[1:][iv]])
-        
-            for i in range(records_MONTH_dm_bymonth):
-                where = np.where(hdata_MONTH_rank_phi\
-                                 [varlist_primary[1:][iv]].loc[i] == sorted_var)[0][0]
-                dict_rank[vars_rank[iv]].append(where)
-            
-            dict_rank[vars_rank[iv]] = np.array(dict_rank[vars_rank[iv]])+1
-            hdata_MONTH_rank_phi[vars_rank[iv]] = dict_rank[vars_rank[iv]]
-     
-     
-        for iv in range(lv):
-            dict_phi[vars_phi[iv]] = dict_rank[vars_rank[iv]]/(lhy*no_of_days+1)    
-            hdata_MONTH_rank_phi[vars_phi[iv]] = dict_phi[vars_phi[iv]]   
-        
-        # Step c) #
-        dict_ym = {}
-     
-        for var in varlist_primary[1:]:
-            dict_ym[var] = {}
-     
-        for iv in range(lv):
-            for y in hist_years:
-                    
-                hdata_MONTH_ym = hdata_MONTH_rank_phi[(hdata_MONTH_rank_phi.date.dt.year == y)
-                                                      & (hdata_MONTH_rank_phi.date.dt.month == m)]
-                items = ["date",varlist_primary[1:][iv]]
-        
-                hdata_MONTH_ym_var_sel = hdata_MONTH_ym.filter(items = items)\
-                                        .reset_index(drop=drop_new_idx_col)
-               
-                
-                # Perform the ranking #                       
-                no_of_days = len(hdata_MONTH_ym_var_sel)
-              
-                var_orig = hdata_MONTH_ym_var_sel[varlist_primary[1:][iv]]
-                var_sorted = np.sort(var_orig)
-                var_rank = []
-                
-                for i in range(no_of_days):
-                    where = np.where(var_orig[i] == var_sorted)[0][0]
-                    var_rank.append(where)                
-                 
-                
-                var_rank = np.array(var_rank)+1
-                F = var_rank/(no_of_days+1)
-                
-                next_df = pd.DataFrame(var_rank,columns = ['rank'])
-                hdata_MONTH_ym_var_sel = pd.concat([hdata_MONTH_ym_var_sel,next_df],axis = 1)
-                
-                next_df = pd.DataFrame(F,columns = ['F'])
-                hdata_MONTH_ym_var_sel = pd.concat([hdata_MONTH_ym_var_sel,next_df],axis = 1)       
-                  
-        # Step d) #
-                Fs = []
-                for i in range(no_of_days):
-                    where = np.where(
-                        hdata_MONTH_ym_var_sel.loc[i].date == hdata_MONTH_rank_phi.date
-                        )[0][0]
-                    phi = hdata_MONTH_rank_phi.loc[where,vars_phi[iv]]
-                    Fs_val = abs(hdata_MONTH_ym_var_sel.loc[i].F-phi)
-                    Fs.append(Fs_val)
-                        
-                next_df = pd.DataFrame(np.array(Fs),columns = ['Fs'])
-                hdata_MONTH_ym_var_sel = pd.concat([hdata_MONTH_ym_var_sel,next_df],axis = 1)  
-                        
-                dict_ym[varlist_primary[1:][iv]][(y,m)] = hdata_MONTH_ym_var_sel
-                
-        # Step e) #
-        varlist_Fssum_rank = ["Year"]
         
         for var in varlist_primary[1:]:
-            for i in range(2):
-                if i==0:
-                    var_Fs_sum=var+"_Fs_sum"
-                    varlist_Fssum_rank.append(var_Fs_sum)
-                elif i==1:
-                    var_Fs_sum_rank=var+"_Fs_sum_rank"
-                    varlist_Fssum_rank.append(var_Fs_sum_rank)
+            var_orig = hdata_MONTH_dm_bymonth[var].to_numpy()
+            var_rank = np.argsort(np.argsort(var_orig)) + 1
+            dict_rank[var] = var_rank
+
+            # Step b: Calculate cumulative probabilities (phi)
+            phi = (var_rank - 0.5) / no_of_days
+            dict_phi[var] = phi
+
+            # Store calculated phi values
+            hdata_MONTH_rank_phi[var] = phi
         
-        lvfsr = len(varlist_Fssum_rank)
-     
-        Fs_sum_df = pd.DataFrame(columns = varlist_Fssum_rank)
-        Fs_sum_df.Year = hist_years
-     
-        dict_ym_Fs_sum = {}
-        for iv in range(1,lvfsr,2):
-            dict_ym_Fs_sum[varlist_Fssum_rank[iv]] = {}
-            for y in hist_years:
-                dict_ym_Fs_sum[varlist_Fssum_rank[iv]][(y,m)] = 0
-     
-        for iv in range(1,lvfsr,2):
-            Fs_sum = []
-            for y in hist_years:
-                dict_ym_Fs_sum[varlist_Fssum_rank[iv]][(y,m)]\
-                += np.sum(dict_ym[varlist_primary[iv//2+1]][(y,m)].Fs)
-                
-                Fs_sum.append(dict_ym_Fs_sum[varlist_Fssum_rank[iv]][(y,m)])
-     
-            Fs_sum_df[varlist_Fssum_rank[iv]] = np.array(Fs_sum)
-        
-     
-        for iv in range(1,lvfsr,2):
-            Fs_sum_orig = Fs_sum_df[varlist_Fssum_rank[iv]]
-            Fs_sum_sorted = np.sort(Fs_sum_orig)
-        
-            Fs_sum_rank = []
-            for i in range(lhy):
-                where = np.where(Fs_sum_orig[i] == Fs_sum_sorted)[0][0]
-                Fs_sum_rank.append(where)
-            
-            Fs_sum_df[varlist_Fssum_rank[iv+1]] = np.array(Fs_sum_rank)+1
-        
-        # Step f) #    
-        rank_sum = np.zeros(lhy,'d')
-        for iv in range(2,lvfsr,2):
-            rank_sum +=  Fs_sum_df[varlist_Fssum_rank[iv]].values
-     
-        next_df = pd.DataFrame(rank_sum.astype(np.int64),columns = ["total_rank"])
-        Fs_sum_df = pd.concat([Fs_sum_df,next_df],axis = 1)
-     
-        # Step g) #
-        Fs_sum_df_sorted_total_rank = pd.DataFrame(
-            sort_array_rows_by_column(Fs_sum_df.values,-1),
-            columns = Fs_sum_df.columns
-            ).filter(items = ['Year','total_rank']).astype(np.int64)
-        Fs_sum_df_sorted_total_rank.columns = ['Year','total_rank_sorted']
-     
-        """
-         Method to choose the hdy_df
-         ------------------------
-        
-        ·Original method is to calculate the monthly mean wind speed of each month
-         of the three lowest total rank set, together with the climatology
-         of the corresponding month, to then compute the anomalies.
-        ·For this study, take the year which has the lowest total rank,
-         governed by the primary variables,
-         and select the original hourly data for that month and year.
-        """
-     
-        lowest_total_rank_year = Fs_sum_df_sorted_total_rank.loc[0].Year
-        lowest_total_rank_year_list.append(lowest_total_rank_year)
-        print("Design year component: ",lowest_total_rank_year,month_names[m-1])
-           
-        hourly_data_sel = hourly_df[(hourly_df.date.dt.year == lowest_total_rank_year)
-                                    &(hourly_df.date.dt.month == m)]
-        
-        hdy_df = pd.concat([hdy_df,hourly_data_sel], axis = 0)
-       
-    hdy_df = hdy_df.reset_index(drop=drop_new_idx_col)    
-    hdy_years = lowest_total_rank_year_list.copy()
-    return (hdy_df, hdy_years)
+        # Step c: Group data by year and calculate year-specific ranks
+        dict_rank_per_year = {}
+        for year in hist_years:
+            year_data = hdata_MONTH_rank_phi[hdata_MONTH_rank_phi.date.dt.year == year]
+            dict_rank_per_year[year] = {
+                var: np.sum(np.abs(year_data[var] - dict_phi[var]))
+                for var in varlist_primary[1:]
+            }
+
+        # Step d: Calculate total sum of deviations (Fs_sum) for each year
+        Fs_sum = {}
+        for year, ranks in dict_rank_per_year.items():
+            Fs_sum[year] = sum(ranks.values())
+
+        # Step e: Rank the years based on the Fs_sum and choose the best year for the current month
+        selected_year = min(Fs_sum, key=Fs_sum.get)
+        hdy_years.append(selected_year)
+
+        # Extract the hourly data for the selected year and append it to the HDY DataFrame
+        hourly_data_sel = \
+        hourly_df[(hourly_df.date.dt.year == selected_year) 
+                  & (hourly_df.date.dt.month == m)].filter(items=varlist)\
+                 .reset_index(drop=drop_new_idx_col)
+        hdy_df = pd.concat([hdy_df, hourly_data_sel], axis=0)
+
+    return hdy_df, hdy_years
 
 
-# TODO: behekoa ez da behin betikoa, aldagai bakoitzeko interpolaketa-metodoen
-# iradokizun asko baitago
+# %%
+
+# !!! !!! Behekoa ez da behin betikoa, aldagai bakoitzeko interpolaketa-metodoen iradokizun asko baitago
 def hdy_interpolation(hdy_df,
                       hdy_years,
                       previous_month_last_time_range,
