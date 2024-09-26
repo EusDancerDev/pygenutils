@@ -19,7 +19,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import select_array_elements
+from pyutils.arrays_and_lists.data_manipulation import select_array_elements
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.time_formatters import datetime_obj_converter,\
@@ -130,7 +130,7 @@ def sum_dt_times(dt_obj_list,
     
     if isinstance(dt_obj_list, str):
         raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
-                        f"(position {obj_list_pos}) must either be a "
+                        f"(number {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
         raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
@@ -253,7 +253,7 @@ def dt_time_average(dt_obj_list,
     
     if isinstance(dt_obj_list, str):
         raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
-                        f"(position {obj_list_pos}) must either be a "
+                        f"(number {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
         raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
@@ -446,7 +446,7 @@ def sum_date_objects(date_list,
     
     if isinstance(date_list, str):
         raise TypeError(f"Argument '{all_arg_names[date_list_pos]}' "
-                        f"(position {date_list_pos}) must either be a "
+                        f"(number {date_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(date_list, (list, tuple, np.ndarray)) and len(date_list) < 2):
         raise ValueError(format_string(too_few_arg_error_str, "time"))
@@ -735,7 +735,7 @@ select_array_elements(time_output_format_options, [0,1,-1])
 #----------------------#
 
 # Error #
-type_error_str = "Argument '{}' at position {} must be of type '{}'."
+type_error_str = "Argument '{}' (number {}) must be of type '{}'."
 
 invalid_output_format_str = """Unsupported output format '{}'. Options are: {}"""
         
