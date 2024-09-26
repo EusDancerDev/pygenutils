@@ -8,7 +8,7 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
-from pyutils.arrays_and_lists.array_data_manipulation import flatten_content_to_string
+from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.operative_systems.os_operations import exit_info, run_system_command
