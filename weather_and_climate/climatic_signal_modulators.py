@@ -99,9 +99,7 @@ def autocorrelate(x, twosided=False):
         return x_autocorr_onesided
     
     
-def polynomial_fitting(y, poly_ord, fix_edges=False, 
-                       poly_func=None, poly_params=None):
-    
+def polynomial_fitting(y, poly_ord, fix_edges=False, poly_func=None, poly_params=None):
     """
     Performs the polynomial fitting over a 1D array,
     using the least squares fit method.
