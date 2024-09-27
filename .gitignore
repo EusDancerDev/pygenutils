@@ -8,3 +8,6 @@
 
 # Ignore the file to make text changes, if present #
 modify_text_in_file
+
+# Ignore configuration and generated files #
+.chglog
