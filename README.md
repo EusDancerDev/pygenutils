@@ -21,5 +21,3 @@
     - Possible incorporation of OOP
 
 * This project aims to perform and continue improving the mentioned steps.
-
-* This repository was previously named 'pytools'. The name was changed to 'pyutils' to better reflect its purpose and content.
