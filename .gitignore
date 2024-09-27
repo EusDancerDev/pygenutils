@@ -11,3 +11,6 @@ modify_text_in_file
 
 # Ignore configuration and generated files #
 .chglog
+
+# Ignore commit number calculator by time frequency #
+commit_number.py
