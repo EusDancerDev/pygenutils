@@ -15,7 +15,7 @@ from numpy import array as np_arr
 # Combinatorial operations #
 #--------------------------#
 
-def calc_all_unique_pairs(array_like, library="python-default"):    
+def unique_pairs(array_like, library="python-default"):    
     """
     Function to calculate all possible pairs, irrespective of the order,
     in a list or 1D array.
@@ -82,13 +82,11 @@ def calc_all_unique_pairs(array_like, library="python-default"):
 
     if data_type == 'O':       
         raise TypeError("All elements of the array must either be of type"
-                        "'int', 'float', 'complex', 'str' "
-                        "or a combination of several of them.")
+                        "{'int', 'float', 'complex', 'str'} "
+                        "or a combination of them.")
         
-    else:
-        dims = len(array.shape)
-        if dims > 1:
-            array = array.flatten()
+    if len(array.shape) > 1:
+        array = array.flatten()
     
     # Library #
     if library not in return_pairs_library_list:
