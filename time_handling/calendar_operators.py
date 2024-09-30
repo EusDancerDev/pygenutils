@@ -15,7 +15,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import count_unique_type_objects
+from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
 from pyutils.pandas_data_frames import data_frame_handler
 from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
 from pyutils.strings.string_handler import modify_obj_specs
@@ -115,7 +115,7 @@ def standardize_calendar(obj,
         len_objects = len(obj)
             
         # Check whether all objects passed in a list are of the same type #
-        len_unique_type_list = count_unique_type_objects(obj)[-1]
+        len_unique_type_list = unique_type_objects(obj)[-1]
         
         if len_unique_type_list > 1:
             raise ValueError("Not every object in the list is of the same type.")
