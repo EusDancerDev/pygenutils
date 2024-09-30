@@ -303,6 +303,10 @@
 	* `data_downloads`
 	* `complementary-to_remodule`
 
+### Removed
+
+- Once every operation above performed, delete subpackage `weather_and_climate`.
+
 ---
 
 ## [v7.3.3] - 2024-09-28
