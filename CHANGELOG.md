@@ -1,10 +1,59 @@
 # Changelog
 
+## [v8.X.X] - 2024-09-30
+
+---
+
 ## [v8.0.0] - 2024-09-29
 
 ### Added
 
-1. Subpackage `statistics`:
+1. Subpackage `climate_data_utils`:
+
+- Handles operations focused on data manipulation for climate datasets, with a special focus on file management, downloads, and plotting.
+- The following content has been added, each supporting specific utilities:
+
+<u>**Modules**</u>
+
+* `cdo_tools.py`
+	- Provides wrappers and utilities for working with the Climate Data Operators (CDO) tool.
+	- Contains functions to interact with the Climate Data Store (CDS) API for downloading and managing climate data from the Copernicus Climate Data Store.
+	- Facilitates data requests and efficient downloads of large datasets.
+
+* `cds_tools.py`
+	- Contains functions to interact with the Climate Data Store (CDS) API for downloading and managing climate data from the Copernicus Climate Data Store.
+	- Facilitates data requests and efficient downloads of large datasets.
+	
+* `detect_faulty_ncfiles`
+	- Implements functionality to detect and manage faulty NetCDF files, ensuring data integrity during processing and analysis.
+
+* `extract_netcdf_basics`
+	- Provides functions for extracting basic information from NetCDF files, such as metadata and variable summaries, facilitating data exploration.
+
+* `nco_tools`
+	- Offers utilities for working with the NetCDF Operators (NCO) tool, allowing for data manipulation and operations specific to NetCDF file formats.
+
+* `netcdf_handler`
+	- Central module for handling various operations related to NetCDF files, including reading, writing, and modifying NetCDF datasets.
+
+* `weather_software_file_creator`
+	- Contains functions for creating weather software files based on processed climate data, ensuring compatibility with various weather analysis tools.
+
+<u>**Further subpackages**</u>
+
+* `complementary-to_remodule`
+	- A subpackage containing various auxiliary and complementary functions aimed at climate data analysis and visualization. It includes:
+		- <b>auxiliary_functions</b>: Utility functions to assist with common tasks such as file handling, data transformations, and helper routines.
+		- <b>ba_mean_and_var</b>: Implements methods to compute bias-adjusted mean and variance from climate data.
+		- <b>ba_mean</b>: Provides functions for calculating bias-adjusted means from climate datasets, allowing for more accurate representation of data characteristics.
+
+* `data_downloads`
+	- A module dedicated to managing the download of climate data. It contains:
+		- <b>codes</b>: Includes scripts and configurations necessary for utilizing the Copernicus API for efficient data downloads.
+		- <b>input_data</b> A folder for storing downloaded climate data, ensuring organized access to data files.
+
+
+2. Subpackage `statistics`:
 
 - Introduced a new subpackage `statistics` to encapsulate numerical and statistical methods.,<br>
   aiming for modularity and organization across general and field-specific domains.
@@ -21,11 +70,11 @@
 - **Improved Structure:** Consolidated statistical logic from various modules under a unified subpackage, with plans for expanding into domain-specific methods.
 
 
-2. `statistical_tests` as a `core` module:
+3. `statistical_tests` as a `core` module:
 
 - **Hypothesis Testing**:
 	* Added basic methods for hypothesis testing in the `statistical_tests.py` module, including:
-		* `t_test_independent`, `chi_square_test`, and `kolmogorov_smirnov_test`, which provide common statistical hypothesis tests. #################### HAU EZ DA ERABATEKO EGIA
+		* `z_test_two_means` and `chi_square_test` which provide common statistical hypothesis tests.
 	* Each method includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
 
 
@@ -206,22 +255,53 @@
 	
 - <u>**NOTE**</u>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
 
-5. Rest of the content:
+5. `meteorological_variables`
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original name</span></th>
+		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>get_1hour_time_step_data</th>
+		<th>hourly_ts_cumul</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>count_consecutive_days_maxdata</th>
+		<th>consec_occurrences_maxdata</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>count_consecutive_days_mindata</th>
+		<th>consec_occurrences_mindata</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+</table>
+
+6. Rest of the content:
 
 - The following content has been moved to the new subpackage `climate_data_utils`:
-	1. Modules:
-		* `cdo_tools`
-		* `cds_tools`
-		* `detect_faulty_ncfiles`
-		* `extract_netcdf_basics`
-		* `__init__`
-		* `meteorological_variables`
-		* `nco_tools`
-		* `netcdf_handler`
-		* `weather_software_file_creator`
-	2. Further Subpackages:
-		* `data_downloads`
-		* `complementary-to_remodule`
+
+1. **Modules**:
+	* `cdo_tools`
+	* `cds_tools`
+	* `detect_faulty_ncfiles`
+	* `extract_netcdf_basics`
+	* `__init__`
+	* `meteorological_variables`
+	* `nco_tools`
+	* `netcdf_handler`
+	* `weather_software_file_creator`
+	
+2. **Further Subpackages**:
+	* `data_downloads`
+	* `complementary-to_remodule`
 
 ---
 
@@ -242,14 +322,13 @@
    * Enhanced docstrings for both methods, clarifying inputs, outputs, and providing comprehensive usage examples.
    
 - **Band-Pass Filtering Methods**:
-	* Refined three band-pass filtering methods (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated and optimized:
+	* Refined three band-pass filtering methods (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated:
 		* Simplified internal variable names and loops for more concise code.
 		* Added detailed docstrings, explaining how each method works with frequency domain transformations and filtering based on custom low and high-frequency ranges.
 		* Used consistent terminology and enhanced explanations for different approaches to band-pass filtering.
    
 - **Low and High-Pass Filtering Methods**:
-	- Refined `low_pass_filter` and `high_pass_filter` methods:
-<!--		* Utilized `scipy.signal.butter` and `scipy.signal.filtfilt` for efficient Butterworth filtering.--> HAU EZ DA EGIA --> ChatGPT
+	- Refined `low_pass_filter` and `high_pass_filter` methods, also created during the Master in Meteorology: 
 		* Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
 		* Expanded the docstring to include explanations on filter design and its effect on different time series data.
 
