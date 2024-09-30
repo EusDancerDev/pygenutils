@@ -14,3 +14,6 @@ modify_text_in_file
 
 # Ignore commit number calculator by time frequency #
 commit_number.py
+
+# Ignore Copernicus-ECMWF data download directory #
+climate_data_utils/data_downloads/input_data
