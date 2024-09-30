@@ -1,5 +1,280 @@
 # Changelog
 
+## [v8.0.0] - 2024-09-29
+
+### Added
+
+1. Subpackage `statistics`:
+
+- Introduced a new subpackage `statistics` to encapsulate numerical and statistical methods.,<br>
+  aiming for modularity and organization across general and field-specific domains.
+
+- **Core Modules:**
+	- `time_series.py`: General methods for time series analysis, including signal processing.
+	- `regressions.py`: Polynomial regression and other regression models.
+	- `signal_forcing.py`: Signal whitening and noise handling.
+- **Domains Supported:**
+	- **Time Series Analysis:** Methods for handling trends, noise, and filtering in time-series data.
+	- **Signal Processing:** Includes signal filtering, whitening, and band-pass filters.
+	- **Statistical Testing:** Initial support for statistical tests.
+
+- **Improved Structure:** Consolidated statistical logic from various modules under a unified subpackage, with plans for expanding into domain-specific methods.
+
+
+2. `statistical_tests` as a `core` module:
+
+- **Hypothesis Testing**:
+	* Added basic methods for hypothesis testing in the `statistical_tests.py` module, including:
+		* `t_test_independent`, `chi_square_test`, and `kolmogorov_smirnov_test`, which provide common statistical hypothesis tests. #################### HAU EZ DA ERABATEKO EGIA
+	* Each method includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
+
+
+### Changed
+
+- Many functions have been moved out from the modules in the old `weather_and_climate` subpackage to `statistics`.
+- Information about the original module and new function name and location is displayed next:
+  
+1. `climate_indicators`
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original name</span></th>
+		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>calculate_WSDI</th>
+		<th>WSDI</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_SU</th>
+		<th>SU</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_CSU</th>
+		<th>CSU</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_FD/th>
+		<th>FD</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_TN</th>
+		<th>TN</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_RR</th>
+		<th>RR</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+		<tr>
+		<th>calculate_CWD</th>
+		<th>CWD</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_HWD</th>
+		<th>HWD</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_HWD</th>
+		<th>HWD</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_HDY</th>
+		<th>HDY</th>
+		<th>climate_variables</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>hdy_interpolation</th>
+		<th>(unchanged)</th>
+		<th>climate_variables</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_biovars</th>
+		<th>biovars</th>
+		<th>climate_variables</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+</table>
+	
+2. `climate_statistics`
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original name</span></th>
+		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>periodic_statistics</th>
+		<th>(unchanged)</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>climat_periodic_statistics</th>
+		<th>(unchanged)</th>
+		<th>periodic_climat_stats</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>calculate_and_apply_deltas</th>
+		<th>(unchanged)</th>
+		<th>simple_bias_correction</th>
+		<th>statistics/fields/climatology</th>
+	</tr>
+	<tr>
+		<th>window_sum/th>
+		<th>(unchanged)</th>
+		<th>moving_operations</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>moving_average</th>
+		<th>(unchanged)</th>
+		<th>moving_operations</th>
+		<th>statistics/core</th>
+	</tr>
+</table>
+
+3. `climatic_signal_modulators`
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original name</span></th>
+		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>autocorrelate</th>
+		<th>(unchanged)</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+</table>
+
+4. `consecutive_idx_statistics`
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original name</span></th>
+		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>get_1hour_time_step_data</th>
+		<th>hourly_ts_cumul</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>count_consecutive_days_maxdata</th>
+		<th>consec_occurrences_maxdata</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+	<tr>
+		<th>count_consecutive_days_mindata</th>
+		<th>consec_occurrences_mindata</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+	</tr>
+</table>
+	
+- <u>**NOTE**</u>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
+
+5. Rest of the content:
+
+- The following content has been moved to the new subpackage `climate_data_utils`:
+	1. Modules:
+		* `cdo_tools`
+		* `cds_tools`
+		* `detect_faulty_ncfiles`
+		* `extract_netcdf_basics`
+		* `__init__`
+		* `meteorological_variables`
+		* `nco_tools`
+		* `netcdf_handler`
+		* `weather_software_file_creator`
+	2. Further Subpackages:
+		* `data_downloads`
+		* `complementary-to_remodule`
+
+---
+
+## [v7.3.3] - 2024-09-28
+
+### Added
+
+`climatic_signal_modulators`
+
+- **Autocorrelation Function**:
+   * Streamlined the logic by handling smaller arrays using `numpy.correlate` and larger arrays with `scipy.signal.correlate`.
+   * Updated the docstring to clarify parameters and computation flow, explaining when to use two-sided or one-sided autocorrelation.
+
+- **Signal Whitening Methods**:
+   * Developed two signal whitening methods: `signal_whitening_classic` and `signal_whitening_pca`.
+   * `signal_whitening_classic` applies a traditional approach using Cholesky decomposition with `numpy.linalg`.
+   * `signal_whitening_pca` uses Principal Component Analysis (PCA) via `sklearn` for whitening data.
+   * Enhanced docstrings for both methods, clarifying inputs, outputs, and providing comprehensive usage examples.
+   
+- **Band-Pass Filtering Methods**:
+	* Refined three band-pass filtering methods (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated and optimized:
+		* Simplified internal variable names and loops for more concise code.
+		* Added detailed docstrings, explaining how each method works with frequency domain transformations and filtering based on custom low and high-frequency ranges.
+		* Used consistent terminology and enhanced explanations for different approaches to band-pass filtering.
+   
+- **Low and High-Pass Filtering Methods**:
+	- Refined `low_pass_filter` and `high_pass_filter` methods:
+<!--		* Utilized `scipy.signal.butter` and `scipy.signal.filtfilt` for efficient Butterworth filtering.--> HAU EZ DA EGIA --> ChatGPT
+		* Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
+		* Expanded the docstring to include explanations on filter design and its effect on different time series data.
+
+### Changed
+
+1. `climatic_statistics`
+
+- `window_sum`:
+	* Optimized performance by using `np.convolve` for faster sliding window summation.
+	* Added edge case handling for empty arrays or when the window size exceeds the array length.
+	* Refined docstring to clarify input parameters, particularly around window size and handling of edge cases.
+
+- `moving_average`:
+	* Rewritten using `np.convolve` for efficient computation of moving averages over a window.
+	* Added option for handling arrays shorter than the window size, ensuring graceful failure or warning.
+	* Clarified the docstring, highlighting that this method handles general numerical arrays, and specifying the nature of the windowing process.
+	
+2. `climatic_signal_modulators`
+
+- `polynomial_fitting`
+	 * Optimized the logic by simplifying variable names and improving handling of edge cases.
+	 * Enhanced the docstring to detail the parameters, added alternative polynomial function usage, and described the fixing of edges in polynomial interpolation.
+
+---
+
 ## [v7.0.0] - 2024-09-26
 
 ### Changed
@@ -170,6 +445,8 @@
 
 ### Removed
 - Deleted files that have been relocated.
+
+---
 
 ## [v3.0.0] (2024-06-24)
 
