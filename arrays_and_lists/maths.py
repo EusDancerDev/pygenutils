@@ -6,7 +6,7 @@
 #----------------#
 
 import itertools as it
-from numpy import array as np_arr
+from numpy import array
 
 #------------------#
 # Define functions #
@@ -76,17 +76,17 @@ def unique_pairs(array_like, library="python-default"):
     # Input validations #
     #-#-#-#-#-#-#-#-#-#-#
     
-    # Input array #
-    array = np_arr(array_like)
-    data_type = array.dtype
+    # Input arr #
+    arr = array(array_like)
+    data_type = arr.dtype
 
     if data_type == 'O':       
         raise TypeError("All elements of the array must either be of type"
                         "{'int', 'float', 'complex', 'str'} "
                         "or a combination of them.")
         
-    if len(array.shape) > 1:
-        array = array.flatten()
+    if len(arr.shape) > 1:
+        arr = arr.flatten()
     
     # Library #
     if library not in return_pairs_library_list:
