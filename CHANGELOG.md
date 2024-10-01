@@ -1,6 +1,364 @@
 # Changelog
 
-## [v8.X.X] - 2024-09-30
+## [v9.0.0] - 2024-10-01
+
+### Added
+
+<!--SOILIK ONDOKO LEHEN GIDOIAREN BARNEKOA FALTAN-->
+- Add the following modules in `utilities` subpackage:
+	- **Pandas Utils**: 
+		- `conversions`: 
+		- `data_manipulation`: 
+		- `pandas_obj_handler`: 
+
+- Add the following modules in `statistics` subpackage:
+	- **Core Statistics**: 
+		- `approximation_techniques`: for methods focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
+		- `curve_fitting`: for methods like polynomial fitting and other curve fitting techniques.
+		- `interpolation_methods`: for interpolation techniques, including the `hdy_interpolation` method.
+	- **Climate Statistics** (`fields/climatology`)
+		- `representative_series`: analysis of time series resulting from representativity criteria.
+
+### Changed
+
+- Once above creations done, the following moves and/or renamings have been made:
+
+**Methods**
+
+1. In `statistics` subpackage:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>polynomial_fitting</th>
+		<th>regressions</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>curve_fitting</th>
+		<th>(unchanged)</th>
+		
+	</tr>
+	<tr>
+		<th>calculate_HDY</th>
+		<th>variables</th>
+		<th>statistics/fields/climatology</th>
+		<th>(unchanged)</th>
+		<th>representative_series</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>hdy_interpolation (once moved, changed visibility to internal)</th>
+		<th>variables</th>
+		<th>statistics/fields/climatology</th>
+		<th>(unchanged)</th>
+		<th>representative_series</th>
+		<th>(unchanged)</th>
+	</tr>	
+	
+2. To `time_handling` subpackage:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>infer_full_period_of_time (first time)</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+	<tr>
+		<th>infer_full_period_of_time (second time)</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+	<tr>
+		<th>find_date_key</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+	<tr>
+		<th>infer_full_period_of_time</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+	<tr>
+		<th>infer_time_frequency</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+</table>
+
+3. To `utilities/pandas_utils` subpackage (depth level 2)
+<br>
+
+3.1  To `conversions.py` module
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>create_pivot_table</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>conversions</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>df_to_structured_array</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>conversions</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+</table>
+
+<br>
+3.2 To `data_manipulation` module
+	
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>concat_dfs_aux</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>count_data_by_concept</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>insert_column_in_df</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>insert_row_in_df</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>polish_df_column_names</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>reindex_df</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>sort_df_indices</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>sort_df_values</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+</table>
+<br>
+
+3.3  To `pandas_obj_handler` module
+	
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>csv2df</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>excel_handler</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>merge_csv_files</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>merge_excel_files</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>merge_ods_files</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>ods_handler</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>read_table</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>save2csv</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>save2excel</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+	<tr>
+		<th>save2ods</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>pandas_obj_handler</th>
+		<th>utilities/pandas_utils</th>
+	</tr>
+</table>
+
+**Modules**
+	
+</table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>---</th>
+		<th>climate_indicators</th>
+		<th>statistics/fields/climatology</th>
+		<th>---</th>
+		<th>indicators</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>---</th>
+		<th>climate_variables</th>
+		<th>statistics/fields/climatology</th>
+		<th>---</th>
+		<th>variables</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>---</th>
+		<th>calendar_operators</th>
+		<th>time_handling</th>
+		<th>---</th>
+		<th>calendar_utils</th>
+		<th>(unchanged)</th>
+	</tr>
+</table>
+
+### Removed
+
+- Once every addition and changes performed, removed subpackage `pandas_data_frames`.
 
 ---
 
@@ -83,35 +441,43 @@
 - Many functions have been moved out from the modules in the old `weather_and_climate` subpackage to `statistics`.
 - Information about the original module and new function name and location is displayed next:
   
-1. `climate_indicators`
-
 <table>
 	<tr>
-		<th><span style="font-size:13.7pt">Original name</span></th>
-		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
 		<th>calculate_WSDI</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>WSDI</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_SU</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>SU</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_CSU</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>CSU</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_FD/th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>FD</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
@@ -124,12 +490,16 @@
 	</tr>
 	<tr>
 		<th>calculate_RR</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>RR</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
-		<tr>
+	<tr>
 		<th>calculate_CWD</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>CWD</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
@@ -142,111 +512,137 @@
 	</tr>
 	<tr>
 		<th>calculate_HWD</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>HWD</th>
 		<th>climate_indicators</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_HDY</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>HDY</th>
 		<th>climate_variables</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>hdy_interpolation</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>climate_variables</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_biovars</th>
+		<th>climate_indicators</th>
+		<th>weather_and_climate</th>
 		<th>biovars</th>
 		<th>climate_variables</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 </table>
 	
-2. `climate_statistics`
-
 <table>
 	<tr>
-		<th><span style="font-size:13.7pt">Original name</span></th>
-		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
 		<th>periodic_statistics</th>
+		<th>climate_statistics</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>time_series</th>
 		<th>statistics/core</th>
 	</tr>
 	<tr>
 		<th>climat_periodic_statistics</th>
+		<th>climate_statistics</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>periodic_climat_stats</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>calculate_and_apply_deltas</th>
+		<th>climate_statistics</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>simple_bias_correction</th>
 		<th>statistics/fields/climatology</th>
 	</tr>
 	<tr>
 		<th>window_sum/th>
+		<th>climate_statistics</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>moving_operations</th>
 		<th>statistics/core</th>
 	</tr>
 	<tr>
 		<th>moving_average</th>
+		<th>climate_statistics</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>moving_operations</th>
 		<th>statistics/core</th>
 	</tr>
 </table>
 
-3. `climatic_signal_modulators`
-
 <table>
 	<tr>
-		<th><span style="font-size:13.7pt">Original name</span></th>
-		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
 		<th>autocorrelate</th>
+		<th>climatic_signal_modulators</th>
+		<th>weather_and_climate</th>
 		<th>(unchanged)</th>
 		<th>time_series</th>
 		<th>statistics/core</th>
 	</tr>
 </table>
 
-4. `consecutive_idx_statistics`
-
 <table>
 	<tr>
-		<th><span style="font-size:13.7pt">Original name</span></th>
-		<th><span style="font-size:13.7pt">New name</span></th>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
 		<th>get_1hour_time_step_data</th>
+		<th>consecutive_idx_statistics</th>
+		<th>weather_and_climate</th>
 		<th>hourly_ts_cumul</th>
 		<th>time_series</th>
 		<th>statistics/core</th>
 	</tr>
 	<tr>
 		<th>count_consecutive_days_maxdata</th>
+		<th>consecutive_idx_statistics</th>
+		<th>weather_and_climate</th>
 		<th>consec_occurrences_maxdata</th>
 		<th>time_series</th>
 		<th>statistics/core</th>
 	</tr>
 	<tr>
 		<th>count_consecutive_days_mindata</th>
+		<th>consecutive_idx_statistics</th>
+		<th>weather_and_climate</th>
 		<th>consec_occurrences_mindata</th>
 		<th>time_series</th>
 		<th>statistics/core</th>
@@ -255,36 +651,7 @@
 	
 - <u>**NOTE**</u>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
 
-5. `meteorological_variables`
-
-<table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original name</span></th>
-		<th><span style="font-size:13.7pt">New name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
-	</tr>
-	<tr>
-		<th>get_1hour_time_step_data</th>
-		<th>hourly_ts_cumul</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>count_consecutive_days_maxdata</th>
-		<th>consec_occurrences_maxdata</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>count_consecutive_days_mindata</th>
-		<th>consec_occurrences_mindata</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-</table>
-
-6. Rest of the content:
+5. Rest of the content:
 
 - The following content has been moved to the new subpackage `climate_data_utils`:
 
