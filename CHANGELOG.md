@@ -1,17 +1,360 @@
 # Changelog
 
+## [v9.X.X] - 2024-10-02
+
+### Added
+
+- Add the following directories and modules in `statistics` subpackage:
+	- **Core Statistics**: 
+		- `signal_processing`: signal processing methods (signal whitening, low-pass, high-pass, and band-pass filters) 
+
+<!--ONDOKO GIDOIAREN BARNEKOA FALTAN-->
+- Add the following directories and modules in `utilities` subpackage:
+	- **Xarray Utils**: 
+		- `data_manipulation`: 
+		- `file_utils`:
+		- `patterns`: 
+		- `xarray_obj_handler`:
+
+### Changed
+
+- After the creations in **Core Statistics**, the following changes have been made:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>signal_whitening</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>low_pass_filter</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>high_pass_filter</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>band_pass1</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>band_pass2</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+	<tr>
+		<th>band_pass3</th>
+		<th>time_series</th>
+		<th>statistics/core</th>
+		<th>(unchanged)</th>
+		<th>signal_processing</th>
+		<th>(unchanged)</th>
+	</tr>
+</table>
+
+- After the creations in **Xarray Utils**, the following changes have been made:
+
+<!--ONDOREN BERRIZENDATU FUNTZIOAK-->
+
+1. To `time_handling` and `data_manipulation`:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>infer_time_frequency</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>date_and_time_operators</th>
+		<th>time_handling</th>
+	</tr>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>create_ds_component</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>data_manipulation</th>
+	</tr>
+	<tr>
+		<th>extract_and_store_latlon_bounds</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>data_manipulation</th>
+	</tr>
+	<tr>
+		<th>extract_and_store_period_bounds</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>data_manipulation</th>
+	</tr>
+	<tr>
+		<th>extract_and_store_time_formats</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>data_manipulation</th>
+	</tr>
+	<tr>
+		<th>netcdf_regridder</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>data_manipulation</th>
+	</tr>
+<table>
+	
+2. To `file_utils`:
+	
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>get_netcdf_file_dir_list</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>file_utils</th>
+	</tr>
+	<tr>
+		<th>get_netcdf_file_list</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>file_utils</th>
+	</tr>
+	<tr>
+		<th>netcdf_file_scanner</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>scan_ncfiles</th>
+		<th>file_utils</th>
+		<th>utilities/xarray_utils</th>
+	</tr>
+	<tr>
+		<th>ncfile_integrity_status</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>file_utils</th>
+	</tr>
+</table>
+
+3. To `patterns`:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>find_coordinate_variables</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>find_coordinate_variables_raise_none</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>find_nearest_coordinates</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>find_time_dimension</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>find_time_dimension_raise_none</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>get_file_dimensions</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>get_file_variables</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>get_latlon_bounds</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>get_latlon_deltas</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+	<tr>
+		<th>get_model_list</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>patterns</th>
+	</tr>
+</table>
+
+4. To `xarray_obj_handler`:
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Original function name</span></th>
+		<th><span style="font-size:13.7pt">Original module</span></th>
+		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+		<th><span style="font-size:13.7pt">New module</span></th>
+		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>grib2netcdf</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>xarray_obj_handler</th>
+	</tr>
+	<tr>
+		<th>save_data_array_as_csv</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>xarray_obj_handler</th>
+	</tr>
+	<tr>
+		<th>save_data_as_netcdf_std</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>xarray_obj_handler</th>
+	</tr>
+	<tr>
+		<th>save_nc_data_as_csv</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
+		<th>(unchanged)</th>
+		<th>utilities/xarray_utils</th>
+		<th>xarray_obj_handler</th>
+	</tr>
+</table>
+
+- <u>**NOTE**</u>: any method rename above has also been applied to all files using the old method name.
+
+### Removed
+
+- Once every addition and changes performed regarding **Xarray Utils**, removed subpackage `netcdf_handler`.
+
+---
+
 ## [v9.0.0] - 2024-10-01
 
 ### Added
 
-<!--SOILIK ONDOKO LEHEN GIDOIAREN BARNEKOA FALTAN-->
-- Add the following modules in `utilities` subpackage:
+<!--ONDOKO GIDOIAREN BARNEKOA FALTAN-->
+- Add the following directories and modules in `utilities` subpackage:
 	- **Pandas Utils**: 
 		- `conversions`: 
 		- `data_manipulation`: 
 		- `pandas_obj_handler`: 
 
-- Add the following modules in `statistics` subpackage:
+- Add the following directories and modules in `statistics` subpackage:
 	- **Core Statistics**: 
 		- `approximation_techniques`: for methods focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
 		- `curve_fitting`: for methods like polynomial fitting and other curve fitting techniques.
@@ -60,7 +403,8 @@
 		<th>(unchanged)</th>
 		<th>representative_series</th>
 		<th>(unchanged)</th>
-	</tr>	
+	</tr>
+</table>
 	
 2. To `time_handling` subpackage:
 
@@ -130,14 +474,6 @@
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
-		<th>create_pivot_table</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>conversions</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
 		<th>df_to_structured_array</th>
 		<th>data_frame_handler</th>
 		<th>pandas_data_frames</th>
@@ -158,6 +494,14 @@
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+	</tr>
+	<tr>
+		<th>create_pivot_table</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames</th>
+		<th>(unchanged)</th>
+		<th>data_manipulation</th>
+		<th>utilities/pandas_utils</th>
 	</tr>
 	<tr>
 		<th>concat_dfs_aux</th>
