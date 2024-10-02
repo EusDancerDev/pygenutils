@@ -1,6 +1,9 @@
 # Ignore the Spyder project manager directory #
 .spyproject
 
+# Ignore every Jupyter Notebook checkpoint directory in all subdirectories
+**/.ipynb_checkpoints
+
 # Ignore every Python caching directory in all subdirectories #
 **/__pycache__
 
