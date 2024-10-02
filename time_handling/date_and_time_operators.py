@@ -10,14 +10,14 @@ import time
 
 import os
 
-from numpy import float128
+from numpy import char, float128, unique
 import pandas as pd
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from pyutils.pandas_data_frames.data_frame_handler import find_date_key
+from pyutils.pandas_data_frames.global_parameters import common_delim_list
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
@@ -270,6 +270,136 @@ def get_datetime_object_unit(dt_obj):
             raise ValueError(f"Could not determine unit from dtype: '{dtype_str}'")
     else:
         raise AttributeError(f"Object of type '{obj_type}' has no attribute 'dtype'.")
+        
+        
+# Date/time detection and handling #
+#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
+
+# TODO: ChatGPT <->ondoko bi metodoak alkartu
+
+# TODO: ChatGPT <-> hobetu docstring-a
+def infer_time_frequency(df_or_index):    
+    """
+    Infer the most likely frequency given the input index,
+    using pandas's 'infer_freq' method.
+    If the frequency is uncertain, a warning will be printed.
+    
+    Parameters
+    ----------
+    df_or_index : pandas.DataFrame or pandas.Series or DatetimeIndex or TimedeltaIndex
+    
+        The method will first assume that the input argument 
+        is a pandas object, so that is has a date key column,
+        and will attempt to infer the time frequency.
+        
+        To do so, the already defined 'find_date_key' attempts
+        to find the date column. If cannot be found,
+        that will mean that the input argument is not a pandas object
+        but a DatetimeIndex of TimedeltaIndex object instead.
+    
+    Returns
+    -------
+    str
+        The time frequency.
+        If the frequency cannot be determined, pandas.infer_freq
+        method returns None. In such case, this function is designed
+        to raise a ValueError that indicates so.
+    
+    Note
+    ----
+    If passed a pandas's Series 
+    will use the values of the series (NOT THE INDEX).
+    """
+   
+    try:
+        date_key = find_date_key(df_or_index)
+        time_freq = pd.infer_freq(df_or_index[date_key])
+    except (TypeError, ValueError):
+        time_freq = pd.infer_freq(df_or_index)
+        
+    if time_freq is None:
+        raise ValueError("Could not determine the time frequency.")
+    else:
+        return time_freq
+    
+
+# TODO: ChatGPT <-> sortu docstring-a
+def infer_time_frequency(nc_file):
+    
+    if isinstance(nc_file, str):
+        print(f"Opening {nc_file}...")
+        ds = xr.open_dataset(nc_file)
+        
+    else:
+        ds = nc_file.copy()
+        
+    date_key = find_time_dimension(ds)
+    time_freq = xr.infer_freq(ds[date_key])
+    
+    return time_freq
+
+
+# %%
+
+# # TODO: ChatGPT <-> bi metodoak integratu
+
+# TODO: ChatGPT <-> docstring
+def infer_full_period_of_time(df):
+    date_key = find_date_key(df)
+    years = unique(df[date_key].dt.year)
+    full_period = f"{years[0]-years[-1]}"
+    
+    return full_period
+
+# TODO: ChatGPT <-> docstring
+def infer_full_period_of_time(nc_file):
+    
+    if isinstance(nc_file, str):
+        print(f"Opening {nc_file}...")
+        ds = xr.open_dataset(nc_file)
+        
+    else:
+        ds = nc_file.copy()
+        
+    date_key = find_time_dimension(ds)
+    
+    years = unique(ds[date_key].dt.year)
+    full_period = f"{years[0]-years[-1]}"
+    
+    return full_period
+
+
+# %%
+def find_date_key(df):    
+    """
+    Function that searches for date key in the columns of a Pandas DataFrame.
+    
+    Parameters
+    ----------
+    df : pandas.DataFrame
+        Pandas data frame containing data.
+    
+    Returns
+    -------
+    date_key : str
+        String, the date key of which is identified with.
+    """
+    
+    try:
+        df_cols = char.lower(df.columns.tolist())    
+    except AttributeError:
+        input_obj_type = get_obj_type_str(df)
+        raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
+    else:
+        try:
+            date_key_idx = find_substring_index(df_cols, time_kws)
+            date_key = df_cols[date_key_idx]
+        except KeyError:
+            raise KeyError("Grouper name 'date' or similar not found")
+        else:
+            return date_key
+    
 
 #%%
 
@@ -456,6 +586,16 @@ dt_dtype_options = ["datetime", "str", "timestamp"]
 attr_options = ["creation", "modification", "access"]
 error_class_list = [ValueError, AttributeError]
 
+# File extension list #
+extensions = ["csv", "xlsx"]
+
+# String splitting character #
+splitdelim = common_delim_list[4]
+
+# Time span shortands #
+time_kws = ["da", "fe", "tim", "yy"]
+
+
 # Preformatted strings #
 #----------------------#
 
@@ -481,3 +621,13 @@ current_datetime_dict = {
     dt_dtype_options[1] : time.ctime(),
     dt_dtype_options[2] : pd.Timestamp.now()
     }
+
+
+#--------------------------#
+# Parameters and constants #
+#--------------------------#
+
+# Error strings #
+#---------------#
+
+unsupported_obj_type_err_str = "Expected a pandas.DataFrame object, got {}"
