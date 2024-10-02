@@ -396,11 +396,7 @@ def _radians_to_time_of_day(rads):
 # Sum and subtract operations #
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
-def sum_date_objects(date_list, 
-                     operation="sum", 
-                     dt_fmt_str="%Y-%m-%d",
-                     output_format="default"):
-    
+def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_format="default"):
     """
     Calculate the sum or difference of a list of dates 
     and format the output accordingly.
