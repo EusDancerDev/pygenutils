@@ -5,22 +5,20 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pyutils.climate_data_utils import cds_tools
+from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.weather_and_climate import cds_tools, netcdf_handler
+from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
+from pyutils.utilities.xarray_utils.xarray_obj_handler import grib2netcdf
 
 # Create aliases #
 #----------------#
 
 download_data = cds_tools.download_data
-
 make_parent_directories = file_and_directory_handler.make_parent_directories
-move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_byExts_fromCodeCallDir
-
+move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
 find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
-
-netcdf_file_scanner = netcdf_handler.netcdf_file_scanner
 
 #-------------------------#
 # Define custom functions #
@@ -206,7 +204,7 @@ for country, area_list in zip(country_list, area_lists):
                     
                     if lofnl > 0:
                         num_faulty_ncfiles\
-                        = netcdf_file_scanner(path_to_walk_into=codes_dir)
+                        = scan_ncfiles(path_to_walk_into=codes_dir)
                         
                         if num_faulty_ncfiles > 0:   
                             # Download the specified data #
