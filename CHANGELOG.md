@@ -418,7 +418,7 @@
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
-		<th>infer_full_period_of_time (first time)</th>
+		<th>infer_full_period_of_time</th>
 		<th>data_frame_handler</th>
 		<th>pandas_data_frames</th>
 		<th>(unchanged)</th>
@@ -426,7 +426,7 @@
 		<th>time_handling</th>
 	</tr>
 	<tr>
-		<th>infer_full_period_of_time (second time)</th>
+		<th>infer_full_period_of_time</th>
 		<th>netcdf_handler</th>
 		<th>climate_data_utils</th>
 		<th>(unchanged)</th>
@@ -442,9 +442,9 @@
 		<th>time_handling</th>
 	</tr>
 	<tr>
-		<th>infer_full_period_of_time</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
+		<th>infer_time_frequency</th>
+		<th>netcdf_handler</th>
+		<th>climate_data_utils</th>
 		<th>(unchanged)</th>
 		<th>date_and_time_operators</th>
 		<th>time_handling</th>
