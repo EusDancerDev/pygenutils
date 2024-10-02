@@ -22,11 +22,11 @@ from pyutils.weather_and_climate import cds_tools, netcdf_handler
 download_data = cds_tools.download_data
 
 make_parent_directories = file_and_directory_handler.make_parent_directories
-move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_byExts_fromCodeCallDir
+move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
 
 find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 
-netcdf_file_scanner = netcdf_handler.netcdf_file_scanner
+scan_ncfiles = netcdf_handler.scan_ncfiles
 
 #-------------------------#
 # Define custom functions #
@@ -447,7 +447,7 @@ for start_year, end_year in zip(sel_rcp_start_ys, sel_rcp_end_ys):
     
     if lofnl > 0:
         num_faulty_ncfiles\
-        = netcdf_file_scanner(path_to_walk_into=codes_dir)
+        = scan_ncfiles(path_to_walk_into=codes_dir)
         
         if num_faulty_ncfiles > 0:   
             # Download the specified data #
