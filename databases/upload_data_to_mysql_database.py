@@ -2,7 +2,7 @@
 **Note**
 
 This program is an application of the main module 'database_handler'
-from package 'pyutils', and it uses some of its attributes and/or functions.
+in the subpackage 'databases', and it uses some of its attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 
@@ -19,17 +19,17 @@ Data Type Options
 -----------------
 Refer to the following table for mapping Pandas data types to MySQL data types:
 
-| Pandas Data Type | MySQL Data Type     |
-|------------------|---------------------|
-| `int64`          | `BIGINT`            |
-| `int32`          | `INTEGER`           |
-| `float64`        | `DOUBLE`            |
-| `float32`        | `FLOAT`             |
-| `bool`           | `BOOLEAN`           |
-| `datetime64`     | `DATETIME`          |
-| `timedelta[ns]`  | `TIME`              |
-| `object`         | `TEXT` or `VARCHAR` |
-| `category`       | `VARCHAR`           |
+|     Pandas Data Type     |   MySQL Data Type   |
+|--------------------------|---------------------|
+| `int64`                  | `BIGINT`            |
+| `int32`                  | `INTEGER`           |
+| `float64`                | `DOUBLE`            |
+| `float32`                | `FLOAT`             |
+| `bool`                   | `BOOLEAN`           |
+| `datetime64`             | `DATETIME`          |
+| `timedelta[{time_unit}]` | `TIME`              |
+| `object`                 | `TEXT` or `VARCHAR` |
+| `category`               | `VARCHAR`           |
 
 Data Files
 ----------
@@ -44,8 +44,7 @@ Data Files
 #-----------------------#
 
 from pyutils.databases.database_handler import load_file_to_sql
-from pyutils.files_and_directories.file_and_directory_paths import find_files_by_globstr
-from pyutils.files_and_directories.file_and_directory_paths import find_files_by_ext
+from pyutils.utilities.file_operations.file_and_directory_paths import find_files_by_globstr, find_files_by_ext
 from pyutils.parameters_and_constants.config_params import config_dict
 
 #-------------------#
@@ -112,9 +111,9 @@ input_file_obj = "/home/jonander/Documents/gordetegiak/pyutils.databases/test.cs
 #                                    path_to_walk_into=".", 
 #                                    top_path_only=True)
 
-#------------------#
-# Perform the task #
-#------------------#
+#-------------#
+# Run program #
+#-------------#
 
 load_file_to_sql(input_file_obj,
                  config_dict, 
