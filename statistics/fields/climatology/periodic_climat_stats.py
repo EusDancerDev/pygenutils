@@ -47,7 +47,7 @@ from pyutils.strings.string_handler import find_substring_index
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
 from pyutils.statistics.core.time_series import periodic_statistics
 from pyutils.time_handling.time_formatters import datetime_obj_converter
-from pyutils.weather_and_climate.netcdf_handler import find_time_dimension
+from pyutils.utilities.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
 #----------------#
