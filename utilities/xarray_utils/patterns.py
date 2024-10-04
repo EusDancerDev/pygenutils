@@ -28,476 +28,372 @@ find_files_by_ext = file_and_directory_paths.find_files_by_ext
 # Dimension handlers #
 #--------------------#
 
-def find_time_dimension(nc_file_name):
-    
-    """
-    Function that searches for time dimension names.
-    It should always be located among dimensions,
-    but it can happen that it either located only among variables
-    or be duplicated among those.
-    This function is designed to try both cases.
-    
-    Parameters
-    ----------
-    nc_file_name : str or xarray.Dataset
-        String of the data file or the data set itself.
-    
-    Returns
-    -------
-    time_varlist : list
-        List containing the strings that identify the time dimension.
-    time_varlist_retry : list
-        List containing the strings that identify the time variable.
-        It is returned only if the previous case is not satisfied.
-    """
-    
-    # Open the netCDF file if necessary #
-    if isinstance(nc_file_name, str):
-        ds = xr.open_dataset(nc_file_name)
-        
-    else:
-        ds = nc_file_name.copy()
-    
-    # Search inside the dimension list #    
-    dimlist = list(ds.dims)
-    
-    time_varlist = [key
-                    for key in dimlist
-                    if key.lower().startswith("t")
-                    or key.lower().startswith("ti")
-                    or key.lower().startswith("da")]
-    time_varlist.sort()
-    
-    if len(time_varlist) > 0:       
-        return time_varlist[0]
-        
-    else:
-        
-        # Search inside the variable list #    
-        varlist = list(ds.variables)
-        
-        time_varlist_retry = [key
-                              for key in varlist
-                              if key.lower().startswith("t")
-                              or key.lower().startswith("ti")
-                              or key.lower().startswith("da")]
-        time_varlist_retry.sort()
-        
-        if len(time_varlist_retry) > 0:
-            return time_varlist_retry[0]
-        
-        else:
-            raise ValueError("No 'time' dimension found in file {nc_file_name}.")
-            
-    ds.close()
-            
-            
-def find_time_dimension_raise_none(nc_file_name):
-    
-    """
-    Function that searches for time dimension names.
-    It should always be located among dimensions,
-    but it can happen that it either located only among variables
-    or be duplicated among those.
-    This function is designed to try both cases.
-    
-    Parameters
-    ----------
-    nc_file_name : str or xarray.Dataset
-        String of the data file or the data set itself.
-    
-    Returns
-    -------
-    time_varlist : list
-        List containing the strings that identify the time dimension.
-    time_varlist_retry : list
-        List containing the strings that identify the time variable.
-        It is returned only if the previous case is not satisfied.
-    """
-    
-    # Open the netCDF file if necessary #
-    if isinstance(nc_file_name, str):
-        ds = xr.open_dataset(nc_file_name)
-        
-    else:
-        ds = nc_file_name.copy()
-    
-    # Search inside the dimension list #    
-    dimlist = list(ds.dims)
-    
-    time_varlist = [key
-                    for key in dimlist
-                    if key.lower().startswith("t")
-                    or key.lower().startswith("ti")
-                    or key.lower().startswith("da")]
-    time_varlist.sort()
-    
-    if len(time_varlist) > 0:       
-        return time_varlist[0]
-        
-    else:
-        
-        # Search inside the variable list #    
-        varlist = list(ds.variables)
-        
-        time_varlist_retry = [key
-                              for key in varlist
-                              if key.lower().startswith("t")
-                              or key.lower().startswith("ti")
-                              or key.lower().startswith("da")]
-        time_varlist_retry.sort()
-        
-        if len(time_varlist_retry) > 0:
-            return time_varlist_retry[0]
-        
-        else:
-            return None
-        
-    ds.close()
-            
-            
-def find_coordinate_variables(nc_file_name):
-    
-    """
-    Function that searches for coordinate variable names.
-    Usually those are located inside the dimension list,
-    but it can happen that in some cases are among variables.
-    This function is designed to try both cases.
-    
-    Parameters
-    ----------
-    nc_file_name : str or xarray.Dataset
-        String of the data file or the data set itself.
-    
-    Returns
-    -------
-    coord_varlist : list
-        List containing the strings that identify
-        the 'latitude' and 'longitude' dimensions.
-    coord_varlist_retry : list
-        List containing the strings that identify
-        the 'latitude' and 'longitude' variables.
-        It is returned only if the previous case is not satisfied.
-    """
-    
-    # Open the netCDF file if necessary #
-    if isinstance(nc_file_name, str):
-        ds = xr.open_dataset(nc_file_name)
-    else:
-        ds = nc_file_name.copy()
-    
-    # Search inside the dimension list #    
-    dimlist = list(ds.dims)
-    
-    coord_varlist = [key
-                     for key in dimlist
-                     if key.lower().startswith("lat")
-                     or key.lower().startswith("y")
-                     or key.lower().startswith("lon")
-                     or key.lower().startswith("x")]                             
-    
-    if len(coord_varlist) == 2: 
-        coord_varlist.sort()
-        return coord_varlist
-        
-    else:
-        
-        # Search inside the variable list #    
-        varlist = list(ds.variables)
-        coord_varlist_retry = [key
-                               for key in varlist
-                               if key.lower().startswith("lat")
-                               or key.lower().startswith("y")
-                               or key.lower().startswith("lon")
-                               or key.lower().startswith("x")]
-        
-        if len(coord_varlist_retry) == 2:
-            coord_varlist_retry.sort()
-            return coord_varlist_retry
-        
-        else:
-            raise ValueError("No 'latitude' or 'longitude' coordinates found "
-                             f"in file '{nc_file_name}'")
-            
-    ds.close()
-    
-            
-def find_coordinate_variables_raise_none(nc_file_name):
-    
-    """
-    Function that searches for coordinate variable names.
-    Usually those are located inside the dimension list,
-    but it can happen that in some cases are among variables.
-    This function is designed to try both cases.
-    
-    Parameters
-    ----------
-    nc_file_name : str or xarray.Dataset
-        String of the data file or the data set itself.
-    
-    Returns
-    -------
-    coord_varlist : list
-        List containing the strings that identify
-        the 'latitude' and 'longitude' dimensions.
-    coord_varlist_retry : list
-        List containing the strings that identify
-        the 'latitude' and 'longitude' variables.
-        It is returned only if the previous case is not satisfied.
-    """
-    
-    # Open the netCDF file if necessary #
-    if isinstance(nc_file_name, str):
-        ds = xr.open_dataset(nc_file_name)        
-    else:
-        ds = nc_file_name.copy()
-    
-    # Search inside the dimension list #    
-    dimlist = list(ds.dims)
-    
-    coord_varlist = [key
-                     for key in dimlist
-                     if key.lower().startswith("lat")
-                     or key.lower().startswith("y")
-                     or key.lower().startswith("lon")
-                     or key.lower().startswith("x")]
-    
-    if len(coord_varlist) == 2:       
-        return coord_varlist
-        
-    else:
-        
-        # Search inside the variable list #    
-        varlist = list(ds.variables)
-        coord_varlist_retry = [key
-                               for key in varlist
-                               if key.lower().startswith("lat")
-                               or key.lower().startswith("y")
-                               or key.lower().startswith("lon")
-                               or key.lower().startswith("x")]                             
-        
-        if len(coord_varlist_retry) == 2:
-            return coord_varlist_retry
-        
-        else:
-            return None
-        
-    ds.close()
-
-        
-def get_model_list(path_list, split_pos):
-
-    """
-    Function that searches for model names present
-    in the given relative file path list.
-    Paths can either be absolute, relative or only file names,
-    but they should, as a matter of unification, contain low bars.
-    If paths are relative or absolute, i.e. contain forward slashes,
-    the function selects only the file name.
-    Then it splits the file name and select the position, defined by the user
-    taking the low bar as the separator.
-    
-    Parameters
-    ----------
-    path_list : list
-        List of relative/absolute paths or file names.
-    split_pos : int
-        Integer that defines which position 
-    
-    Returns
-    -------
-    unique_model_list : list
-        Unique list containing model names found in the path list.
-    """
-    
-    fwd_slash_containing_files = [path
-                                  for path in path_list
-                                  if "/" in path]
-    
-    grib_file_list = [path.name
-                      if len(fwd_slash_containing_files) > 0
-                      and splitdelim in path
-                      else path
-                      for path in path_list]
-        
-    unique_model_list = np.unique([f.split(splitdelim)[split_pos]
-                                   for f in grib_file_list
-                                   if len(grib_file_list) > 0])
-    
-    return unique_model_list
-
+# Main methods #
+#-#-#-#-#-#-#-#-
 
 def get_file_dimensions(nc_file):
-    
     """
-    Function that extracts dimensions names from a netCDF file.
-    There are some cases in which variables are also among dimensions,
-    so it is convenient to eliminate those.
-    
+    Extracts dimension names from a netCDF file or xarray.Dataset. In some cases,
+    dimensions can also appear as variables, so this function ensures only
+    dimensions are returned.
+
     Parameters
     ----------
-    nc_file : str or xarray.Dataset, throws an error otherwise.
-        String or already opened file
-        that identifies the netCDF file to work with.
-    
+    nc_file : str or xarray.Dataset
+        Either the path to the netCDF file or an already opened xarray.Dataset object.
+
     Returns
     -------
-    dimension_names = list
-        List containing the names of the dimensions.
+    dimension_names : list or str
+        A list of dimension names, or a single dimension name if only one is found.
+
+    Raises
+    ------
+    TypeError
+        If the input is neither a string nor an xarray.Dataset object.
     """
-    
     if isinstance(nc_file, str):
-        
         ds = xr.open_dataset(nc_file)
-            
-        varlist = list(ds.variables)
-        dimlist = list(ds.dims)
-        
-        # Remove variables from the dimension list if present #
-        dimlist_nodim = [dim
-                         for dim in varlist
-                         if dim in dimlist]
-        
-        ldn = len(dimlist_nodim)
-        if ldn == 1:
-            return dimlist_nodim[0]
-        else:
-            return dimlist_nodim
-        
+        close_dataset = True
+    elif isinstance(nc_file, xr.Dataset):
+        ds = nc_file
+        close_dataset = False
+    else:
+        raise TypeError("Unsupported data file type. Expected str or xarray.Dataset.")
+
+    dimlist = list(ds.dims)
+    varlist = list(ds.variables)
+    
+    # Retain only those dimensions that are present among variables
+    dimlist_nodim = [dim for dim in dimlist if dim in varlist]
+
+    if close_dataset:
         ds.close()
         
-    elif isinstance(nc_file, xr.Dataset):
-        
-        varlist = list(nc_file.variables)
-        dimlist = list(nc_file.dims)
-        
-        # Remove variables from the dimension list if present #
-        dimlist_nodim = [dim
-                         for dim in varlist
-                         if dim in dimlist]
-        
-        ldn = len(dimlist_nodim)
-        if ldn == 1:
-            return dimlist_nodim[0]
-        else:
-            return dimlist_nodim
-    
-    else:
-        return TypeError("Unsupported data file type.")
+    return dimlist_nodim[0] if len(dimlist_nodim) == 1 else dimlist_nodim
 
 
 def get_file_variables(nc_file):
-    
     """
-    Function that extracts variable names from a netCDF file.
-    Usually some dimensions are also inside the variable list,
-    so it is convenient to eliminate those.
-    
+    Extracts variable names from a netCDF file or xarray.Dataset, excluding
+    dimensions, as dimensions may also be present in the variable list.
+
     Parameters
     ----------
-    nc_file : str or xarray.Dataset, throws an error otherwise.
-        String or already opened file
-        that identifies the netCDF file to work with.
-    
+    nc_file : str or xarray.Dataset
+        Either the path to the netCDF file or an already opened xarray.Dataset object.
+
     Returns
     -------
-    variable_names = list
-        List containing the names of the variables.
+    variable_names : list or str
+        A list of variable names, or a single variable name if only one is found.
+
+    Raises
+    ------
+    TypeError
+        If the input is neither a string nor an xarray.Dataset object.
     """
-    
     if isinstance(nc_file, str):
-        
         ds = xr.open_dataset(nc_file)
-        varlist = list(ds.variables)
-        dimlist = list(ds.dims)
-        
-        # Remove dimensions from the variable list if present #
-        varlist_nodim = [var
-                         for var in varlist
-                         if var not in dimlist]
-        
-        lvn = len(varlist_nodim)
-        if lvn == 1:
-            return varlist_nodim[0]
-        else:
-            return varlist_nodim
-        
+        close_dataset = True
+    elif isinstance(nc_file, xr.Dataset):
+        ds = nc_file
+        close_dataset = False
+    else:
+        raise TypeError("Unsupported data file type. Expected str or xarray.Dataset.")
+
+    varlist = list(ds.variables)
+    dimlist = list(ds.dims)
+    
+    # Remove dimensions from the variable list
+    varlist_nodim = [var for var in varlist if var not in dimlist]
+
+    if close_dataset:
         ds.close()
         
-    elif isinstance(nc_file, xr.Dataset):
-        
-        varlist = list(nc_file.variables)
-        dimlist = list(nc_file.dims)
-        
-        # Remove dimensions from the variable list if present #
-        varlist_nodim = [var
-                         for var in varlist
-                         if var not in dimlist]
-        
-        lvn = len(varlist_nodim)
-        if lvn == 1:
-            return varlist_nodim[0]
-        else:
-            return varlist_nodim
-    
-    else:
-        return TypeError("Unsupported data file type.")
+    return varlist_nodim[0] if len(varlist_nodim) == 1 else varlist_nodim
 
 
-def get_latlon_bounds(netcdf_file, lat_dimension_name, lon_dimension_name, value_roundoff):
-    ds = xr.open_dataset(netcdf_file)
+def get_model_list(path_list, split_pos, splitdelim="_"):
+    """
+    Extracts model names from a list of file paths or file names by splitting the file
+    name at a specified position. The function can handle both absolute/relative paths 
+    and file names, assuming they contain low bars ('_') as separators.
+
+    Parameters
+    ----------
+    path_list : list of str
+        List of file paths (absolute or relative) or file names.
+    split_pos : int
+        Position in the split file name (after splitting by the delimiter) that contains
+        the model name.
+    splitdelim : str, optional
+        Delimiter used to split the file name. Default is "_".
+
+    Returns
+    -------
+    unique_model_list : list of str
+        A list of unique model names extracted from the file paths.
+    """
+    # Handle paths with forward slashes to extract file names
+    grib_file_list = [path.split("/")[-1] for path in path_list]
+
+    # Split file names by the delimiter and extract model names from the specified position
+    model_list = [f.split(splitdelim)[split_pos] for f in grib_file_list]
+
+    # Return unique model names
+    unique_model_list = np.unique(model_list).tolist()
+    return unique_model_list
+
+
+def get_latlon_bounds(nc_file, lat_dimension_name, lon_dimension_name, value_roundoff=3):
+    """
+    Retrieves the latitude and longitude values from a netCDF file and rounds them 
+    to the specified decimal precision.
+
+    Parameters
+    ----------
+    nc_file : str or xarray.Dataset
+        Path to the netCDF file or an already opened xarray.Dataset object.
+    lat_dimension_name : str
+        Name of the latitude dimension in the dataset.
+    lon_dimension_name : str
+        Name of the longitude dimension in the dataset.
+    value_roundoff : int, optional
+        Number of decimal places to round the latitude and longitude values. Default is 3.
+
+    Returns
+    -------
+    tuple of numpy.ndarray
+        Rounded latitude and longitude values from the netCDF file.
+    """
+    # Open the netCDF file
+    ds = xr.open_dataset(nc_file)
     
+    # Retrieve and round latitude and longitude values
     lat_values = ds[lat_dimension_name].values.round(value_roundoff)
     lon_values = ds[lon_dimension_name].values.round(value_roundoff)
     
     ds.close()
-        
-    return (lat_values, lon_values)
+    return lat_values, lon_values
 
 
-def get_latlon_deltas(lat_values, lon_values, delta_roundoff):
-    lat_delta = f"{abs(lat_values[0]-lat_values[1]):.{delta_roundoff}f}"
-    lon_delta = f"{abs(lon_values[0]-lon_values[1]):.{delta_roundoff}f}"
-    return (lat_delta, lon_delta)
+
+def get_latlon_deltas(lat_values, lon_values, delta_roundoff=3):
+    """
+    Computes the delta (difference) between the first two latitude and longitude values 
+    and returns the deltas as rounded strings.
+
+    Parameters
+    ----------
+    lat_values : numpy.ndarray
+        Array of latitude values.
+    lon_values : numpy.ndarray
+        Array of longitude values.
+    delta_roundoff : int, optional
+        Number of decimal places to round the computed deltas. Default is 3.
+
+    Returns
+    -------
+    tuple of str
+        Rounded latitude and longitude deltas as strings.
+    """
+    lat_delta = f"{abs(lat_values[1] - lat_values[0]):.{delta_roundoff}f}"
+    lon_delta = f"{abs(lon_values[1] - lon_values[0]):.{delta_roundoff}f}"
+    return lat_delta, lon_delta
         
     
-def get_times(netcdf_file, time_dimension_name):    
-    ds = xr.open_dataset(netcdf_file)        
+def get_times(nc_file, time_dimension_name):
+    """
+    Retrieves the time values from a specified time dimension in a netCDF file.
+
+    Parameters
+    ----------
+    nc_file : str or xarray.Dataset
+        Path to the netCDF file or an already opened xarray.Dataset object.
+    time_dimension_name : str
+        Name of the time dimension in the dataset.
+
+    Returns
+    -------
+    xarray.DataArray
+        Time values as an xarray.DataArray.
+    """
+    ds = xr.open_dataset(nc_file)
+    
+    # Extract time values from the specified time dimension
     time_values = ds[time_dimension_name]
+    
     ds.close()
     return time_values
 
 
-def find_nearest_coordinates(nc_file_name, lats_obs, lons_obs):
+# Particular methods #
+#-#-#-#-#-#-#-#-#-#-#-
+
+def find_time_dimension(nc_file, raise_exception=True):
+    """
+    Function that searches for the 'time' dimension or variable in an xarray Dataset.
+    The 'time' dimension should ideally be located among dimensions, but it might
+    also appear among variables. This function attempts both cases using 
+    'get_file_dimensions' and 'get_file_variables'.
+
+    Parameters
+    ----------
+    nc_file : str or xarray.Dataset
+        String of the data file or the dataset itself.
+    raise_exception : bool, optional
+        If True, raises a ValueError when no 'time' dimension or variable is found.
+        If False, returns None when no 'time' dimension or variable is found.
+
+    Returns
+    -------
+    str or None
+        The string that identifies the 'time' dimension or variable. If duplicates 
+        are found, the first unique key is returned. If nothing is found, returns None 
+        if raise_exception is False.
+
+    Raises
+    ------
+    ValueError
+        If raise_exception is True and no 'time' dimension or variable is found.
+    """
     
-    coord_varlist = find_coordinate_variables(nc_file_name)
+    # Retrieve the dimension and variable lists
+    dims = get_file_dimensions(nc_file)
+    vars_ = get_file_variables(nc_file)
+
+    # Search for 'time'-related elements in dimensions and variables
+    time_keys = [key for key in dims + vars_ 
+                 if key.lower().startswith(('t', 'ti', 'da'))]
+
+    if time_keys:
+        unique_time_key = time_keys[0]  # Since duplicates are unlikely, return the first unique key
+        return unique_time_key
+    else:
+        if raise_exception:
+            raise ValueError(f"No 'time' dimension or variable found in file {nc_file}.")
+        return None
+
+
+def find_coordinate_variables(nc_file, raise_exception=True):
+    """
+    Function that searches for coordinate dimensions or variables 
+    ('latitude', 'longitude', 'x', 'y') in an xarray Dataset.
+    The coordinates should ideally be located among dimensions,
+    but they might also appear among variables. This function attempts both cases using 
+    'get_file_dimensions' and 'get_file_variables'.
+
+    Parameters
+    ----------
+    nc_file : str or xarray.Dataset
+        String of the data file or the dataset itself.
+    raise_exception : bool, optional
+        If True, raises a ValueError when no coordinate dimensions or variables are found.
+        If False, returns None when no coordinate dimensions or variables are found.
+
+    Returns
+    -------
+    list or None
+        A list of strings identifying the coordinate dimensions or variables.
+        If duplicates are found, only unique keys are returned.
+        If nothing is found, returns None if `raise_exception` is False.
+
+    Raises
+    ------
+    ValueError
+        If `raise_exception` is True and no coordinate dimensions or variables are found.
+    """
     
-    ds = xr.open_dataset(nc_file_name)    
-    lats_ds = np.array(ds[coord_varlist[0]], 'd')
-    lons_ds = np.array(ds[coord_varlist[1]], 'd')
-    
-    lats_obs = np.array(lats_obs, 'd')
-    lons_obs = np.array(lons_obs, 'd')
-        
+    # Retrieve the dimension and variable lists
+    dims = get_file_dimensions(nc_file)
+    vars_ = get_file_variables(nc_file)
+
+    # Search for coordinate-related elements in dimensions and variables
+    coord_keys = [key for key in dims + vars_ 
+                  if key.lower().startswith(('lat', 'y', 'lon', 'x'))]
+
+    if coord_keys:
+        unique_coord_keys = list(set(coord_keys))  # Remove duplicates and return a list of unique keys
+        return unique_coord_keys
+    else:
+        if raise_exception:
+            raise ValueError("No 'latitude' or 'longitude' coordinates found "
+                             f"in file {nc_file}.")
+        return None
+
+
+def find_nearest_coordinates(nc_file, lats_obs, lons_obs, roundoff=3):
+    """
+    Compares a set of observed latitude and longitude values with those from a netCDF file
+    or xarray.Dataset object, and finds the nearest coordinates in the dataset that match
+    the observed values.
+
+    Parameters
+    ----------
+    nc_file : str or xarray.Dataset
+        Path to the netCDF file or an already opened xarray.Dataset object containing 
+        latitude and longitude coordinates.
+    lats_obs : list or numpy.ndarray
+        List or array of observed latitude values to compare.
+    lons_obs : list or numpy.ndarray
+        List or array of observed longitude values to compare.
+    roundoff : int, optional
+         Number of decimal places to round the latitude and longitude values. 
+         Default is 3.
+
+    Returns
+    -------
+    tuple of numpy.ndarray
+        Two arrays containing the nearest latitude and longitude values from the dataset
+        for each observed coordinate. The values are rounded to 3 decimal places.
+
+    Raises
+    ------
+    ValueError
+        If no coordinate variables ('latitude' or 'longitude') are found in the dataset.
+    """
+    # Retrieve coordinate variable names (latitude and longitude)
+    coord_varlist = find_coordinate_variables(nc_file)
+
+    # Handle file opening: accept both file paths and already opened xarray.Dataset objects
+    if isinstance(nc_file, str):
+        ds = xr.open_dataset(nc_file)
+        close_ds = True
+    elif isinstance(nc_file, xr.Dataset):
+        ds = nc_file
+        close_ds = False
+    else:
+        raise TypeError("Input must be a file path (str) or an xarray.Dataset object.")
+
+    # Retrieve latitude and longitude data from the dataset
+    lats_ds = np.array(ds[coord_varlist[0]], dtype='d')
+    lons_ds = np.array(ds[coord_varlist[1]], dtype='d')
+
+    # Ensure observed lats and lons are in numpy array format
+    lats_obs = np.array(lats_obs, dtype='d')
+    lons_obs = np.array(lons_obs, dtype='d')
+
     nearest_lats = []
     nearest_lons = []
-        
+
+    # Find the nearest latitude and longitude for each observed coordinate
     for lat_obs, lon_obs in zip(lats_obs, lons_obs):
-        nearest_lat_idx = (abs(lat_obs-lats_ds)).argmin()
-        nearest_lon_idx = (abs(lon_obs-lons_ds)).argmin()
-        
-        nearest_lat = lats_ds[nearest_lat_idx]
-        nearest_lon = lons_ds[nearest_lon_idx]
-        
-        nearest_lats.append(nearest_lat)
-        nearest_lons.append(nearest_lon)
-        
-    ds.close()
-    
-    nearest_lats = np.round(nearest_lats, 3)
-    nearest_lons = np.round(nearest_lons, 3)
-        
-    return (nearest_lats, nearest_lons)
+        nearest_lat_idx = np.abs(lat_obs - lats_ds).argmin()
+        nearest_lon_idx = np.abs(lon_obs - lons_ds).argmin()
+
+        nearest_lats.append(lats_ds[nearest_lat_idx])
+        nearest_lons.append(lons_ds[nearest_lon_idx])
+
+    # Close the dataset if it was opened within this function
+    if close_ds:
+        ds.close()
+
+    # Return nearest latitudes and longitudes, rounded to 3 decimal places
+    nearest_lats = np.round(nearest_lats, roundoff)
+    nearest_lons = np.round(nearest_lons, roundoff)
+
+    return nearest_lats, nearest_lons
 
 
 #--------------------------#
