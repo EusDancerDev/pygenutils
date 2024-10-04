@@ -5,7 +5,6 @@
 # Import modules #
 #----------------#
 
-import pandas as pd
 from numpy import array
 
 #------------------#
