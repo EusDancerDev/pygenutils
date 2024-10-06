@@ -29,11 +29,10 @@ ncfile_integrity_status = file_utils.ncfile_integrity_status
 
 format_string = information_output_formatters.format_string
 
-find_coordinate_variables_raise_none = patterns.find_coordinate_variables_raise_none
-find_time_dimension_raise_none = patterns.find_time_dimension_raise_none
+find_coordinate_variables = patterns.find_coordinate_variables
+find_time_dimension = patterns.find_time_dimension
 get_latlon_bounds = patterns.get_latlon_bounds
 get_latlon_deltas = patterns.get_latlon_deltas
-
 get_times = patterns.get_times
 
 #-------------------------#
@@ -63,12 +62,10 @@ def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
                 
                 faulty_file_trial = ncfile_integrity_status(ncf_name)
                 
-                if faulty_file_trial == 0:
-                    
-                    coord_varlist\
-                    = find_coordinate_variables_raise_none(ncf_name)
+                if faulty_file_trial == 0:                    
+                    coord_varlist = find_coordinate_variables(ncf_name, raise_exception=False)
                             
-                    if not coord_varlist:
+                    if coord_varlist == -1:
                         out_file_obj.write(f"No 'latitude' or 'longitude' coordinates "
                                     f"found in file {ncf_name}\n")
                         
@@ -155,10 +152,11 @@ def extract_and_store_period_bounds():
                 faulty_file_trial = ncfile_integrity_status(ncf_name)
                 
                 if faulty_file_trial == 0:
-                    time_var = find_time_dimension_raise_none(ncf_name)
+                    time_var = find_time_dimension(ncf_name, raise_exception=False)
                     
-                    if not time_var :
-                        out_file_obj.write(f"No 'time' dimension found in file {ncf_name}\n")
+                    if not time_var:
+                        out_file_obj.write("No 'time' dimension or variable "
+                                           f"found in file {ncf_name}.\n")
                     
                     else:    
                         times = get_times(ncf_name, time_var)
@@ -209,11 +207,11 @@ def extract_and_store_time_formats():
                 faulty_file_trial = ncfile_integrity_status(ncf_name)
                 
                 if faulty_file_trial == 0:
-
-                    time_var = find_time_dimension_raise_none(ncf_name)
+                    time_var = find_time_dimension(ncf_name, raise_exception=False)
                     
                     if not time_var:
-                        out_file_obj.write(f"No 'time' dimension found in file {ncf_name}\n")
+                        out_file_obj.write("No 'time' dimension or variable "
+                                           f"found in file {ncf_name}\n")
                     
                     else:
                         times = get_times(ncf_name, time_var)
