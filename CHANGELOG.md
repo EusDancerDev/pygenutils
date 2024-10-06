@@ -1,6 +1,41 @@
 # Changelog
 
-## [v9.X.X] - 2024-10-02
+## [v11.X.X] - 2024-10-XX
+
+### Added
+
+### Changed
+
+<!--GAUR GAUZATU METODO-IZENEN ALDAKETAK!!!!!!!!-->
+
+### Removed
+
+---
+
+## [v11.0.0] - 2024-10-06
+
+### Added
+
+### Changed
+
+- The following methods in **Xarray Utils** have been merged into a single one:
+	- `find_time_dimension` and `find_time_dimension_raise_none` -> `find_time_dimension`.
+	- `find_coordinate_variables` and `find_coordinate_variables_raise_none` -> `find_coordinate_variables`.
+	
+- As a consequence, the following modules which originally used 
+`find_time_dimension_raise_none` and/or `find_coordinate_variables_raise_none` have been adapted:
+	- **Climate Data Utils**: `cdo_tools`
+	- **Xarray Utils**: `patterns` and `data_manipulation`
+
+- Rename module `date_and_time_operators` to `date_and_time_utils` to emphasize <i>utility</i> or <u>tool</i> concept; originally in subpackage `time_handling`, no displacement.
+
+### Removed
+
+- Delete subpackage `varied_documentation` as its content has been relocated to a local directory.
+
+---
+
+## [v10.0.0] - 2024-10-02
 
 ### Added
 
@@ -8,13 +43,17 @@
 	- **Core Statistics**: 
 		- `signal_processing`: signal processing methods (signal whitening, low-pass, high-pass, and band-pass filters) 
 
-<!--ONDOKO GIDOIAREN BARNEKOA FALTAN-->
 - Add the following directories and modules in `utilities` subpackage:
+	- **Pandas Utils**: 
+		- `conversions`: module designed to handle pandas object type conversions, starting with DataFrame to NumPy's structured array conversion.
+		- `data_manipulation`: higher-level data manipulations using pandas.
+		- `pandas_obj_handler`:
 	- **Xarray Utils**: 
-		- `data_manipulation`: 
-		- `file_utils`:
-		- `patterns`: 
-		- `xarray_obj_handler`:
+		- `conversions`: module designed to handle xarray object type conversions, starting with GRIB to netCDF conversion.
+		- `data_manipulation`: higher-level data manipulations using xarray.
+		- `file_utils`: comprehensive utilities for scanning, validating, and managing netCDF files.
+		- `patterns`: utility methods for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
+		- `xarray_obj_handler`: optimized module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
 
 ### Changed
 
@@ -81,8 +120,6 @@
 
 - After the creations in **Xarray Utils**, the following changes have been made:
 
-<!--ONDOREN BERRIZENDATU FUNTZIOAK-->
-
 1. To `time_handling` and `data_manipulation`:
 
 <table>
@@ -101,14 +138,6 @@
 		<th>(unchanged)</th>
 		<th>date_and_time_operators</th>
 		<th>time_handling</th>
-	</tr>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
 	</tr>
 	<tr>
 		<th>create_ds_component</th>
@@ -346,13 +375,6 @@
 ## [v9.0.0] - 2024-10-01
 
 ### Added
-
-<!--ONDOKO GIDOIAREN BARNEKOA FALTAN-->
-- Add the following directories and modules in `utilities` subpackage:
-	- **Pandas Utils**: 
-		- `conversions`: 
-		- `data_manipulation`: 
-		- `pandas_obj_handler`: 
 
 - Add the following directories and modules in `statistics` subpackage:
 	- **Core Statistics**: 
@@ -761,9 +783,9 @@
   aiming for modularity and organization across general and field-specific domains.
 
 - **Core Modules:**
-	- `time_series.py`: General methods for time series analysis, including signal processing.
-	- `regressions.py`: Polynomial regression and other regression models.
-	- `signal_forcing.py`: Signal whitening and noise handling.
+	- `time_series`: General methods for time series analysis, including signal processing.
+	- `regressions`: Polynomial regression and other regression models.
+	- `signal_forcing`: Signal whitening and noise handling.
 - **Domains Supported:**
 	- **Time Series Analysis:** Methods for handling trends, noise, and filtering in time-series data.
 	- **Signal Processing:** Includes signal filtering, whitening, and band-pass filters.
