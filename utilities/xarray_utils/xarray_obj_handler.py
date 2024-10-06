@@ -11,10 +11,8 @@ import xarray as xr
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
 from pyutils.pandas_data_frames.data_frame_handler import save2csv
-from pyutils.operative_systems.os_operations import run_system_command, exit_info
-from pyutils.string_handler.string_handler import find_substring_index, get_obj_specs, modify_obj_specs
+from pyutils.string_handler.string_handler import ext_adder, get_obj_specs
 from pyutils.utilities.xarray_utils.data_manipulation import create_ds_component
 from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, find_time_dimension
 
@@ -22,364 +20,269 @@ from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, f
 # Define custom functions #
 #-------------------------#
 
-def save_data_as_netcdf_std(file_name,
-                            vardim_names_for_ds,
-                            data_arrays,
-                            dimlists,
-                            dim_dictlist,
-                            attrs_dictlist,
-                            global_attrs_dict):
+# Main methods #
+#--------------#
 
-    ds = xr.Dataset()
-    
-    for vardim, data_array, dimlist, dim_dict, attrs_dict in zip(vardim_names_for_ds,
-                                                                 data_arrays,
-                                                                 dimlists,
-                                                                 dim_dictlist,
-                                                                 attrs_dictlist):
-        
-        data_array_dict = create_ds_component(vardim,
-                                             data_array,
-                                             dimlist,
-                                             dim_dict,
-                                             attrs_dict)
-        ds = ds.merge(data_array_dict)
-        
-    ds.attrs = global_attrs_dict
-    
-    file_name += ".{extensions[0]}"
-    
-    ds.to_netcdf(file_name, "w", format="NETCDF4")
-    print(f"{file_name} file successfully created")
-    
-    
-def save_xarray_dataset_as_netcdf(xarray_ds, file_name, attrs_dict=None):
-    
+def save2nc(file_name, data=None, file_format="NETCDF4",
+            vardim_list=None, data_arrays=None, dimlists=None, dim_dict_list=None, 
+            attrs_dict_list=None, global_attrs_dict=None):
     """
-    Function that writes a xarray data set directly into a netCDF,
-    with the option of updating attributes.
-    
+    Save data to a NetCDF file. Can handle either a fully constructed 
+    xarray.Dataset or build a new dataset from components.
+
     Parameters
     ----------
-    xarray_ds : xarray.Dataset
-        OPENED xarray data set.
     file_name : str
-        String for the resulting netCDF file name.
-    attrs_dict : dict
-        Dictionary containing attributes, such as source,
-        version, date of creation, etc.
-        If not given, attributes will remain the same as the input file.
-  
+        The name of the resulting NetCDF file.
+        The '.nc' extension will be added automatically if not present.
+    data : xarray.Dataset
+        An xarray Dataset, i.e. the pre-existing one, that will be directly saved.
+    file_format : {"NETCDF4", "NETCDF4_CLASSIC", "NETCDF3_64BIT", "NETCDF3_CLASSIC"}, default "NETCDF4"
+        File format for the resulting netCDF file:
+
+        * NETCDF4: Data is stored in an HDF5 file, using netCDF4 API
+          features.
+        * NETCDF4_CLASSIC: Data is stored in an HDF5 file, using only
+          netCDF 3 compatible API features.
+        * NETCDF3_64BIT: 64-bit offset version of the netCDF 3 file format,
+          which fully supports 2+ GB files, but is only compatible with
+          clients linked against netCDF version 3.6.0 or later.
+        * NETCDF3_CLASSIC: The classic netCDF 3 file format. It does not
+          handle 2+ GB files very well.
+
+        All formats are supported by the netCDF4-python library.
+        scipy.io.netcdf only supports the last two formats.
+
+        The default format is NETCDF4 if you are saving a file to disk and
+        have the netCDF4-python library available. Otherwise, xarray falls
+        back to using scipy to write netCDF files and defaults to the
+        NETCDF3_64BIT format (scipy does not support netCDF4).    
+    
+    vardim_list : list of str, optional
+        List of variable-dimension names for building the dataset.
+    data_arrays : list of xarray.DataArray, optional
+        Data arrays for building the dataset if `data` is not provided.
+    dimlists : list of list, optional
+        List of dimension names for each variable in the dataset.
+    dim_dict_list : list of dict, optional
+        List of dictionaries containing dimension information for each variable.
+    attrs_dict_list : list of dict, optional
+        List of attribute dictionaries for each variable in the dataset.
+    global_attrs_dict : dict, optional
+        Dictionary for global attributes to assign to the dataset.
+        If no data is given, this argument will take effect instead of `attrs_dict_list`,
+        because `data` is a pre-existing dataset.
+
     Returns
     -------
-    netCDF file
-    """
-    
-    file_name += ".nc"
-    
-    if attrs_dict:
-        xarray_ds.attrs = attrs_dict
-    
-    xarray_ds.to_netcdf(file_name, "w", format="NETCDF4")
+    None
+        Saves a NetCDF file and prints success confirmation.
 
-    print(f"{file_name} has been successfully created")
-    
-    
-def save_nc_data_as_csv(nc_file, 
-                        columns_to_drop,
-                        separator,
-                        save_index,
-                        save_header,
-                        csv_file_name="default",
-                        date_format=None,
-                        approximate_coords=False,
-                        latitude_point=None,
-                        longitude_point=None):
-    
+    Notes
+    -----
+    - If `data` is provided, the function directly saves it as a NetCDF file.
+    - If `data` is not provided, the function will construct a dataset using the 
+      `vardim_list`, `data_arrays`, `dimlists`, etc.
     """
-    Function that saves netCDF data into a CSV file AS IT IS, where data variables
-    may originally be 3D, usually dependent on (time, latitude, longitude).
-    It is intended to speed up further data processes,
-    especially when opening very large netCDF files with xarray,
-    which can take a long time.
-    Saving data into a CSV, it can then be read very rapidly so as to
-    load data for post-processing.
+    # File format validation
+    if file_format not in nc_file_formats:
+        raise ValueError(f"Unsupported file format '{file_format}'. "
+                         f"Choose one from {nc_file_formats}.")
+        
+    # Convert arguments to lists if they are not already lists
+    vardim_list = ensure_list(vardim_list)
+    data_arrays = ensure_list(data_arrays)
+    dimlists = ensure_list(dimlists)
+    dim_dict_list = ensure_list(dim_dict_list)
+    attrs_dict_list = ensure_list(attrs_dict_list)    
     
-    For that, it seeks for essential variables,
-    together with 'time' dimension, if present.
-    It then concatenates whole data into a data frame and then
-    saves it into a CSV file.
+    # Check if dataset exists
+    if data is not None:
+        # Call helper if dataset is already created
+        _save_ds_as_nc(data, file_name, global_attrs_dict)
+        
+    else:
+        # Build dataset from components
+        ds = xr.Dataset()
+        for vardim, data_array, dimlist, dim_dict, attrs_dict in zip(
+                vardim_list, data_arrays, dimlists, dim_dict_list, attrs_dict_list
+                ):
+            
+            data_array_dict = create_ds_component(vardim, 
+                                                  data_array, 
+                                                  dimlist, 
+                                                  dim_dict, 
+                                                  attrs_dict)
+            ds = ds.merge(data_array_dict)
     
+        # Add netCDF file extension ('.nc') if not present
+        if get_obj_specs(file_name, "ext") != f".{extensions[0]}":
+            file_name = ext_adder(file_name, extensions[0])
+        
+        # Save to file
+        _save_ds_as_nc(ds, file_name, global_attrs_dict)
+        print(f"{file_name} file successfully created")
+ 
+
+def save_nc_as_csv(nc_file, 
+                   columns_to_drop=None,
+                   separator=",",
+                   save_index=False,
+                   save_header=True,
+                   csv_file_name=None,
+                   date_format=None,
+                   approximate_coords=False,
+                   latitude_point=None,
+                   longitude_point=None):
+    """
+    Save netCDF data into a CSV file. The function handles 
+    3D data variables (typically dependent on time, latitude, longitude)
+    and speeds up further data processes.
+
     Parameters
     ----------
     nc_file : str or xarray.Dataset or xarray.DataArray
-        String of the xarray data set containing file or
-        the already opened data array or set.
-    columns_to_drop : str or list of str
-        Names of the columns to drop, if desired, from the
-        resultant data frame of xarray.to_pandas() method.
-        If None, then the function will not drop any column.
-        To drop only coordinate labels, select "coords".
-        Else, the function will drop the custom labels passed.
-    separator : str
-        String used to separate data columns.
-    save_index : bool
-        Boolean to choose whether to include a column into the excel document
-        that identifies row numbers. Default value is False.
-    save_header : bool
-        Boolean to choose whether to include a row into the excel document
-        that identifies column numbers. Default value is False.
+        String of the xarray data set file path or the already opened dataset or data array.
+    columns_to_drop : str or list of str, optional
+        Names of columns to drop. Use "coords" to drop coordinate variables.
+    separator : str, default ','
+        Separator used in the CSV file.
+    save_index : bool, default False
+        Whether to include an index column in the CSV.
+    save_header : bool, default True
+        Whether to include a header row in the CSV.
     csv_file_name : str, optional
-        If nc_file is a string and "default" option is chosen,
-        then the function will attempt to extract a location name.
-        If nc_file is a xarray object, a custom name must be provided.    #       
-    date_format : str
-        In case the data frame contains a time column,
-        use to give format thereof when storing the data frame.
-    approximate_coords : str
-        If both latitude and longitude arrays are length higher than 1,
-        determines whether to select a coordinate point and then
-        perform the saving. If true and both lengths are 1,
-        throws and error telling that data is already located at a point.
-    latitude_point : float
-        Valid only if approximate_coords is True.
-    longitude_point : float
-        Valid only if approximate_coords is True.
-    
+        Name of the output CSV file. If None, extracts from nc_file name.
+    date_format : str, optional
+        Date format to apply if the dataset contains time data.
+    approximate_coords : bool, default False
+        If True, approximates the nearest latitude/longitude points.
+    latitude_point : float, optional
+        Latitude point for approximation.
+    longitude_point : float, optional
+        Longitude point for approximation.
+
     Returns
     -------
-    CSV file containing data as arranged on the data frame.
-    
-    Notes
-    -----
-    Remember that this function serves as a direct copy of netCDF4 data,
-    if data modifications are required, then it cannot be used.
-    Data frames are only 2D, so that those
-    can only reflect a specific point multi-variable netCDF data along time
-    or several grid points' data for a specific time position.
-    Data frame column names will be the same as those on netCDF data file.
+    None
+        Saves a CSV file and prints success confirmation.
     """
     
-    # Open netCDF data file if passed a string #
+    # Open netCDF data file if passed a string
     if isinstance(nc_file, str):
         print(f"Opening {nc_file}...")
         ds = xr.open_dataset(nc_file)
-        
     else:
         ds = nc_file.copy()
         
     if latitude_point is not None or longitude_point is not None:
-        
         coord_varlist = find_coordinate_variables(ds)
         lats = ds[coord_varlist[0]]
         lons = ds[coord_varlist[1]]
         
-        llats, llons = len(lats), len(lons)
+        if len(lats) == len(lons) == 1:
+            raise ValueError("Object is already point data")
         
-        if llats == llons == 1:
-            raise ValueError("Object is already located at a point data")
+        # Approximate or select coordinates
+        coord_idx_kw = {}
+        if approximate_coords:
+            lat_idx = abs(lats - latitude_point).argmin()
+            lon_idx = abs(lons - longitude_point).argmin()
+            coord_idx_kw = {coord_varlist[0]: lat_idx, coord_varlist[1]: lon_idx}
+            ds = ds.isel(**coord_idx_kw)
         else:
-            if latitude_point is None:
-                raise ValueError("Latitude point coordinate not given")
-            
-            elif longitude_point is None:
-                raise ValueError("Longitude point coordinate not given")
-            
-            elif latitude_point is None and longitude_point is None:
-                raise ValueError("Both latitude and longitude "
-                                 "point coordinates not given.")
-                
-            else:
-                
-                if approximate_coords:
-                    
-                    lat_idx = abs(lats - latitude_point).argmin()
-                    lon_idx = abs(lons - longitude_point).argmin()
-                    
-                    coord_idx_kw = {
-                        coord_varlist[0] : lat_idx,
-                        coord_varlist[1] : lon_idx
-                        }
-                    
-                    ds = ds.isel(**coord_idx_kw)
-                    
-                else:
-                    
-                    coord_idx_kw = {
-                        coord_varlist[0] : latitude_point,
-                        coord_varlist[1] : longitude_point
-                        }
-                    
-                    ds = ds.sel(**coord_idx_kw)
-                    
-    elif latitude_point is not None\
-    and isinstance(approximate_coords, str):
-                
-        print(f"Coordinate label is {approximate_coords}")
-        
-        coord_idx_kw = {
-            approximate_coords : latitude_point,
-            }
-        
-        ds = ds.isel(**coord_idx_kw)
-        
-    elif latitude_point is None\
-    and isinstance(approximate_coords, str):
-        
-        raise ValueError("You must provide a coordinate or ID")
+            coord_idx_kw = {coord_varlist[0]: latitude_point, coord_varlist[1]: longitude_point}
+            ds = ds.sel(**coord_idx_kw)
 
-    # Drop columns if desired #
+    # Drop columns if needed
     if columns_to_drop is None:
-        data_frame\
-        = ds.to_pandas().reset_index(drop=False)
-    
+        data_frame = ds.to_dataframe().reset_index(drop=False)
     elif columns_to_drop == "coords": 
-        columns_to_drop = coord_varlist.copy()
-        data_frame\
-        = ds.to_pandas().reset_index(drop=False).drop(columns=columns_to_drop)
-        
+        coord_varlist = find_coordinate_variables(ds)
+        data_frame = ds.to_dataframe().reset_index(drop=False).drop(columns=coord_varlist)
     else:
-        data_frame\
-        = ds.to_pandas().reset_index(drop=False).drop(columns=columns_to_drop)
-       
-    # Create the saving file's name or maintain the user-defined name #
-    #-----------------------------------------------------------------#
-    
-    if (isinstance(nc_file, str) and csv_file_name == "default"):
-        obj2change = "ext"
-        csv_file_name = get_obj_specs(nc_file, obj2change, extensions[1])
-    
-    elif (not isinstance(nc_file, str) and csv_file_name == "default"):
+        data_frame = ds.to_dataframe().reset_index(drop=False).drop(columns=columns_to_drop)
+
+    # Create CSV file name
+    if isinstance(nc_file, str) and not csv_file_name:
+        csv_file_name = nc_file.split(".")[0] + ".csv"
+    elif not isinstance(nc_file, str) and not csv_file_name:
         raise ValueError("You must provide a CSV file name.")
-        
-    else:
-        # Save data as desired format file #   
-        #----------------------------------#
-        
-        save2csv(csv_file_name,
-                 data_frame,
-                 separator,
-                 save_index,
-                 save_header,
-                 date_format)
     
-    
-def save_data_array_as_csv(data_array, 
-                           separator,
-                           save_index,
-                           save_header,
-                           csv_file_name=None,
-                           new_columns="default",
-                           date_format=None):
-    
+    # Save to CSV
+    save2csv(csv_file_name, data_frame, separator, save_index, save_header, date_format)
+
+
+def save_da_as_csv(data_array, 
+                   separator=",",
+                   save_index=False,
+                   save_header=True,
+                   csv_file_name=None,
+                   new_columns=None,
+                   date_format=None):
     """
-    Function that saves a xr.DataArray object into a CSV file AS IT IS,
-    where data variables may originally be 3D, 
-    usually dependent on (time, latitude, longitude).
-    This function works exactly as 'save_nc_data_as_csv' function does,
-    so the docstrings also apply.
+    Save a xarray.DataArray object to a CSV file. Data variables may 
+    originally be 3D, typically depending on (time, latitude, longitude).
+
     Parameters
     ----------
     data_array : xarray.DataArray
-    new_columns : str or list of str
-        Names of the columns for the data frame created from the object.
-        Default ones include 'time' and variable name label.
-    separator : str
-        String used to separate data columns.
-    save_index : bool
-        Boolean to choose whether to include a column into the excel document
-        that identifies row numbers. Default value is False.
-    save_header : bool
-        Boolean to choose whether to include a row into the excel document
-        that identifies column numbers. Default value is False.
+        DataArray object to save.
+    new_columns : str or list of str, optional
+        Names for the new columns in the output CSV. Default uses 'time' and variable name.
+    separator : str, default ','
+        Separator for the CSV.
+    save_index : bool, default False
+        Whether to include an index column in the CSV.
+    save_header : bool, default True
+        Whether to include a header row in the CSV.
     csv_file_name : str, optional
-        If nc_file is a string and "default" option is chosen,
-        then the function will attempt to extract a location name.
-        If nc_file is a xarray object, a custom name must be provided.    #       
-    date_format : str
-    
+        Name for the CSV file.
+    date_format : str, optional
+        Date format for time data, if present.
+
     Returns
     -------
-    CSV file containing data as arranged on the data frame.
+    None
+        Saves a CSV file and prints success confirmation.
     """
     
-    # Drop information to a data frame #
-    data_frame = data_array.to_pandas().reset_index(drop=False)        
-        
-    # Define the 'time' dimension name #
-    date_key = find_time_dimension(data_array)
+    # Convert to pandas DataFrame
+    data_frame = data_array.to_dataframe().reset_index(drop=False)        
     
-    # Rename the resulting data frame columns #
-    if new_columns == "default":
-        da_varname = data_array.name
-        new_columns = [date_key, da_varname]
-
+    # Rename the columns based on the provided new_columns
+    if not new_columns:
+        date_key = find_time_dimension(data_array)
+        new_columns = [date_key, data_array.name]
     data_frame.columns = new_columns
-       
-    # Create the saving file's name or maintain the user-defined name #
+    
+    # Ensure CSV file name is provided
     if csv_file_name is None:
         raise ValueError("You must provide a CSV file name.")
-        
-    # Save data as desired format file #     
-    else:
-        save2csv(csv_file_name,
-                 data_frame,
-                 separator,
-                 save_index,
-                 save_header,
-                 date_format)
-        
-        
-def grib2netcdf(grib_file_list, on_shell=False, option_str=None):
-        
-    if on_shell:
-        if isinstance(grib_file_list, str):
-            nc_file_new = modify_obj_specs(grib_file_list, "ext", extensions[0])
-            
-        else:
-            grib_allfile_info_str = flatten_content_to_string(grib_file_list)
-            nc_file_new_noext = input("Please introduce a name "
-                                      "for the netCDF file, "
-                                      "WITHOUT THE EXTENSION: ")
-            
-            allowed_minimum_char_idx = find_substring_index(nc_file_new_noext,
-                                                            regex_grib2nc,
-                                                            advanced_search=True)
-            
-            while (allowed_minimum_char_idx == -1):
-                print("Invalid file name.\nIt can contain alphanumeric characters, "
-                      "as well as the following non-word characters: {. _ -}")
-                
-                nc_file_new_noext = input("Please introduce a valid name: ")
-                allowed_minimum_char_idx = find_substring_index(nc_file_new_noext,
-                                                                regex_grib2nc,
-                                                                advanced_search=True)
-                
-            else:
-                nc_file_new_noext = modify_obj_specs(nc_file_new_noext,
-                                                     obj2modify="ext",
-                                                     new_obj=extensions[0])
-                
-        grib2netcdf_comm = "grib_to_netcdf"
-        if not option_str:
-            grib2netcdf_comm += f"{option_str}"
-        grib2netcdf_comm += f"-o {nc_file_new} {grib_allfile_info_str}"
-            
-        process_exit_info = run_system_command(grib2netcdf_comm,
-                                               capture_output=True,
-                                               encoding="utf-8")
-        exit_info(process_exit_info)    
-        
-    else:   
-        if isinstance(grib_file_list, str):
-            grib_file_list = [grib_file_list]
+    
+    # Save to CSV
+    save2csv(csv_file_name, data_frame, separator, save_index, save_header, date_format)
 
-        for grib_file in grib_file_list:
-            grib_file_noext = get_obj_specs(grib_file, "name_noext", extensions[0])
-            ds = xr.open_dataset(grib_file, engine="cfgrib")
-            save_xarray_dataset_as_netcdf(ds, grib_file_noext)
-            
-            
+# Helpers #
+#---------#
+        
+# Helper function to save an existing dataset with optional attribute updates
+def _save_ds_as_nc(xarray_ds, file_name, attrs_dict=None):
+    if attrs_dict:
+        xarray_ds.attrs = attrs_dict
+        
+    # Add netCDF file extension ('.nc') if not present
+    if get_obj_specs(file_name, "ext") != ".nc":
+        file_name += ".nc" 
+    
+    # Save to file
+    xarray_ds.to_netcdf(file_name, mode="w", format="NETCDF4")
+    print(f"{file_name} has been successfully created")
+
+def ensure_list(arg):
+    return arg if isinstance(arg, list) else [arg]
+
+
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
@@ -387,15 +290,5 @@ def grib2netcdf(grib_file_list, on_shell=False, option_str=None):
 # File extensions #
 extensions = ["nc", "csv"]
 
-# RegEx control for GRIB-to-netCDF single file name #
-regex_grib2nc = r"^[a-zA-Z0-9\._-]$"
-
-# Regridding method options #
-regrid_method_list = [
-    "bilinear",
-    "conservative",
-    "conservative_normed",
-    "nearest_s2d",
-    "nearest_d2s",
-    "patch"
-    ]
+# Valid netCDF file formats #
+nc_file_formats = ["NETCDF4", "NETCDF4_CLASSIC", "NETCDF3_64BIT", "NETCDF3_CLASSIC"]
