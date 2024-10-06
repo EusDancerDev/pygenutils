@@ -27,6 +27,9 @@ modify_obj_specs = string_handler.modify_obj_specs
 # Define functions #
 #------------------#
 
+# Xarray objects #
+#----------------#
+
 def grib2nc(grib_file_list, on_shell=False, option_str=None):
     """
     Converts a GRIB file or list of GRIB files to netCDF format. The conversion
