@@ -1,6 +1,6 @@
 # Changelog
 
-## [v11.X.X] - 2024-10-XX
+## [v1X.X.X] - 2024-10-XX
 
 ### Added
 
@@ -12,7 +12,7 @@
 
 ---
 
-## [v11.0.0] - 2024-10-06
+## [v10.3.7] - 2024-10-06
 
 ### Added
 
@@ -1299,7 +1299,7 @@
 - Add methods to sum or subtract dates and/or times (preliminary version).
 
 ### Deleted
-- Delete to-do list with date and time maths.
+- Delete to-do list with `date_and_time_maths`.
 
 ---
 
