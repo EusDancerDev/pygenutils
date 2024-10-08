@@ -10,22 +10,19 @@ Created on Fri Nov  3 20:57:17 2023
 # Import custom modules #
 #-----------------------#
 
+from pyutils.climate_data_utils.cds_tools import download_data
 from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.weather_and_climate import cds_tools, netcdf_handler
+from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
 
 # Create aliases #
 #----------------#
-
-download_data = cds_tools.download_data
 
 make_parent_directories = file_and_directory_handler.make_parent_directories
 move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
 
 find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
-
-scan_ncfiles = netcdf_handler.scan_ncfiles
 
 #-------------------------#
 # Define custom functions #

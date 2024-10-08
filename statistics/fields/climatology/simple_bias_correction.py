@@ -34,7 +34,7 @@ from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.statistics.fields.climatology.periodic_climatology_stats import climat_periodic_statistics
 from pyutils.utilities.general.introspection_utils import get_obj_type_str
-from pyutils.weather_and_climate.netcdf_handler import find_time_dimension
+from pyutils.utilities.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
 #----------------#

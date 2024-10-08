@@ -57,7 +57,7 @@ def standardize_calendar(obj,
 
     To this day, taking account the structure of the modules
     and practicity and cleanliness of this function,
-    the 'netcdf_handler' module will only be imported here
+    module patterns from the subpackage 'xarray_utils' will only be imported here
     together with xarray.    
 
     It only sticks to the limits of the time array present at the object;
@@ -246,14 +246,14 @@ def standardize_calendar(obj,
     # !!! Created by ChatGPT following pandas.DataFrame logic
     
     elif (obj_type in ["dataarray", "dataset"]\
-          or (obj_type == "list" \
-          and all(get_obj_type_str(element) in ["dataarray", "dataset"]) for element in obj)):
+          or (obj_type == "list" and all(get_obj_type_str(element) in ["dataarray", "dataset"]
+                                         for element in obj))):
         
         # Import module and custom modules here by convenience #
         #------------------------------------------------------#
         
         import xarray as xr
-        from weather_and_climate.netcdf_handler import find_time_dimension
+        from pyutils.utilities.xarray_utils.patterns import find_time_dimension
         
         if isinstance(obj, list):
             obj = obj[0]  # assuming only one object passed

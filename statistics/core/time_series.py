@@ -26,7 +26,7 @@ from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pyutils.weather_and_climate.netcdf_handler import find_time_dimension
+from pyutils.utilities.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
 #----------------#
@@ -132,10 +132,7 @@ def periodic_statistics(obj, statistic, freq,
     #-#-#-#-#-#-#-
 
     # GroupBy Logic
-    if obj_type == "dataframe":
-        date_key = find_date_key(obj)
-    else:
-        date_key = find_time_dimension(obj)
+    date_key = find_date_key(obj) if obj_type == "dataframe" else find_time_dimension(obj)
 
     if obj_type in ["dataset", "dataarray"]:
         groupby_key = f"{date_key}.dt.{freq}"
