@@ -124,16 +124,17 @@ def basic_interval_operator(interval_array,
     #------------------#
     
     particular_constructor_opts = interval_contructor_options[:2]
+    all_args = get_caller_method_args()
+    constr_arg_pos = find_substring_index(all_args, "constructor")
+    operator_arg_pos = find_substring_index(all_args, "operator")
     
     if constructor not in particular_constructor_opts:
-        all_args = get_caller_method_args()
-        constr_arg_pos = find_substring_index(all_args, "constructor")
         raise ValueError(f"Unsupported constructor '{constructor}' (position {constr_arg_pos}) "
                          "for interval computations."
                          f"Choose one from {particular_constructor_opts}.")
         
     if operator not in intervals_operation_list:
-        raise ValueError(f"Invalid operator '{operator}'. "
+        raise ValueError(f"Invalid operator '{operator}' (position {operator_arg_pos}). "
                          f"Supported options are {intervals_operation_list}.")
 
     # Operations #
