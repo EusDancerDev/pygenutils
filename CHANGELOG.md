@@ -10,6 +10,27 @@
 
 ### Removed
 
+## [v1X.X.X] - 2024-10-10
+
+### Added
+
+### Changed
+
+- Refactored interval operations to support switch-case dictionaries, improved `union` behaviour with `force_union` parameter for true unions.
+
+<!--Refactored `operations_with_sets` method, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.-->
+
+
+- Rename method `operations_with_sets` to `sets_operator` method.
+	- Refactor it to improve set operations handling and streamline constructor logic.
+		- Polished the `default` constructor case, using Python`s built-in set operations.
+		- Developed case usages for the `sympy` constructor with lazy imports of `FiniteSet` to handle set operations such as union, intersection, difference, and cartesian product.
+		- Organized operations into switch-case dictionaries for both `default` and `sympy` constructors for cleaner and more modular code.
+
+- In subpackage `sets_and_intervals`, modules `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually 
+
+### Removed
+
 ---
 
 ## [v10.3.7] - 2024-10-06
@@ -45,7 +66,7 @@
 
 - Add the following directories and modules in `utilities` subpackage:
 	- **Pandas Utils**: 
-		- `conversions`: module designed to handle pandas object type conversions, starting with DataFrame to NumPy's structured array conversion.
+		- `conversions`: module designed to handle pandas object type conversions, starting with DataFrame to NumPy`s structured array conversion.
 		- `data_manipulation`: higher-level data manipulations using pandas.
 		- `pandas_obj_handler`:
 	- **Xarray Utils**: 
