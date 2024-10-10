@@ -69,7 +69,11 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
         print(f"WARNING: intervals constructed using constructor '{constructor}' "
               f"do not include the upper bound.")
         
-    return interval_constructors[constructor]()
+    try:
+        return interval_constructors[constructor]()
+    except Exception as err:
+        raise RuntimeError("An error occurred. Check the left and/or right "
+                           f"limits values passed: {err}")
 
 
 def basic_interval_operator(interval_array,
@@ -96,7 +100,7 @@ def basic_interval_operator(interval_array,
         Default is 'union'.
     force_union : bool, optional
         Forces the union of all intervals into a single interval if True.
-        Only applies to 'union'. Default is False.
+        Only applies to 'union' and 'pandas' constructor. Default is False.
 
     Returns
     -------
@@ -136,14 +140,19 @@ def basic_interval_operator(interval_array,
     # Operations #
     #------------#
     
-    if constructor == "pandas" and operator == "union" and force_union:
-        merged_bin = \
-        define_interval(pd.arrays.IntervalArray(interval_array, closed=closed).left.min(),
-                        pd.arrays.IntervalArray(interval_array, closed=closed).right.max(), 
-                        closed=closed)
-        return merged_bin        
-    else:
-        return interval_operations[constructor][operator](interval_array, closed, force_union)
+    try:
+        if constructor == "pandas" and operator == "union" and force_union:
+            merged_bin = \
+            define_interval(pd.arrays.IntervalArray(interval_array, closed=closed).left.min(),
+                            pd.arrays.IntervalArray(interval_array, closed=closed).right.max(), 
+                            closed=closed)
+            return merged_bin        
+        else:
+            return interval_operations[constructor][operator](interval_array, closed, force_union)
+    except Exception as err:
+        raise RuntimeError("An error occurred, check that every input value "
+                           "is stored into an array-like object, "
+                           f"and that they are interval object compatible:\n{err}")
 
 #--------------------------#
 # Parameters and constants #
