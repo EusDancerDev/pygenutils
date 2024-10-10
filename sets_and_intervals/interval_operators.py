@@ -92,9 +92,10 @@ def basic_interval_operator(interval_array,
         Valid values are 'left', 'right', 'both', or 'neither'. Default is 'left'.
     operator : str, optional
         The operation to perform on the interval objects. Options are:
-        'union', 'intersection', 'difference', 'symmetric_difference', 'comparison'. Default is 'union'.
+        'union', 'intersection', 'difference', 'symmetric_difference', 'comparison'.
+        Default is 'union'.
     force_union : bool, optional
-        Forces the union of all intervals into a single interval if True. "
+        Forces the union of all intervals into a single interval if True.
         Only applies to 'union'. Default is False.
 
     Returns
@@ -135,7 +136,14 @@ def basic_interval_operator(interval_array,
     # Operations #
     #------------#
     
-    return interval_operations[constructor][operator](interval_array, closed, force_union)
+    if constructor == "pandas" and operator == "union" and force_union:
+        merged_bin = \
+        define_interval(pd.arrays.IntervalArray(interval_array, closed=closed).left.min(),
+                        pd.arrays.IntervalArray(interval_array, closed=closed).right.max(), 
+                        closed=closed)
+        return merged_bin        
+    else:
+        return interval_operations[constructor][operator](interval_array, closed, force_union)
 
 #--------------------------#
 # Parameters and constants #
@@ -157,32 +165,28 @@ interval_constructors = {
 
 # Define operations for pandas and intervaltree constructors
 operations_pandas = {
-    "union": lambda interval_array, closed, force_union: (
-        pd.arrays.IntervalArray(interval_array, closed=closed).piso.union()[0]
-        if not force_union else
-        define_interval(pd.arrays.IntervalArray(interval_array, closed=closed).left.min(),
-                        pd.arrays.IntervalArray(interval_array, closed=closed).right.max(), closed=closed)
-    ),
-    "intersection": lambda interval_array, closed, _: \
+    "union": lambda interval_array, closed: 
+        pd.arrays.IntervalArray(interval_array, closed=closed).piso.union()[0],
+    "intersection": lambda interval_array, closed: \
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.intersection()[0],
-    "difference": lambda interval_array, closed, _: \
+    "difference": lambda interval_array, closed: \
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.difference()[0],
-    "symmetric_difference": lambda interval_array, closed, _: \
+    "symmetric_difference": lambda interval_array, closed: \
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.symmetric_difference()[0],
-    "comparison": lambda interval_array, closed, _: \
+    "comparison": lambda interval_array, closed: \
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.comparison()[0]
 }
 
 operations_intervaltree = {
-    "union": lambda interval_array, closed, _: \
+    "union": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).merge_overlaps(),
-    "intersection": lambda interval_array, closed, _: \
+    "intersection": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).overlap(),
-    "difference": lambda interval_array, closed, _: \
+    "difference": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).difference(),
-    "symmetric_difference": lambda interval_array, closed, _: \
+    "symmetric_difference": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).symmetric_difference(),
-    "comparison": lambda interval_array, closed, _: \
+    "comparison": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).comparison()
 }
 
