@@ -14,6 +14,7 @@ import xarray as xr
 
 from pyutils.files_and_directories import file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
+from pyutils.utilities.xarray_utils.file_utils import check_ncfile_integrity
 
 # Create aliases #
 #----------------#
@@ -53,7 +54,7 @@ def get_file_dimensions(nc_file):
         If the input is neither a string nor an xarray.Dataset object.
     """
     if isinstance(nc_file, str):
-        ds = xr.open_dataset(nc_file)
+        ds = check_ncfile_integrity(nc_file)
         close_dataset = True
     elif isinstance(nc_file, xr.Dataset):
         ds = nc_file
@@ -94,7 +95,7 @@ def get_file_variables(nc_file):
         If the input is neither a string nor an xarray.Dataset object.
     """
     if isinstance(nc_file, str):
-        ds = xr.open_dataset(nc_file)
+        ds = check_ncfile_integrity(nc_file)
         close_dataset = True
     elif isinstance(nc_file, xr.Dataset):
         ds = nc_file
@@ -168,7 +169,7 @@ def get_latlon_bounds(nc_file, lat_dimension_name, lon_dimension_name, value_rou
         Rounded latitude and longitude values from the netCDF file.
     """
     # Open the netCDF file
-    ds = xr.open_dataset(nc_file)
+    ds = check_ncfile_integrity(nc_file)
     
     # Retrieve and round latitude and longitude values
     lat_values = ds[lat_dimension_name].values.round(value_roundoff)
@@ -176,7 +177,6 @@ def get_latlon_bounds(nc_file, lat_dimension_name, lon_dimension_name, value_rou
     
     ds.close()
     return lat_values, lon_values
-
 
 
 def get_latlon_deltas(lat_values, lon_values, delta_roundoff=3):
@@ -219,7 +219,7 @@ def get_times(nc_file, time_dimension_name):
     xarray.DataArray
         Time values as an xarray.DataArray.
     """
-    ds = xr.open_dataset(nc_file)
+    ds = check_ncfile_integrity(nc_file)
     
     # Extract time values from the specified time dimension
     time_values = ds[time_dimension_name]
@@ -231,52 +231,7 @@ def get_times(nc_file, time_dimension_name):
 # Particular methods #
 #-#-#-#-#-#-#-#-#-#-#-
 
-def find_time_dimension(nc_file, raise_exception=True):
-    """
-    Function that searches for the 'time' dimension or variable in an xarray Dataset.
-    The 'time' dimension should ideally be located among dimensions, but it might
-    also appear among variables. This function attempts both cases using 
-    'get_file_dimensions' and 'get_file_variables'.
-
-    Parameters
-    ----------
-    nc_file : str or xarray.Dataset
-        String of the data file or the dataset itself.
-    raise_exception : bool, optional
-        If True, raises a ValueError when no 'time' dimension or variable is found.
-        If False, returns None when no 'time' dimension or variable is found.
-
-    Returns
-    -------
-    str or None
-        The string that identifies the 'time' dimension or variable. If duplicates 
-        are found, the first unique key is returned. If nothing is found, returns None 
-        if raise_exception is False.
-
-    Raises
-    ------
-    ValueError
-        If raise_exception is True and no 'time' dimension or variable is found.
-    """
-    
-    # Retrieve the dimension and variable lists
-    dims = get_file_dimensions(nc_file)
-    vars_ = get_file_variables(nc_file)
-
-    # Search for 'time'-related elements in dimensions and variables
-    time_keys = [key for key in dims + vars_ 
-                 if key.lower().startswith(('t', 'ti', 'da'))]
-
-    if time_keys:
-        unique_time_key = time_keys[0]  # Since duplicates are unlikely, return the first unique key
-        return unique_time_key
-    else:
-        if raise_exception:
-            raise ValueError(f"No 'time' dimension or variable found in file {nc_file}.")
-        return None
-
-
-def find_coordinate_variables(nc_file, raise_exception=True):
+def find_coordinate_variables(nc_file):
     """
     Function that searches for coordinate dimensions or variables 
     ('latitude', 'longitude', 'x', 'y') in an xarray Dataset.
@@ -288,21 +243,17 @@ def find_coordinate_variables(nc_file, raise_exception=True):
     ----------
     nc_file : str or xarray.Dataset
         String of the data file or the dataset itself.
-    raise_exception : bool, optional
-        If True, raises a ValueError when no coordinate dimensions or variables are found.
-        If False, returns None when no coordinate dimensions or variables are found.
 
     Returns
     -------
     list or None
         A list of strings identifying the coordinate dimensions or variables.
         If duplicates are found, only unique keys are returned.
-        If nothing is found, returns None if `raise_exception` is False.
 
     Raises
     ------
     ValueError
-        If `raise_exception` is True and no coordinate dimensions or variables are found.
+        If no coordinate dimensions or variables are found.
     """
     
     # Retrieve the dimension and variable lists
@@ -313,15 +264,13 @@ def find_coordinate_variables(nc_file, raise_exception=True):
     coord_keys = [key for key in dims + vars_ 
                   if key.lower().startswith(('lat', 'y', 'lon', 'x'))]
 
-    if coord_keys:
-        unique_coord_keys = list(set(coord_keys))  # Remove duplicates and return a list of unique keys
-        return unique_coord_keys
-    else:
-        if raise_exception:
-            raise ValueError("No 'latitude' or 'longitude' coordinates found "
-                             f"in file {nc_file}.")
-        return None
+    if not coord_keys:
+        raise ValueError("No 'latitude' or 'longitude' coordinates found "
+                         f"in file '{nc_file}'.")
 
+    unique_coord_keys = list(set(coord_keys))  # Remove duplicates and return a list of unique keys
+    return unique_coord_keys
+    
 
 def find_nearest_coordinates(nc_file, lats_obs, lons_obs, roundoff=3):
     """
@@ -358,7 +307,7 @@ def find_nearest_coordinates(nc_file, lats_obs, lons_obs, roundoff=3):
 
     # Handle file opening: accept both file paths and already opened xarray.Dataset objects
     if isinstance(nc_file, str):
-        ds = xr.open_dataset(nc_file)
+        ds = check_ncfile_integrity(nc_file)
         close_ds = True
     elif isinstance(nc_file, xr.Dataset):
         ds = nc_file
@@ -399,9 +348,6 @@ def find_nearest_coordinates(nc_file, lats_obs, lons_obs, roundoff=3):
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
-
-# File extensions #
-extensions = ["nc", "csv"]
 
 # String splitting character #
 splitdelim = common_delim_list[0]
