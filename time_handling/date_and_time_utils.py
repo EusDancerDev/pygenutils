@@ -10,7 +10,7 @@ import time
 
 import os
 
-from numpy import char, float128, unique
+from numpy import float128
 import pandas as pd
 
 #-----------------------#
@@ -21,15 +21,19 @@ from pyutils.pandas_data_frames.global_parameters import common_delim_list
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pyutils.utilities.xarray_utils.patterns import find_time_dimension
+from pyutils.utilities.xarray_utils import file_utils, patterns
 
 # Create aliases #
 #----------------#
 
+check_ncfile_integrity = file_utils.check_ncfile_integrity
+
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
-
 find_substring_index = string_handler.find_substring_index
+
+get_file_dimensions = patterns.get_file_dimensions
+get_file_variables = patterns.get_file_variables
 
 #------------------#
 # Define functions #
@@ -77,6 +81,7 @@ def _validate_option(arg_iterable, error_class, error_str):
     if option not in allowed_options:
         raise error_class(format_string(error_str, arg_iterable))
             
+# %%
 
 # Dates and times #
 #-----------------#
@@ -236,6 +241,7 @@ def _nano_floated_time_str(time_ns):
     # Format the floating-point time with nanosecond precision
     return f"{seconds}.{nanoseconds:09d}"
 
+# %%
 
 # Date/time attributes #
 #-#-#-#-#-#-#-#-#-#-#-#-
@@ -263,6 +269,7 @@ def get_datetime_object_unit(dt_obj):
         If the string parsing fails
     """
     obj_type = get_obj_type_str(dt_obj)
+    
     if hasattr(dt_obj, "dtype"):
         dtype_str = str(dt_obj.dtype)
         if ("[" in dtype_str and "]" in dtype_str):
@@ -276,131 +283,204 @@ def get_datetime_object_unit(dt_obj):
 # Date/time detection and handling #
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
-
-# TODO: ChatGPT <->ondoko bi metodoak alkartu
-
-# TODO: ChatGPT <-> hobetu docstring-a
-def infer_time_frequency(df_or_index):    
+def infer_frequency(data):
     """
-    Infer the most likely frequency given the input index,
-    using pandas's 'infer_freq' method.
-    If the frequency is uncertain, a warning will be printed.
-    
+    Infer the most likely frequency from the input, which can be either 
+    a pandas DataFrame, Series, DatetimeIndex, TimedeltaIndex, 
+    a NetCDF file path (as a string), or an xarray Dataset/DataArray.
+
     Parameters
     ----------
-    df_or_index : pandas.DataFrame or pandas.Series or DatetimeIndex or TimedeltaIndex
-    
-        The method will first assume that the input argument 
-        is a pandas object, so that is has a date key column,
-        and will attempt to infer the time frequency.
-        
-        To do so, the already defined 'find_date_key' attempts
-        to find the date column. If cannot be found,
-        that will mean that the input argument is not a pandas object
-        but a DatetimeIndex of TimedeltaIndex object instead.
-    
+    data : pandas.DataFrame, pandas.Series, pandas.DatetimeIndex, pandas.TimedeltaIndex, 
+           str (NetCDF file path), or xarray.Dataset/xarray.DataArray
+        The input data for which to infer the frequency. 
+        - For pandas objects, the method will try to infer the time frequency using 
+          the 'find_time_key' helper to locate the date column or index.
+        - For NetCDF files (string or xarray object), the method will infer the time frequency 
+          using the 'find_time_key' helper to locate the time dimension.
+
     Returns
     -------
     str
-        The time frequency.
-        If the frequency cannot be determined, pandas.infer_freq
-        method returns None. In such case, this function is designed
-        to raise a ValueError that indicates so.
-    
-    Note
-    ----
-    If passed a pandas's Series 
-    will use the values of the series (NOT THE INDEX).
-    """
-   
-    try:
-        date_key = find_date_key(df_or_index)
-        time_freq = pd.infer_freq(df_or_index[date_key])
-    except (TypeError, ValueError):
-        time_freq = pd.infer_freq(df_or_index)
-        
-    if time_freq is None:
-        raise ValueError("Could not determine the time frequency.")
-    else:
-        return time_freq
-    
+        The inferred time frequency. If the frequency cannot be determined, a ValueError is raised.
 
-# TODO: ChatGPT <-> sortu docstring-a
-def infer_time_frequency(nc_file):
+    Raises
+    ------
+    ValueError
+        If the frequency cannot be inferred from the input data.
+
+    Notes
+    -----
+    - For pandas Series, the method will infer the frequency based on the series values, 
+      not the index.
+    - For NetCDF files, the method can handle either file paths (strings) or already-opened 
+      xarray.Dataset/xarray.DataArray objects.
+    """
+    # Check input data type #
+    #########################
+    obj_type = get_obj_type_str(data, lowercase=True)
     
-    if isinstance(nc_file, str):
-        print(f"Opening {nc_file}...")
-        ds = xr.open_dataset(nc_file)
-        
+    # Section 1: Handling Pandas DataFrame, Series, DatetimeIndex, or TimedeltaIndex #
+    ##################################################################################
+    if obj_type in ["dataframe", "series", "datetimeindex","timedeltaindex"]:
+        try:
+            # Attempt to find date column and infer frequency
+            date_key = find_time_key(data)
+            time_freq = pd.infer_freq(data[date_key])
+        except (TypeError, ValueError):
+            # If no date key is found, assume the input is an index
+            time_freq = pd.infer_freq(data)
+            
+        if not time_freq:
+            raise ValueError("Could not determine the time frequency from the pandas object.")
+        return time_freq
+
+    # Section 2: Handling NetCDF Files (string or xarray objects) #
+    ###############################################################
+
+    elif obj_type == "str":
+        ds = check_ncfile_integrity(data)
+    elif obj_type in ["dataset", "dataarray"]:
+        ds = data.copy()
     else:
-        ds = nc_file.copy()
+        raise TypeError("Unsupported data type. Must be pandas DataFrame, "
+                        "Series, DatetimeIndex, TimedeltaIndex, "
+                        "NetCDF file path (string), or xarray.Dataset/DataArray.")
         
-    date_key = find_time_dimension(ds)
+    # Lazy import of xarray (if not already imported)
+    if 'xr' not in globals():
+        import xarray as xr
+     
+    # Infer time frequency for NetCDF data
+    date_key = find_time_key(ds)
     time_freq = xr.infer_freq(ds[date_key])
-    
+
+    if not time_freq:
+        raise ValueError("Could not determine the time frequency from the NetCDF data.")
     return time_freq
 
 
-# %%
-
-# # TODO: ChatGPT <-> bi metodoak integratu
-
-# TODO: ChatGPT <-> docstring
-def infer_full_period_of_time(df):
-    date_key = find_date_key(df)
-    years = unique(df[date_key].dt.year)
-    full_period = f"{years[0]-years[-1]}"
-    
-    return full_period
-
-# TODO: ChatGPT <-> docstring
-def infer_full_period_of_time(nc_file):
-    
-    if isinstance(nc_file, str):
-        print(f"Opening {nc_file}...")
-        ds = xr.open_dataset(nc_file)
-        
-    else:
-        ds = nc_file.copy()
-        
-    date_key = find_time_dimension(ds)
-    
-    years = unique(ds[date_key].dt.year)
-    full_period = f"{years[0]-years[-1]}"
-    
-    return full_period
-
-
-# %%
-def find_date_key(df):    
+def infer_dt_range(data):
     """
-    Function that searches for date key in the columns of a Pandas DataFrame.
-    
+    Infer the date and time range (first and last timestamps) from the input data,
+    which can be either a pandas DataFrame, Series, or a NetCDF file path (as a string),
+    or an xarray Dataset/DataArray.
+
     Parameters
     ----------
-    df : pandas.DataFrame
-        Pandas data frame containing data.
-    
+    data : pandas.DataFrame, pandas.Series, str (NetCDF file path), or xarray.Dataset/xarray.DataArray
+        The input data from which to infer the date range.
+        - For pandas objects, the method will use the 'find_time_key' to locate the date column.
+        - For NetCDF files (string or xarray object), the method will infer the time range
+          using the 'find_time_key' to locate the time dimension.
+
     Returns
     -------
-    date_key : str
-        String, the date key of which is identified with.
+    str
+        A string representing the full time period in the format 'start_year-end_year'.
+
+    Raises
+    ------
+    TypeError
+        If the input data type is not supported.
+
+    Notes
+    -----
+    - For pandas Series, the method will infer the date range based on the series values, 
+      not the index.
+    - For NetCDF files, the method will attempt a lazy import of xarray to avoid unnecessary 
+      installation for non-climate-related tasks.
     """
+    # Check input data type #
+    obj_type = get_obj_type_str(data, lowercase=True)
     
-    try:
-        df_cols = char.lower(df.columns.tolist())    
-    except AttributeError:
-        input_obj_type = get_obj_type_str(df)
-        raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
+    # Section 1: Handling Pandas DataFrame or Series
+    if obj_type in ["dataframe", "series"]:
+        date_key = find_time_key(data)
+        years = pd.unique(data[date_key].dt.year)
+        full_period = f"{years[0]}-{years[-1]}"
+        return full_period
+
+    # Section 2: Handling NetCDF Files (string or xarray objects)
+    elif obj_type == "str":
+        ds = check_ncfile_integrity(data)
+    elif obj_type in ["dataset", "dataarray"]:
+        ds = data.copy()
     else:
-        try:
-            date_key_idx = find_substring_index(df_cols, time_kws)
-            date_key = df_cols[date_key_idx]
-        except KeyError:
-            raise KeyError("Grouper name 'date' or similar not found")
-        else:
-            return date_key
+        raise TypeError("Unsupported data type. Must be pandas DataFrame, Series, "
+                        "NetCDF file path (string), or xarray.Dataset/DataArray.")
     
+    # Infer time range for NetCDF data
+    date_key = find_time_key(ds)
+    years = pd.unique(ds[date_key].dt.year)
+    full_period = f"{years[0]}-{years[-1]}"
+    
+    return full_period
+
+
+# %%
+def find_time_key(data):
+    """
+    Function that searches for the date key in a pandas DataFrame or the 'time' dimension/variable 
+    in a NetCDF file or xarray Dataset.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame, str (NetCDF file path), or xarray.Dataset/xarray.DataArray
+        The input data. If a pandas DataFrame is provided, the method will search for a 
+        date-related key in the columns. For NetCDF or xarray objects, it will search 
+        for the 'time' dimension or variable.
+
+    Returns
+    -------
+    str
+        The string that identifies the 'time' key (for pandas objects) or the 'time' 
+        dimension/variable (for NetCDF/xarray objects).
+
+    Raises
+    ------
+    TypeError
+        If the input data type is not supported.
+    ValueError
+        If no 'time' key is found in pandas DataFrame or no 'time' dimension/variable is 
+        found in NetCDF/xarray data.
+    """
+    # Check input data type 
+    obj_type = get_obj_type_str(data, lowercase=True)
+    
+    # Section 1: Handling Pandas DataFrame
+    if obj_type == "dataframe":
+        try:
+            df_cols = [col.lower() for col in data.columns.tolist()]  # Lowercase all column names
+            date_key_idx = find_substring_index(df_cols, time_kws)
+            return data.columns[date_key_idx]  # Return original column name (not lowercased)
+        except (AttributeError, KeyError):
+            raise ValueError("No 'date' or similar key found in the pandas DataFrame.")
+    
+    else:
+        # Section 2: Handling NetCDF Files or xarray objects
+        if obj_type == "str":
+            ds = check_ncfile_integrity(data)
+        elif obj_type in ["dataset", "dataarray"]:
+            ds = data.copy()
+        else:
+            raise TypeError("Unsupported data type. Must be a pandas DataFrame, "
+                            "NetCDF file path (string), or xarray.Dataset/DataArray.")
+        
+        # Retrieve the dimension and variable lists from the dataset
+        dims = get_file_dimensions(ds)
+        vars_ = get_file_variables(ds)
+    
+        # Search for 'time'-related elements in dimensions and variables
+        time_keys = [key for key in dims + vars_ if key.lower().startswith(('t', 'ti', 'da'))]
+        
+        if not time_keys:
+            if obj_type == "str":
+                raise ValueError(f"No 'time' dimension or variable found in the file '{data}'")
+            else:
+                raise ValueError("No 'time' dimension or variable found in the dataset.")
+
+    return time_keys[0]  # Return the first unique 'time' key
 
 #%%
 
@@ -532,7 +612,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # First object
     try:
-        dt_colname = find_date_key(df1)
+        dt_colname = find_time_key(df1)
     except Exception as err:
         arg_tuple_df1 = (err, all_arg_names[df1_arg_pos])
         print_format_string(date_colname_not_found_warning, arg_tuple_df1)
@@ -543,7 +623,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # Second object
     try:
-        dt_colname = find_date_key(df2)
+        dt_colname = find_time_key(df2)
     except Exception as err:
         arg_tuple_df2 = (err, all_arg_names[df2_arg_pos])
         print_format_string(date_colname_not_found_warning, arg_tuple_df2)
@@ -622,7 +702,6 @@ current_datetime_dict = {
     dt_dtype_options[1] : time.ctime(),
     dt_dtype_options[2] : pd.Timestamp.now()
     }
-
 
 #--------------------------#
 # Parameters and constants #
