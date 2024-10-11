@@ -19,13 +19,12 @@ from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
 from pyutils.pandas_data_frames import data_frame_handler
 from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
 from pyutils.strings.string_handler import modify_obj_specs
+from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
 from pyutils.utilities.introspection_utils import get_obj_type_str
 
 # Create aliases #
 #----------------#
 
-find_date_key = data_frame_handler.find_date_key
-infer_time_frequency = data_frame_handler.infer_time_frequency
 insert_row_in_df = data_frame_handler.insert_row_in_df
 save2csv = data_frame_handler.save2csv
 save2excel = data_frame_handler.save2excel
@@ -33,6 +32,9 @@ save2excel = data_frame_handler.save2excel
 #------------------#
 # Define functions #
 #------------------#
+
+# Calendar standardizers #
+#------------------------#
 
 def standardize_calendar(obj,
                          file_path,
@@ -59,9 +61,6 @@ def standardize_calendar(obj,
     and practicity and cleanliness of this function,
     module patterns from the subpackage 'xarray_utils' will only be imported here
     together with xarray.    
-
-    It only sticks to the limits of the time array present at the object;
-    further reconstructions is a task left for the user.
     
     Parameters
     ----------
@@ -99,7 +98,7 @@ def standardize_calendar(obj,
     obj_type = get_obj_type_str(obj).lower()
     
     # Handling pandas dataframes #
-    #----------------------------#
+    #----------------------------#    
     
     if (obj_type == "pandas" \
         or (obj_type == "list" \
@@ -127,8 +126,8 @@ def standardize_calendar(obj,
                 for (obj_num, obj), fp in zip(enumerate(obj), file_path):
                     
                     # Get the date key and time frequency #
-                    time_col = find_date_key(obj)
-                    time_freq = infer_time_frequency(obj.loc[:10,time_col])
+                    time_col = find_time_key(obj)
+                    time_freq = infer_frequency(obj.loc[:10,time_col])
                     
                     # Get the time array with possible missing datetimes #
                     time_shorter = obj.loc[:,time_col]
@@ -261,7 +260,7 @@ def standardize_calendar(obj,
         time_dim = find_time_dimension(obj)
         full_times = xr.cftime_range(start=obj[time_dim][0].values,
                                      end=obj[time_dim][-1].values,
-                                     freq=infer_time_frequency(obj[time_dim]))
+                                     freq=infer_frequency(obj[time_dim]))
 
         obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)  # aligning with the full time range
         
@@ -281,125 +280,136 @@ def standardize_calendar(obj,
                 obj_std_calendar.to_netcdf(saving_file_name)
             else:
                 raise ValueError(f"Unsupported file extension {extension} for xarray objects.")
-    
-    elif obj_type == "pandas" or (obj_type == "list" and all(get_obj_type_str(el) == "dataframe" for el in obj)):
-        # Handling pandas DataFrames
-        ...  # Existing pandas logic here (no changes) 
-        
-        # !!! !!! Koño, aurrekoa falta da!!!
-    
+
     else:
-        raise ValueError("Unsupported object type. "
-                         "Please provide a pandas DataFrame, xarray Dataset, or xarray DataArray.")
+        raise TypeError("Unsupported object type. "
+                        "Please provide a pandas DataFrame, xarray Dataset, or xarray DataArray.")
     
     return obj_std_calendar
+
+
+# Leap years #
+#------------#
+
+def leap_year_detector(start_year, end_year, return_days=False):
+    """
+    Detects leap years in a given range or returns the number of days in each year of the range.
+
+    This function can return a dictionary indicating whether each year in the range is a leap year, or 
+    return the number of days in each year, depending on the 'return_days' flag.
+
+    Parameters
+    ----------
+    start_year : int or str
+        The start year of the range (inclusive). Can be a string representing the year.
+    end_year : int or str
+        The end year of the range (inclusive). Can be a string representing the year.
+    return_days : bool, optional
+        If True, return the number of days in each year. Otherwise, return a dictionary
+        with leap year status for each year in the range (default is False).
+
+    Returns
+    -------
+    dict or list
+        - If return_days is False: A dictionary where the keys are years from start_year to end_year, 
+          and the values are booleans (True if the year is a leap year, otherwise False).
+        - If return_days is True: A list of the number of days for each year in the range.
+    """
+    
+    # Ensure input years are integers
+    start_year = int(start_year)
+    end_year = int(end_year)
+    
+    # Return number of days in each year if requested
+    if return_days:
+        days_per_year = [len(pd.date_range(f'{year}', f'{year+1}', inclusive="left"))
+                         for year in range(start_year, end_year+1)]
+        return days_per_year
+    
+    # Otherwise, return a dictionary with leap year status
+    leap_years = {year: calendar.isleap(year) for year in range(start_year, end_year+1)}
+    return leap_years
+
         
         
 def nearest_leap_year(year):
-    
-    year_isleap = leap_year_detector(year, year)
-    
-    if not year_isleap:
-        year_list = list(range(year-4, year+4))
-        lyl = len(year_list)
-        
-        nearest_leap_year_idx = [i for i in range(lyl) 
-                                 if leap_year_detector(year_list[i], year_list[i])]
-        
-        min_idx = nearest_leap_year_idx[0]
-        max_idx = nearest_leap_year_idx[1]
-        
-        min_idx_year_diff = abs(year_list[min_idx] - year)
-        max_idx_year_diff = abs(year_list[max_idx] - year)
-        
-        if min_idx_year_diff > 1 and min_idx_year_diff != 2:
-            nearest_lp_year = year_list[max_idx]
-        elif max_idx_year_diff > 1 and max_idx_year_diff != 2:
-            nearest_lp_year = year_list[min_idx]
-        elif min_idx_year_diff == max_idx_year_diff:
-            nearest_lp_year = f"{year_list[min_idx]} or {year_list[max_idx]}"
-        
-    else:
-        nearest_lp_year = year
-        
-    return nearest_lp_year
-
-
-def leap_year_detector(start_year, end_year, return_days=False):
-    
-    if isinstance(start_year, str):
-        start_year = int(start_year)
-    if isinstance(end_year, str):
-        end_year = int(end_year)
-    
-    if return_days:        
-        if start_year == end_year:
-            days_year = len(pd.date_range(str(start_year),
-                                          str(start_year+1),
-                                          inclusive="left"))       
-            return days_year
-            
-        else:
-            days_per_year = [len(pd.date_range(str(year),
-                                               str(year+1),
-                                               inclusive="left"))
-                             for year in range(start_year, end_year+1)]
-            return days_per_year
-        
-    else:
-        if start_year == end_year:
-            is_leap_year = calendar.isleap(start_year)
-            return is_leap_year
-        
-        else:
-            is_leap_year_arr = [calendar.isleap(year)
-                                for year in range(start_year, end_year+1)]
-            return is_leap_year_arr
-        
-        
-def week_range(date):
-    
     """
-    Finds the week day-range, i.e, the first and last day of the week
-    where a given calendar day lies on.
-    In Europe weeks start on Monday and end on Sunday.
+    Finds the nearest leap year to a given year.
+
+    If the given year is not a leap year, this function will search for the closest leap year 
+    within a range of four years before or after the input year. If there are two equally 
+    distant leap years, both are returned.
+
+    Parameters
+    ----------
+    year : int
+        The year for which to find the nearest leap year.
+
+    Returns
+    -------
+    int or str
+        The nearest leap year. If two leap years are equally close, a string with both years is returned.
+    """
     
-    Isocalendar calculates the year, week of the year, 
-    and day of the week ('dow' === 'day of week'), where
-    'dow' is Mon = 1, ... , Sat = 6, Sun = 7
+    if leap_year_detector(year, year)[year]:
+        return year
+
+    # Search range of years within 4 years before and after the given year
+    for offset in range(1, 5):
+        if calendar.isleap(year - offset):
+            return year - offset
+        elif calendar.isleap(year + offset):
+            return year + offset
+
+    return f"No nearby leap year found in the given range for year {year}"  # This case should be rare
+
+
+# Date/time ranges #
+#------------------#
+
+def week_range(date):
+    """
+    Finds the first and last date of the week for a given date.
+    
+    This function calculates the range of the week (Monday to Sunday) 
+    where the given date falls, based on ISO calendar conventions.
+    
+    In this convention, the day of the week ('dow' === 'day of week') 
+    is 'Mon' = 1, ... , 'Sat' = 6, 'Sun' = 7.
     
     Parameters
     ----------
-    date : pandas._libs.tslibs.timestamps.Timestamp
-        Timestamp format string that contains a particular date time.
-    start_date, end_date: str
-        Pair of strings that refer, respectively, to the first and
-        last days of the week that lies the given date within.
+    date : datetime.date, datetime.datetime, np.datetime64, pd.Timestamp.
+         The date for which the week range is calculated. Supports standard Python 
+         date/datetime objects, pandas Timestamps, and numpy datetime64 types.
+
+    Returns
+    -------
+    tuple
+        A tuple containing two pd.Timestamp objects:
+        - start_date: The first day of the week (Monday).
+        - end_date: The last day of the week (Sunday).
+
+    Raises
+    ------
+    ValueError
+        If the provided date is not a pandas Timestamp object.
     """
     
-    if get_obj_type_str(date) == "Timestamp":
-        dow = date.isocalendar()[-1]
-
-        # Find the first day of the week #
-        #--------------------------------#
+    if isinstance(date, (datetime.date, datetime.datetime, np.datetime64, pd.Timestamp)):
+        dow = date.isocalendar().weekday
         
-        if dow == 1:
-            # Since we want to start with Monday, let's test for that condition.
-            start_date = date
-        else:
-            # Otherwise, subtract the 'dow' number days 
-            # that have passed from Monday to get the first day.
-            start_date = date - (datetime.timedelta(dow) - datetime.timedelta(1))
-
-        # Now, add 6 for the last day of the week (i.e., count up to Sunday) #
-        #--------------------------------------------------------------------#
+        # Calculate the start of the week (Monday)
+        start_date = date - pd.Timedelta(days=dow - 1)
         
-        end_date = start_date + datetime.timedelta(days=6)
-
+        # Calculate the end of the week (Sunday)
+        end_date = start_date + pd.Timedelta(days=6)
+        
         return (start_date, end_date)
-        
     else:
-        raise ValueError("The date given is not a Timestamp") 
+        raise TypeError("Unsupported data type",
+                        "The date provided must be a datetime.date, datetime.datetime, "
+                        "np.datetime64 or pd.Timestamp object.")
 
 
 #--------------------------#
