@@ -13,6 +13,7 @@ import xarray as xr
 
 from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
+from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.string_handler import string_handler
 from pyutils.utilities.xarray_utils.xarray_obj_handler import _save_ds_as_nc
 
@@ -129,8 +130,8 @@ def grib2nc(grib_file_list, on_shell=False, option_str=None):
 # Parameters and constants #
 #--------------------------#
 
-# File extensions #
-extensions = ["nc", "csv"]
+# Valid file extensions #
+extensions = climate_file_extensions[::3]
   
 # RegEx control for GRIB-to-netCDF single file name #
 regex_grib2nc = r"^[a-zA-Z0-9\._-]$"
