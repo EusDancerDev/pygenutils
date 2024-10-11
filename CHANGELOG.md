@@ -10,23 +10,74 @@
 
 ### Removed
 
-## [v1X.X.X] - 2024-10-10
+---
+
+## [v10.9.0] - 2024-10-11
 
 ### Added
 
+**General Utilities**
+- `introspection_utils`: method `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
+
 ### Changed
 
-- Refactored interval operations to support switch-case dictionaries, improved `union` behaviour with `force_union` parameter for true unions.
-- Refactored `operations_with_sets` method, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
-	- After that, rename the method to `sets_operator`.
+**Sets and Intervals**
+- Modules
+	- `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually 
+	- Refactored the `interval_operators` to support switch-case dictionaries, improved `union` behaviour with `force_union` parameter for true unions.
+- Methods
+	- Refactored `operations_with_sets`, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
+		- After that, renamed the method to `sets_operator`.
 
-- In subpackage `sets_and_intervals`, modules `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually 
+<u>**Time handling**</u>
+**`date_and_time_utils`**
+- Merged and optimized methods for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
 
-### Removed
+- <span style="font-weight:bold; color:maroon">NOTE</span>: although every method has been moved to this module, except in one case the method pairs were named identically,<br>
+so it is worth describing their origins, referring to the latest version in which these moves were performed (to this module).
+
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Function name 1</span></th>
+		<th><span style="font-size:13.7pt">Module referring to 1</span></th>
+		<th><span style="font-size:13.7pt">Subpackage referring to 1</span></th>
+		<th><span style="font-size:13.7pt">Function name 2</span></th>
+		<th><span style="font-size:13.7pt">Module referring to 2</span></th>
+		<th><span style="font-size:13.7pt">Subpackage referring to 2</span></th>
+		<th><span style="font-size:13.7pt">Merged function name</span></th>
+	</tr>
+	<tr>
+		<th>find_date_key</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames/core</th>
+		<th>find_time_dimension</th>
+		<th>netcdf_handler</th>
+		<th>weather_and_climate</th>
+		<th>find_time_key</th>
+	</tr>
+	<tr>
+		<th>infer_full_period_of_time</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames/core</th>
+		<th>infer_full_period_of_time</th>
+		<th>netcdf_handler</th>
+		<th>weather_and_climate</th>
+		<th>infer_dt_range</th>
+	</tr>
+	<tr>
+		<th>infer_time_frequency</th>
+		<th>data_frame_handler</th>
+		<th>pandas_data_frames/core</th>
+		<th>infer_time_frequency</th>
+		<th>netcdf_handler</th>
+		<th>weather_and_climate</th>
+		<th>infer_frequency</th>
+	</tr>
+</table>
 
 ---
 
-## [v10.3.7] - 2024-10-06
+## [v10.4.0] - 2024-10-06
 
 ### Added
 
@@ -36,8 +87,7 @@
 	- `find_time_dimension` and `find_time_dimension_raise_none` -> `find_time_dimension`.
 	- `find_coordinate_variables` and `find_coordinate_variables_raise_none` -> `find_coordinate_variables`.
 	
-- As a consequence, the following modules which originally used 
-`find_time_dimension_raise_none` and/or `find_coordinate_variables_raise_none` have been adapted:
+- As a consequence, the following modules which originally used `find_time_dimension_raise_none` and/or `find_coordinate_variables_raise_none` have been adapted:
 	- **Climate Data Utils**: `cdo_tools`
 	- **Xarray Utils**: `patterns` and `data_manipulation`
 
@@ -144,14 +194,6 @@
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
 		<th><span style="font-size:13.7pt">New subpackage path</span></th>
-	</tr>
-	<tr>
-		<th>infer_time_frequency</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
 	</tr>
 	<tr>
 		<th>create_ds_component</th>
@@ -378,7 +420,7 @@
 	</tr>
 </table>
 
-- <u>**NOTE**</u>: any method rename above has also been applied to all files using the old method name.
+- <span style="font-weight:bold; color:maroon">NOTE</span>: any method rename above has also been applied to all files using the old method name.
 
 ### Removed
 
@@ -1029,7 +1071,7 @@
 	</tr>
 </table>
 	
-- <u>**NOTE**</u>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
+- <span style="font-weight:bold; color:maroon">NOTE</span>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
 
 5. Rest of the content:
 
