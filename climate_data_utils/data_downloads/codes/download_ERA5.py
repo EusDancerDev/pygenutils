@@ -6,11 +6,12 @@
 #-----------------------#
 
 from pyutils.climate_data_utils import cds_tools
-from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
+from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
+from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
 from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
-from pyutils.utilities.xarray_utils.xarray_obj_handler import grib2netcdf
+from pyutils.utilities.xarray_utils.xarray_obj_handler import grib2nc
 
 # Create aliases #
 #----------------#
@@ -18,6 +19,7 @@ from pyutils.utilities.xarray_utils.xarray_obj_handler import grib2netcdf
 download_data = cds_tools.download_data
 make_parent_directories = file_and_directory_handler.make_parent_directories
 move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
+find_files_by_ext = file_and_directory_paths.find_files_by_ext
 find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 
 #-------------------------#
@@ -25,7 +27,6 @@ find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 #-------------------------#
 
 def return_file_extension(file_format):
-
     # File extension #
     extension_idx = find_substring_index(available_formats, file_format)
     
@@ -80,9 +81,11 @@ variable_list = [
 # Downloadable formats and extensions #
 #-------------------------------------#
 
-# TODO: grib aukeratuz gero, netcdf formatora pasatzeko aukera eman
 file_format = "grib"
 extension = return_file_extension(file_format)
+
+# Option to convert 'grib' files to netCDF
+convert_to_nc = True
 
 #------------------#
 # Fixed parameters #
@@ -137,8 +140,8 @@ variable_kw = "variable"
 
 format_kw = "format"
 
-available_formats = ["grib", "netcdf_zip", "netcdf"]
-available_extensions = ["grib", "netcdf_zip", "nc"]
+available_formats = ["netcdf", "grib", "netcdf_zip"]
+available_extensions = climate_file_extensions[:-1]
 
 #--------------------#
 # Initialize program #
@@ -215,7 +218,12 @@ for country, area_list in zip(country_list, area_lists):
                         download_data(product_name, output_file_name, **kwargs)
 
 # Move the downloaded data from the directory where the code is being called #
-move_files_by_ext_from_exec_code(extension, ds_input_data_dir)
+if file_format == "grib" and convert_to_nc:
+    all_grib_files = find_files_by_ext(file_format, path_to_walk_into=project_dir)
+    grib2nc(all_grib_files, on_shell=True)
+    move_files_by_ext_from_exec_code(available_extensions[0], ds_input_data_dir)
+else:
+    move_files_by_ext_from_exec_code(extension, ds_input_data_dir)
 
 #---------------------------------------#
 # Calculate full program execution time #
