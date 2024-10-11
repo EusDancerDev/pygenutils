@@ -1,18 +1,18 @@
 # Changelog
 
-## [v1X.X.X] - 2024-10-XX
+## [v1X.X.X] - 2024-10-1X
 
 ### Added
 
 ### Changed
 
-<!--GAUR GAUZATU METODO-IZENEN ALDAKETAK!!!!!!!!-->
+<!--Gauzatu `calendar_utils` eta `representative_series`-en `interpolation_methods` moduluko funtzioen inportazioa eta erabilera.-->
 
 ### Removed
 
 ---
 
-## [v10.9.0] - 2024-10-11
+## [v10.9.2] - 2024-10-11
 
 ### Added
 
@@ -28,6 +28,9 @@
 - Methods
 	- Refactored `operations_with_sets`, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
 		- After that, renamed the method to `sets_operator`.
+		
+**Core Statistics**
+- Method `polynomial_fitting` has been moved from module `curve_fitting` to `interpolation_methods`.
 
 <u>**Time handling**</u>
 **`date_and_time_utils`**
@@ -75,11 +78,13 @@ so it is worth describing their origins, referring to the latest version in whic
 	</tr>
 </table>
 
+### Removed
+
+- After the displacement of the method `polynomial_fitting`, `curve_fitting` module was removed.
+
 ---
 
 ## [v10.4.0] - 2024-10-06
-
-### Added
 
 ### Changed
 
@@ -390,9 +395,9 @@ so it is worth describing their origins, referring to the latest version in whic
 		<th>grib2netcdf</th>
 		<th>netcdf_handler</th>
 		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
+		<th>grib2nc</th>
 		<th>utilities/xarray_utils</th>
-		<th>xarray_obj_handler</th>
+		<th>conversions</th>
 	</tr>
 	<tr>
 		<th>save_data_array_as_csv</th>
