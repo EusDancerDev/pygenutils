@@ -129,13 +129,13 @@ def calculate_HDY(hourly_df: pd.DataFrame,
 # Helpers #
 #-#-#-#-#-#
 
-def _hdy_interpolation(hdy_df,
-                       hdy_years,
-                       previous_month_last_time_range,
-                       next_month_first_time_range,
-                       varlist_to_interpolate,
-                       polynomial_order,
-                       drop_date_idx_col=False):
+def hdy_interpolation(hdy_df,
+                      hdy_years,
+                      previous_month_last_time_range,
+                      next_month_first_time_range,
+                      varlist_to_interpolate,
+                      polynomial_order,
+                      drop_date_idx_col=False):
     """
     Interpolates along a selected time array between two months
     of an HDY constructed following the ISO 15927-4 2005 (E) standard.
