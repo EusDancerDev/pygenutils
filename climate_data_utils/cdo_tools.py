@@ -6,11 +6,13 @@
 #-----------------------#
 
 from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
-from pyutils.files_and_directories.file_and_directory_handler import rename_objects
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.weather_and_climate import netcdf_handler 
+from pyutils.time_handling.date_and_time_utils import find_time_key
+from pyutils.utilities.file_operations.file_and_directory_handler import rename_objects
+from pyutils.utilities.xarray_utils.patterns import get_file_variables, get_times
+
 
 # Create aliases #
 #----------------#
@@ -22,15 +24,10 @@ time_freqs = global_parameters.time_frequencies_short_1
 
 format_string = information_output_formatters.format_string
 
-get_file_variables = netcdf_handler.get_file_variables
-find_time_dimension_raise_none = netcdf_handler.find_time_dimension_raise_none
-get_times = netcdf_handler.get_times
-
 add_str_to_path = string_handler.add_str_to_aux_path
 find_substring_index = string_handler.find_substring_index
 obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
-
 #-------------------------#
 # Define custom functions #
 #-------------------------#
@@ -126,8 +123,7 @@ def cdo_sellonlatbox(file_list,
 
     for file in file_list:                 
         variable = get_variable_name_in_file_name(file)
-            
-        time_var = find_time_dimension_raise_none(file)
+        time_var = find_time_key(file)
         times = get_times(file, time_var)
             
         start_year = f"{times.dt.year.values[0]}"
