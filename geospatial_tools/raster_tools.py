@@ -18,12 +18,12 @@ from pyutils.strings.string_handler import modify_obj_specs, obj_path_specs
 # Define custom functions #
 #-------------------------#
 
-def netcdf2raster(nc_file_list,
-                  output_file_format,
-                  raster_extension,
-                  raster_resolution,
-                  nodata_value=None,
-                  crs="EPSG:4326"):
+def nc2raster(nc_file_list,
+              output_file_format,
+              raster_extension,
+              raster_resolution,
+              nodata_value=None,
+              crs="EPSG:4326"):
     """
     Converts a list of netCDF files to raster format using GDAL.
 
