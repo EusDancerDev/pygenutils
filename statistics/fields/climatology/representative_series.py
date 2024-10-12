@@ -12,19 +12,15 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import data_manipulation
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.meteorological_variables import meteorological_wind_direction
-from pyutils.weather_and_climate import climate_statistics, climatic_signal_modulators as csm
+from pyutils.statistics.core import interpolation_methods, time_series
 
 # Create aliases #
 #----------------#
 
-remove_elements = data_manipulation.remove_elements
-
-periodic_statistics = climate_statistics.periodic_statistics
-evaluate_polynomial = csm.evaluate_polynomial
-polynomial_fitting_coefficients = csm.polynomial_fitting_coefficients
+periodic_statistics = time_series.periodic_statistics
+polynomial_fitting = interpolation_methods.polynomial_fitting
 
 #-------------------------#
 # Define custom functions #
@@ -76,6 +72,8 @@ def calculate_HDY(hourly_df: pd.DataFrame,
             
             # Step a: Calculate daily means for the primary variables
             hdata_MONTH_dm_bymonth = periodic_statistics(hourly_df[hourly_df.date.dt.month == m], varlist_primary, 'day', 'mean')
+            
+            
 
         except ValueError as e:
             print(f"Error in periodic_statistics for month {m}: {e}")
@@ -128,13 +126,8 @@ def calculate_HDY(hourly_df: pd.DataFrame,
     return hdy_df, hdy_years
 
 
-# !!! !!! Behekoa ez da behin betikoa, aldagai bakoitzeko interpolaketa-metodoen iradokizun asko baitago
-
 # Helpers #
 #-#-#-#-#-#
-
-# TODO: helburua -> tratatu beharrekoa HDY izanik, onodko funtzioa hemen gorde,
-#                   baina erabil kanpo-interpolazio metodo bat, 'statistics/core/interpolation_methods.py' modulukoa
 
 def _hdy_interpolation(hdy_df,
                        hdy_years,
@@ -143,124 +136,76 @@ def _hdy_interpolation(hdy_df,
                        varlist_to_interpolate,
                        polynomial_order,
                        drop_date_idx_col=False):
-    
     """
     Interpolates along a selected time array between two months
-    of and HDY constructed following the standard ISO 15927-4 2005 (E).
-    
-    Since the HDY is composed of 'fragments' of completely different months
-    there are unavoidable vertical jumps on the tendencies for every variable.         
-    Interpolation will help to smoothen those jumps.
-    
-    The problem is that the slice to be interpolated
-    in most of the cases presents vertical jumps,
-    so when interpolating that slice those jumps won't be completely removed.
-    
-    In this case, the polynomial fitting technique will be applied.
-    This function performs a determined order polynomial interpolation,
-    passed as an argument.
-    
-    Do not consider the whole previous and next month
-    of the slice to be interpolated, but only some days more earlier and later.
-    The reason for that is because data is hourly so there are
-    obviously a lot of oscillations.
-    
-    Also do not consider all month indices,
-    because the last interpolation involving pairs of months
-    is that of October and November.
-    
-    For practicality and uniqueness purposes, it is strongly reccommended,
-    to the extent of present elements in the variable list
-    to interpolate against, to follow these standard short names.
-    The order of the variables is not strict:
-    
-    2 metre temperature : t2m
-    2 metre dew point temperature : d2m
-    Relative humidity : rh
-    10 metre U wind component : u10
-    10 metre V wind component : v10
-    10 metre wind speed modulus : ws10
-    Surface solar radiation downwards : ssrd
-    Surface thermal radiation downwards : strd
-    Surface solar radiation downwards : ssrd
-    Direct solar radiation at the surface : fdir
-    Diffuse solar radiation at the surface : fdif
-    Surface pressure : sp
-    
-    
-    Notes
-    -----
-    Both wind direction and speed modulus will be calculated
-    after the interpolation of u10 and v10 arrays.
-    """
-    
-    hdy_interp = hdy_df.copy()
-    
-    hdy_months = pd.unique(hdy_interp.date.dt.month)
-    lhdy_m = len(hdy_months) # == len(hdy_years), by definition
-    
-    # Remove 'ws10' variable from the list of variables to be interpolated #
-    ws10_idx = varlist_to_interpolate.index("ws10")
-    varlist_to_interpolate = remove_elements(varlist_to_interpolate, 
-                                                        ws10_idx)
+    of an HDY constructed following the ISO 15927-4 2005 (E) standard.
 
-    for i in range(lhdy_m-1):
-    
-        days_slice_prev\
-        = pd.unique(hdy_interp[(hdy_interp.date.dt.year == hdy_years[i])
-                        &(hdy_interp.date.dt.month == hdy_months[i])].date.dt.day)
-        
-        days_slice_next\
-        = pd.unique(hdy_interp[(hdy_interp.date.dt.year == hdy_years[i+1])
-                        &(hdy_interp.date.dt.month == hdy_months[i+1])].date.dt.day)
-        
-        pml1, pml2 = np.array(previous_month_last_time_range.split(splitdelim), "i")
-        nmf1, nmf2 = np.array(next_month_first_time_range.split(splitdelim), "i")
-    
-        ymdh_first1\
-        = f"{hdy_years[i]:04d}-{hdy_months[i]:02d}-{days_slice_prev[-1]:02d} "\
-          f"T{pml1:02d}"
-          
-        ymdh_last1\
-        = f"{hdy_years[i]:04d}-{hdy_months[i]:02d}-{days_slice_prev[-1]:02d} "\
-          f"T{pml2:02d}"
-          
-        ymdh_first2\
-        = f"{hdy_years[i+1]:04d}-{hdy_months[i+1]:02d}-{days_slice_next[0]:02d} "\
-          f"T{nmf1:02d}"
-          
-        ymdh_last2\
-        = f"{hdy_years[i+1]:04d}-{hdy_months[i+1]:02d}-{days_slice_next[0]:02d} "\
-          f"T{nmf2:02d}"
-        
-        df_slice1 = hdy_interp[(hdy_interp.date >= ymdh_first1)&
-                               (hdy_interp.date <= ymdh_last1)]
-        df_slice2 = hdy_interp[(hdy_interp.date >= ymdh_first2)&
-                               (hdy_interp.date <= ymdh_last2)]
-    
-        df_slice_to_fit_reidx\
-        = pd.concat([df_slice1, df_slice2],axis=0).reset_index(drop=drop_date_idx_col)
-        
-        # Polynomial fitting parameters #
-        poly_ord = polynomial_order
-        x = np.arange(len(df_slice_to_fit_reidx))
-        df_slice_fit_indices = np.array(df_slice_to_fit_reidx.index)
-        
+    Since the HDY is composed of 'fragments' of completely different months,
+    there are unavoidable vertical jumps for every variable. Polynomial interpolation
+    helps to smooth these transitions between months.
+
+    Parameters
+    ----------
+    hdy_df : pd.DataFrame
+        DataFrame containing the HDY hourly data.
+    hdy_years : list
+        List of selected years corresponding to each month in HDY.
+    previous_month_last_time_range : str
+        Time range (e.g., '23:00-23:59') for the last day of the previous month.
+    next_month_first_time_range : str
+        Time range (e.g., '00:00-01:00') for the first day of the next month.
+    varlist_to_interpolate : list
+        Variables to be interpolated between months.
+    polynomial_order : int
+        Order of the polynomial to use for fitting.
+    drop_date_idx_col : bool, optional
+        Whether to drop the index column.
+
+    Returns
+    -------
+    tuple
+        - hdy_interp: pd.DataFrame
+                Interpolated variables and smoothed transitions, except wind direction
+        - wind_dir_meteo_interp: pd.DataFrame
+                Interpolated wind direction and smoothed transitions
+    """
+    hdy_interp = hdy_df.copy()
+
+    # Remove 'ws10' from interpolation list since it's derived from u10, v10
+    if "ws10" in varlist_to_interpolate:
+        varlist_to_interpolate.remove("ws10")
+
+    for i in range(len(hdy_years) - 1):
+        # Extract time slices for interpolation between consecutive months
+        days_slice_prev = hdy_interp[(hdy_interp.date.dt.year == hdy_years[i]) &
+                                     (hdy_interp.date.dt.month == hdy_interp.date.dt.month[i])]
+
+        days_slice_next = hdy_interp[(hdy_interp.date.dt.year == hdy_years[i + 1]) &
+                                     (hdy_interp.date.dt.month == hdy_interp.date.dt.month[i + 1])]
+
+        # Handle time ranges as integers (hours), split the input range strings
+        pml1, pml2 = map(int, previous_month_last_time_range.split(":"))
+        nmf1, nmf2 = map(int, next_month_first_time_range.split(":"))
+
+        # Extract the time slices based on the provided ranges
+        df_slice1 = days_slice_prev[(days_slice_prev.date.dt.hour >= pml1) & (days_slice_prev.date.dt.hour <= pml2)]
+        df_slice2 = days_slice_next[(days_slice_next.date.dt.hour >= nmf1) & (days_slice_next.date.dt.hour <= nmf2)]
+
+        # Concatenate and reset indices for interpolation
+        df_slice_to_fit = pd.concat([df_slice1, df_slice2]).reset_index(drop=drop_date_idx_col)
+
+        # Polynomial fitting for each variable in varlist_to_interpolate
         for var in varlist_to_interpolate:
-            y_var = df_slice_to_fit_reidx[var]
-            var_poly_coeffs = polynomial_fitting_coefficients(x, y_var, poly_ord)    
-            
-            for ix in range(len(x)):
-                var_eval = evaluate_polynomial(var_poly_coeffs, x[ix])
-                df_slice_to_fit_reidx.loc[df_slice_fit_indices[ix],var] = var_eval
-                
-                idx_for_hdy = df_slice_to_fit_reidx.loc[df_slice_fit_indices[ix],"index"]
-                df_slice_to_fit_reidx.loc[df_slice_to_fit_reidx["index"] == idx_for_hdy,var]\
-                = var_eval            
-                hdy_interp.loc[idx_for_hdy,var] = var_eval
-                    
-                
-    # Calculate the 10m wind speed direction and modulus #
+            y_var = df_slice_to_fit[var].to_numpy()  # Dependent variable (data values)
+            fitted_values = polynomial_fitting(y_var, polynomial_order, fix_edges=True)
+
+            # Apply the interpolated values back into the DataFrame
+            df_slice_to_fit[var] = fitted_values
+
+            # Update the main HDY DataFrame
+            hdy_interp.loc[df_slice_to_fit.index, var] = fitted_values
+
+    # Calculate wind speed modulus based on interpolated u10 and 
     """
     On the wind direction calculus
     ------------------------------
@@ -276,15 +221,15 @@ def _hdy_interpolation(hdy_df,
      the antiparallel image vector.
      The zero-degree angle is set 90º further than the
      default unit cyrcle, so that 0º means wind blowing from the North. 
-    """    
-    hdy_interp.loc[:,"ws10"]\
-    = np.sqrt(hdy_interp.u10 ** 2 + hdy_interp.v10 ** 2)
-    
+    """   
+    hdy_interp["ws10"] = np.sqrt(hdy_interp.u10 ** 2 + hdy_interp.v10 ** 2)
+
+    # Calculate wind direction using meteorological convention
     print("\nCalculating the wind direction from the meteorological point of view...")
-    
-    wind_dir_meteo_interp = meteorological_wind_direction(hdy_interp.u10.values,  
-                                                          hdy_interp.v10.values)
-    return (hdy_interp, wind_dir_meteo_interp)
+    wind_dir_meteo_interp = meteorological_wind_direction(hdy_interp.u10.values, hdy_interp.v10.values)
+
+    return hdy_interp, wind_dir_meteo_interp
+
 
 #--------------------------#
 # Parameters and constants #
