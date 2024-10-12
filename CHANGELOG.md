@@ -1,12 +1,26 @@
 # Changelog
 
-## [v1X.X.X] - 2024-10-1X
+## [v10.11.3] - 2024-10-12
 
 ### Added
 
+**Core Statistics**
+- Created `interpolation_methods` module with `interpolate_numpy`, `interpolate_pandas`, and `interpolate_xarray` for flexible interpolation across various object types.
+
 ### Changed
 
-<!--Gauzatu `calendar_utils` eta `representative_series`-en `interpolation_methods` moduluko funtzioen inportazioa eta erabilera.-->
+**Climatology Statistics**
+- Module `representative_series`
+	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_methods` (**Core Statistics**).
+
+**Time Handling**
+- Method `standardize_calendar`:
+	- Rename to British English nomenclature: `standardise_calendar`.
+	- Optimised by refactoring type handling.
+	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_methods` (**Core Statistics**).
+	
+**Geospatial Tools**
+- In module `geospatial_tools`, rename method `netcdf2raster` to `nc2raster`.
 
 ### Removed
 
@@ -34,7 +48,7 @@
 
 <u>**Time handling**</u>
 **`date_and_time_utils`**
-- Merged and optimized methods for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
+- Merged and optimised methods for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
 
 - <span style="font-weight:bold; color:maroon">NOTE</span>: although every method has been moved to this module, except in one case the method pairs were named identically,<br>
 so it is worth describing their origins, referring to the latest version in which these moves were performed (to this module).
@@ -116,13 +130,13 @@ so it is worth describing their origins, referring to the latest version in whic
 	- **Pandas Utils**: 
 		- `conversions`: module designed to handle pandas object type conversions, starting with DataFrame to NumPy`s structured array conversion.
 		- `data_manipulation`: higher-level data manipulations using pandas.
-		- `pandas_obj_handler`:
+		- `pandas_obj_handler`: handles various file operations for pandas DataFrames, including reading, merging, and saving Excel, CSV, and ODS files, with support for handling duplicated sheet names, managing file overwrites, and customizing output formats.
 	- **Xarray Utils**: 
 		- `conversions`: module designed to handle xarray object type conversions, starting with GRIB to netCDF conversion.
 		- `data_manipulation`: higher-level data manipulations using xarray.
 		- `file_utils`: comprehensive utilities for scanning, validating, and managing netCDF files.
 		- `patterns`: utility methods for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
-		- `xarray_obj_handler`: optimized module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
+		- `xarray_obj_handler`: optimised module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
 
 ### Changed
 
@@ -835,7 +849,7 @@ so it is worth describing their origins, referring to the latest version in whic
 * `data_downloads`
 	- A module dedicated to managing the download of climate data. It contains:
 		- <b>codes</b>: Includes scripts and configurations necessary for utilizing the Copernicus API for efficient data downloads.
-		- <b>input_data</b> A folder for storing downloaded climate data, ensuring organized access to data files.
+		- <b>input_data</b> A folder for storing downloaded climate data, ensuring organised access to data files.
 
 
 2. Subpackage `statistics`:
@@ -1135,7 +1149,7 @@ so it is worth describing their origins, referring to the latest version in whic
 1. `climatic_statistics`
 
 - `window_sum`:
-	* Optimized performance by using `np.convolve` for faster sliding window summation.
+	* Optimised performance by using `np.convolve` for faster sliding window summation.
 	* Added edge case handling for empty arrays or when the window size exceeds the array length.
 	* Refined docstring to clarify input parameters, particularly around window size and handling of edge cases.
 
@@ -1147,7 +1161,7 @@ so it is worth describing their origins, referring to the latest version in whic
 2. `climatic_signal_modulators`
 
 - `polynomial_fitting`
-	 * Optimized the logic by simplifying variable names and improving handling of edge cases.
+	 * Optimised the logic by simplifying variable names and improving handling of edge cases.
 	 * Enhanced the docstring to detail the parameters, added alternative polynomial function usage, and described the fixing of edges in polynomial interpolation.
 
 ---
@@ -1318,7 +1332,7 @@ so it is worth describing their origins, referring to the latest version in whic
 - Several subpackages for various utility functions and modules.
 
 ### Changed
-- Relocated methods and optimized imports.
+- Relocated methods and optimised imports.
 
 ### Removed
 - Deleted files that have been relocated.
@@ -1345,7 +1359,7 @@ so it is worth describing their origins, referring to the latest version in whic
 - Rename `ofile` variable to `out_file_obj`, which all `.write` instances are referenced from.
 
 ### Added
-- Add todo for when method `time_format_tweaker` at module `time_formatters` is optimized and incorporated more functionalities to it.
+- Add todo for when method `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
 - Add detailed docstring to the method `natural_year` and optimize inner code and comments.
 
 ### Fixed
