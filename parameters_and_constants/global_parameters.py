@@ -117,3 +117,4 @@ data_uploading_error_dict = {
 
 # Climate change
 emission_rcp_scenarios = ["historical", "rcp26", "rcp45", "rcp85"]
+climate_file_extensions = ["nc", "grib", "netcdf_zip", "csv"]
