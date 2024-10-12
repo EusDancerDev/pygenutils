@@ -16,30 +16,32 @@ import pandas as pd
 #-----------------------#
 
 from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
-from pyutils.pandas_data_frames import data_frame_handler
-from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
 from pyutils.strings.string_handler import modify_obj_specs
+from pyutils.statistics.core import interpolation_methods
 from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
 from pyutils.utilities.introspection_utils import get_obj_type_str
+from pyutils.utilities.pandas_utils.pandas_obj_handler import save2csv, save2excel
 
 # Create aliases #
 #----------------#
 
-insert_row_in_df = data_frame_handler.insert_row_in_df
-save2csv = data_frame_handler.save2csv
-save2excel = data_frame_handler.save2excel
+interp_np = interpolation_methods.interp_np
+interp_pd = interpolation_methods.interp_pd
+interp_xr = interpolation_methods.interp_xr
 
 #------------------#
 # Define functions #
 #------------------#
 
-# Calendar standardizers #
+# Calendar standardisers #
 #------------------------#
+# %%
 
-def standardize_calendar(obj,
+def standardise_calendar(obj,
                          file_path,
                          interpolation_method=None,
                          order=None,
+                         axis=0,
                          save_as_new_obj=False, 
                          extension=None, 
                          separator=",",
@@ -47,256 +49,170 @@ def standardize_calendar(obj,
                          save_header=False):
     
     """
-    **Global note** 
-    ---------------
+    Standardise the calendar of a pandas or xarray object to the Gregorian calendar and 
+    interpolate missing timestamps.
     
-    Function to standardize the calendar of an object 
-    (pandas.DataFrame, xarray.Dataset, or xarray.DataArray)
-    to the Gregorian calendar and perform interpolations for missing data along rows (axis=0).
-    This need arises when modelled atmospheric or land data is considered,
-    when each model has its own calendar.
-    This funcion is useful when several model data is handled at once.
-
-    To this day, taking account the structure of the modules
-    and practicity and cleanliness of this function,
-    module patterns from the subpackage 'xarray_utils' will only be imported here
-    together with xarray.    
+    This function aligns the time axis of a given pandas DataFrame or xarray Dataset/DataArray
+    to a Gregorian calendar by identifying missing timestamps and interpolating missing data.
+    Useful when handling model outputs with non-standard calendars.
     
     Parameters
     ----------
-    obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray or list of them.
-        Object containing data. If it is a pd.DataFrame, the first column must be of type datetime64.
+    obj : pandas.DataFrame, xarray.Dataset, xarray.DataArray, or list of them
+        Object containing data. For pandas DataFrames, the first column 
+        must be of datetime64 type.
     file_path : str or list of str
-        String referring to the file name from which the data object has been extracted.
+        Path(s) to the file(s) from which the data object was extracted.
     interpolation_method : str, optional
-        Interpolation method to use for filling missing data. Examples: 'linear', 'polynomial'.
+        Interpolation method to use for filling missing data, e.g., 'linear', 'polynomial'.
     order : int, optional
-        Order of the interpolation if a polynomial or spline method is chosen.
+        Order of the interpolation method if polynomial or spline interpolation is used.
+    axis : int, optional
+        Axis along which to interpolate, for pandas objects (default is 0).
     save_as_new_obj : bool, optional
-        If True, saves the standardized object as a CSV, Excel, or NetCDF file.
+        If True, saves the standardised object to a new file (CSV, Excel, or NetCDF).
     extension : str, optional
-        Extension of the file to save the standardized object. Options are "csv", "xlsx", and "nc".
+        File extension for saving the standardised object, either 'csv', 'xlsx', or 'nc'.
     separator : str, optional
-        Separator used for CSV files. Default is ','.
+        Separator for CSV files (default is ',').
     save_index : bool, optional
-        Whether to save the index when saving the object. Default is False.
+        Whether to save the index in the output file (default is False).
     save_header : bool, optional
-        Whether to include headers when saving the object. Default is False.
-
+        Whether to include headers in the output file (default is False).
+    
     Returns
     -------
-    obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray
-        Object with the standardized calendar and interpolated missing data.
+    obj : pandas.DataFrame, xarray.Dataset, or xarray.DataArray
+        Object with a standardised calendar and interpolated data.
     
-    Note
-    ----
-    There is no programatic way to store multiple sheets on a CSV file,
-    as can be done with Excel files, because CSV is rough, old format
-    but mainly for data transport.
+    Notes
+    -----
+    For Excel files, data will be saved with separate sheets for each variable (if applicable).
     """
 
-    obj_type = get_obj_type_str(obj).lower()
+    obj_type = get_obj_type_str(obj, lowercase=True)
     
     # Handling pandas dataframes #
-    #----------------------------#    
-    
-    if (obj_type == "pandas" \
-        or (obj_type == "list" \
-        and all(get_obj_type_str(element) == "dataframe") for element in obj)):
-
-        if not isinstance(obj, list) and not isinstance(obj, np.ndarray):
-            obj = [obj]
-            
-        if not isinstance(file_path, list) and not isinstance(file_path, np.ndarray):
-            file_path = [file_path]
-            
+    if obj_type == "pandas" \
+        or (obj_type == "list" and all(get_obj_type_str(element) == "dataframe")
+            for element in obj):
+        
+        obj = np.atleast_1d(obj)  # Ensure obj is list-like
+        file_path = np.atleast_1d(file_path)  # Ensure file_path is list-like
+        
         obj_std_calendar = []
         len_objects = len(obj)
-            
-        # Check whether all objects passed in a list are of the same type #
-        len_unique_type_list = unique_type_objects(obj)[-1]
         
+        # Check if all objects passed in a list are of the same type
+        len_unique_type_list = unique_type_objects(obj)[-1]
         if len_unique_type_list > 1:
             raise ValueError("Not every object in the list is of the same type.")
-            
-        else:
-            """It is supposed that every component is of the same type"""
-            if isinstance(obj[0], pd.DataFrame):
-                
-                for (obj_num, obj), fp in zip(enumerate(obj), file_path):
-                    
-                    # Get the date key and time frequency #
-                    time_col = find_time_key(obj)
-                    time_freq = infer_frequency(obj.loc[:10,time_col])
-                    
-                    # Get the time array with possible missing datetimes #
-                    time_shorter = obj.loc[:,time_col]
-                    time_shorter_arr = np.array(time_shorter)
-                    ltm = len(time_shorter)
-                   
-                    # Construct full time array to compare with the previous array #
-                    first_datetime = obj.iloc[0, 0]
-                    last_datetime = obj.iloc[-1, 0]
-                    
-                    full_times = pd.date_range(first_datetime,
-                                               last_datetime, 
-                                               freq=time_freq)
-                    lft = len(full_times)
-                    
-                    data_frames_remaining = len_objects - (obj_num+1) 
-                    print(f"Data frames remaining: {data_frames_remaining}")
-                    
-                    # Compare both time arrays, even if they have the same length #
-                    if ltm != lft:
-                        for ft in full_times:
-                            if ft not in time_shorter_arr:
-                                
-                                """Previous day of the missing date-time (indexing)"""
-                                missing_date_yesterday\
-                                = ft - datetime.timedelta(days=1)
-                                index_yesterday\
-                                = obj[obj[time_col]==missing_date_yesterday].index
-                                
-                                """Actual missing time"""
-                                index_missing_time = int((index_yesterday + 1).to_numpy())
-                                
-                                missing_datetime\
-                                = missing_date_yesterday + datetime.timedelta(days=1)
-                                
-                                """Define values to insert"""
-                                values = np.append(missing_datetime,
-                                                   np.repeat(np.nan, len(obj.columns[1:])))
-                                
-                                insert_row_in_df(obj, index_missing_time, values=values)
-                    
-                        # Reorder the data frame indices #
-                        obj = obj.sort_index().t_reset_index(drop=True)
-                        obj.iloc[:, 1:] = obj.iloc[:, 1:].astype('d')
-                                        
-                        # Perform the interpolation, if requested #
-                        if interpolation_method is not None:
-                            
-                            if (interpolation_method in supported_interpolation_methods)\
-                            and order is None:
-                                raise ValueError("Please specify and order for the "
-                                                  "interpolation method "
-                                                  f"{interpolation_method}")
-                        
-                            # Fill the missing data as a   #
-                            # consequence of missing dates #
-                            print("Filling the missing data "
-                                  "as a consequence of missing dates...")
-                            
-                            obj.iloc[:, 1:]\
-                            = obj.iloc[:, 1:].interpolate(method=interpolation_method,
-                                                          order=order)
-                            
-                    obj_std_calendar.append(obj)
         
-                    # Save the object either as Excel or CSV document #
-                    if save_as_new_obj:
-                        
-                        obj2change = "name_noext"
-                        str2add = "_std_calendar"
-                        
-                        saving_file_name = modify_obj_specs(fp,
-                                                            obj2change,
-                                                            new_obj=None,
-                                                            str2add=str2add)
-                        
-                        if extension == "csv":        
-                            
-                            print("Saving data into a CSV document...")
-                            save2csv(saving_file_name,
-                                     obj,
-                                     separator,
-                                     save_index,
-                                     save_header,
-                                     date_format=basic_time_format_strs[time_freq])
-                            
-                        elif extension == "xlsx":
-                            
-                            frame_dict = {}
-                            obj_cols = obj.columns
-                            
-                            for grid_col in obj_cols[1:]:
-                                
-                                excel_sheet_name = grid_col
-                                frame_dict[excel_sheet_name]\
-                                = obj.loc[:, [time_col, grid_col]]
-                                
-                                print("Writing and storing data "
-                                      "into an excel document...")
-                                save2excel(saving_file_name,
-                                           frame_dict,
-                                           save_index,
-                                           save_header)
+        # Assuming all elements are pandas DataFrames
+        for obj_num, (current_obj, fp) in enumerate(zip(obj, file_path)):
             
-                        else:
-                            raise ValueError("Unsupported file extension . "
-                                             "Options for a Pandas data frame "
-                                             f"are {supported_file_exts_pandas}.")
-                            
+            time_col = find_time_key(current_obj)
+            time_freq = infer_frequency(current_obj.loc[:10, time_col])
+            
+            time_shorter = current_obj[time_col].to_numpy()
+            full_times = pd.date_range(start=current_obj.iloc[0, time_col],
+                                       end=current_obj.iloc[-1, time_col], 
+                                       freq=time_freq)
+            
+            print(f"Data frames remaining: {len_objects - (obj_num+1)}")
+            
+            # Check for missing dates
+            missing_dates = set(full_times) - set(time_shorter)
+            for ft in missing_dates:
+                missing_date_yesterday = ft - pd.Timedelta(days=1)
+                index_yesterday = current_obj[current_obj[time_col] == missing_date_yesterday].index
+                
+                # Insert missing rows with NaNs
+                index_missing_time = index_yesterday + 1
+                new_row = pd.DataFrame([[ft] + [np.nan] * (current_obj.shape[1] - 1)], 
+                                       columns=current_obj.columns, 
+                                       index=[index_missing_time])
+                current_obj = pd.concat([current_obj.iloc[:index_missing_time], 
+                                         new_row, 
+                                         current_obj.iloc[index_missing_time:]]).reset_index(drop=True)
+            
+            # Interpolate missing data
+            if interpolation_method:
+                current_obj.iloc[:, 1:] = interp_pd(current_obj.iloc[:, 1:],
+                                                    method=interpolation_method,
+                                                    order=order,
+                                                    axis=axis)
+            obj_std_calendar.append(current_obj)
+        
+            # Save as CSV or Excel if needed
+            if save_as_new_obj:
+                obj2change = "name_noext"
+                str2add = "_std_calendar"
+                saving_file_name = modify_obj_specs(fp, obj2change, new_obj=None, str2add=str2add)
+                
+                if extension == "csv":        
+                    save2csv(saving_file_name, current_obj, separator, save_index, save_header)
+                elif extension == "xlsx":
+                    frame_dict = {col: current_obj[[time_col, col]] for col in current_obj.columns[1:]}
+                    save2excel(saving_file_name, frame_dict, save_index, save_header)
+                else:
+                    raise ValueError(f"Unsupported file extension: '{extension}'")
+        
         return obj_std_calendar
     
     # Handling xarray datasets or data arrays #
-    #-----------------------------------------#
-    
-    # !!! Created by ChatGPT following pandas.DataFrame logic
-    
-    elif (obj_type in ["dataarray", "dataset"]\
-          or (obj_type == "list" and all(get_obj_type_str(element) in ["dataarray", "dataset"]
-                                         for element in obj))):
-        
-        # Import module and custom modules here by convenience #
-        #------------------------------------------------------#
+    elif obj_type in ["dataarray", "dataset"] \
+        or (obj_type == "list" and all(get_obj_type_str(element) in ["dataarray", "dataset"] 
+                                       for element in obj)):
         
         import xarray as xr
         from pyutils.utilities.xarray_utils.patterns import find_time_dimension
         
         if isinstance(obj, list):
-            obj = obj[0]  # assuming only one object passed
+            obj = obj[0]  # Assuming only one object in the list
 
         time_dim = find_time_dimension(obj)
-        full_times = xr.cftime_range(start=obj[time_dim][0].values,
-                                     end=obj[time_dim][-1].values,
+        full_times = xr.cftime_range(start=obj[time_dim][0].values, 
+                                     end=obj[time_dim][-1].values, 
                                      freq=infer_frequency(obj[time_dim]))
-
-        obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)  # aligning with the full time range
+        obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)
         
         if interpolation_method:
-            obj_std_calendar = obj_std_calendar.interpolate_na(dim=time_dim, method=interpolation_method)
-            if interpolation_method in supported_interpolation_methods and order is not None:
-                obj_std_calendar = obj_std_calendar.polyfit(dim=time_dim, deg=order)
-
-        # Saving object if required
+            obj_std_calendar = interp_xr(obj_std_calendar, 
+                                         method=interpolation_method,
+                                         order=order,
+                                         dim=time_dim)            
+        
+        # Save as NetCDF if needed
         if save_as_new_obj:
             obj2change = "name_noext"
             str2add = "_std_calendar"
             saving_file_name = modify_obj_specs(file_path, obj2change, new_obj=None, str2add=str2add)
-
             if extension == "nc":
-                print("Saving data into a NetCDF document...")
                 obj_std_calendar.to_netcdf(saving_file_name)
             else:
-                raise ValueError(f"Unsupported file extension {extension} for xarray objects.")
-
+                raise ValueError(f"Unsupported file extension: '{extension}'")
+        
+        return obj_std_calendar
+    
     else:
         raise TypeError("Unsupported object type. "
                         "Please provide a pandas DataFrame, xarray Dataset, or xarray DataArray.")
-    
-    return obj_std_calendar
 
 
+
+# %%
 # Leap years #
 #------------#
 
 def leap_year_detector(start_year, end_year, return_days=False):
     """
-    Detects leap years in a given range or returns the number of days in each year of the range.
+    Detects leap years in a given range or returns the number of days 
+    in each year of the range.
 
-    This function can return a dictionary indicating whether each year in the range is a leap year, or 
-    return the number of days in each year, depending on the 'return_days' flag.
+    This function can return a dictionary indicating whether each year 
+    in the range is a leap year, or return the number of days in each year,
+    depending on the `return_days` flag.
 
     Parameters
     ----------
@@ -311,9 +227,10 @@ def leap_year_detector(start_year, end_year, return_days=False):
     Returns
     -------
     dict or list
-        - If return_days is False: A dictionary where the keys are years from start_year to end_year, 
-          and the values are booleans (True if the year is a leap year, otherwise False).
-        - If return_days is True: A list of the number of days for each year in the range.
+        - If `return_days` is False: A dictionary where the keys are years
+          from `start_year` to `end_year`, and the values are booleans 
+          (True if the year is a leap year, otherwise False).
+        - If `return_days` is True: A list of the number of days for each year in the range.
     """
     
     # Ensure input years are integers
@@ -348,7 +265,8 @@ def nearest_leap_year(year):
     Returns
     -------
     int or str
-        The nearest leap year. If two leap years are equally close, a string with both years is returned.
+        The nearest leap year. If two leap years are equally close,
+        a string with both years is returned.
     """
     
     if leap_year_detector(year, year)[year]:
@@ -418,6 +336,3 @@ def week_range(date):
 
 # Supported file extensions for calendar standardizations #
 supported_file_exts_pandas = ['csv', 'xlsx']
-
-# Supported interpolation methods #
-supported_interpolation_methods = ["polynomial", "spline"]
