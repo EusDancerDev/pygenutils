@@ -227,11 +227,11 @@ def get_attribute_names(obj):
 # Object types #
 #--------------#
 
-def get_obj_type_str(obj):
+def get_obj_type_str(obj, lowercase=False):
     """Returns the type of an object as a string"""
     obj_type_class = type(obj)
     obj_type_str = obj_type_class.__name__
-    return obj_type_str
+    return obj_type_str.lower() if lowercase else obj_type_str
 
 # More functions related to introspection or utility as needed #
 #--------------------------------------------------------------#
