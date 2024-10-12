@@ -341,8 +341,8 @@ def save2excel(file_path,
             return 0
         
     else:
-        raise ValueError("Unsupported type of frame. "
-                         "It must either be of type 'dict' or 'pandas.DataFrame'.")
+        raise TypeError("Unsupported type of frame. "
+                        "It must either be of type 'dict' or 'pandas.DataFrame'.")
         
 
 def merge_excel_files(input_file_list,
