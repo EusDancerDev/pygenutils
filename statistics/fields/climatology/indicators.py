@@ -11,14 +11,8 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import data_manipulation, patterns
+from pyutils.arrays_and_lists.patterns import count_consecutive
 from pyutils.statistics.core.time_series import consec_occurrences_mindata, consec_occurrences_maxdata
-
-# Create aliases #
-#----------------#
-
-select_elements = data_manipulation.select_elements
-count_consecutive = patterns.count_consecutive
 
 #------------------#
 # Define functions #
@@ -187,95 +181,64 @@ def calculate_CWD(season_daily_precip, precip_threshold):
                                           max_consecutive_days=True)
 
 
-# TODO: ChatGPT optimizazioa
-def calculate_HWD(tmax_array, tmin_array,
-                  max_threshold, min_threshold,
-                  date_array, min_consec_days):
+def calculate_hwd(tmax, tmin, max_thresh, min_thresh, dates, min_days):
     """
-    Function that returns the total days of heat waves (HWD === Heat Wave Days),
-    based on daily data.
-    A heat wave is defined such that at least in N consecutive days
-    the maximum temperature exceeds its 95th percentile
-    and the minimum temperature exceeds it 90th percentile.
+    Calculate the total heat wave days (HWD) based on daily data.
     
-    Each heat wave is assocciated with the following:
-    
-    -Heat wave intensity : maximum temperature registered during the heat wave,
-                           i.e. the event satisfying the conditions aforementioned.
-    -Heat wave duration : number of consecutive days of the heat wave.
-    -Heat wave global intensity : sum of the maximum temperatures registered
-                                  during the heat wave,
-                                  divided by its duration.
+    A heat wave is defined as a period of at least N consecutive days where
+    the maximum temperature exceeds the 95th percentile (max_thresh)
+    and the minimum temperature exceeds the 90th percentile (min_thresh).
     
     Parameters
     ----------
-    tmax_array : numpy.ndarray or pandas.Series
-        An array which contains the daily maximum temperature data.
-    tmin_array : numpy.ndarray or pandas.Series
-        An array which contains the daily minimum temperature data.
-    max_threshold : float
-        Upper limit.
-    min_threshold : float
-        Lower limit.
-    date_array : pandas.DatetimeIndex
-        Array containing dates, in this case of the corresponding season.
-    min_consec_days : int
-        Minimum consecutive days number.
+    tmax : numpy.ndarray or pandas.Series
+        Array of daily maximum temperatures.
+    tmin : numpy.ndarray or pandas.Series
+        Array of daily minimum temperatures.
+    max_thresh : float
+        Threshold for maximum temperature (95th percentile).
+    min_thresh : float
+        Threshold for minimum temperature (90th percentile).
+    dates : pandas.DatetimeIndex
+        Array of dates corresponding to the temperature data.
+    min_days : int
+        Minimum number of consecutive days for a heat wave.
     
     Returns
     -------
     tuple
-        hwd_characteristics : numpy.ndarray composed of tuples
-            All heat wave events,
-            each with its characteristics englobed in a tuple.
-        hwd : int 
-            Total number of heat wave events.
+        hwd_events : list of tuples
+            Each heat wave event's duration, global intensity, peak intensity, and start date.
+        total_hwd : int
+            Total number of heat wave days.
     """
-    N = min_consec_days
-    satisfied_thres_bool_arr = (tmax_array > max_threshold) * (tmin_array > min_threshold)
-           
-    hwd_characteristics = []
-    hwd = 0 
-
-    block_consecutive_idx = np.flatnonzero(
-                            np.convolve(satisfied_thres_bool_arr,
-                                        np.ones(N, dtype=int),
-                                        mode='valid')>=N)
+    # Create a boolean array where both thresholds are satisfied
+    heatwave_mask = (tmax > max_thresh) & (tmin > min_thresh)
     
+    # Find consecutive blocks of heat wave days
+    conv_result = np.convolve(heatwave_mask, np.ones(min_days, dtype=int), mode='valid') >= min_days
+    consecutive_indices = np.flatnonzero(conv_result)
     
-    consec_nums_on_consecutive_idx = count_consecutive(block_consecutive_idx)
+    hwd_events = []
+    total_hwd = 0
     
-    if consec_nums_on_consecutive_idx and len(consec_nums_on_consecutive_idx) >= 1:
+    if consecutive_indices.size > 0:
+        consecutive_lengths = count_consecutive(consecutive_indices)
         
-        hw_events_NdayMultiply = consec_nums_on_consecutive_idx.copy()
-                
-        for i in range(len(hw_events_NdayMultiply)):
-            hw_event_partial = block_consecutive_idx[:hw_events_NdayMultiply[i]]
+        for count in consecutive_lengths:
+            hw_event_indices = np.arange(consecutive_indices[0], consecutive_indices[0] + count)
+            hw_max_temps = tmax[hw_event_indices]
+            
+            # Calculate heat wave characteristics
+            duration = hw_event_indices.size
+            global_intensity = hw_max_temps.sum() / duration
+            peak_intensity = hw_max_temps.max()
+            start_date = dates[hw_event_indices[0]]
+            
+            hwd_events.append((duration, global_intensity, peak_intensity, start_date))
+            total_hwd += duration
+            
+            # Remove used indices
+            consecutive_indices = consecutive_indices[count:]
 
-            hw_event = np.unique(np.append(hw_event_partial,
-                                           np.arange(hw_event_partial[-1],
-                                                     hw_event_partial[-1]+N)))
-            
-            hw_event_MaxTemps = tmax_array[hw_event]
-    
-            hw_event_global_intensity = sum(hw_event_MaxTemps) / len(hw_event)
-            hw_event_duration = len(hw_event)
-            hw_event_intensity = np.max(hw_event_MaxTemps)
-            
-            hw_event_characteristics = (hw_event_duration,
-                                        hw_event_global_intensity,
-                                        hw_event_intensity,
-                                        date_array[hw_event[0]])
-            
-            hwd_characteristics.append(hw_event_characteristics)
-            hwd += hw_event_characteristics[0]
-            idx_to_delete = [idx[0] for idx in enumerate(hw_event_partial)]
-    
-            block_consecutive_idx = np.delete(block_consecutive_idx,
-                                              idx_to_delete)
-
-        return (hwd_characteristics, hwd)
-        
-    else:
-        hwd_characteristics = (0, None, None, None)
-        return (hwd_characteristics, 0)
+    return hwd_events, total_hwd if hwd_events else ((0, None, None, None), 0)
