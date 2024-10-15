@@ -323,71 +323,50 @@ def select_elements(array, idx2access):
 # Sequence analysis #
 #-------------------#
 
-def count_consecutive(arr, calc_max_len=False):    
-    """
-    Function that counts consecutive values in an array or pandas series, 
-    distinguishing them by blocks. Works with both numeric arrays and boolean arrays.
+import itertools as it
+import more_itertools as mit
 
+def count_consecutive(arr, calc_max_len=False):
+    """
+    Count consecutive values in an array or series, distinguishing blocks of consecutive values.
+    
     Parameters
     ----------
     arr : list, np.ndarray, or pandas.Series
-        The input array-like object. Can contain numbers or booleans.
+        Input array-like object (numeric or boolean).
     
     calc_max_len : bool, optional
-        If True, returns only the maximum length of consecutive sequences. 
-        If False (default), returns a list of lengths of all consecutive sequences.
-
+        If True, return only the maximum length of consecutive sequences. 
+        If False (default), return lengths of all consecutive sequences.
+    
     Returns
     -------
     list or int
-        If `calc_max_len` is False, returns a list containing the lengths 
-        of consecutive sequences (for numeric or True values).
-        If `calc_max_len` is True, returns an integer representing the 
-        maximum length of consecutive sequences.
-
+        List of lengths of consecutive sequences (or max length if `calc_max_len=True`).
+    
     Examples
     --------
     Example 1 (Numeric Array)
     -------------------------
-    random_list = [45, 46, 47, 48, 80, 81, 83, 87]
-    
-    The result will be the following list:
-    consec_lengths = [4, 2]
+    arr = [45, 46, 47, 48, 80, 81, 83, 87]
+    Result: [4, 2]
     
     Example 2 (Boolean Array)
     -------------------------
-    bool_array = [False, True, True, True, True, True, False, True, True, True]
-    
-    The result will be:
-    consec_lengths = [5, 3]
-
-    Example 3 (Max Consecutive in Boolean Array)
-    -------------------------------------------
-    bool_array = [False, True, True, True, True, True, False, True, True, True]
-    
-    With `calc_max_len=True`, the result will be:
-    max_consec_length = 5
+    arr = [False, True, True, True, True, False, True, True]
+    Result: [4, 2]
     """
     
-    # Determine if array contains booleans or numbers
     if isinstance(arr[0], (bool, np.bool_)):
-        is_boolean = True
+        # For boolean arrays, group True values
+        consecutive_lens = [len(list(group)) for key, group in it.groupby(arr) if key]
     else:
-        is_boolean = False
+        # For numeric arrays, group consecutive numbers
+        consecutive_lens = [len(list(group)) for group in mit.consecutive_groups(arr)]
     
-    if is_boolean:
-        # Handle boolean arrays (True sequences)
-        bool_groups = [list(group) for _, group in it.groupby(arr)]
-        consec_lens = [len(group) for group in bool_groups if group[0]]
-    else:
-        # Handle numeric arrays
-        consec_lens = [len(list(group)) for group in mit.consecutive_groups(arr)]
-        
-        # Return the result based on the 'calc_max_len' parameter
     if calc_max_len:
-        return max(consec_lens) if consec_lens else None
-    else:
-        return consec_lens if consec_lens else None 
+        return max(consecutive_lens, default=0)
+    return consecutive_lens
         
 
 def unique_type_objects(list_of_objects):
