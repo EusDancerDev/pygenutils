@@ -1,3 +1,11 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+Created on Wed Oct 16 13:54:11 2024
+
+@author: jonander
+"""
+
 #! /usr/bin/env python3
 # -*- coding: utf-8 -*-
 
@@ -5,6 +13,7 @@
 # Import modules #
 #----------------#
 
+import numpy as np
 import xarray as xr
 import os
 
@@ -13,7 +22,8 @@ import os
 #-----------------------#
 
 from pyutils.files_and_directories import file_and_directory_paths
-from pyutils.string_handler import information_output_formatters
+from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
+from pyutils.string_handler import information_output_formatters, string_handler
 
 # Create aliases #
 #----------------#
@@ -23,6 +33,9 @@ find_files_by_ext = file_and_directory_paths.find_files_by_ext
 
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
+string_underliner = information_output_formatters.string_underliner
+
+get_obj_specs = string_handler.get_obj_specs
 
 #-------------------------#
 # Define custom functions #
@@ -33,15 +46,8 @@ print_format_string = information_output_formatters.print_format_string
 
 # Main method #
 #-#-#-#-#-#-#-#
-
-def scan_ncfiles(path_to_walk_into, 
-                 return_files=True, 
-                 return_dirs=False,
-                 check_integrity=False,
-                 create_report=False,
-                 top_path_only=False,
-                 verbose=False,
-                 extra_verbose=False):
+    
+def scan_ncfiles(path_to_walk_into, top_path_only=False):
     """
     Scans directories for netCDF (.nc) files, optionally checks file integrity, 
     and can generate a report for faulty files. Returns netCDF file paths, 
@@ -59,7 +65,9 @@ def scan_ncfiles(path_to_walk_into,
         If True, returns a list of directories containing netCDF files.
     
     check_integrity : bool, optional (default=False)
-        If True, checks the integrity of each .nc file using xarray. Faulty files are flagged and can be reported.
+        If True, checks the integrity of each .nc file using xarray.
+        Faulty files are flagged and can be reported.
+        This report included detailed progress information (file name, number, and directory).
     
     create_report : bool, optional (default=False)
         If True, generates a report listing all faulty netCDF files (requires `check_integrity=True`).
@@ -68,12 +76,9 @@ def scan_ncfiles(path_to_walk_into,
         If True, only scans the top-level directory without traversing subdirectories.
     
     verbose : bool, optional (default=False)
-        If True, prints progress information (file number and directory) during the scan.
-    
-    extra_verbose : bool, optional (default=False)
         If True, prints detailed progress information (file name, number, and directory) during the scan.
         Note: `verbose` and `extra_verbose` cannot be True at the same time.
-
+ 
     Returns
     -------
     result : dict
@@ -97,74 +102,95 @@ def scan_ncfiles(path_to_walk_into,
     result = scan_netCDF_files("/path/to/scan", return_files=True, return_dirs=True)
     print(result['files'], result['dirs'])
     """
-
-    if not isinstance(path_to_walk_into, list):
-        path_to_walk_into = [path_to_walk_into]
-
-    all_nc_files = []
-    all_nc_dirs = []
-    faulty_files = []
-    total_files = 0
-    total_faulty = 0
-
-    # Loop over each provided path
-    for path in path_to_walk_into:
-        nc_files = find_files_by_ext(extensions[0], path, top_path_only=top_path_only)
-        nc_dirs = find_file_containing_dirs_by_ext(extensions[0], path)
         
-        if return_files:
-            all_nc_files.extend(nc_files)
-        
-        if return_dirs:
-            all_nc_dirs.extend(nc_dirs)
-
-        total_files += len(nc_files)
-
-        # File integrity check if enabled
-        if check_integrity:
-            for idx, file_name in enumerate(nc_files, start=1):
-                if verbose:
-                    print_format_string(scan_progress_info_str, (idx, len(nc_files), path), end="\r")
-                elif extra_verbose:
-                    print_format_string(scan_progress_str_evb, (file_name, idx, len(nc_files), path), end="\r")
-
-                integrity_status = ncfile_integrity_status(file_name)
-                if integrity_status == -1:
-                    faulty_files.append(file_name)
-                    total_faulty += 1
-        
-        # Optionally create a report if there are faulty files
-        if check_integrity and create_report and total_faulty > 0:
-            with open(f"{code_call_dir}/{report_fn_noext}.txt", "w") as report:
-                report.write(format_string(report_info_str, (path, total_files, total_faulty)))
-                for faulty_file in faulty_files:
-                    report.write(f" {faulty_file}\n")
-            print("Faulty netCDF file report created.")
+    # Step 1: Search for all netCDF files #
+    #######################################
+    all_files = find_files_by_ext(extensions[0], path_to_walk_into, top_path_only=top_path_only)
     
-    # Return requested results
-    result = {}
-    if return_files:
-        result['files'] = all_nc_files
-    if return_dirs:
-        result['dirs'] = all_nc_dirs
-    if check_integrity:
-        result['faulty_files'] = faulty_files
-        result['faulty_count'] = total_faulty
-
-    return result
+    # Step 2: Check each file's integrity and collect faulty files  #
+    #################################################################
+    file_vs_err_list = []
+    for idx, file in enumerate(all_files, start=1):
+        arg_tuple_scanf = (idx, len(all_files), file)
+        print_format_string(scan_progress_str, arg_tuple_scanf)
+        try:
+            ncfile_integrity_status(file)
+        except Exception as ncf_err:
+            err_tuple = (file, str(ncf_err))
+            file_vs_err_list.append(err_tuple)
+                
+    # Step 3: Find directories containing faulty files #
+    ####################################################
+    dir_list = np.unique([get_obj_specs(err_tuple[0], "parent") for err_tuple in file_vs_err_list])
+    
+    # Step 4: Group faulty files by directory
+    file_vs_errs_dict = {dirc: [err_tuple for err_tuple in file_vs_err_list 
+                                if get_obj_specs(err_tuple[0], "parent")==dirc]
+                         for dirc in dir_list}
+        
+    # Step 5: Generate report #
+    ###########################
+    
+    # Statistics #
+    total_dirs = len(dir_list)
+    total_files = len(all_files)
+    total_faulties = sum(len(lst) for lst in file_vs_errs_dict.values())
+    
+    # Report generation #
+    with open(report_file_path, "w") as report:
+        report.write(report_info_str.format(*(total_dirs, total_files, total_faulties)))
+        
+        for dirc in file_vs_errs_dict.keys():
+            scandir_arg_tuple = (dirc, len(file_vs_errs_dict[dirc]))
+            report.write(format_string(string_underliner(scandir_progress_str, scandir_arg_tuple), "="))
+            for values in file_vs_errs_dict[dirc]:
+                report.write(format_string(file_info_writing_str, values))
 
 
 # Helpers #
 #-#-#-#-#-#
 
-def ncfile_integrity_status(ncfile_name):    
-    try:
-        ds = xr.open_dataset(ncfile_name)
-    except:
-        return -1
-    else:
-        ds.close()
-        return 0
+def ncfile_integrity_status(ncfile_name):
+    """
+    Checks the integrity of a given netCDF file by attempting to open it with xarray.
+
+    This method tries to open the specified netCDF file using `xarray.open_dataset`.
+    If the file is successfully opened, it is closed and the function completes without
+    returning anything. If an error occurs during this process, it delegates the exception
+    raise to the output of xarray.dataset class.
+    
+    Parameters
+    ----------
+    ncfile_name : str
+        Path to the netCDF file to be checked.
+
+    Returns
+    -------
+    str
+        A string representation of the error message if an exception occurs.
+        If the file is successfully opened and closed, no value is returned (i.e., None).
+
+    Raises
+    ------
+    Common exceptions are:
+        
+    OSError
+        Raised if the file cannot be found, opened, or there are issues with file permissions.
+    ValueError
+        Raised if the file is successfully opened but is not a valid netCDF file or has 
+        an unsupported format.
+    RuntimeError
+        Raised for internal errors within the netCDF4 or h5py libraries, such as when 
+        reading compressed data fails.
+    IOError
+        Raised for input/output errors at the system level, such as file corruption 
+        or disk read failures.
+    KeyError
+        Raised in rare cases when essential variables or attributes required for reading 
+        the file are missing or invalid.
+    """
+    ds = xr.open_dataset(ncfile_name)
+    ds.close()
 
 #--------------------------#
 # Parameters and constants #
@@ -174,35 +200,33 @@ def ncfile_integrity_status(ncfile_name):
 code_call_dir = os.getcwd()
 
 # File extensions #
-extensions = ["nc", "csv"]
+extensions = climate_file_extensions[::3]
 
 # Preformatted strings #
 #----------------------#
 
 # File scanning progress information strings #
+scan_progress_str =\
+"""
+File number: {} out of {}
+File name: {}
+"""
+
+scandir_progress_str = """\nDirectory: {} | Faulty files in this directory: {}"""
+file_info_writing_str = """\nFile: {} -> {}\n"""
+
+# Report results
 report_fn_noext = "faulty_netcdf_file_report"
-
-scan_progress_info_str =\
-"""
-File number: {} out of {}
-Directory: {}
-"""
-
-scan_progress_str_evb =\
-"""
-File: {}
-File number: {} out of {}
-Directory: {}
-"""
-
-# Faulty file report's header string #
+report_file_path = f"{code_call_dir}/{report_fn_noext}.txt"
 report_info_str =\
-"""Faulty NETCDF format file report
---------------------------------
+"""
++--------------------------------+
+|Faulty NETCDF format file report|
++--------------------------------+
+·Total directories scanned : {}
+·Total files scanned: {}    
+·Total faulty files: {}
 
-·Directory: {}
-·Total scanned files scanned: {}
-·Faulty file number: {}
-
-·Faulty files:
+Faulty files
++----------+
 """
