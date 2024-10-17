@@ -137,11 +137,11 @@ def save2nc(file_name, data=None, file_format="NETCDF4",
                          f"Choose one from {nc_file_formats}.")
         
     # Convert arguments to lists if they are not already lists
-    vardim_list = ensure_list(vardim_list)
-    data_arrays = ensure_list(data_arrays)
-    dimlists = ensure_list(dimlists)
-    dim_dict_list = ensure_list(dim_dict_list)
-    attrs_dict_list = ensure_list(attrs_dict_list)    
+    vardim_list = _ensure_list(vardim_list)
+    data_arrays = _ensure_list(data_arrays)
+    dimlists = _ensure_list(dimlists)
+    dim_dict_list = _ensure_list(dim_dict_list)
+    attrs_dict_list = _ensure_list(attrs_dict_list)    
     
     # Check if dataset exists
     if data is not None:
@@ -329,7 +329,7 @@ def _save_ds_as_nc(xarray_ds, file_name, attrs_dict=None):
     xarray_ds.to_netcdf(file_name, mode="w", format="NETCDF4")
     print(f"{file_name} has been successfully created")
 
-def ensure_list(arg):
+def _ensure_list(arg):
     return arg if isinstance(arg, list) else [arg]
 
 
