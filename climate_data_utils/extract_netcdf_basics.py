@@ -13,14 +13,14 @@ Simply copy this script to the desired directory.
 #-----------------------#
 
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.utilities import xarray_utils
+from pyutils.utilities.xarray_utils import data_manipulation
 
 # Create aliases #
 #----------------#
 
-extract_latlon_bounds = xarray_utils.extract_latlon_bounds 
-extract_time_bounds = xarray_utils.extract_time_bounds
-extract_time_formats = xarray_utils.extract_time_formats
+extract_latlon_bounds = data_manipulation.extract_latlon_bounds 
+extract_time_bounds = data_manipulation.extract_time_bounds
+extract_time_formats = data_manipulation.extract_time_formats
 
 #-------------------#
 # Start the program #
