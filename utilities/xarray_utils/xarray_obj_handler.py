@@ -13,7 +13,6 @@ import xarray as xr
 
 from pyutils.pandas_data_frames.data_frame_handler import save2csv
 from pyutils.string_handler.string_handler import ext_adder, get_obj_specs
-from pyutils.utilities.xarray_utils.data_manipulation import create_ds_component
 from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, find_time_dimension
 
 #-------------------------#
@@ -22,6 +21,24 @@ from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, f
 
 # Main methods #
 #--------------#
+
+# TODO: docstring-a gehitu
+def create_ds_component(var_name,
+                        data_array,
+                        dimlist,
+                        dim_dict,
+                        attrs_dict):
+    
+    data_array_dict = {
+        var_name : xr.DataArray(
+            data=data_array,
+            dims=dimlist,
+            coords=dim_dict,
+            attrs=attrs_dict,
+            )
+        }
+    
+    return data_array_dict
 
 def save2nc(file_name, data=None, file_format="NETCDF4",
             vardim_list=None, data_arrays=None, dimlists=None, dim_dict_list=None, 
