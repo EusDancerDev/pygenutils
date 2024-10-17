@@ -22,23 +22,53 @@ from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, f
 # Main methods #
 #--------------#
 
-# TODO: docstring-a gehitu
+# xarray objects #
+#~~~~~~~~~~~~~~~~#
+
 def create_ds_component(var_name,
                         data_array,
                         dimlist,
                         dim_dict,
                         attrs_dict):
-    
+    """
+    Create an xarray.DataArray component to be added to an xarray.Dataset.
+
+    Parameters:
+    -----------
+    var_name : str
+        Name of the variable represented by the DataArray.
+    data_array : array-like
+        The array containing data to be stored in the DataArray.
+    dimlist : list of str
+        List of dimension names corresponding to the dimensions of the data.
+    dim_dict : dict
+        Dictionary mapping dimension names to coordinate arrays.
+    attrs_dict : dict
+        Dictionary of attributes describing the DataArray (e.g., units, description).
+
+    Returns:
+    --------
+    data_array_dict : dict
+        A dictionary containing the DataArray with the variable name as the key.
+
+    Notes:
+    ------
+    - The returned dictionary can be used to construct or extend an xarray.Dataset.
+    """
     data_array_dict = {
-        var_name : xr.DataArray(
+        var_name: xr.DataArray(
             data=data_array,
             dims=dimlist,
             coords=dim_dict,
             attrs=attrs_dict,
-            )
-        }
+        )
+    }
     
     return data_array_dict
+
+
+# netCDF files #
+#~~~~~~~~~~~~~~#
 
 def save2nc(file_name, data=None, file_format="NETCDF4",
             vardim_list=None, data_arrays=None, dimlists=None, dim_dict_list=None, 
@@ -140,6 +170,8 @@ def save2nc(file_name, data=None, file_format="NETCDF4",
         _save_ds_as_nc(ds, file_name, global_attrs_dict)
         print(f"{file_name} file successfully created")
  
+# CSV files #
+#~~~~~~~~~~~#
 
 def save_nc_as_csv(nc_file, 
                    columns_to_drop=None,
@@ -279,6 +311,7 @@ def save_da_as_csv(data_array,
     
     # Save to CSV
     save2csv(csv_file_name, data_frame, separator, save_index, save_header, date_format)
+    
 
 # Helpers #
 #---------#
