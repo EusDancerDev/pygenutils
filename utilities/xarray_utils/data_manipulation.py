@@ -40,24 +40,25 @@ get_times = patterns.get_times
 
 def extract_latlon_bounds(delta_roundoff, value_roundoff):
     """
-    Extract latitude and longitude bounds from netCDF files and store them in a report.
+    Extract latitude and longitude bounds from netCDF files.
 
-    Parameters:
-    -----------
+    Parameters
+    ----------
     delta_roundoff : int
         Number of decimal places to round off the delta between latitude and longitude points.
     value_roundoff : int
-        Number of decimal places to round off latitude and longitude values.
+        Number of decimal places to round off the latitude and longitude values.
 
-    Procedure:
-    ----------
-    1. Finds directories containing netCDF files.
-    2. Iterates over directories and finds netCDF files.
-    3. Opens a report file to store extracted bounds.
-    4. For each netCDF file:
-        4.1. Check if the file can be opened.
-        4.2. If successful, extract latitude and longitude bounds.
-        4.3. Write the extracted data to the report.
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - The extracted latitude and longitude arrays, their dimensions,
+      and deltas are saved in a report file.
+    - If any files are faulty or cannot be processed, relevant error information 
+      is recorded in the report.
     """
     nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
     
@@ -103,17 +104,22 @@ def extract_latlon_bounds(delta_roundoff, value_roundoff):
 
 def extract_time_bounds():
     """
-    Extract the time bounds from netCDF files and store them in a report.
+    Extract the time bounds (start and end times) from netCDF files.
 
-    Procedure:
+    Parameters
     ----------
-    1. Finds directories containing netCDF files.
-    2. Iterates over directories and finds netCDF files.
-    3. Opens a report file to store extracted time bounds.
-    4. For each netCDF file:
-        4.1. Check if the file can be opened.
-        4.2. If successful, extract the time bounds.
-        4.3. Write the extracted data to the report.
+    None
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - The time range (start and end times) and the total number of time records 
+      are saved in a report file.
+    - If any files are faulty or cannot be processed, relevant error information 
+      is recorded in the report.
     """
     nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
     
@@ -154,18 +160,24 @@ def extract_time_bounds():
 
 def extract_time_formats():
     """
-    Extract the time formats from netCDF files and store them in a report.
+    Extract the time formats from netCDF files.
 
-    Procedure:
+    Parameters
     ----------
-    1. Finds directories containing netCDF files.
-    2. Iterates over directories and finds netCDF files.
-    3. Opens a report file to store extracted time formats.
-    4. For each netCDF file:
-        4.1. Check if the file can be opened.
-        4.2. If successful, extract the time format.
-        4.3. Write the extracted data to the report.
+    None
+
+    Returns
+    -------
+    None
+
+    Notes
+    -----
+    - The extracted time formats and the total number of time records are saved 
+      in a report file.
+    - If any files are faulty or cannot be processed, relevant error information 
+      is recorded in the report.
     """
+
     nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
     
     for dir_num, dir_name in enumerate(nc_dirs, start=1):
@@ -201,7 +213,7 @@ def extract_time_formats():
                 move_files(time_formats_file_name, dir_name)
             
 # File regridding #
-#-----------------#
+#--------------#
 
 def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):    
     
