@@ -1,5 +1,56 @@
 # Changelog
 
+## [v1X.XX.X] - 2024-10-17 
+
+### Added
+
+### Changed
+
+**Arrays And Lists**
+- Module `data_manipulation`
+	- Optimized and grouped methods by categories, added support for pandas objects, and improved docstrings.
+	- In methods `sort_rows_by_column` and `sort_columns_by_row`, argument `sort_order` has been substituted by `reverse`, where its mechanism is the same as for lists.
+	- Method `decompose_24h_cumulative_data`:
+		- Rename to `decompose_cumulative_data`.
+		- Introduce a new `fill_value` parameter to allow the user to choose how to handle negative differences.
+	
+**File Utils**
+- Module `change_permissions_main`:
+	- Refactored method `modify_obj_permissions` to allow no-change option for permissions and improved detection of files/directories.
+	- Enhanced `modify_obj_owner` with no-change defaults for owner/group, flexible ID handling, and improved error handling.
+	- After performing these changes, rename the module to `permission_manager`.
+	
+**Xarray Utils**
+- Module `data_manipulation`:
+	- Shortened method/variable names, optimized code, added docstrings.
+	- The following method renamings were made:
+	<table>
+		<tr>
+			<th><span style="font-size:13.7pt">Old function name</span></th>
+			<th><span style="font-size:13.7pt">New function name</span></th>
+		</tr>
+		<tr>
+			<th>extract_and_store_latlon_bounds</th>
+			<th>extract_latlon_bounds</th>
+		</tr>
+		<tr>
+			<th>extract_and_store_period_bounds</th>
+			<th>extract_time_bounds</th>
+		</tr>
+		<tr>
+			<th>extract_and_store_time_formats</th>
+			<th>extract_time_formats</th>
+		</tr>
+	</table>
+
+- Moved method `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
+
+### Removed
+
+- After the displacement of the method `create_ds_component`, `change_permissions_main` module was removed.
+
+---
+
 ## [v10.11.3] - 2024-10-12
 
 ### Added
