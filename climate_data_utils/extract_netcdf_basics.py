@@ -4,7 +4,7 @@
 # TODO: eraiki txantiloia, databases/upload_data_to_mysql_database.py moduluan bezalatsu
 
 """
-This program is an application of the main module 'netcdf_handler'
+This program is an application of the main module 'xarray_utils'
 Simply copy this script to the desired directory.
 """
 
@@ -13,14 +13,14 @@ Simply copy this script to the desired directory.
 #-----------------------#
 
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.weather_and_climate import netcdf_handler
+from pyutils.utilities import xarray_utils
 
 # Create aliases #
 #----------------#
 
-extract_and_store_latlon_bounds = netcdf_handler.extract_and_store_latlon_bounds 
-extract_and_store_period_bounds = netcdf_handler.extract_and_store_period_bounds
-extract_and_store_time_formats = netcdf_handler.extract_and_store_time_formats
+extract_latlon_bounds = xarray_utils.extract_latlon_bounds 
+extract_time_bounds = xarray_utils.extract_time_bounds
+extract_time_formats = xarray_utils.extract_time_formats
 
 #-------------------#
 # Start the program #
@@ -40,9 +40,9 @@ VALUE_ROUNDOFF = 5
 # Extract every netCDF file's basic information present in this project #
 #-----------------------------------------------------------------------#
 
-extract_and_store_latlon_bounds(DELTA_ROUNDOFF, VALUE_ROUNDOFF)
-extract_and_store_period_bounds()
-extract_and_store_time_formats()
+extract_latlon_bounds(DELTA_ROUNDOFF, VALUE_ROUNDOFF)
+extract_time_bounds()
+extract_time_formats()
 
 #-----------------------------------------------#
 # Calculate the elapsed time for full execution #
