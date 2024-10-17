@@ -1,6 +1,17 @@
 # Changelog
 
-## [v1X.XX.X] - 2024-10-17 
+## [v11.XX.X] - 2024-10-XX
+
+### Added
+
+### Changed
+
+### Removed
+
+
+---
+
+## [v11.0.0] - 2024-10-17 
 
 ### Added
 
