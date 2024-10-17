@@ -142,7 +142,7 @@ def scan_ncfiles(path_to_walk_into, top_path_only=False):
         
         for dirc in file_vs_errs_dict.keys():
             scandir_arg_tuple = (dirc, len(file_vs_errs_dict[dirc]))
-            report.write(format_string(string_underliner(scandir_progress_str, scandir_arg_tuple), "="))
+            report.write(format_string(string_underliner(dir_info_str, scandir_arg_tuple), "="))
             for values in file_vs_errs_dict[dirc]:
                 report.write(format_string(file_info_writing_str, values))
 
@@ -212,7 +212,7 @@ File number: {} out of {}
 File name: {}
 """
 
-scandir_progress_str = """\nDirectory: {} | Faulty files in this directory: {}"""
+dir_info_str = """\nDirectory: {} | Faulty files in this directory: {}"""
 file_info_writing_str = """\nFile: {} -> {}\n"""
 
 # Report results
