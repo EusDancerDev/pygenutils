@@ -5,240 +5,205 @@
 # Import modules #
 #----------------#
 
-import xarray as xr
 import os
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from pyutils.string_handler import information_output_formatters
-
+from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
+from pyutils.strings.information_output_formatters import format_string, string_underliner
 from pyutils.utilities.file_operations import file_and_directory_handler
 from pyutils.utilities.xarray_utils import file_utils, patterns
 
 # Create aliases #
 #----------------#
 
-move_files_by_globstr_from_exec_code = \
-file_and_directory_handler.move_files_by_globstr_from_exec_code
+move_files = file_and_directory_handler.move_files_by_globstr_from_exec_code
+find_dirs = file_and_directory_handler.find_file_containing_dirs_by_ext
+find_files = file_and_directory_handler.find_files_by_ext
 
-get_netcdf_file_dir_list = file_utils.get_netcdf_file_dir_list
-get_netcdf_file_list = file_utils.get_netcdf_file_list
-ncfile_integrity_status = file_utils.ncfile_integrity_status
+check_ncfile = file_utils.ncfile_integrity_status
 
-format_string = information_output_formatters.format_string
-
-find_coordinate_variables = patterns.find_coordinate_variables
-find_time_dimension = patterns.find_time_dimension
-get_latlon_bounds = patterns.get_latlon_bounds
-get_latlon_deltas = patterns.get_latlon_deltas
+find_coords = patterns.find_coordinate_variables
+find_time = patterns.find_time_key
+get_spatial_bounds = patterns.get_latlon_bounds
+get_deltas = patterns.get_latlon_deltas
 get_times = patterns.get_times
 
 #-------------------------#
 # Define custom functions #
 #-------------------------#
 
-def extract_and_store_latlon_bounds(delta_roundoff, value_roundoff):
+# Data extractors #
+#-----------------#
 
-    #------------------------------------------------------------------------#
-    # Open each file, extract coordinate dimension data and save to txt file #
-    #------------------------------------------------------------------------#
+def extract_latlon_bounds(delta_roundoff, value_roundoff):
+    """
+    Extract latitude and longitude bounds from netCDF files and store them in a report.
+
+    Parameters:
+    -----------
+    delta_roundoff : int
+        Number of decimal places to round off the delta between latitude and longitude points.
+    value_roundoff : int
+        Number of decimal places to round off latitude and longitude values.
+
+    Procedure:
+    ----------
+    1. Finds directories containing netCDF files.
+    2. Iterates over directories and finds netCDF files.
+    3. Opens a report file to store extracted bounds.
+    4. For each netCDF file:
+        4.1. Check if the file can be opened.
+        4.2. If successful, extract latitude and longitude bounds.
+        4.3. Write the extracted data to the report.
+    """
+    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
     
-    netcdf_files_dirs = get_netcdf_file_dir_list(code_call_dir)
-    lncfd = len(netcdf_files_dirs)
-    
-    for ncf_dir_num, ncf_dir_name in enumerate(netcdf_files_dirs, start=1):
-        nc_files = get_netcdf_file_list(ncf_dir_name)
-        lncfs = len(nc_files)
+    for dir_num, dir_name in enumerate(nc_dirs, start=1):
+        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
         
-        out_file_obj = open(latlon_bound_out_file_obj_name, "w")
-    
-        if lncfs > 0:
-            for ncf_num, ncf_name in enumerate(nc_files, start=1):
-                print("Extracting coordinate values "
-                      f"from file {ncf_num} out of {lncfs} "
-                      f"at directory {ncf_dir_num} out of {lncfd}...")
-                
-                faulty_file_trial = ncfile_integrity_status(ncf_name)
-                
-                if faulty_file_trial == 0:                    
-                    coord_varlist = find_coordinate_variables(ncf_name, raise_exception=False)
-                            
-                    if coord_varlist == -1:
-                        out_file_obj.write(f"No 'latitude' or 'longitude' coordinates "
-                                    f"found in file {ncf_name}\n")
-                        
-                    else:        
-                        latlons = get_latlon_bounds(ncf_name,
-                                                    coord_varlist[0],
-                                                    coord_varlist[1],
-                                                    value_roundoff)
-                        
-                        lats = latlons[0]
-                        lons = latlons[1]
-                        
-                        try:
-                            llats = len(lats)
-                        except:
-                            llats = 1
-                            llons = 1
-                            
-                            lat_delta = 0
-                            lon_delta = 0
-                        
-                            arg_tuple_latlons2 = (ncf_name,
-                                                  lats, 
-                                                  lons,
-                                                  llats,
-                                                  llons,
-                                                  lat_delta,
-                                                  lon_delta)
-                            out_file_obj.write(format_string(latlon_info_str,
-                                                      arg_tuple_latlons2))
-                            
-                        else:
-                            llons = len(lons)
-                            
-                            deltas = get_latlon_deltas(lats, lons, delta_roundoff)
-                            
-                            arg_tuple_latlons1 = (
-                                ncf_name,
-                                lats, 
-                                lons,
-                                llats,
-                                llons,
-                                deltas[0],
-                                deltas[1]
-                                )
-                            out_file_obj.write(format_string(latlon_info_str, 
-                                                      arg_tuple_latlons1))
-                                                
-                else: 
-                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
-                            
-                            
-            out_file_obj.close()
-            move_files_by_globstr_from_exec_code(latlon_bound_out_file_obj_name, ncf_dir_name)
-                
-        else:
-            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")
-            out_file_obj.close()
-            
-            move_files_by_globstr_from_exec_code(latlon_bound_out_file_obj_name, ncf_dir_name)
-        
-
-def extract_and_store_period_bounds():
-    
-    #---------------------------------------------------#
-    # Open each file and extract time array format data #
-    #---------------------------------------------------#
- 
-    netcdf_files_dirs = get_netcdf_file_dir_list(code_call_dir)
-    lncfd = len(netcdf_files_dirs)
-    
-    for ncf_dir_num, ncf_dir_name in enumerate(netcdf_files_dirs, start=1):
-        nc_files = get_netcdf_file_list(ncf_dir_name)
-        lncfs = len(nc_files)
-        
-        out_file_obj = open(period_bound_out_file_obj_name, "w")
-    
-        if lncfs > 0:
-            for ncf_num, ncf_name in enumerate(nc_files, start=1):    
-                print("Extracting time bounds "
-                      f"from file {ncf_num} out of {lncfs} "
-                      f"at directory {ncf_dir_num} out of {lncfd}...")
-                                
-                faulty_file_trial = ncfile_integrity_status(ncf_name)
-                
-                if faulty_file_trial == 0:
-                    time_var = find_time_dimension(ncf_name, raise_exception=False)
+        with open(coord_info_fname, "w") as report:
+            if nc_files:
+                for file_num, nc_file in enumerate(nc_files, start=1):
+                    print(f"Processing file {file_num} out of {len(nc_files)} "
+                          f"in directory {dir_num} out of {len(nc_dirs)}...")
+                    report.write(format_string(string_underliner(dir_info_str, dir_name), "+"))
                     
-                    if not time_var:
-                        out_file_obj.write("No 'time' dimension or variable "
-                                           f"found in file {ncf_name}.\n")
-                    
-                    else:    
-                        times = get_times(ncf_name, time_var)
-                        records = len(times)
-                                        
-                        arg_tuple_bounds1 = (
-                            ncf_name,
-                            times[0].values,
-                            times[-1].values,
-                            records
-                            )
-                        out_file_obj.write(format_string(period_info_str, arg_tuple_bounds1))
-                else: 
-                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
-                
-            out_file_obj.close()
-            move_files_by_globstr_from_exec_code(period_bound_out_file_obj_name, ncf_dir_name)
-                
-        else:
-            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")    
-            out_file_obj.close()
-            move_files_by_globstr_from_exec_code(period_bound_out_file_obj_name, ncf_dir_name)
-
-
-def extract_and_store_time_formats():
-    
-    #---------------------------------------------------#
-    # Open each file and extract time array format data #
-    #---------------------------------------------------#
-    
-    out_file_obj_name = "time_formats.txt"
-
-    netcdf_files_dirs = get_netcdf_file_dir_list(code_call_dir)
-    lncfd = len(netcdf_files_dirs)
-    
-    for ncf_dir_num, ncf_dir_name in enumerate(netcdf_files_dirs, start=1):
-        nc_files = get_netcdf_file_list(ncf_dir_name)
-        lncfs = len(nc_files)
-        
-        out_file_obj = open(out_file_obj_name, "w")
-
-        if lncfs > 0:                
-            for ncf_num, ncf_name in enumerate(nc_files, start=1):
-                print("Extracting time formats "
-                      f"from file {ncf_num} out of {lncfs} "
-                      f"at directory {ncf_dir_num} out of {lncfd}...")
-                
-                faulty_file_trial = ncfile_integrity_status(ncf_name)
-                
-                if faulty_file_trial == 0:
-                    time_var = find_time_dimension(ncf_name, raise_exception=False)
-                    
-                    if not time_var:
-                        out_file_obj.write("No 'time' dimension or variable "
-                                           f"found in file {ncf_name}\n")
-                    
+                    try:
+                        check_ncfile(nc_file)
+                    except Exception as ncf_err:
+                        report.write(f"FAULTY FILE '{nc_file}': {ncf_err}\n")
                     else:
-                        times = get_times(ncf_name, time_var)
-                        records = len(times)
+                        try:
+                            coord_vars = find_coords(nc_file)
+                        except Exception as coord_err:
+                            report.write(f"ERROR IN FILE '{nc_file}': {coord_err}\n")
+                        else:
+                            lats, lons = get_spatial_bounds(nc_file, coord_vars[0], coord_vars[1], value_roundoff)
+                            lat_delta, lon_delta = get_deltas(lats, lons, delta_roundoff)
                             
-                        arg_tuple_bounds2 = (
-                            ncf_name,
-                            times.values,
-                            records
-                            )
-                        out_file_obj.write(format_string(time_format_info_str, arg_tuple_bounds2))
-                        
-                else:
-                    out_file_obj.write(f"FAULTY FILE {ncf_name}\n")
-                    
-            out_file_obj.close()
-            move_files_by_globstr_from_exec_code(out_file_obj_name, ncf_dir_name)
-            
-        else:
-            out_file_obj.write(f"No netCDF files in directory {ncf_dir_name}\n")
-            out_file_obj.close()
-            move_files_by_globstr_from_exec_code(out_file_obj_name, ncf_dir_name)
-            
-            
-def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):    
+                            arg_tuple_bounds = (
+                                nc_file, 
+                                lats,
+                                lons, 
+                                len(lats), 
+                                len(lons), 
+                                lat_delta, 
+                                lon_delta
+                                )
+                            
+                            report.write(format_string(latlon_info_str, arg_tuple_bounds))
+                            move_files(coord_info_fname, dir_name)
+            else:
+                report.write(f"No netCDF files in directory {dir_name}\n")
+                move_files(coord_info_fname, dir_name)
+
+
+def extract_time_bounds():
+    """
+    Extract the time bounds from netCDF files and store them in a report.
+
+    Procedure:
+    ----------
+    1. Finds directories containing netCDF files.
+    2. Iterates over directories and finds netCDF files.
+    3. Opens a report file to store extracted time bounds.
+    4. For each netCDF file:
+        4.1. Check if the file can be opened.
+        4.2. If successful, extract the time bounds.
+        4.3. Write the extracted data to the report.
+    """
+    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
     
-    import xesmf as xe
+    for dir_num, dir_name in enumerate(nc_dirs, start=1):
+        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
+        
+        with open(date_range_info_fname, "w") as report:
+            if nc_files:
+                for file_num, nc_file in enumerate(nc_files, start=1):
+                    print(f"Processing file {file_num} out of {len(nc_files)} "
+                          f"in directory {dir_num} out of {len(nc_dirs)}...")
+                    report.write(format_string(string_underliner(dir_info_str, dir_name), "+"))
+                    
+                    try:
+                        check_ncfile(nc_file)
+                    except Exception as ncf_err:
+                        report.write(f"FAULTY FILE '{nc_file}': {ncf_err}\n")
+                    else:
+                        try:
+                            time_var = find_time(nc_file)
+                        except Exception as time_err:
+                            report.write(f"ERROR IN FILE '{nc_file}': {time_err}\n")
+                        else:
+                            times = get_times(nc_file, time_var)                            
+                            arg_tuple_periods = (
+                                nc_file, 
+                                times[0].values,
+                                times[-1].values, 
+                                len(times)
+                                )
+                            
+                            report.write(format_string(period_info_str, arg_tuple_periods))
+                            move_files(date_range_info_fname, dir_name)
+            else:
+                report.write(f"No netCDF files in directory {dir_name}\n")
+                move_files(date_range_info_fname, dir_name)
+
+
+def extract_time_formats():
+    """
+    Extract the time formats from netCDF files and store them in a report.
+
+    Procedure:
+    ----------
+    1. Finds directories containing netCDF files.
+    2. Iterates over directories and finds netCDF files.
+    3. Opens a report file to store extracted time formats.
+    4. For each netCDF file:
+        4.1. Check if the file can be opened.
+        4.2. If successful, extract the time format.
+        4.3. Write the extracted data to the report.
+    """
+    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
+    
+    for dir_num, dir_name in enumerate(nc_dirs, start=1):
+        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
+        
+        with open(time_formats_file_name, "w") as report:
+            if nc_files:
+                for file_num, nc_file in enumerate(nc_files, start=1):
+                    print(f"Processing file {file_num} out of {len(nc_files)} "
+                          f"in directory {dir_num} out of {len(nc_dirs)}...")
+                    report.write(format_string(string_underliner(dir_info_str, dir_name), "+"))
+                    
+                    try:
+                        check_ncfile(nc_file)
+                    except Exception as ncf_err:
+                        report.write(f"FAULTY FILE '{nc_file}': {ncf_err}\n")
+                    else:
+                        try:
+                            time_var = find_time(nc_file)
+                        except Exception as time_err:
+                            report.write(f"ERROR IN FILE '{nc_file}': {time_err}\n")
+                        else:
+                            times = get_times(nc_file, time_var)
+                            arg_tuple_formats = (
+                                nc_file, 
+                                times.values, 
+                                len(times)
+                                )
+                            report.write(format_string(time_format_info_str, arg_tuple_formats))
+                            move_files(time_formats_file_name, dir_name)
+            else:
+                report.write(f"No netCDF files in directory {dir_name}\n")
+                move_files(time_formats_file_name, dir_name)
+            
+# File regridding #
+#-----------------#
+
+def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):    
     
     """
     Function that regrids a xarray Dataset to that of the desired Dataset. 
@@ -259,34 +224,14 @@ def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):
     ds_out : xarray.Dataset
         Output data set regridded according to the grid specs of ds_in.
     """
-    
+    import xesmf as xe
     if regrid_method not in regrid_method_list:
         raise ValueError("Invalid regridding method.\n"
-                         f"Choose one from {regrid_method_list}.")
-        
+                         f"Choose one from {regrid_method_list}.")        
     else:
         regridder = xe.Regridder(ds_in, ds_image, regrid_method)
         ds_out = regridder(ds_in)
-        return ds_out
-    
-
-
-def create_ds_component(var_name,
-                        data_array,
-                        dimlist,
-                        dim_dict,
-                        attrs_dict):
-    
-    data_array_dict = {
-        var_name : xr.DataArray(
-            data=data_array,
-            dims=dimlist,
-            coords=dim_dict,
-            attrs=attrs_dict,
-            )
-        }
-    
-    return data_array_dict
+        return ds_out    
 
 #--------------------------#
 # Parameters and constants #
@@ -296,11 +241,12 @@ def create_ds_component(var_name,
 code_call_dir = os.getcwd()
 
 # File extensions #
-extensions = ["nc", "csv"]
+extensions = climate_file_extensions[::3]
 
 # Main file names #
-latlon_bound_out_file_obj_name = "latlon_bounds.txt"
-period_bound_out_file_obj_name = "period_bounds.txt"
+coord_info_fname = "latlon_bounds.txt"
+date_range_info_fname = "period_bounds.txt"
+time_formats_file_name = "time_formats.txt"
 
 # Regridding method options #
 regrid_method_list = [
@@ -348,3 +294,6 @@ time_format_info_str = \
 
 -Array length = {}
 """
+
+# File scanning progress information strings #
+dir_info_str = """\nDirectory: {}"""
