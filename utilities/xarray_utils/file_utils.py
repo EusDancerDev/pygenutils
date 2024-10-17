@@ -47,7 +47,7 @@ get_obj_specs = string_handler.get_obj_specs
 # Main method #
 #-#-#-#-#-#-#-#
     
-def scan_ncfiles(path_to_walk_into, top_path_only=False):
+def scan_ncfiles(path_to_walk_into):
     """
     Scans directories for netCDF (.nc) files, optionally checks file integrity, 
     and can generate a report for faulty files. Returns netCDF file paths, 
@@ -71,9 +71,6 @@ def scan_ncfiles(path_to_walk_into, top_path_only=False):
     
     create_report : bool, optional (default=False)
         If True, generates a report listing all faulty netCDF files (requires `check_integrity=True`).
-    
-    top_path_only : bool, optional (default=False)
-        If True, only scans the top-level directory without traversing subdirectories.
     
     verbose : bool, optional (default=False)
         If True, prints detailed progress information (file name, number, and directory) during the scan.
@@ -105,7 +102,7 @@ def scan_ncfiles(path_to_walk_into, top_path_only=False):
         
     # Step 1: Search for all netCDF files #
     #######################################
-    all_files = find_files_by_ext(extensions[0], path_to_walk_into, top_path_only=top_path_only)
+    all_files = find_files_by_ext(extensions[0], path_to_walk_into)
     
     # Step 2: Check each file's integrity and collect faulty files  #
     #################################################################
