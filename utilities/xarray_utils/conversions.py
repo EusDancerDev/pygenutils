@@ -11,7 +11,7 @@ import xarray as xr
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
+from pyutils.arrays_and_lists.data_manipulation import flatten_to_string
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.string_handler import string_handler
@@ -74,7 +74,7 @@ def grib2nc(grib_file_list, on_shell=False, option_str=None):
         
         # Handle list of GRIB files
         else:
-            grib_allfile_info_str = flatten_content_to_string(grib_file_list)
+            grib_allfile_info_str = flatten_to_string(grib_file_list)
             
             # Prompt user for the netCDF file name without extension
             nc_file_new_noext = input("Please introduce a name "
