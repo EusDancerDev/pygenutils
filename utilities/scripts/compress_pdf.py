@@ -17,7 +17,7 @@ following cells, instead of running the whole program.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories.file_format_tweaker import pdf_file_compressor
+from pyutils.utilities.file_operations.file_format_tweaker import pdf_file_compressor
 
 #-------------------#
 # Define parameters #
