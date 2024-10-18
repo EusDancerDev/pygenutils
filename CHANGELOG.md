@@ -1,13 +1,97 @@
 # Changelog
 
-## [v11.XX.X] - 2024-10-XX
+## [v12.0.0] - 2024-10-XX
 
 ### Added
 
 ### Changed
 
+<h2>Arrays and Lists</h2>
+
+<h4>Module 'conversions'</h4>
+
+- Optimized data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
+- The following method renamings were made:
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Old function name</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+	</tr>
+	<tr>
+		<th>basic_value_data_type_converter</th>
+		<th>convert_data_type</th>
+	</tr>
+	<tr>
+		<th>list_array_to_std_array</th>
+		<th>combine_arrays</th>
+	</tr>
+	<tr>
+		<th>flatten_content_to_string</th>
+		<th>flatten_to_string</th>
+	</tr>
+</table>
+	
+<h2>General Utilities</h2>
+
+<h4>'file_operations' subpackage</h4>
+
+<!--- Contains application programs of several methods in the modules of subpackage `file_operations`:-->
+- The following **module** renamings were made:
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Old function name</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+	</tr>
+	<tr>
+		<th>bulk_rename_index_main</th>
+		<th>bulk_rename_auto</th>
+	</tr>
+	<tr>
+		<th>bulk_rename_index_manual</th>
+		<th>bulk_rename_manual</th>
+	</tr>
+</table>
+
+<h4>'scripts' subpackage</h4>
+
+- Contains application programs of several methods in the modules of subpackage `file_operations`:
+- The following **module** renamings were made:
+<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Old function name</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+	</tr>
+	<tr>
+		<th>change_permissions_exec</th>
+		<th>modify_properties</th>
+	</tr>
+	<tr>
+		<th>pdf_file_compressor_exec</th>
+		<th>compress_pdf</th>
+	</tr>
+	<tr>
+		<th>pdf_file_tweaker_exec</th>
+		<th>tweak_pdf</th>
+	</tr>
+	<tr>
+		<th>bulk_rename_index_exec</th>
+		<th>bulk_rename</th>
+	</tr>
+</table>
+
+<h2>Databases</h2>
+- Rename module `upload_data_to_mysql_database` to `upload_data`.
+
 ### Removed
 
+- After the renamings the following modules have been removed:
+	- `bulk_rename_index_exec`
+	- `bulk_rename_index_main`
+	- `bulk_rename_index_manual`
+	- `change_permissions_exec`
+	- `pdf_file_compressor_exec`
+	- `pdf_file_tweaker_exec`
+	- `upload_data_to_mysql_database`
 
 ---
 
@@ -17,7 +101,7 @@
 
 ### Changed
 
-**Arrays And Lists**
+**Arrays and Lists**
 - Module `data_manipulation`
 	- Optimized and grouped methods by categories, added support for pandas objects, and improved docstrings.
 	- In methods `sort_rows_by_column` and `sort_columns_by_row`, argument `sort_order` has been substituted by `reverse`, where its mechanism is the same as for lists.
