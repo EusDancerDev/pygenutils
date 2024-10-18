@@ -323,9 +323,6 @@ def select_elements(array, idx2access):
 # Sequence analysis #
 #-------------------#
 
-import itertools as it
-import more_itertools as mit
-
 def count_consecutive(arr, calc_max_len=False):
     """
     Count consecutive values in an array or series, distinguishing blocks of consecutive values.
