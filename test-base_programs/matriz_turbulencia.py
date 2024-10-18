@@ -24,25 +24,25 @@ import warnings
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists import data_manipulation
-from pyutils.pandas_data_frames import data_frame_handler
+from pyutils.arrays_and_lists import data_manipulation, patterns
+from pyutils.utilities.pandas_utils import pandas_obj_handler
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.time_handling import datetime_operators, program_snippet_exec_timers
+from pyutils.time_handling import date_and_time_utils, program_snippet_exec_timers
 
 # Create aliases #
 #----------------#
 
-list_array_to_std_array = data_manipulation.list_array_to_std_array
-select_list_elements = data_manipulation.select_list_elements
+combine_arrays = data_manipulation.combine_arrays
+insert_column_in_df = data_manipulation.insert_column_in_df
+select_elements = patterns.select_elements
 sort_rows_by_column = data_manipulation.sort_rows_by_column
 
-csv2df = data_frame_handler.csv2df
-find_date_key = data_frame_handler.find_date_key
-insert_column_in_df = data_frame_handler.insert_column_in_df
-merge_excel_files = data_frame_handler.merge_excel_files
-save2excel = data_frame_handler.save2excel
+csv2df = pandas_obj_handler.csv2df
+merge_excel_files = pandas_obj_handler.merge_excel_files
+save2excel = pandas_obj_handler.save2excel
 
-get_obj_operation_datetime = datetime_operators.get_obj_operation_datetime
+find_time_key = date_and_time_utils.find_time_key
+get_obj_operation_datetime = date_and_time_utils.get_obj_operation_datetime
 
 program_exec_timer = program_snippet_exec_timers.program_exec_timer
 
@@ -140,7 +140,7 @@ def complete_data_reach_threshold(ws_arr,
             # Corresponding bin, average sigma, N-values and completed condition #
             key_var_idx = find_substring_index(ws_sum_cols, key_var_list)
 
-            curr_bin, sigma_avg, N = select_list_elements(list_slice[0], key_var_idx)
+            curr_bin, sigma_avg, N = select_elements(list_slice[0], key_var_idx)
             
             if N < valid_data_threshold:               
                 
@@ -171,7 +171,7 @@ def complete_data_reach_threshold(ws_arr,
                         list_slice.append(list2append)
                         
                         prev_bin, sigma_avg_prev, N_prev\
-                        = select_list_elements(list2append, key_var_idx)
+                        = select_elements(list2append, key_var_idx)
         
                         # Sum up every valid data amount on the 'df2concat' frame #
                         N = np.sum(np.array(list_slice)[:,-1])
@@ -186,7 +186,7 @@ def complete_data_reach_threshold(ws_arr,
                                 list_slice.append(list2append)
                                 
                                 next_bin, sigma_avg_next, N_next\
-                                = select_list_elements(list2append, key_var_idx)
+                                = select_elements(list2append, key_var_idx)
                 
                                 # Sum up every valid data amount on the 'df2concat' frame #
                                 N = np.sum(np.array(list_slice)[:,-1])
@@ -215,7 +215,7 @@ def complete_data_reach_threshold(ws_arr,
                         the binned wind speed column.
                         """
                         
-                        ws_bin, N = select_list_elements(list_slice[j], [0,-1])
+                        ws_bin, N = select_elements(list_slice[j], [0,-1])
                         NT += N        
                       
                         """
@@ -335,7 +335,7 @@ def complete_data_reach_threshold(ws_arr,
 def assign_sigma_to_original_data(original_array,
                                   ws_binned_df,
                                   sigma_filled_df,
-                                  sigmaFilledArray,
+                                  sigma_filled_array,
                                   ws_bins_arr,
                                   key_var_index_list):
     
@@ -395,7 +395,7 @@ def assign_sigma_to_original_data(original_array,
         lsmbi = len(sigma_mean_bin_idx)
         
         if ldfvi > 0 and lsmbi > 0:            
-            sigma_mean_bin = sigmaFilledArray[sigma_mean_bin_idx, -2]
+            sigma_mean_bin = sigma_filled_array[sigma_mean_bin_idx, -2]
             original_array[df_varcase_idx, -1] = sigma_mean_bin
         else:
             pass
@@ -449,7 +449,7 @@ direc_bin_width = 360 / direc_nsectors
 sector_balancement_around_zero = True
 
 # Main result printing controls #s
-print_sigmaFilled_df = False
+print_sigma_filled__df = False
 print_IT_df = False
 
 # Excel file saving parameters #
@@ -542,21 +542,21 @@ key_var_list = [ws_col_abbr, ws_mean_sigma_col, "N"]
 # Preformatted strings #
 #----------------------#
 
-caseSelectionInfoStr = \
+case_selection_info_str = \
 """Following cases selected:
    {}
    
    Completing data...
 """
 
-sigmaFIllRemainCasesInfoStr = \
+sigma_fIll_remain_cases_info_str = \
 """Remaining cases to be treated to fill sigma values:
    Hour = {}
    Month = {}
    Direction = {}
 """
 
-sigmaAssignRemainCasesInfoStr = \
+sigma_assign_remain_cases_info = \
 """Remaining cases to be treated to assign filled sigmas:
    Hour = {}
    Month = {}
@@ -596,7 +596,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                       parse_dates=parse_dates)
     
     """Convert column 4 data to date and time"""
-    time_col = find_date_key(df_10min)
+    time_col = find_time_key(df_10min)
     df_10min_time = df_10min[time_col]
     df_10min_time_std = pd.to_datetime(df_10min_time, format=original_dt_str2)
     
@@ -901,7 +901,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # Final list to store fixed data #
     #--------------------------------#
     
-    sigmaFilledList = []
+    sigma_filled_list = []
     
     print("Completing data...")
     
@@ -923,7 +923,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                 for h in hour_range:
                     
                     key_var_index_list1 = [direcBin, m, h]
-                    sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                    sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                                       ws_byBins_sigma_df,
                                                                       ws_byBins_sigma_arr,
                                                                       sigmaToFillArr,
@@ -932,9 +932,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                                       key_var_list,
                                                                       ws_sum_df=sigmaToFilldf)
                     
-                    sigmaFilledList.append(sigmaFilledArrVar)
+                    sigma_filled_list.append(sigma_filled_arr_var)
                     
-                    print(sigmaFIllRemainCasesInfoStr.format(lhours-h,
+                    print(sigma_fIll_remain_cases_info_str.format(lhours-h,
                                                              lmonths-(m-1),
                                                              l_direcBin-i_direcBin))                
     
@@ -953,7 +953,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for h in hour_range:
     
                 key_var_index_list1 = [m, h]
-                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                                   ws_byBins_sigma_df,
                                                                   ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
@@ -961,9 +961,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                                   key_var_index_list1,
                                                                   key_var_list)
                 
-                sigmaFilledList.append(sigmaFilledArrVar)
+                sigma_filled_list.append(sigma_filled_arr_var)
                 
-                print(sigmaFIllRemainCasesInfoStr.format(lhours-h,
+                print(sigma_fIll_remain_cases_info_str.format(lhours-h,
                                                          lmonths-(m-1),
                                                          "(not selected)"))
     
@@ -985,7 +985,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for h in hour_range:            
             
                 key_var_index_list1 = [direcBin, h]
-                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                                   ws_byBins_sigma_df,
                                                                   ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
@@ -993,9 +993,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                                   key_var_index_list1,
                                                                   key_var_list)
                                                                
-                sigmaFilledList.append(sigmaFilledArrVar)
+                sigma_filled_list.append(sigma_filled_arr_var)
                 
-                print(sigmaFIllRemainCasesInfoStr.format(lhours-h,
+                print(sigma_fIll_remain_cases_info_str.format(lhours-h,
                                                          "(not selected)",
                                                          l_direcBin-i_direcBin))
      
@@ -1018,7 +1018,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             for m in month_range:
                   
                 key_var_index_list1 = [direcBin, m]
-                sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+                sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                                   ws_byBins_sigma_df,
                                                                   ws_byBins_sigma_arr,
                                                                   sigmaToFillArr,
@@ -1026,9 +1026,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                                   key_var_index_list1,
                                                                   key_var_list)
                 
-                sigmaFilledList.append(sigmaFilledArrVar)
+                sigma_filled_list.append(sigma_filled_arr_var)
                 
-                print(sigmaFIllRemainCasesInfoStr.format("(not selected)",
+                print(sigma_fIll_remain_cases_info_str.format("(not selected)",
                                                          lmonths-(m-1),
                                                          l_direcBin-i_direcBin))
     
@@ -1048,7 +1048,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             i_direcBin = direc[0]
             
             key_var_index_list1 = [direcBin]
-            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+            sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                               ws_byBins_sigma_df,
                                                               ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
@@ -1056,9 +1056,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                               key_var_index_list1,
                                                               key_var_list)
             
-            sigmaFilledList.append(sigmaFilledArrVar)
+            sigma_filled_list.append(sigma_filled_arr_var)
             
-            print(sigmaFIllRemainCasesInfoStr.format("(not selected)",
+            print(sigma_fIll_remain_cases_info_str.format("(not selected)",
                                                      "(not selected)",
                                                      l_direcBin-i_direcBin))
             
@@ -1076,7 +1076,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         for m in month_range:
             
             key_var_index_list1 = [m]
-            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+            sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                               ws_byBins_sigma_df,
                                                               ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
@@ -1084,9 +1084,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                               key_var_index_list1,
                                                               key_var_list)
     
-            sigmaFilledList.append(sigmaFilledArrVar)
+            sigma_filled_list.append(sigma_filled_arr_var)
             
-            print(sigmaFIllRemainCasesInfoStr.format("(not selected)",
+            print(sigma_fIll_remain_cases_info_str.format("(not selected)",
                                                      lmonths-(m-1),
                                                      "(not selected)"))
             
@@ -1105,7 +1105,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         for h in hour_range:      
             key_var_index_list1 = [h]
     
-            sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+            sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                               ws_byBins_sigma_df,
                                                               ws_byBins_sigma_arr,
                                                               sigmaToFillArr,
@@ -1113,9 +1113,9 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                               key_var_index_list1,
                                                               key_var_list)
          
-            sigmaFilledList.append(sigmaFilledArrVar)
+            sigma_filled_list.append(sigma_filled_arr_var)
             
-            print(sigmaFIllRemainCasesInfoStr.format(lhours-h,
+            print(sigma_fIll_remain_cases_info_str.format(lhours-h,
                                                      "(not selected)",
                                                      "(not selected)"))
             
@@ -1129,7 +1129,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         tab_name = "ws"
     
         key_var_index_list1 = []
-        sigmaFilledArrVar = complete_data_reach_threshold(ws_10min_arr,
+        sigma_filled_arr_var = complete_data_reach_threshold(ws_10min_arr,
                                                           ws_byBins_sigma_df,
                                                           ws_byBins_sigma_arr,
                                                           sigmaToFillArr,
@@ -1137,7 +1137,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                                                           key_var_index_list1,
                                                           key_var_list)
         
-        sigmaFilledList.append(sigmaFilledArrVar)
+        sigma_filled_list.append(sigma_filled_arr_var)
     
         
     #%%
@@ -1146,8 +1146,8 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # Fill the original data's sigma with the mean one according to the considered cases #
     #------------------------------------------------------------------------------------#
     
-    sigmaFilledArr = list_array_to_std_array(sigmaFilledList)
-    sigma_filled_df = pd.DataFrame(sigmaFilledArr, columns=sigma2fill_df_cols)
+    sigma_filled_arr = combine_arrays(sigma_filled_list)
+    sigma_filled_df = pd.DataFrame(sigma_filled_arr, columns=sigma2fill_df_cols)
     
     #%%
     
@@ -1171,11 +1171,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                     arr_10min = assign_sigma_to_original_data(arr_10min,
                                                               ws_byBins_sigma_df, 
                                                               sigma_filled_df,
-                                                              sigmaFilledArr,
+                                                              sigma_filled_arr,
                                                               ws_byBins_unique,
                                                               key_var_index_list2)
            
-                    print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
+                    print(sigma_assign_remain_cases_info.format(lhours-h,
                                                                lmonths-(m-1),
                                                                l_direcBin-i_direcBin))
                                  
@@ -1197,11 +1197,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                 arr_10min = assign_sigma_to_original_data(arr_10min,
                                                           ws_byBins_sigma_df, 
                                                           sigma_filled_df,
-                                                          sigmaFilledArr,
+                                                          sigma_filled_arr,
                                                           ws_byBins_unique,
                                                           key_var_index_list2)
     
-                print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
+                print(sigma_assign_remain_cases_info.format(lhours-h,
                                                            lmonths-(m-1),
                                                            "(not selected)"))
     
@@ -1225,11 +1225,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                 arr_10min = assign_sigma_to_original_data(arr_10min,
                                                           ws_byBins_sigma_df, 
                                                           sigma_filled_df,
-                                                          sigmaFilledArr,
+                                                          sigma_filled_arr,
                                                           ws_byBins_unique,
                                                           key_var_index_list2)
                 
-                print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
+                print(sigma_assign_remain_cases_info.format(lhours-h,
                                                            "(not selected)",
                                                            l_direcBin-i_direcBin))
     #%%
@@ -1253,11 +1253,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
                 arr_10min = assign_sigma_to_original_data(arr_10min,
                                                           ws_byBins_sigma_df, 
                                                           sigma_filled_df,
-                                                          sigmaFilledArr,
+                                                          sigma_filled_arr,
                                                           ws_byBins_unique,
                                                           key_var_index_list2)
               
-                print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
+                print(sigma_assign_remain_cases_info.format("(not selected)",
                                                            lmonths-(m-1),
                                                            l_direcBin-i_direcBin,))
                 
@@ -1280,11 +1280,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             arr_10min = assign_sigma_to_original_data(arr_10min,
                                                       ws_byBins_sigma_df, 
                                                       sigma_filled_df,
-                                                      sigmaFilledArr,
+                                                      sigma_filled_arr,
                                                       ws_byBins_unique,
                                                       key_var_index_list2)
     
-            print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
+            print(sigma_assign_remain_cases_info.format("(not selected)",
                                                        "(not selected)",
                                                        l_direcBin-i_direcBin))
             
@@ -1305,11 +1305,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             arr_10min = assign_sigma_to_original_data(arr_10min,
                                                       ws_byBins_sigma_df, 
                                                       sigma_filled_df,
-                                                      sigmaFilledArr,
+                                                      sigma_filled_arr,
                                                       ws_byBins_unique,
                                                       key_var_index_list2)
     
-            print(sigmaAssignRemainCasesInfoStr.format("(not selected)",
+            print(sigma_assign_remain_cases_info.format("(not selected)",
                                                        lmonths-(m-1),
                                                        "(not selected)"))
             
@@ -1330,11 +1330,11 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
             arr_10min = assign_sigma_to_original_data(arr_10min,
                                                       ws_byBins_sigma_df, 
                                                       sigma_filled_df,
-                                                      sigmaFilledArr,
+                                                      sigma_filled_arr,
                                                       ws_byBins_unique,
                                                       key_var_index_list2)
               
-            print(sigmaAssignRemainCasesInfoStr.format(lhours-h,
+            print(sigma_assign_remain_cases_info.format(lhours-h,
                                                        "(not selected)",
                                                        "(not selected)"))
             
@@ -1351,7 +1351,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
         arr_10min = assign_sigma_to_original_data(arr_10min,
                                                   ws_byBins_sigma_df, 
                                                   sigma_filled_df,
-                                                  sigmaFilledArr,
+                                                  sigma_filled_arr,
                                                   ws_byBins_unique,
                                                   key_var_index_list2)
     
@@ -1380,7 +1380,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # SAVE THE SIGMA-FILLED BINNED DATA FRAME AS AN EXCEL FILE
     # =============================================================================
     
-    if print_sigmaFilled_df:
+    if print_sigma_filled__df:
         print(fixed_df_InfoStr.format(sigma_filled_df))
     
     if save_sigma_filled_as_file:
