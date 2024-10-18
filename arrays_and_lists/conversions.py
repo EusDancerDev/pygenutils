@@ -11,11 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import extend_array
-from pyutils.parameters_and_constants.global_parameters import common_delim_list
-from pyutils.utilities.introspection_utils import get_caller_method_args,\
-                                                  get_obj_type_str, \
-                                                  retrieve_function_name
+from pyutils.utilities.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #
@@ -23,153 +19,161 @@ from pyutils.utilities.introspection_utils import get_caller_method_args,\
 
 # Data types #
 #------------#
-
-def basic_value_data_type_converter(obj_data,
-                                    old_type, 
-                                    new_type, 
-                                    colname=None,
-                                    convert_to_list=False):
+        
+def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_list=False):
     """
-    Function that converts the original data type of the values contained 
-    in an object to the desired one.
-    If the data dtype is not the same as the original (old) one
-    (e.g, if the original dtype is given mistakenly),
-    the function simply returns the object unchanged,
-    as well as printing a message showing the latter.
-    
+    Function that converts the original data type of the values in a given object 
+    (numpy array, pandas DataFrame/Series) to the desired one.
+    If the new data type is the same as the original, the function returns 
+    the object unchanged, and prints a message showing the latter.
+
     Parameters
     ----------
-    obj_data : pandas.DataFrame or numpy.ndarray
-        Object containing data.
+    obj_data : pandas.DataFrame, pandas.Series, numpy.ndarray, or list
+        Object containing the data to be converted.
     old_type : str
-        Type of the given object's values.
-        Options are {"O": object, "U": string, "d": double}.
+        Current type of the object's values.
     new_type : str
-        Type the data has to be converted to.
-        Options are the same as for parameter 'old_type'.
-    colname : str or None
-        Only necessary if pandas.DataFrame cases is passed.
-        Column name alength which to perform the conversion.
-        Set to None if a numpy.ndarray is passed.
-    convert_to_list : bool
-        Some times it is desired to pass the result to another method
-        which does not support object types that are not lists.
-        If True, this method converts the result to a list.
+        Type to which the data should be converted.
+    colnames : str, list of str, or '__all_columns__', optional
+        Column(s) to apply conversion in case of pandas DataFrame.
+        If '__all_columns__', conversion will be applied to all columns.
+        Not applicable for pandas Series or numpy arrays.
+    convert_to_list : bool, optional
+        If True, converts the result to a list before returning.
     
     Returns
     -------
-    obj_data : pandas.DataFrame or numpy.ndarray
-        Object containing floated data, if necessary.
+    obj_data : pandas.DataFrame, pandas.Series, numpy.ndarray, or list
+        Object with the converted data type, or unchanged if no conversion was made.
 
-    """  
-    
-    all_arg_names = get_caller_method_args()
-    type_option_list = ["O", "U", "d"]
-    
-    if old_type not in type_option_list:
-        raise ValueError(f"Invalid option of the original data type "
-                         f"(argument '{all_arg_names[1]}').\n"
-                         f"Options are {type_option_list}.")
-    
-    # Pandas DataFrames
-    if get_obj_type_str(obj_data) == "DataFrame":
-        data_type = obj_data.loc[:,colname].dtype
-        
-        if colname is None:
-            raise ValueError("Please introduce a valid "
-                             f"column name (argument '{all_arg_names[3]})"
-                             "of the obj_data frame.")
-
-        else:            
-            if (data_type == old_type) or (old_type in data_type.str):
-                data_floated = obj_data.copy()
-                
-                try:
-                    data_floated.loc[:,colname]\
-                    = data_floated.loc[:,colname].astype(new_type)                    
-                except:
-                    raise TypeError(f"Cannot convert object to type '{new_type}'.")
-                else:
-                    return data_floated
-                    
-            else:
-                print("Returning object with its values' type unchanged.")
-                return obj_data
-
-    # Lists or NumPy arrays
-    else:
-        try:
-            data_type = obj_data.dtype
-        except AttributeError:
-            obj_data = np.array(obj_data)
-            data_type = obj_data.dtype
-
-        if colname is not None:
-            raise ValueError(f"Please set the argument '{all_arg_names[3]}' "
-                             "to 'None'.")
-
-        else:
-            if (data_type == old_type) or (old_type in data_type.str):
-                try:
-                    data_floated = obj_data.copy().astype(new_type)
-                except:
-                    raise TypeError(f"Cannot convert object to type '{new_type}'.")
-                else:
-                    if convert_to_list:
-                        data_floated = list(data_floated)
-                    return data_floated
-                
-            else:
-                print("Returning object with its values' type unchanged.")
-                if convert_to_list:
-                    obj_data = list(obj_data)
-                return obj_data
-            
-
-def list_array_to_std_array(array_of_lists):
+    Raises
+    ------
+    TypeError
+        If the conversion to the new type cannot be done or if the object type is invalid.
+    KeyError
+        If specified columns are not found in pandas DataFrame.
     """
-    Convert a list of NumPy arrays into a single standard NumPy array.
+    # Get input object's type
+    obj_type = get_obj_type_str(obj_data)
+    
+    # Handle pandas DataFrames
+    if obj_type == "DataFrame":
+        if colnames is None:
+            raise ValueError("Please specify 'colnames' for pandas DataFrame.")
+        if colnames == '__all_columns__':  # apply to all columns
+            colnames = obj_data.columns
+        elif isinstance(colnames, str):
+            colnames = [colnames]  # convert to list for consistency
+        elif isinstance(colnames, list):
+            pass
+        else:
+            raise TypeError("'colnames' must be a string, list of strings, or '__all_columns__'.")
 
-    This function takes a list of NumPy arrays and combines them into a single
-    NumPy array. It supports arrays with dimensions up to 3.
+        # Find missing columns
+        missing_cols = [col for col in colnames if col not in obj_data.columns]
+        if missing_cols:
+            raise KeyError(f"The following columns were not found: {missing_cols}")
 
+        # Apply conversion
+        data_converted = obj_data.copy()
+        for col in colnames:
+            if obj_data[col].dtype == old_type:
+                try:
+                    data_converted[col] = obj_data[col].astype(new_type)
+                except:
+                    raise TypeError(f"Cannot convert column '{col}' to type '{new_type}'.")
+            else:
+                print(f"Column '{col}' data type unchanged.")
+        
+        return data_converted
+
+    # Handle pandas Series
+    elif obj_type == "Series":       
+        if obj_data.dtype == old_type:
+            try:
+                return obj_data.astype(new_type)
+            except:
+                raise TypeError(f"Cannot convert Series to type '{new_type}'.")
+        else:
+            print("Series data type unchanged.")
+            return obj_data
+
+    # Handle numpy arrays and lists
+    elif obj_type in ["ndarray", "list"]:
+        try:
+            obj_data = np.array(obj_data)  # convert to numpy array if it's not already
+            if obj_data.dtype == old_type:
+                try:
+                    data_converted = obj_data.astype(new_type)
+                except:
+                    raise TypeError(f"Cannot convert array to type '{new_type}'.")
+                if convert_to_list:
+                    return list(data_converted)
+                return data_converted
+            else:
+                print("Array data type unchanged.")
+                if convert_to_list:
+                    return list(obj_data)
+                return obj_data
+        except Exception as e:
+            raise TypeError(f"Error occurred during conversion: {e}")
+
+    # Raise TypeError if the object type is not supported
+    else:
+        raise TypeError("Unsupported object type. "
+                        "Expected pandas DataFrame/Series, numpy array, or list.")
+
+            
+def combine_arrays(array_of_lists):
+    """
+    Combine a list of NumPy arrays or lists into a single NumPy array.
+    
+    This function takes a list of NumPy arrays (or lists) and combines them 
+    into a single NumPy array. It supports arrays with up to 3 dimensions.
+    If the arrays have inhomogeneous lengths, it uses `np.hstack` to flatten 
+    and concatenate the arrays.
+    
     Parameters
     ----------
     array_of_lists : list
-        A list of NumPy arrays to be combined.
-
+        A list of NumPy arrays or lists to be combined.
+    
     Returns
     -------
     array : numpy.ndarray
         A single NumPy array formed by combining the input arrays.
-
+    
     Raises
     ------
-    Exception: If the arrays in the list have more than 3 dimensions.
-
-    Example:
+    ValueError
+        - If the arrays in the list have more than 3 dimensions.
+        - If the shapes of the arrays are inconsistent and cannot be combined.
+    
+    Example
+    -------
     >>> import numpy as np
     >>> array1 = np.array([[1, 2], [3, 4]])
     >>> array2 = np.array([[5, 6], [7, 8]])
     >>> array_of_lists = [array1, array2]
-    >>> result = list_array_to_std_array(array_of_lists)
+    >>> result = combine_arrays(array_of_lists)
     >>> print(result)
     [[1 2]
      [3 4]
      [5 6]
      [7 8]]
-
-    Note
-    ----
-    This function assumes that the input is a list of NumPy arrays. If the 
-    arrays have different dimensions, it attempts to extend the array using
-    the `extend_array` function.
-    """
     
+    Notes
+    -----
+    - If the arrays have different shapes, they are concatenated and flattened 
+      using `np.hstack`.
+    - This function assumes that the input contains valid NumPy arrays or lists.
+    """    
+    # Get the list of unique dimensions of the arrays #
     dim_list = np.unique([len(arr.shape) for arr in array_of_lists])
     ld = len(dim_list)
     
-    # If all lists in the object are of the same dimension #
+    # If all arrays/lists are of the same dimension #
     if ld == 1:
         dims = dim_list[0]
         
@@ -178,61 +182,84 @@ def list_array_to_std_array(array_of_lists):
         elif dims == 3:
             array = np.stack(array_of_lists)
         else:
-            raise Exception("Cannot handle lists containing N > 3 arrays.")
+            raise ValueError("Cannot handle arrays with dimensions greater than 3.")
             
-    # If the lists are multi-dimensional #
+    # If the arrays/lists have inconsistent dimensions #
     else:
-        array = extend_array(array, array_of_lists)
-        
-        # TODO: gehitu ondoko metodoa egikaritzeko hitz gakoa funtzioaren argumentuen artean
-        # array = np.hstack(array_of_lists) (EQUIVALENT for 'np.concatenate')
+        array = np.hstack(array_of_lists)
         
     return array
 
-def flatten_content_to_string(obj, delim=None, add_final_space=False):
-    method_name = retrieve_function_name()
+
+def flatten_to_string(obj, delim=" ", add_final_space=False):
+    """
+    Flatten the content of a list, NumPy array, or pandas DataFrame/Series 
+    into a single string, where elements are separated by a specified delimiter.
+
+    This method takes an input object (list, NumPy array, pandas DataFrame, or Series),
+    flattens it (if needed), converts all elements to strings, and joins them into 
+    a single string. Optionally, a final delimiter can be added to the end of the string.
+
+    Parameters
+    ----------
+    obj : list, numpy.ndarray, pandas.DataFrame, or pandas.Series
+        The input object containing data to be flattened and converted to a string.
+    delim : str, optional
+        The delimiter to use for separating elements in the resulting string.
+        By default, a space character (' ') is used.
+    add_final_space : bool, optional
+        If True, adds a delimiter (or space) at the end of the string.
+        Default is False.
     
-    if get_obj_type_str(obj) not in ["list", "ndarray", "DataFrame", "Series"]:
-        raise TypeError(f"'{method_name}' method supports "
-                        "NumPy arrays and pandas DataFrames and series.")        
-    else:        
-        if isinstance(obj, list):
-            obj_val_array = obj.copy()
-            
-        elif get_obj_type_str(obj) in ["DataFrame", "Series"]:
-            # Get the pandas DataFrame's or Series's value array #
-            obj_val_array = obj.values
-            
-        
-        """
-        In the case of NumPy arrays and pandas DataFrames and series,
-        if the object's dimension is N > 1, i.e. has the attribute 'flatten', 
-        precisely flatten it.
-        """
-        if hasattr(obj, "flatten"):
-            obj_val_array = obj_val_array.flatten()
-            
-            
-        """
-        In order to join every content in a single string, each element
-        inside the object must be a string.
-        Then, by default, each element is going to be converted to a string
-        """
-        
-        obj_list = [str(el) for el in obj_val_array]
-        
-        # Merge the content of the resulting list #
-        
-        # If no delimiter is given for data joining, consider the space character
-        if delim is None:
-            delim = common_delim_list[6]
-        allobj_string = delim.join(obj_list)
-        
-        """
-        If other procedures or methods require a final space in the string,
-        add it as requested
-        """
-        if add_final_space:
-            allobj_string += delim
-        
-        return allobj_string
+    Returns
+    -------
+    str
+        A single string containing all elements of the input object, 
+        separated by the specified delimiter.
+
+    Raises
+    ------
+    TypeError
+        If the input object is not a list, numpy array, pandas DataFrame, or Series.
+
+    Example
+    -------
+    >>> import numpy as np
+    >>> arr = np.array([[1, 2], [3, 4]])
+    >>> flatten_to_string(arr, delim=',', add_final_space=True)
+    '1,2,3,4,'
+    
+    Notes
+    -----
+    This method is particularly useful for converting arrays or lists of file names 
+    into a single string to pass as arguments to shell commands or other processes 
+    that require string input.
+    """
+    # Get input object type 
+    obj_type = get_obj_type_str(obj)
+    
+    # Validate input type #
+    if obj_type not in ["list", "ndarray", "DataFrame", "Series"]:
+        raise TypeError("'flatten_to_string' supports lists, NumPy arrays, and pandas DataFrames/Series.")
+    
+    # Convert pandas DataFrame/Series to NumPy array #
+    if obj_type not in ["DataFrame", "Series"]:
+        obj_val_array = obj.values
+    else:
+        obj_val_array = np.array(obj)  # Ensure it's a NumPy array if it's a list
+    
+    # Flatten the array if it has more than one dimension #
+    if hasattr(obj_val_array, "flatten"):
+        obj_val_array = obj_val_array.flatten()
+
+    # Convert all elements to strings #
+    obj_list = [str(el) for el in obj_val_array]
+    
+    # Join all elements into a single string #
+    allobj_string = delim.join(obj_list)
+    
+    # Optionally add a final delimiter/space #
+    if add_final_space:
+        allobj_string += delim
+    
+    return allobj_string
