@@ -35,7 +35,6 @@
 
 <h4>'file_operations' subpackage</h4>
 
-<!--- Contains application programs of several methods in the modules of subpackage `file_operations`:-->
 - The following **module** renamings were made:
 <table>
 	<tr>
