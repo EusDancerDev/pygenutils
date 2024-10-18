@@ -12,9 +12,9 @@
   file paths, directory paths, and integrity checks.
 
 **Redistribution Notice**
-You may redistribute this program in any other directory as needed.
- However, keep in mind that it is designed to operate with absolute paths,
- so ensure that any paths provided are properly configured to reflect your system's directory structure.
+- You may redistribute this program in any other directory as needed.
+- However, keep in mind that it is designed to operate with absolute paths,
+  so ensure that any paths provided are properly configured to reflect your system's directory structure.
 
 **Main Functions and Subpackages Used**
 - `scan_ncfiles` (from `file_utils`, part of the `xarray_utils` subpackage):
@@ -25,7 +25,6 @@ You may redistribute this program in any other directory as needed.
 The execution of the program is timed using the `program_exec_timer` method 
 from the `time_handling` subpackage, which calculates the elapsed time of 
 the execution of the program for performance analysis.
-
 """
 
 #-----------------------#
