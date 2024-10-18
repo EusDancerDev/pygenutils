@@ -35,9 +35,7 @@ find_substring_index = string_handler.find_substring_index
 # Define custom functions #
 #-------------------------#
 
-def modify_obj_permissions(path, 
-                           extensions2skip="", 
-                           attr_id=-1):
+def modify_obj_permissions(path, extensions2skip="", attr_id=-1):
     """
     Modifies permissions for files or directories at the given path. 
     Automatically detects if the object is a file or directory.
@@ -46,7 +44,7 @@ def modify_obj_permissions(path,
     ----------
     path : str or Path
         The path to the file or directory whose permissions will be modified.
-    extensions2skip : str, optional
+    extensions2skip : str or list, optional
         File extensions to skip during permission changes (only applies to files).
     attr_id : int, optional, default=-1
         Permission ID in Python format (octal or decimal).
@@ -103,11 +101,7 @@ def modify_obj_permissions(path,
             raise RuntimeError(f"Could not modify permissions for {obj_path}: {perr}")
 
                 
-def modify_obj_owner(path, 
-                     module="shutil", 
-                     extensions2skip="", 
-                     new_owner=-1, 
-                     new_group=-1):    
+def modify_obj_owner(path, module="shutil", extensions2skip="", new_owner=-1, new_group=-1):    
     """
     Modifies the owner and/or group of files or directories at the given path.
     Automatically detects if the object is a file or directory.
@@ -118,7 +112,7 @@ def modify_obj_owner(path,
         The path to the file or directory whose owner/group will be modified.
     module : str, optional, default='shutil'
         The module used to modify ownership. Must be either 'os' or 'shutil'.
-    extensions2skip : str, optional
+    extensions2skip : str or list, optional
         File extensions to skip during ownership changes (for files only).
     new_owner : int or str, optional, default=-1
         The new owner's username or user ID (int). If -1, no change is made to the owner.
