@@ -5,20 +5,10 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings import information_output_formatters
-from pyutils.files_and_directories import file_and_directory_handler, file_format_tweaker
-
-from pyutils.parameters_and_constants.global_parameters import basic_four_rules
+from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
-
-# Create aliases #
-#----------------#
-
-format_string = information_output_formatters.format_string
-print_format_string = information_output_formatters.print_format_string
-
-rename_objects = file_and_directory_handler.rename_objects
-add_str_to_path = file_format_tweaker.add_str_to_aux_path
+from pyutils.parameters_and_constants.global_parameters import basic_four_rules
+from pyutils.utilities.file_operations.file_and_directory_handler import add_str_to_path, rename_objects
 
 #-------------------------#
 # Define custom functions #
