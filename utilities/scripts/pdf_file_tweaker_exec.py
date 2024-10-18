@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories.file_format_tweaker import pdf_file_tweaker
+from pyutils.utilities.file_operations.file_format_tweaker import pdf_file_tweaker
 
 #-------------------#
 # Define parameters #
