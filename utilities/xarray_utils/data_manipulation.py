@@ -213,7 +213,7 @@ def extract_time_formats():
                 move_files(time_formats_file_name, dir_name)
             
 # File regridding #
-#--------------#
+#-----------------#
 
 def netcdf_regridder(ds_in, ds_image, regrid_method="bilinear"):    
     
