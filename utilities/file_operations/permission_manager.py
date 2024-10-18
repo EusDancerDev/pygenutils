@@ -17,7 +17,7 @@ import shutil
 
 from pyutils.utilities.file_operations import file_and_directory_paths as pyt_paths
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
@@ -75,12 +75,11 @@ def modify_obj_permissions(path,
     """
     # Validate attr_id
     if not isinstance(attr_id, int):
-        attr_id_type = get_obj_type_str(attr_id)
         all_arg_names = get_caller_method_args()
         attr_id_arg_pos = all_arg_names.index("attr_id")
         raise TypeError(f"'{all_arg_names[attr_id_arg_pos]}' "
                         f"(position {attr_id_arg_pos}) must be an integer, "
-                        f"got '{attr_id_type}' instead.")
+                        f"got '{type(attr_id)}' instead.")
     
     # Handle file-specific logic (skip certain extensions)
     if os.path.isfile(path):
@@ -171,19 +170,17 @@ def modify_obj_owner(path,
     
     # New owner #
     if not (isinstance(new_owner, (int, str)) or new_owner == -1):
-        new_owner_type = get_obj_type_str(new_owner)
         new_owner_arg_pos = find_substring_index(all_arg_names, "new_owner")
         raise TypeError(f"'{all_arg_names[new_owner_arg_pos]}' "
                         f"(position {new_owner_arg_pos}) must be an integer or string, "
-                        f"got '{new_owner_type}' instead.")
+                        f"got '{type(new_owner)}' instead.")
         
     # New group
     if not (isinstance(new_group, (int, str)) or new_group == -1):
-        new_grp_type = get_obj_type_str(new_group)        
         new_grp_arg_pos = find_substring_index(all_arg_names, "new_group")
         raise TypeError(f"{all_arg_names[new_grp_arg_pos]} "
                         f"(position {new_grp_arg_pos}) must be an integer or string, "
-                        f"got '{new_grp_type}' instead.")
+                        f"got '{type(new_group)}' instead.")
     
     # Module selection
     if module not in modules:
@@ -236,6 +233,3 @@ def modify_obj_owner(path,
 #------------#
 
 modules = ["os", "shutil"]
-
-# Preformatted strings #
-#----------------------#
