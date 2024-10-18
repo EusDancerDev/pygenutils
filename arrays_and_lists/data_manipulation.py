@@ -149,7 +149,11 @@ def pos_swapper(A, x, y):
 
 def sort_rows_by_column(array, ncol, reverse=False, order=None): 
     """
-    Sort a 2D array by a specific column, preserving row structure.
+    Sort a 2D array by a specific column, preserving row structure.    
+    The mechanism preserves the original structure of each row, 
+    only sorting based on the specified column. 
+    This is especially useful when the user needs to sort an array by a single column,
+    without altering the rows.
     
     Parameters
     ----------
@@ -181,8 +185,6 @@ def sort_rows_by_column(array, ncol, reverse=False, order=None):
     array([[6, 4, 2, 3],
            [4, 6, 4, 5],
            [3, 9, 7, 1]])
-
-    The mechanism preserves the original structure of each row, only sorting based on the specified column. This is especially useful when the user needs to sort an array by a single column, without altering the rows.
     """
     if isinstance(array, DataFrame):
         return array.sort_values(by=array.columns[ncol], ascending=not reverse)
@@ -197,6 +199,8 @@ def sort_rows_by_column(array, ncol, reverse=False, order=None):
 def sort_columns_by_row(array, nrow, reverse=False): 
     """
     Sort columns of a 2D array by a specific row, preserving column structure.
+    Just like `sort_rows_by_column`, this method sorts the columns based on 
+    the values in the specified row while maintaining the column structure.
     
     Parameters
     ----------
@@ -226,8 +230,6 @@ def sort_columns_by_row(array, nrow, reverse=False):
     array([[6, 4, 3, 2],
            [3, 9, 1, 7],
            [5, 4, 6, 4]])
-
-    Just like `sort_rows_by_column`, this method sorts the columns based on the values in the specified row while maintaining the column structure.
     """
     if isinstance(array, DataFrame):
         return array.T.sort_values(by=array.T.columns[nrow], ascending=not reverse).T
