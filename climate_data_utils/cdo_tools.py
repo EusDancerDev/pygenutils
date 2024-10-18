@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
+from pyutils.arrays_and_lists.data_manipulation import flatten_to_string
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
@@ -24,10 +24,11 @@ time_freqs = global_parameters.time_frequencies_short_1
 
 format_string = information_output_formatters.format_string
 
-add_str_to_path = string_handler.add_str_to_aux_path
+add_str_to_path = string_handler.add_str_to_path
 find_substring_index = string_handler.find_substring_index
 obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
+
 #-------------------------#
 # Define custom functions #
 #-------------------------#
@@ -180,7 +181,7 @@ def cdo_mergetime(file_list,
     
     
     
-    allfiles_string = flatten_content_to_string(file_list_selyear)
+    allfiles_string = flatten_to_string(file_list_selyear)
     mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
                         f"{standardized_output_file_name}"
     process_exit_info = run_system_command(mergetime_command,
@@ -195,7 +196,7 @@ def custom_cdo_mergetime(file_list,
                          custom_output_file_name,
                          create_temporal_file=False):
     
-    allfiles_string = flatten_content_to_string(file_list)
+    allfiles_string = flatten_to_string(file_list)
     
     if not create_temporal_file:
         mergetime_command = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' "\
