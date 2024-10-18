@@ -19,8 +19,9 @@ Data Type Options
 -----------------
 Refer to the following table for mapping Pandas data types to MySQL data types:
 
++--------------------------+---------------------+
 |     Pandas Data Type     |   MySQL Data Type   |
-|--------------------------|---------------------|
++--------------------------+---------------------+
 | `int64`                  | `BIGINT`            |
 | `int32`                  | `INTEGER`           |
 | `float64`                | `DOUBLE`            |
@@ -30,6 +31,7 @@ Refer to the following table for mapping Pandas data types to MySQL data types:
 | `timedelta[{time_unit}]` | `TIME`              |
 | `object`                 | `TEXT` or `VARCHAR` |
 | `category`               | `VARCHAR`           |
++--------------------------+---------------------+
 
 Data Files
 ----------
