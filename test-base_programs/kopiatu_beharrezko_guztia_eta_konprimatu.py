@@ -29,7 +29,7 @@ from pyutils.strings.string_handler import find_substring_index
 #----------------#
 
 basic_value_data_type_converter = conversions.basic_value_data_type_converter
-flatten_content_to_string = conversions.flatten_content_to_string
+flatten_to_string = conversions.flatten_to_string
 
 remove_elements = data_manipulation.remove_elements
 select_elements = patterns.select_elementss
@@ -159,9 +159,9 @@ if compress_copied_and_renamed_files:
     
     output_zip_file = f"Jon_Ander_Gabantxo.{exts[-1]}"
     
-    file_list_2rename_str = flatten_content_to_string(file_list_2rename)
+    file_list_2rename_str = flatten_to_string(file_list_2rename)
     files_excluded_from_zipping\
-    = flatten_content_to_string(select_elements(file_list_cwd, del_file_idx))
+    = flatten_to_string(select_elements(file_list_cwd, del_file_idx))
     
     zip_command = f"zip {output_zip_file} {file_list_2rename_str} -x {files_excluded_from_zipping}"
     os.system(zip_command)
