@@ -37,8 +37,8 @@ def cat(path, mode="r"):
     if path_exists:
         with open(path, mode=mode) as file_obj:
             for line in file_obj:
-                line_no_extra_whitespaces = line.strip()
-                print(line_no_extra_whitespaces)
+                line_stripped = line.strip()
+                print(line_stripped)
         
     else:
         raise FileNotFoundError("No such file or directory. "
