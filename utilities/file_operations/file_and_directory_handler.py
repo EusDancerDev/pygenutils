@@ -6,7 +6,6 @@
 #----------------#
 
 import os
-from pathlib import Path
 import shutil
 
 #-----------------------#
@@ -16,144 +15,139 @@ import shutil
 from pyutils.operative_systems.os_operations import exit_info, run_system_command
 
 #------------------#
-# Helper Functions #
+# Define functions #
 #------------------#
 
-def select_files(patterns, base_directory, match_type="ext"):
+# Helpers #
+#---------#
+
+def _get_files_in_directory(directory):
     """
-    Helper function to select files based on file extensions or glob patterns.
-    
+    Private helper function to get all files in a directory.
+
     Parameters
     ----------
-    patterns : str or list
-        String or list of patterns to match files (extension or glob pattern).
-    base_directory : Path
-        The directory from which to search for files.
-    match_type : str, optional
-        Type of matching to perform. Options are "ext" (for extensions)
-        or "glob" (for glob patterns). Defaults to "ext".
+    directory : str
+        The directory path to list files from.
     
     Returns
     -------
-    list of Path objects
-        A list of matching file paths.
+    list
+        A list of full file paths for files in the directory.
     """
-    if isinstance(patterns, str):
-        patterns = [patterns]
+    return [os.path.join(directory, file) for file in os.listdir(directory)]
 
-    all_files = []
-    
-    for pattern in patterns:
-        if match_type == "ext":
-            selected_files = base_directory.glob(f"*.{pattern}")
-        elif match_type == "glob":
-            selected_files = base_directory.glob(pattern)
-        else:
-            raise ValueError(f"Invalid match_type: {match_type}")
-        
-        all_files.extend([file for file in selected_files if file.is_file()])
-    
-    return all_files
 
-#----------------------#
-# Refactored Functions #
-#----------------------#
+# Main functions #
+#----------------#
 
 # Operations involving files #
-#----------------------------#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 def move_files(patterns, input_directories, destination_directories, match_type="ext"):
     """
-    Function to move files based on extensions or glob patterns from specified input directories
-    to one or more destination directories.
-    
+    Moves files based on extensions or glob patterns from input directories to
+    destination directories.
+
     Parameters
     ----------
     patterns : str or list
-        String or list of file extensions (without dot) or glob patterns.
+        File extensions or glob patterns to search for.
     input_directories : str or list
-        Directory or list of directories from which to select the files.
+        Directory or list of directories to search.
     destination_directories : str or list
-        String or list of destination directories.
+        Directory or list of directories where files will be moved.
     match_type : str, optional
-        Type of pattern matching to use: "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
-    
+        Either "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
     """
+    if isinstance(patterns, str):
+        patterns = [patterns]
     if isinstance(input_directories, str):
         input_directories = [input_directories]
-
     if isinstance(destination_directories, str):
         destination_directories = [destination_directories]
 
+    match_func = match_type_dict.get(match_type)
+    if not match_func:
+        raise ValueError(f"Invalid match_type: {match_type}")
+
     for input_directory in input_directories:
-        input_directory_path = Path(input_directory)
-        selected_files = select_files(patterns, input_directory_path, match_type=match_type)
+        files = _get_files_in_directory(input_directory)  # Using the helper
+        selected_files = [file for file in files if match_func(file, patterns)]
         
         for file in selected_files:
-            file_name_nopath = file.name
             for destination_directory in destination_directories:
-                shutil.move(file, os.path.join(destination_directory, file_name_nopath))
+                shutil.move(file, os.path.join(destination_directory, os.path.basename(file)))
 
 
 def copy_files(patterns, input_directories, destination_directories, match_type="ext"):
     """
-    Function to copy files based on extensions or glob patterns from specified input directories
-    to one or more destination directories.
-    
+    Copies files based on extensions or glob patterns from input directories to
+    destination directories.
+
     Parameters
     ----------
     patterns : str or list
-        String or list of file extensions (without dot) or glob patterns.
+        File extensions or glob patterns to search for.
     input_directories : str or list
-        Directory or list of directories from which to select the files.
+        Directory or list of directories to search.
     destination_directories : str or list
-        String or list of destination directories.
+        Directory or list of directories where files will be copied.
     match_type : str, optional
-        Type of pattern matching to use: "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
-    
+        Either "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
     """
+    if isinstance(patterns, str):
+        patterns = [patterns]
     if isinstance(input_directories, str):
         input_directories = [input_directories]
-    
     if isinstance(destination_directories, str):
         destination_directories = [destination_directories]
 
+    match_func = match_type_dict.get(match_type)
+    if not match_func:
+        raise ValueError(f"Invalid match_type: {match_type}")
+
     for input_directory in input_directories:
-        input_directory_path = Path(input_directory)
-        selected_files = select_files(patterns, input_directory_path, match_type=match_type)
+        files = _get_files_in_directory(input_directory)  # Using the helper
+        selected_files = [file for file in files if match_func(file, patterns)]
         
         for file in selected_files:
-            file_name_nopath = file.name
             for destination_directory in destination_directories:
-                shutil.copy(file, os.path.joindestination_directory, file_name_nopath)
+                shutil.copy(file, os.path.join(destination_directory, os.path.basename(file)))
 
 
 def remove_files(patterns, input_directories, match_type="ext"):
     """
-    Function to remove files based on extensions or glob patterns from specified input directories.
-    
+    Removes files based on extensions or glob patterns from input directories.
+
     Parameters
     ----------
     patterns : str or list
-        String or list of file extensions (without dot) or glob patterns.
+        File extensions or glob patterns to search for.
     input_directories : str or list
-        Directory or list of directories from which to select the files.
+        Directory or list of directories to search.
     match_type : str, optional
-        Type of pattern matching to use: "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
-    
+        Either "ext" for extensions or "glob" for glob patterns. Defaults to "ext".
     """
+    if isinstance(patterns, str):
+        patterns = [patterns]
     if isinstance(input_directories, str):
         input_directories = [input_directories]
 
+    match_func = match_type_dict.get(match_type)
+    if not match_func:
+        raise ValueError(f"Invalid match_type: {match_type}")
+
     for input_directory in input_directories:
-        input_directory_path = Path(input_directory)
-        selected_files = select_files(patterns, input_directory_path, match_type=match_type)
+        files = _get_files_in_directory(input_directory)  # Using the helper
+        selected_files = [file for file in files if match_func(file, patterns)]
         
         for file in selected_files:
             os.remove(file)
 
+
 # Operations involving directories #
-#----------------------------------#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 def make_directories(directory_list):
     """
@@ -210,7 +204,8 @@ def move_directories(directories, destination_directories):
 
 def copy_directories(directories, destination_directories, recursive_in_depth=True):
     """
-    Copies the specified directories to the destination directories. Can be recursive or non-recursive.
+    Copies the specified directories to the destination directories.
+    Can be recursive or non-recursive.
     
     Parameters
     ----------
@@ -235,7 +230,7 @@ def copy_directories(directories, destination_directories, recursive_in_depth=Tr
             
 
 # Operations involving both files and directories #
-#-------------------------------------------------#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 def rsync(source_paths, 
           destination_paths, 
@@ -308,13 +303,14 @@ def rename_objects(relative_paths, renaming_relative_paths):
     Raises
     ------
     ValueError
-        If the length of the relative_paths list is not equal to the renaming_relative_paths list.
+        If the length of the relative_paths list is not equal to the 
+        renaming_relative_paths list.
     TypeError
         If the inputs are not both strings or both lists.
     """
     if isinstance(relative_paths, list) and isinstance(renaming_relative_paths, list):
         if len(relative_paths) != len(renaming_relative_paths):
-            raise ValueError(not_equal_length_error)
+            raise ValueError(unequal_length_error)
         else:
             for rp, rrp in zip(relative_paths, renaming_relative_paths):
                 os.rename(rp, rrp)
@@ -329,5 +325,14 @@ def rename_objects(relative_paths, renaming_relative_paths):
 #--------------------------#
 
 # Errors #
-not_equal_length_error = """File and renamed file lists are not of the same length."""
+unequal_length_error = """File and renamed file lists are not of the same length."""
 objtype_error = "Both input arguments must either be strings or lists simultaneously."
+
+# Switch-case Dictionary #
+#------------------------#
+
+# Define a switch-case dictionary to handle 'match_type' options
+match_type_dict = {
+    "ext": lambda file, patterns: any(file.endswith(f".{ext}") for ext in patterns),
+    "glob": lambda file, patterns: any(pattern in file for pattern in patterns)
+}
