@@ -15,8 +15,11 @@ import numpy as np
 from pyutils.strings.string_handler import get_obj_specs
 
 #------------------#
-# Helper Functions #
+# Define functions #
 #------------------#
+
+# Helpers #
+#---------#
 
 def path_converter(path, glob_bool=True):
     """
@@ -41,10 +44,11 @@ def path_converter(path, glob_bool=True):
     else:
         return [os.path.join(path, item) for item in os.listdir(path)]
 
+# Main functions #
+#----------------#
 
-#------------------#
 # File Operations #
-#------------------#
+#~~~~~~~~~~~~~~~~~#
 
 def find_files(patterns, search_path, match_type="ext", top_only=False):
     """
@@ -83,9 +87,8 @@ def find_files(patterns, search_path, match_type="ext", top_only=False):
     return list(np.unique([file for file in files if match_func(file, patterns)]))
 
 
-#------------------#
 # Directory Operations #
-#------------------#
+#~~~~~~~~~~~~~~~~~~~~~~#
 
 def find_dirs(search_path, top_only=False, include_root=True):
     """
@@ -156,15 +159,13 @@ def find_dirs_with_files(patterns, search_path, match_type="ext", top_only=False
         raise ValueError(f"Invalid match_type: {match_type}")
 
     dirs = [os.path.dirname(file) for file in files if match_func(file, patterns)]
-
     return list(np.unique(dirs))
 
 
-#------------------#
-# Extensions & Directories Search #
-#------------------#
+# Extensions and Directories Search #
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
-def find_all_ext_or_dirs(search_path, skip_ext=None, top_only=False, task="extensions"):
+def find_items(search_path, skip_ext=None, top_only=False, task="extensions"):
     """
     Finds all unique file extensions or directories in the specified path.
 
