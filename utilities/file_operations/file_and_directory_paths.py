@@ -14,16 +14,6 @@ import numpy as np
 
 from pyutils.strings.string_handler import get_obj_specs
 
-#--------------------------#
-# Switch-case Dictionary #
-#--------------------------#
-
-# Define a switch-case dictionary to handle match_type options
-match_type_dict = {
-    "ext": lambda file, patterns: any(file.endswith(f".{ext}") for ext in patterns),
-    "glob": lambda file, patterns: any(pattern in file for pattern in patterns)
-}
-
 #------------------#
 # Helper Functions #
 #------------------#
@@ -263,3 +253,16 @@ def find_by_pattern(patterns, search_path, match_type="ext", top_only=False, sea
     else:
         raise ValueError("Invalid search_type. Use 'files' or 'directories'.")
 
+
+#--------------------------#
+# Parameters and constants #
+#--------------------------#
+
+# Switch-case dictionaries #
+#--------------------------#
+
+# Define a switch-case dictionary to handle 'match_type' options
+match_type_dict = {
+    "ext": lambda file, patterns: any(file.endswith(f".{ext}") for ext in patterns),
+    "glob": lambda file, patterns: any(pattern in file for pattern in patterns)
+}
