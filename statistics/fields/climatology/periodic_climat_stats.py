@@ -128,7 +128,7 @@ def climat_periodic_statistics(obj,
     # Determine object type #
     #-#-#-#-#-#-#-#-#-#-#-#-#
     
-    obj_type = get_obj_type_str(obj).lower()
+    obj_type = get_obj_type_str(obj, lowercase=True)
     
     # Identify the time dimension #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
