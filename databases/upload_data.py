@@ -36,9 +36,9 @@ Refer to the following table for mapping Pandas data types to MySQL data types:
 Data Files
 ----------
 - The 'input_file_obj' variable can be assigned a single file path or a list of paths.
-- Alternatively, files can be searched using methods 'find_files_by_globstr' 
-  for glob strings or 'find_files_by_ext' for extensions 
-  from the 'file_and_directory_paths' module.
+- Alternatively, files can be searched using methods 'find_files' 
+  for glob strings or 'find_files' for extensions 
+  from the 'path_utils' module.
 """
 
 #-----------------------#
@@ -46,7 +46,7 @@ Data Files
 #-----------------------#
 
 from pyutils.databases.database_handler import load_file_to_sql
-from pyutils.utilities.file_operations.file_and_directory_paths import find_files_by_globstr, find_files_by_ext
+from pyutils.utilities.file_operations.path_utils import find_files
 from pyutils.parameters_and_constants.config_params import config_dict
 
 #-------------------#
@@ -105,13 +105,8 @@ input_file_obj = "/home/jonander/Documents/gordetegiak/pyutils.databases/test.cs
 #     "/home/jonander/Documents/gordetegiak/pyutils.databases/test3.csv"
 #     ]
 
-# input_file_obj = find_files_by_globstr("test*",
-#                                        path_to_walk_into=".", 
-#                                        top_path_only=True)
-
-# input_file_obj = find_files_by_ext(".csv",
-#                                    path_to_walk_into=".", 
-#                                    top_path_only=True)
+# input_file_obj = find_files("test*", search_path=".", match_type="glob", top_path_only=True)
+# input_file_obj = find_files(".csv", search_path=".", match_type="ext", top_path_only=True)
 
 #-------------#
 # Run program #
