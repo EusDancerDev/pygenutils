@@ -178,9 +178,9 @@ def find_items(search_path, skip_ext=None, top_only=False, task="extensions"):
     top_only : bool, optional
         If True, only searches in the top directory without subdirectories.
         Defaults to False.
-    task : str, optional
-        "extensions" to find file extensions or "directories" to find directories.
-        Defaults to "extensions".
+    task : {"extensions", "directories"}, default "extensions"
+        - "extensions": to find file extensions
+        - "directories" to find directories
     
     Returns
     -------
