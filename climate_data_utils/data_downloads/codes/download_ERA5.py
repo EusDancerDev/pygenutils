@@ -5,22 +5,23 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.climate_data_utils import cds_tools
+from pyutils.climate_data_utils.cds_tools import download_data
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
-from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
-from pyutils.utilities.xarray_utils.xarray_obj_handler import grib2nc
+from pyutils.utilities.file_operations import ops_handler, path_utils
+from pyutils.utilities.xarray_utils import file_utils, xarray_obj_handler
 
 # Create aliases #
 #----------------#
 
-download_data = cds_tools.download_data
-make_parent_directories = file_and_directory_handler.make_parent_directories
-move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
+make_directories = ops_handler.make_directories
+move_files = ops_handler.move_files
+
+find_files = path_utils.find_files
+
+scan_ncfiles = file_utils.scan_ncfiles
+grib2nc = xarray_obj_handler.grib2nc
 
 #-------------------------#
 # Define custom functions #
@@ -155,7 +156,7 @@ program_exec_timer('start')
 
 # Create, if necessary, the input data directory specific for the data set #
 ds_input_data_dir = f"{main_input_data_dir}/{dataset}"
-make_parent_directories(ds_input_data_dir)
+make_directories(ds_input_data_dir)
 
 """
 The standardized hierarchy for the loops
@@ -200,14 +201,14 @@ for country, area_list in zip(country_list, area_lists):
                     Test whether the file is already downloaded
                     (current or downloaded data directory)
                     """
-                    ofn_list = find_files_by_globstr(f"*{output_file_name}*",
-                                                     path_to_walk_into=project_dir)
+                    ofn_list = find_files(f"*{output_file_name}*",
+                                          search_path=project_dir,
+                                          match_type="glob")
                     
                     lofnl = len(ofn_list)
                     
                     if lofnl > 0:
-                        num_faulty_ncfiles\
-                        = scan_ncfiles(path_to_walk_into=codes_dir)
+                        num_faulty_ncfiles = scan_ncfiles(codes_dir)
                         
                         if num_faulty_ncfiles > 0:   
                             # Download the specified data #
@@ -219,11 +220,17 @@ for country, area_list in zip(country_list, area_lists):
 
 # Move the downloaded data from the directory where the code is being called #
 if file_format == "grib" and convert_to_nc:
-    all_grib_files = find_files_by_ext(file_format, path_to_walk_into=project_dir)
+    all_grib_files = find_files(file_format, search_path=project_dir)
     grib2nc(all_grib_files, on_shell=True)
-    move_files_by_ext_from_exec_code(available_extensions[0], ds_input_data_dir)
+    result_ext = available_extensions[0]
 else:
-    move_files_by_ext_from_exec_code(extension, ds_input_data_dir)
+    result_ext = extension
+    
+move_files(result_ext, 
+           input_directories=".", 
+           destination_directories=ds_input_data_dir,
+           match_type='ext')
+
 
 #---------------------------------------#
 # Calculate full program execution time #
