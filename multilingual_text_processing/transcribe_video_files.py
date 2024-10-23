@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Mon May 13 12:00:51 2024
-
-@author: jonander
-
 **Goal**
 Make audio transcriptions using preferently free software
 Easiest way is using IBM Watson Cloud services (IBM Watsonx),
@@ -23,16 +19,9 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 # Import custom modules # 
 #-----------------------#
 
-from pyutils.files_and_directories.file_and_directory_paths import find_files_by_ext
-from pyutils.strings import string_handler, information_output_formatters
-
-# Create aliases #
-#----------------#
-
-ext_adder = string_handler.ext_adder
-modify_obj_specs = string_handler.modify_obj_specs
-
-print_format_string = information_output_formatters.print_format_string
+from pyutils.files_and_directories.path_utils import find_files
+from pyutils.strings.string_handler import ext_adder, modify_obj_specs
+from pyutils.strings.information_output_formatters import print_format_string
 
 #------------------#
 # Define functions # 
@@ -67,9 +56,10 @@ file2transcript_ext = "wav"
 files2transcribe_path = "/home/jonander/Documents/04-Ikasketak/04-Ikastaroak/"\
                         "Deusto_Formacion/Curso_superior_Python/teoria/moduluak/Tema_5/"
 
-files2transcribe_list = find_files_by_ext(file2transcript_ext,
-                                          files2transcribe_path, 
-                                          top_path_only=True)
+files2transcribe_list = find_files(file2transcript_ext,
+                                   files2transcribe_path, 
+                                   match_type="ext",
+                                   top_path_only=True)
 
 # Output informartion strings #
 transcription_result_str = """File : {}
@@ -105,6 +95,8 @@ Steps to get the API Key and 'Speech To Text' service ID
 """
 
 # Define both the API_KEY and SERVICE_ID here
+API_KEY=""
+SERVICE_ID=""
     
 #----------------#
 # Operation part # 
