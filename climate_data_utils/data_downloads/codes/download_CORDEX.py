@@ -10,20 +10,19 @@ Created on Fri Nov  3 21:19:13 2023
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import select_from_array_element
+from pyutils.arrays_and_lists.patterns import select_elements
 from pyutils.climate_data_utils.cds_tools import download_data
-from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
+from pyutils.utilities.file_operations import ops_handler, path_utils
 from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
 
 # Create aliases #
 #----------------#
 
-make_parent_directories = file_and_directory_handler.make_parent_directories
-move_files_by_ext_from_exec_code = file_and_directory_handler.move_files_by_ext_from_exec_code
-
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
+make_directories = ops_handler.make_directories
+move_files = ops_handler.move_files
+find_files = path_utils.find_files
 
 #-------------------------#
 # Define custom functions #
@@ -66,7 +65,7 @@ def return_rcp_period(rcp):
     rcp_abbr = rcp[:4]
     
     rcp_local_key_idx = find_substring_index(local_vals, rcp_abbr)
-    rcp_local_key = select_from_array_element(local_vals, rcp_local_key_idx)
+    rcp_local_key = select_elements(local_vals, rcp_local_key_idx)
     
     return rcp_local_key
     
@@ -392,7 +391,7 @@ specific both for the data set and domain.
 """
 
 ds_input_data_dir = f"{main_input_data_dir}/{dataset}/{domain}"
-make_parent_directories(ds_input_data_dir)
+make_directories(ds_input_data_dir)
 
 """
 It is possible that there will not be data for certain period(s) of time,
@@ -437,14 +436,11 @@ for start_year, end_year in zip(sel_rcp_start_ys, sel_rcp_end_ys):
     Test whether the file is already downloaded
     (current or downloaded data directory)
     """
-    ofn_list = find_files_by_globstr(f"*{output_file_name}*",
-                                     path_to_walk_into=project_dir)
-    
+    ofn_list = find_files(f"*{output_file_name}*", search_path=project_dir, match_type="glob")    
     lofnl = len(ofn_list)
     
     if lofnl > 0:
-        num_faulty_ncfiles\
-        = scan_ncfiles(path_to_walk_into=codes_dir)
+        num_faulty_ncfiles = scan_ncfiles(codes_dir)
         
         if num_faulty_ncfiles > 0:   
             # Download the specified data #
@@ -456,7 +452,10 @@ for start_year, end_year in zip(sel_rcp_start_ys, sel_rcp_end_ys):
                 
 
 # Move the downloaded data from the directory where the code is being called #
-move_files_by_ext_from_exec_code(extension, ds_input_data_dir)
+move_files(extension, 
+           input_directories=".", 
+           destination_directories=ds_input_data_dir,
+           match_type='ext')
 
 #---------------------------------------#
 # Calculate full program execution time #
