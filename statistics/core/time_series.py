@@ -100,7 +100,7 @@ def periodic_statistics(obj, statistic, freq,
     all_arg_names = get_caller_method_args()
     seas_months_arg_pos = find_substring_index(all_arg_names, "season_months")
     
-    obj_type = get_obj_type_str(obj).lower()
+    obj_type = get_obj_type_str(obj, lowercase=True)
     seas_mon_arg_type = get_obj_type_str(season_months)
     
     if statistic not in statistics:
