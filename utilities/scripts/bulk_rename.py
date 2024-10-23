@@ -4,7 +4,7 @@
 """
 **Note**
 
-This program is an application of the main module 'bulk_rename_index_main',
+This program is an application of the main module 'bulk_rename_auto',
 and it uses some of its attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories.bulk_rename_index_main import reorder_objs
+from pyutils.utilities.file_operations.bulk_rename_auto import reorder_objs
 
 #-------------------#
 # Define parameters #
