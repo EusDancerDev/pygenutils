@@ -19,7 +19,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 # Import custom modules # 
 #-----------------------#
 
-from pyutils.files_and_directories.path_utils import find_files
+from pyutils.utilities.file_operations.path_utils import find_files
 from pyutils.strings.string_handler import ext_adder, modify_obj_specs
 from pyutils.strings.information_output_formatters import print_format_string
 
