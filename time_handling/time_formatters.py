@@ -520,7 +520,7 @@ def datetime_obj_converter(datetime_obj,
     ##############
     
     # Get the object type's name #
-    obj_type = get_obj_type_str(datetime_obj).lower()
+    obj_type = get_obj_type_str(datetime_obj, lowercase=True)
     
     # Validate here the type to convert to, according the input data type # 
     _validate_option(f"Object type conversion for object type '{obj_type}' where", 
@@ -580,7 +580,7 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     #------------#
     
     unit_factor = unit_factor_dict.get(unit)
-    obj_type = get_obj_type_str(datetime_obj).lower()    
+    obj_type = get_obj_type_str(datetime_obj, lowercase=True)    
     try:
         conversion_func = _total_time_unit_dict.get(obj_type)
         if conversion_func is None:
@@ -746,7 +746,7 @@ def _to_float(dt_obj, unit, float_class):
     float
         The converted value in the specified unit.
     """
-    obj_type = get_obj_type_str(dt_obj).lower()
+    obj_type = get_obj_type_str(dt_obj, lowercase=True)
     if obj_type == "datetime64":
         return dt_obj.astype(f"timedelta64[{unit}]").astype(float_class)
     elif obj_type == "time": # datetime.time
@@ -800,7 +800,7 @@ def _to_datetime(dt_obj, unit):
     Since the date is arbitrary, then to maintain some organisation,
     the current date will be placed in its date part.
     """
-    obj_type = get_obj_type_str(dt_obj).lower()
+    obj_type = get_obj_type_str(dt_obj, lowercase=True)
     
     # Array-like with datetime-like values
     if obj_type == "dataframe":
