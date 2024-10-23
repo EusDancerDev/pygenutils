@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories.file_format_tweaker import msg2pdf
+from pyutils.utilities.format_converters.file_format_tweaker import msg2pdf
 
 #-------------------#
 # Define parameters #
