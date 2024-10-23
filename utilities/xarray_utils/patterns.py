@@ -12,15 +12,8 @@ import xarray as xr
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories import file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.utilities.xarray_utils.file_utils import check_ncfile_integrity
-
-# Create aliases #
-#----------------#
-
-find_file_containing_dirs_by_ext = file_and_directory_paths.find_file_containing_dirs_by_ext
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
 
 #-------------------------#
 # Define custom functions #
