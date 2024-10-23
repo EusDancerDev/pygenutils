@@ -698,7 +698,7 @@ def substring_replacer(string, substr2find, substr2replace, count_std=-1,
       for all supported input types, enabling straightforward substring replacements.
     """
     
-    obj_type = get_obj_type_str(string).lower()
+    obj_type = get_obj_type_str(string, lowercase=True)
     
     if obj_type not in str_repl_obj_types:
         raise TypeError("Input object must be of type 'string', 'list', "
