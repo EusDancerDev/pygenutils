@@ -13,17 +13,12 @@ import pandas as pd
 #-----------------------#
 
 from pyutils.arrays_and_lists.data_manipulation import find_duplicated_elements
-from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
-from pyutils.strings.string_handler import ext_adder, find_substring_index, get_obj_specs
 from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
+from pyutils.strings.string_handler import ext_adder, find_substring_index, get_obj_specs
+from pyutils.utilities.file_operations.ops_handler import remove_files
+from pyutils.utilities.file_operations.path_utils import find_files
 from pyutils.utilities.introspection_utils import get_caller_method_args
 from pyutils.utilities.pandas_utils.data_manipulation import polish_df_column_names
-
-# Create aliases #
-#----------------#
-
-remove_files_by_globstr = file_and_directory_handler.remove_files_by_globstr
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
 
 #------------------#
 # Define functions #
@@ -273,9 +268,7 @@ def save2excel(file_path,
     #----------------------------------#
     
     file_already_exists\
-    = bool(len(find_files_by_globstr(file_name, 
-                                     fn_parent,
-                                     top_path_only=True)))
+    = bool(len(find_files(file_name, fn_parent, match_type="glob", top_only=True)))
     
     # Save the file according to the input data type #
     #------------------------------------------------#
@@ -326,7 +319,7 @@ def save2excel(file_path,
                 # Instead, delete the original file and create a new one
                 # of the same name with the new data
                 if overwrite_stdin == "y":
-                    remove_files_by_globstr(file_path, fn_parent)
+                    remove_files(file_path, fn_parent, match_type="glob")
                     frame_obj.to_excel(file_path, 
                                        sheet_name=indiv_sheet_name,
                                        index=save_index,
@@ -557,9 +550,7 @@ def save2csv(file_path,
         #----------------------------------#
         
         file_already_exists\
-        = bool(len(find_files_by_globstr(file_name, 
-                                         fn_parent,
-                                         top_path_only=True)))
+        = bool(len(find_files(file_name, fn_parent, match_type="glob", top_only=True)))
         
         # Save the file according to the input data type #
         #------------------------------------------------#
@@ -579,7 +570,7 @@ def save2csv(file_path,
                     # Instead, delete the original file and create a new one
                     # of the same name with the new data
                     if overwrite_stdin == "y":
-                        remove_files_by_globstr(file_path, fn_parent)
+                        remove_files(file_path, fn_parent, match_type="glob")
                         data_frame.to_csv(file_path,
                                           sep=separator,
                                           decimal=decimal,
@@ -613,7 +604,7 @@ def save2csv(file_path,
                     # Instead, delete the original file and create a new one
                     # of the same name with the new data
                     if overwrite_stdin == "y":
-                        remove_files_by_globstr(file_path, fn_parent)
+                        remove_files(file_path, fn_parent, match_type="glob")
                         data_frame.to_csv(file_path,
                                           sep=separator,
                                           decimal=decimal,
