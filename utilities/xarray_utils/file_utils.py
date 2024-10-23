@@ -21,15 +21,14 @@ import os
 # Import custom modules #
 #-----------------------#
 
-from pyutils.files_and_directories import file_and_directory_paths
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.string_handler import information_output_formatters, string_handler
+from pyutils.utilities.file_operations import path_utils
 
 # Create aliases #
 #----------------#
 
-find_file_containing_dirs_by_ext = file_and_directory_paths.find_file_containing_dirs_by_ext
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
+find_files = path_utils.find_files
 
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
@@ -47,7 +46,7 @@ get_obj_specs = string_handler.get_obj_specs
 # Main method #
 #-#-#-#-#-#-#-#
     
-def scan_ncfiles(path_to_walk_into):
+def scan_ncfiles(search_path):
     """
     Scans directories for netCDF (.nc) files, optionally checks file integrity, 
     and can generate a report for faulty files. Returns netCDF file paths, 
@@ -55,7 +54,7 @@ def scan_ncfiles(path_to_walk_into):
 
     Parameters
     ----------
-    path_to_walk_into : str or list
+    search_path : str or list
         The directory or list of directories to scan for .nc files.
     
     return_files : bool, optional (default=True)
@@ -102,7 +101,7 @@ def scan_ncfiles(path_to_walk_into):
         
     # Step 1: Search for all netCDF files #
     #######################################
-    all_files = find_files_by_ext(extensions[0], path_to_walk_into)
+    all_files = find_files(extensions[0], search_path)
     
     # Step 2: Check each file's integrity and collect faulty files  #
     #################################################################
