@@ -148,8 +148,8 @@ def calculate_and_apply_deltas(observed_series,
     # Determine object type #
     #-#-#-#-#-#-#-#-#-#-#-#-#
     
-    obj_type_observed = get_obj_type_str(observed_series).lower()
-    obj_type_reanalysis = get_obj_type_str(reanalysis_series).lower()
+    obj_type_observed = get_obj_type_str(observed_series, lowercase=True)
+    obj_type_reanalysis = get_obj_type_str(reanalysis_series, lowercase=True)
     
     # Identify the time dimension #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
