@@ -13,15 +13,15 @@ import os
 
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.strings.information_output_formatters import format_string, string_underliner
-from pyutils.utilities.file_operations import file_and_directory_handler
+from pyutils.utilities.file_operations import ops_handler
 from pyutils.utilities.xarray_utils import file_utils, patterns
 
 # Create aliases #
 #----------------#
 
-move_files = file_and_directory_handler.move_files_by_globstr_from_exec_code
-find_dirs = file_and_directory_handler.find_file_containing_dirs_by_ext
-find_files = file_and_directory_handler.find_files_by_ext
+move_files = ops_handler.move_files
+find_dirs_with_files = ops_handler.find_dirs_with_files
+find_files = ops_handler.find_files
 
 check_ncfile = file_utils.ncfile_integrity_status
 
@@ -60,10 +60,10 @@ def extract_latlon_bounds(delta_roundoff, value_roundoff):
     - If any files are faulty or cannot be processed, relevant error information 
       is recorded in the report.
     """
-    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
+    nc_dirs = find_dirs_with_files(extensions[0], search_path=code_call_dir)
     
     for dir_num, dir_name in enumerate(nc_dirs, start=1):
-        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
+        nc_files = find_files(extensions[0], dir_name, match_type="ext", top_path_only=True)
         
         with open(coord_info_fname, "w") as report:
             if nc_files:
@@ -96,10 +96,16 @@ def extract_latlon_bounds(delta_roundoff, value_roundoff):
                                 )
                             
                             report.write(format_string(latlon_info_str, arg_tuple_bounds))
-                            move_files(coord_info_fname, dir_name)
+                            move_files(coord_info_fname,
+                                       input_directories=".", 
+                                       destination_directories=dir_name, 
+                                       match_type="glob")
             else:
                 report.write(f"No netCDF files in directory {dir_name}\n")
-                move_files(coord_info_fname, dir_name)
+                move_files(coord_info_fname,
+                           input_directories=".", 
+                           destination_directories=dir_name, 
+                           match_type="glob")
 
 
 def extract_time_bounds():
@@ -121,10 +127,10 @@ def extract_time_bounds():
     - If any files are faulty or cannot be processed, relevant error information 
       is recorded in the report.
     """
-    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
+    nc_dirs = find_dirs_with_files(extensions[0], search_path=code_call_dir)
     
     for dir_num, dir_name in enumerate(nc_dirs, start=1):
-        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
+        nc_files = find_files(extensions[0], dir_name, match_type="ext", top_path_only=True)
         
         with open(date_range_info_fname, "w") as report:
             if nc_files:
@@ -152,10 +158,16 @@ def extract_time_bounds():
                                 )
                             
                             report.write(format_string(period_info_str, arg_tuple_periods))
-                            move_files(date_range_info_fname, dir_name)
+                            move_files(date_range_info_fname,
+                                       input_directories=".", 
+                                       destination_directories=dir_name, 
+                                       match_type="glob")
             else:
                 report.write(f"No netCDF files in directory {dir_name}\n")
-                move_files(date_range_info_fname, dir_name)
+                move_files(date_range_info_fname,
+                           input_directories=".", 
+                           destination_directories=dir_name, 
+                           match_type="glob")
 
 
 def extract_time_formats():
@@ -178,10 +190,10 @@ def extract_time_formats():
       is recorded in the report.
     """
 
-    nc_dirs = find_dirs(extensions[0], path_to_walk_into=code_call_dir)
+    nc_dirs = find_dirs_with_files(extensions[0], search_path=code_call_dir)
     
     for dir_num, dir_name in enumerate(nc_dirs, start=1):
-        nc_files = find_files(extensions[0], dir_name, top_path_only=True)
+        nc_files = find_files(extensions[0], dir_name, match_type="ext", top_path_only=True)
         
         with open(time_formats_file_name, "w") as report:
             if nc_files:
@@ -207,10 +219,16 @@ def extract_time_formats():
                                 len(times)
                                 )
                             report.write(format_string(time_format_info_str, arg_tuple_formats))
-                            move_files(time_formats_file_name, dir_name)
+                            move_files(time_formats_file_name,
+                                       input_directories=".", 
+                                       destination_directories=dir_name, 
+                                       match_type="glob")
             else:
                 report.write(f"No netCDF files in directory {dir_name}\n")
-                move_files(time_formats_file_name, dir_name)
+                move_files(time_formats_file_name,
+                           input_directories=".", 
+                           destination_directories=dir_name, 
+                           match_type="glob")
             
 # File regridding #
 #-----------------#
