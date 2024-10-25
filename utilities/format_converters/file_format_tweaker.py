@@ -8,20 +8,19 @@
 # Perform whole or partial module imports #
 #-----------------------------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import flatten_content_to_string
-from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
+from pyutils.arrays_and_lists.data_manipulation import flatten_to_string
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.operative_systems.os_operations import exit_info, run_system_command
 from pyutils.strings import string_handler, information_output_formatters
+from pyutils.utilities.file_operations import ops_handler, path_utils
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
 
-remove_files_by_ext = file_and_directory_handler.remove_files_by_ext
+remove_files = ops_handler.remove_files
 
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
+find_files = path_utils.find_files
 
 format_string = information_output_formatters.format_string
 
@@ -210,7 +209,7 @@ def pdf_file_tweaker(path, cat_out_obj):
 
 def merge_pdf_files(in_path_list, out_path=None):
     
-    all_in_paths_string = flatten_content_to_string(in_path_list)
+    all_in_paths_string = flatten_to_string(in_path_list)
     
     if out_path is None:
         out_path_noext = "merged_doc"
@@ -328,7 +327,7 @@ def check_essential_prog_installation():
 
 
 
-def eml2pdf(path_to_walk_into, delete_eml_files=False):
+def eml2pdf(search_path, delete_eml_files=False):
     
     """
     Tool to convert email messages (.msg extension) to PDF files.
@@ -341,7 +340,7 @@ def eml2pdf(path_to_walk_into, delete_eml_files=False):
     
     Parameters
     ----------
-    path_to_walk_into : str or PosixPath
+    search_path : str or PosixPath
         Input path to search for 'eml' files.
     delete_eml_files : bool
         Option to control whether to delete eml extension files.
@@ -351,12 +350,10 @@ def eml2pdf(path_to_walk_into, delete_eml_files=False):
     """
     
     extension = extensions[1]
-    eml_files = find_files_by_ext(extension,
-                                    path_to_walk_into,
-                                    top_path_only=True)
+    eml_files = find_files(extension, search_path, match_type="ext", top_path_only=True)
    
     str2find = f"*emailconverter*.{extensions[-1]}"    
-    converter_tool_path = find_files_by_globstr(str2find, alldoc_dirpath)
+    converter_tool_path = find_files(str2find, alldoc_dirpath, match_type="glob")
 
     # Convert each email to PDF #        
     for emlf in eml_files:
@@ -367,10 +364,10 @@ def eml2pdf(path_to_walk_into, delete_eml_files=False):
         
     if delete_eml_files:
         # Delete every email file #
-        remove_files_by_ext(extension, path_to_walk_into)
+        remove_files(extension, search_path)
 
             
-def msg2pdf(path_to_walk_into,
+def msg2pdf(search_path,
             delete_msg_files=False,
             delete_eml_files=False):
     
@@ -390,7 +387,7 @@ def msg2pdf(path_to_walk_into,
     
     Parameters
     ----------
-    path_to_walk_into : str or PosixPath
+    search_path : str or PosixPath
         Input path to search for 'msg' files.
     delete_msg_files : bool
         Option to control whether to delete msg extension files.
@@ -405,9 +402,7 @@ def msg2pdf(path_to_walk_into,
     """
     
     extension = extensions[2]
-    msg_files = find_files_by_ext(extension,
-                                  path_to_walk_into,
-                                  top_path_only=True)
+    msg_files = find_files(extension, search_path, match_type="ext", top_path_only=True)
     
     # Convert microsoft outlook message (.msg) to email (.eml) #
     for msgf in msg_files:
@@ -418,11 +413,11 @@ def msg2pdf(path_to_walk_into,
         
         
     # Convert email to PDF #
-    eml2pdf(path_to_walk_into, delete_eml_files=delete_eml_files)
+    eml2pdf(search_path, delete_eml_files=delete_eml_files)
         
     if delete_msg_files:
         # Delete every email file #
-        remove_files_by_ext(extension, path_to_walk_into)
+        remove_files(extension, search_path)
         
 
 #--------------------------#
