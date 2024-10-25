@@ -15,15 +15,16 @@ import shutil
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.file_operations import path_utils
+from pyutils.utilities.file_operations import file_and_directory_paths as pyt_paths
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.utilities.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#
 
-find_files = path_utils.find_files
-find_items = path_utils.find_items
+find_all_file_extensions = pyt_paths.find_all_file_extensions
+find_all_directories = pyt_paths.find_all_directories
+find_files_by_ext = pyt_paths.find_files_by_ext
 
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
@@ -82,12 +83,12 @@ def modify_obj_permissions(path, extensions2skip="", attr_id=-1):
     if os.path.isfile(path):
         if extensions2skip:
             print_format_string("Skipping the following extensions:", extensions2skip)
-            file_extension_list = find_items(search_path=path, skip_ext=extensions2skip, top_only=True, task="extensions")
-            obj_path_list = find_files(file_extension_list, search_path=path, top_only=True)
+            file_extension_list = find_all_file_extensions(extensions2skip, path, top_path_only=True)
+            obj_path_list = find_files_by_ext(file_extension_list, path, top_path_only=True)
         else:
             obj_path_list = [path]
     elif os.path.isdir():
-        obj_path_list = find_items(path, task="directories")
+        obj_path_list = find_all_directories(path)
     else:
         raise ValueError(f"The specified path is neither a file nor a directory: '{path}'")
     
@@ -186,13 +187,13 @@ def modify_obj_owner(path, module="shutil", extensions2skip="", new_owner=-1, ne
     if os.path.isfile(path):
         if extensions2skip:
             print_format_string("Skipping the following extensions:", extensions2skip)
-            file_extension_list = find_items(search_path=path, skip_ext=extensions2skip, top_only=True, task="extensions")
-            obj_path_list = find_files(file_extension_list, search_path=path, top_only=True)
+            file_extension_list = find_all_file_extensions(extensions2skip, path, top_path_only=True)
+            obj_path_list = find_files_by_ext(file_extension_list, path, top_path_only=True)
         else:
             print("All extensions will be considered.")
             obj_path_list = [path]
     elif os.path.isdir(path):
-        obj_path_list = find_items(path, task="directories")
+        obj_path_list = find_all_directories(path)
     else:
         raise ValueError(f"The specified path is neither a file nor a directory: '{path}'")
     
