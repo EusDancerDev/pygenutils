@@ -12,34 +12,32 @@ from pathlib import Path
 #-----------------------#
 
 from pyutils.arrays_and_lists.data_manipulation import select_elements
-from pyutils.files_and_directories import file_and_directory_handler, file_and_directory_paths
 from pyutils.parameters_and_constants import global_parameters
-from pyutils.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
 from pyutils.strings import information_output_formatters, string_handler
+from pyutils.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
+from pyutils.utilities.file_operations import ops_handler, path_utils
 from pyutils.utilities.introspection_utils import get_caller_method_all_args
 
 # Create aliases #
 #----------------#
 
-rename_objects = file_and_directory_handler.rename_objects
+rename_objects = ops_handler.rename_objects
 
-find_all_file_extensions = file_and_directory_paths.find_all_file_extensions
-find_files_by_ext = file_and_directory_paths.find_files_by_ext
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
+find_dirs = path_utils.find_dirs
+find_dirs_with_files = path_utils.find_dirs_with_files
+find_files = path_utils.find_files
+find_items = path_utils.find_items
 
-find_all_directories = file_and_directory_paths.find_all_directories
-find_file_containing_dirs_by_globstr = file_and_directory_paths.find_file_containing_dirs_by_globstr
-
-basic_time_format_strs = global_parameters.basic_time_format_strs
 basic_object_types = global_parameters.basic_object_types
+basic_time_format_strs = global_parameters.basic_time_format_strs
 non_std_time_format_strs = global_parameters.non_std_time_format_strs
 
 format_string = information_output_formatters.format_string
 print_format_string = information_output_formatters.print_format_string
 
 find_substring_index = string_handler.find_substring_index
-obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
+obj_path_specs = string_handler.obj_path_specs
 
 #------------------#
 # Define functions #
@@ -163,13 +161,11 @@ def reorder_objs(path,
                         "wants to be taken into account.")
     
     if obj_type == basic_object_types[0]:
-        ext_list = find_all_file_extensions(extensions2skip, path, top_path_only=True)
-        obj_list_uneven = find_files_by_ext(ext_list, path, top_path_only=True)
+        ext_list = find_items(search_path=path, skip_ext=extensions2skip, top_only=True)
+        obj_list_uneven = find_files(ext_list, path, match_type="ext", top_only=True)
     
     elif obj_type == basic_object_types[1]:
-        obj_list_uneven = find_all_directories(path, 
-                                             top_path_only=True,
-                                             include_root=True)
+        obj_list_uneven = find_items(search_path=path, top_only=True, include_root=True, task="directories")
         
     lou = len(obj_list_uneven)
     
@@ -228,15 +224,17 @@ def reorder_objs(path,
         #----------------------------------------------#
         
         if obj_type == basic_object_types[0]:
-            conflicting_objs = [find_files_by_globstr(f"*{Path(nff_dR2).stem}*",
-                                                      path,
-                                                      top_path_only=True)
+            conflicting_objs = [find_files(f"*{Path(nff_dR2).stem}*",
+                                           path,
+                                           match_type="glob",
+                                           top_only=True)
                                 for nff_dR2 in num_formatted_objs_dry_run_2]
             
         elif obj_type == basic_object_types[1]:
-            conflicting_objs = [find_file_containing_dirs_by_globstr(f"*{Path(nff_dR2).stem}*",
-                                                            path,
-                                                            top_path_only=True)
+            conflicting_objs = [find_dirs_with_files(f"*{Path(nff_dR2).stem}*",
+                                                                     path,
+                                                                     match_type="glob",
+                                                                     top_only=True)
                                 for nff_dR2 in num_formatted_objs_dry_run_2]
         
         lcos = len(conflicting_objs)
@@ -346,15 +344,17 @@ def reorder_objs(path,
         #----------------------------------------------#
         
         if obj_type == basic_object_types[0]:
-            conflicting_objs = [find_files_by_globstr(f"*{Path(nff_dR).stem}*",
-                                                      path,
-                                                      top_path_only=True)
+            conflicting_objs = [find_files(f"*{Path(nff_dR).stem}*",
+                                           path,
+                                           match_type="glob",
+                                           top_only=True)
                                 for nff_dR in num_formatted_objs_dry_run]
         
         elif obj_type == basic_object_types[1]:
-            conflicting_objs = [find_file_containing_dirs_by_globstr(f"*{Path(nff_dR).stem}*",
-                                                            path,
-                                                            top_path_only=True)
+            conflicting_objs = [find_dirs_with_files(f"*{Path(nff_dR).stem}*",
+                                                     path,
+                                                     match_type="glob",
+                                                     top_only=True)
                                 for nff_dR in num_formatted_objs_dry_run]
             
         lcos = len(conflicting_objs)
