@@ -1,22 +1,48 @@
 # Changelog
 
-<!--## [v13.XX.XX] - 2024-10-2X-->
-
-<!--### Added-->
-
-<!--### Changed-->
-
-<!--### Removed-->
-
-<!------->
-
-## [v13.0.0] - 2024-10-23
+## [v13.3.2] - 2024-10-2X
 
 ### Changed
 
-<h2>General</h2>
+**General**
 
-<!--'ize_containing_files.txt' eta 'obj_type_str_lower_syntax.txt' fitxategietakoa plasmatu-->
+- Switched to British English every verb written in American accent. For example:
+	- *standardize* -> <i>standardi**S**e</i>
+	- *serialize* -> <i>seriali**S**</i>
+	
+- All `.lower()` instances of the string returned by the method `get_obj_type_str` (module `introspection_utils`, subpackage **General Utils**),<br>
+  have been substituted in favour of setting the argument `lowercase` to True.
+  
+- The renaming of the module `file_and_directory_handler` to `ops_handler` has been applied to all affected files.
+- The renaming of the module `file_and_directory_paths` to `path_utils` has been applied to all affected files.
+
+**Climate Data Utils**
+- Module `cdo_tools`:
+	- Refactored multiple CDO processing functions, optimized internal helpers, and updated file handling methods with section headers and internal visibility changes.
+	- The following method renamings were made:
+	<table>
+	<tr>
+		<th><span style="font-size:13.7pt">Old function name</span></th>
+		<th><span style="font-size:13.7pt">New function name</span></th>
+	<tr>
+		<td>get_variable_name_in_file_name</td>
+		<td>_get_varname_in_filename (marked as internal)</td>
+	</tr>
+	<tr>
+		<td>change_file_names_byvar</td>
+		<td>change_filenames_by_var</td>
+	</tr>
+	<tr>
+		<td>standardise_file_name</td>
+		<td>_standardise_filename (marked as internal)</td>
+	</tr>
+</table>
+
+---
+
+## [v13.0.0] - 2024-10-22
+
+### Changed
 
 <h2>File Operations</h2>
 
