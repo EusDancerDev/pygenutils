@@ -22,23 +22,23 @@ import time
 #-----------------------#
 
 from pyutils.arrays_and_lists import conversions, data_manipulation, patterns
-from pyutils.utilities.file_operations import file_and_directory_handler, file_and_directory_paths
+from pyutils.utilities.file_operations import ops_handler, path_utils
 from pyutils.strings.string_handler import find_substring_index
 
 # Create aliases #
 #----------------#
 
-basic_value_data_type_converter = conversions.basic_value_data_type_converter
+convert_data_type = conversions.convert_data_type
 flatten_to_string = conversions.flatten_to_string
 
 remove_elements = data_manipulation.remove_elements
 select_elements = patterns.select_elementss
 
-copy_files = file_and_directory_handler.copy_files
-remove_files_by_globstr = file_and_directory_handler.remove_files_by_globstr
-rename_objects = file_and_directory_handler.rename_objects
+copy_files = ops_handler.copy_files
+remove_files = ops_handler.remove_files
+rename_objects = ops_handler.rename_objects
 
-find_files_by_globstr = file_and_directory_paths.find_files_by_globstr
+find_dirs_with_files = path_utils.find_dirs_with_files
 
 #----------------------#
 # Parametroak definitu #
@@ -108,39 +108,36 @@ print("Direktorio honetako fitxategiak batzuk izan ezik ezabatzen...")
 file_list_cwd = os.listdir()
 
 # Zerrendatik programa batzuk ezabatu #
-delFileObj = find_substring_index(file_list_cwd, kw_del_list)
+del_file_obj = find_substring_index(file_list_cwd, kw_del_list)
 
-if isinstance(delFileObj, dict):
-    del_file_idx = [key 
-                  for key in delFileObj
-                  if len(delFileObj[key]) > 0]
-    
-elif isinstance(delFileObj, list):
-    del_file_idx = delFileObj.copy()
-    
+if isinstance(del_file_obj, dict):
+    del_file_idx = [key for key in del_file_obj if len(del_file_obj[key]) > 0]
+elif isinstance(del_file_obj, list):
+    del_file_idx = del_file_obj.copy()
 else:
-    del_file_idx = delFileObj
+    del_file_idx = del_file_obj
 
 
 files2delete = remove_elements(file_list_cwd, del_file_idx)
-files2delete = basic_value_data_type_converter(files2delete, 'U', 'O', 
-                                               convert_to_list=True)
+files2delete = convert_data_type(files2delete, 'U', 'O', convert_to_list=True)
 
 # Ezabatu zerrenda erresultantean ageri diren artxiboak #
-remove_files_by_globstr(files2delete, ".")
+remove_files(files2delete, ".", match_type="glob")
 
 # Bilatu euskaraz izendatutako artxiboak #
 #----------------------------------------#
 
 print("Jatorrizko programak bilatzen...")
-path_list_orig = find_files_by_globstr(file_list_orig, docpath)
+dir_list_orig = find_dirs_with_files(file_list_orig, search_path=docpath, match_type="glob")
 
 # Kopiatu bilatutako artxiboak direktorio hona #
 #----------------------------------------------#
 
 print("Bilatutako programak direktorio honetara bertara kopiatzen...")
-
-copy_files(path_list_orig, ".")
+copy_files(file_list_orig, 
+           input_directories=dir_list_orig, 
+           destination_directories=".", 
+           match_type="glob")
 
 # Kopiatutako artxiboak berrizendatu #
 #------------------------------------#
