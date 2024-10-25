@@ -118,7 +118,7 @@ class User(Base):
 def create_sql_database_base(config):
     
     """
-    Create an SQL database and initialize the connection session,
+    Create an SQL database and initialise the connection session,
     according to the base class.
 
     Parameters
@@ -150,7 +150,7 @@ def create_sql_database_base(config):
 def create_sql_database(config, db_name):
     
     """
-    Create an SQL database and initialize the connection session.
+    Create an SQL database and initialise the connection session.
 
     Parameters
     ----------
@@ -218,7 +218,7 @@ def load_file_to_sql(input_file_list,
     parser_engine : str or None
         Parser engine for reading the files. Default is None.
     decimal : str
-        Character to recognize as decimal point (default is ".").
+        Character to recognise as decimal point (default is ".").
     dtype_dict : dict or list of dict or None
         Data type definitions for columns. Default is None.
 
@@ -255,7 +255,7 @@ def load_file_to_sql(input_file_list,
     parser_engine : str or None, optional
         Parser engine for reading the files. Default is None.
     decimal : str, optional
-        Character to recognize as decimal point (default is ".").
+        Character to recognise as decimal point (default is ".").
     dtype_dict : dict or None, optional
         Data type definitions for columns. Ddefault is None.
         

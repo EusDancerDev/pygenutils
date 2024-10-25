@@ -156,7 +156,7 @@ available_resolutions = ["0.1", "0.25"]
 resolution_std = return_grid_resolution(resolution)
 
 #--------------------#
-# Initialize program #
+# Initialise program #
 #--------------------#
 
 program_exec_timer('start')

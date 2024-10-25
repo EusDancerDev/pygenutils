@@ -607,7 +607,7 @@ def merge_datetime_dataframes(df1, df2,
     if isinstance(df2, pd.Series):
         df2 = df2.to_frame(name=df2.name if df2.name else "Date")
         
-    # If objects are DataFrames, ensure first datetime column name is standardized #
+    # If objects are DataFrames, ensure first datetime column name is standardised #
     std_date_colname = "Date"
     
     # First object

@@ -376,7 +376,7 @@ available_extensions = ["zip", "tar.gz"]
 
 
 #--------------------#
-# Initialize program #
+# Initialise program #
 #--------------------#
 
 program_exec_timer('start')

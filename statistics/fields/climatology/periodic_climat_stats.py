@@ -22,7 +22,7 @@ Notes
 - It works with standard data structures used in climatology, including both Pandas 
   and xarray, making it adaptable for various data sources (e.g., observations, 
   reanalysis, or climate model outputs).
-- The function is optimized for efficiency with large datasets and supports 
+- The function is optimised for efficiency with large datasets and supports 
   both absolute and relative time-based statistics.
 """
 

@@ -323,7 +323,7 @@ def _return_search_obj_spec(string, substring, re_obj_str,
     Notes
     -----
     This is a helper function used by `_advanced_pattern_searcher`
-    to finalize the search and process the results.
+    to finalise the search and process the results.
     """
     
     # Create the match object using the provided regex search function

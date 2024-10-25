@@ -299,7 +299,7 @@ def autocorrelate(x, twosided=False):
     Returns
     -------
     numpy.ndarray
-        The normalized autocorrelation values. If `twosided` is False, 
+        The normalised autocorrelation values. If `twosided` is False, 
         returns only the non-negative lags.
 
     Notes
@@ -322,7 +322,7 @@ def autocorrelate(x, twosided=False):
     else:
         x_autocorr = correlate(x_demean, x_demean)
     
-    # Normalize the autocorrelation values
+    # Normalise the autocorrelation values
     x_autocorr /= np.max(x_autocorr)
     
     # Return two-sided or one-sided autocorrelation

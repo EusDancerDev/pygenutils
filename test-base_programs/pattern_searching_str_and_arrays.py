@@ -61,10 +61,10 @@ output_info_str_2 = """String: '{}' || Pattern: '{}' || Index: {}"""
 #-#-#-#-#-#-#-#-#
 
 # Apply the function to each element of the array #
-arg_list_vectorize_1 = [strings, pattern]
+arg_list_vectorise_1 = [strings, pattern]
 
 # indices = np.vectorize(find_pattern)(strings, pattern)
-indices = np.vectorize(find_pattern)(*arg_list_vectorize_1)
+indices = np.vectorize(find_pattern)(*arg_list_vectorise_1)
 
 # Print the case study information #
 arg_list_out_info_1 = ["First", strings, pattern]
@@ -78,10 +78,10 @@ print(output_info_str_1.format(*arg_list_search_1))
 #%% SECOND MINOR CASE
 
 # Apply the function to each pair of elements in the arrays
-arg_list_vectorize_2 = [strings, pattern_array]
+arg_list_vectorise_2 = [strings, pattern_array]
 
 # indices = np.vectorize(find_pattern)(strings, pattern_array)
-indices = np.vectorize(find_pattern)(*arg_list_vectorize_2)
+indices = np.vectorize(find_pattern)(*arg_list_vectorise_2)
 
 # Print the case study information #
 arg_list_out_info_2 = ["Second", strings, pattern_array]

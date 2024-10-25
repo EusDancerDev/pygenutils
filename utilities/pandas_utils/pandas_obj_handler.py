@@ -143,7 +143,7 @@ def excel_handler(file_path,
         Engine to use for reading Excel files. If None, defaults to the 
         appropriate engine for the file type.
     decimal : str, default '.'
-        Character to recognize as decimal point (e.g., ',' in Europe).
+        Character to recognise as decimal point (e.g., ',' in Europe).
     return_obj_type : str, default 'dict'
         Type of output to return. Must be either 'dict' to return a dictionary
         of DataFrames, or 'df' to return a single merged DataFrame.
@@ -363,7 +363,7 @@ def merge_excel_files(input_file_list,
     engine : str or sqlalchemy.engine.base.Engine, optional
         SQLAlchemy engine or connection string for connecting to database files.
     decimal : str, default '.'
-        Character recognized as decimal separator.
+        Character recognised as decimal separator.
     save_index : bool, default False
         Whether to include a column in the output Excel file that identifies row numbers.
     save_header : bool, default False
@@ -501,7 +501,7 @@ def save2csv(file_path,
     save_header : bool, default False
         Whether to include a row in the CSV file that identifies column names.
     decimal : str, default '.'
-        Character recognized as the decimal separator.
+        Character recognised as the decimal separator.
     date_format : str, optional
         Format string for datetime columns.
 
@@ -692,7 +692,7 @@ def csv2df(file_path,
         string name or column index. If a sequence of int / str is given, a
         MultiIndex is used.
     decimal : str, default '.'
-        Character to recognize as decimal point for parsing string columns to numeric.
+        Character to recognise as decimal point for parsing string columns to numeric.
         Note that this parameter is only necessary for columns stored as TEXT in Excel,
         any numeric columns will automatically be parsed, regardless of display
         format (e.g. use ',' for European data).      
@@ -805,7 +805,7 @@ def merge_csv_files(input_file_list,
         string name or column index. If a sequence of int / str is given, a
         MultiIndex is used.
     decimal : str
-        Character to recognize as decimal point (e.g. use ',' 
+        Character to recognise as decimal point (e.g. use ',' 
         for European data). Default value is ',' (comma).    
     save_index : bool, optional
         Whether to include the DataFrame index as a column in the Excel sheet. Default is False.
@@ -1036,7 +1036,7 @@ def ods_handler(file_path,
     header : int, list of int, default None
         Row (0-indexed) to use for the column labels of the parsed DataFrame.
     decimal : str, default '.'
-        Character to recognize as decimal point (e.g., ',' in Europe).
+        Character to recognise as decimal point (e.g., ',' in Europe).
     return_type : str, default 'dict'
         Type of output to return. Must be either 'dict' to return a dictionary
         of DataFrames, or 'df' to return a single merged DataFrame.

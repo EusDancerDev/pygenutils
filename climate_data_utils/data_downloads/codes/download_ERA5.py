@@ -145,7 +145,7 @@ available_formats = ["netcdf", "grib", "netcdf_zip"]
 available_extensions = climate_file_extensions[:-1]
 
 #--------------------#
-# Initialize program #
+# Initialise program #
 #--------------------#
 
 program_exec_timer('start')
@@ -159,7 +159,7 @@ ds_input_data_dir = f"{main_input_data_dir}/{dataset}"
 make_directories(ds_input_data_dir)
 
 """
-The standardized hierarchy for the loops
+The standardised hierarchy for the loops
 in the case of this data set is as follows:
 
     -1. Country and the selected area

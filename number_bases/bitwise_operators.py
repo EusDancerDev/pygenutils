@@ -4,7 +4,7 @@
 """
 This module provides functions to perform bitwise logical operations
 and shift operations. The results are provided in both binary and decimal
-formats. Each function utilizes custom converters to switch between 
+formats. Each function utilises custom converters to switch between 
 binary and decimal systems.
 
 Functions

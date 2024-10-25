@@ -118,7 +118,7 @@ for audio_file in files2transcribe_list:
     with open(audio_file, "rb") as audio:
         
         # Transcribe the audio file #
-        response = speech_to_text.recognize(audio=audio,
+        response = speech_to_text.recognise(audio=audio,
                                             content_type=f"audio/{file2transcript_ext}")
         
     # Save or print transcription as chosen #

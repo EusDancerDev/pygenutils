@@ -54,7 +54,7 @@ def calculate_HDY(hourly_df: pd.DataFrame,
     -------
     tuple: HDY DataFrame and the list of selected years for each month.
     """
-    # Initialize the HDY DataFrame to store results
+    # Initialise the HDY DataFrame to store results
     hdy_df = pd.DataFrame(columns=varlist)
 
     # Extract unique years and months

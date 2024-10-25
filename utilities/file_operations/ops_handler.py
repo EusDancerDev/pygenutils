@@ -238,7 +238,7 @@ def rsync(source_paths,
           delete_at_destination=True,
           source_allfiles_only=False):
     """
-    Synchronizes directories using the rsync command with various options.
+    Synchronises directories using the rsync command with various options.
     
     Parameters
     ----------

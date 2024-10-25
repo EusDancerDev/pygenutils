@@ -10,12 +10,12 @@
 
 def to_json(python_object):
     """
-    Serialize a Python object to a JSON-compatible dictionary.
+    Serialise a Python object to a JSON-compatible dictionary.
 
     Parameters
     ----------
     python_object : object
-        The Python object to serialize. 
+        The Python object to serialise. 
         Only bytes are supported; other types will raise a TypeError.
 
     Returns
@@ -31,17 +31,17 @@ def to_json(python_object):
     if isinstance(python_object, bytes):
         json_dict = {'__class__': 'bytes', '__value__': list(python_object)}
         return json_dict
-    raise TypeError(f"{repr(python_object)} non serializable")
+    raise TypeError(f"{repr(python_object)} non serialisable")
     
 
 def from_json(json_object):
     """
-    Deserialize a JSON-compatible dictionary back to a Python object.
+    Deserialise a JSON-compatible dictionary back to a Python object.
 
     Parameters
     ----------
     json_object : dict
-        The JSON-compatible dictionary to deserialize.
+        The JSON-compatible dictionary to deserialise.
         Expected to have a class identifier for supported types.
 
     Returns
