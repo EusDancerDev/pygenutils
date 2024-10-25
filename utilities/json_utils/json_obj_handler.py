@@ -26,7 +26,7 @@ from pyutils.strings.string_handler import ext_adder, get_obj_specs
 # Dictionaries #
 #-#-#-#-#-#-#-#-
 
-def serialize_dict_to_json(dictionary, 
+def serialise_dict_to_json(dictionary, 
                            out_file_path=None,
                            indent=4,
                            ensure_ascii=False,
@@ -81,7 +81,7 @@ def serialize_dict_to_json(dictionary,
     out_file_parent = get_obj_specs(out_file_path, obj_spec_key="parent")
     out_file_no_rel_path = get_obj_specs(out_file_path, obj_spec_key="name")
 
-    # Serialize dictionary to JSON formatted string
+    # Serialise dictionary to JSON formatted string
     json_str = json.dumps(dictionary, **kwargs)
 
     if out_file_path is not None:
@@ -121,7 +121,7 @@ def serialize_dict_to_json(dictionary,
         return json_str
 
 
-def serialize_json_to_dict(in_file_path):
+def serialise_json_to_dict(in_file_path):
     """
     Convert a JSON file or a JSON-formatted string to a dictionary.
 
@@ -165,7 +165,7 @@ def serialize_json_to_dict(in_file_path):
 # Pandas Dataframes #
 #-#-#-#-#-#-#-#-#-#-#
 
-def serialize_json_to_df(json_obj_list,
+def serialise_json_to_df(json_obj_list,
                          encoding="utf-8",
                          orient=None, 
                          typ='frame', 
@@ -288,7 +288,7 @@ def serialize_json_to_df(json_obj_list,
     if isinstance(json_obj_list, str):
         json_obj_list = [json_obj_list]
     
-    # Initialize an empty DataFrame #
+    # Initialise an empty DataFrame #
     df = pd.DataFrame()
     
     # Iterate over the list of JSON objects or file paths #
@@ -332,7 +332,7 @@ def serialize_json_to_df(json_obj_list,
     
     return df
 
-def serialize_df_to_json(df, 
+def serialise_df_to_json(df, 
                          out_path=None,
                          orient=None,
                          force_ascii=True,
