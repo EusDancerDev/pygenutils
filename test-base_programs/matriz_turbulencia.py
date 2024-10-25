@@ -55,7 +55,7 @@ def df_to_structured_array(df):
     data = np.array(records, dtype=records.dtype.descr)
     return data
    
-def customize_excel_file_merger(results_dir, merged_file_name, excel_files):
+def customise_excel_file_merger(results_dir, merged_file_name, excel_files):
     merged_file_path = f"{results_dir}/{merged_file_name}"
     modTimes = get_obj_operation_datetime(excel_files,
                                           attr="modification", 
@@ -70,7 +70,7 @@ def customize_excel_file_merger(results_dir, merged_file_name, excel_files):
                       save_merged_file=True)
      
      
-def df_summarizer(df, df_cols, operator):
+def df_summariser(df, df_cols, operator):
     # Validate operator
     valid_operators = ["sum", "mean", "std", "min", "max"]  # Add more as needed
     if operator not in valid_operators:
@@ -79,8 +79,8 @@ def df_summarizer(df, df_cols, operator):
     
     # Dynamically apply the operator using getattr and apply
     groupby_obj = df.groupby(df_cols)
-    summarizer_func = getattr(groupby_obj, operator)
-    data_count = summarizer_func()
+    summariser_func = getattr(groupby_obj, operator)
+    data_count = summariser_func()
     
     return data_count
  
@@ -846,17 +846,17 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     
     ws_byBins_sigma_arr = ws_byBins_sigma_df.values
       
-    # Summarize the data #  
+    # Summarise the data #  
     #--------------------#
     
     ws_byBins_sigma_df.columns = ws_byBins_Sigma_df_cols
     
     # Count the number of available data for each parameter bin (N) and compute its mean #
-    df_validDataMean =  df_summarizer(ws_byBins_sigma_df,
+    df_validDataMean =  df_summariser(ws_byBins_sigma_df,
                                       ws_byBins_Sigma_df_cols[:-1],
                                       "mean")
     
-    df_intervalNumValidData = df_summarizer(ws_byBins_sigma_df,
+    df_intervalNumValidData = df_summariser(ws_byBins_sigma_df,
                                             ws_byBins_Sigma_df_cols[:-1],
                                             "count")
     
@@ -873,7 +873,7 @@ if not merge_all_sigma_filled_files or not merge_all_IT_files:
     # Define data frames easier to handle and understand #
     #----------------------------------------------------#
     
-    # Reset the indices of the summarized data frame for easier handling #
+    # Reset the indices of the summarised data frame for easier handling #
     sigmaToFilldf = sigmaToFill_MI_df.reset_index()
     
     """Indexing pandas's intervals slows the execution down,
@@ -1438,7 +1438,7 @@ else:
         merged_file_name = f"{sigma_filled_file_string}_allCases"
         excel_files = glob.glob(f"{results_dir}/{sigma_filled_file_string}-*.{extensions[1]}")  
         
-        customize_excel_file_merger(results_dir, merged_file_name, excel_files)
+        customise_excel_file_merger(results_dir, merged_file_name, excel_files)
 
     if merge_all_IT_files:
         
@@ -1447,7 +1447,7 @@ else:
         merged_file_name = f"{IT_file_string}_allCases"        
         excel_files = glob.glob(f"{results_dir}/{IT_file_string}-*.{extensions[1]}")
         
-        customize_excel_file_merger(results_dir, merged_file_name, excel_files)
+        customise_excel_file_merger(results_dir, merged_file_name, excel_files)
     
 #%%
 
