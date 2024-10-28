@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.format_converters.file_format_tweaker import eml2pdf
+from pyutils.utilities.format_converters.pdf_tools import eml_to_pdf
 
 #-------------------#
 # Define parameters #
@@ -18,4 +18,4 @@ delete_eml_files = False
 # Convert every email message #
 #-----------------------------#
 
-eml2pdf(path, delete_eml_files)
+eml_to_pdf(path, delete_eml_files)

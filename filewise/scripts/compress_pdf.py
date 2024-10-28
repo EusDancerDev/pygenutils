@@ -4,8 +4,8 @@
 """
 **Note**
 
-This program is an application of the main module 'file_format_tweaker',
-and it uses the 'pdf_file_compressor' attributes and/or functions.
+This program is an application of the main module 'pdf_tools',
+and it uses the 'file_compressor' attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 
@@ -17,7 +17,7 @@ following cells, instead of running the whole program.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.format_converters.file_format_tweaker import pdf_file_compressor
+from pyutils.utilities.format_converters.pdf_tools import file_compressor
 
 #-------------------#
 # Define parameters #
@@ -32,7 +32,7 @@ out_path_str = "/home/jonander/Documents/tweaked.pdf"
 
 # For readability purposes, place the method here,
 # alongside with the case usage parameters 
-pdf_file_compressor(in_path_str, out_path_str)
+file_compressor(in_path_str, out_path_str)
 
 #%%
 # 2nd case usage #
@@ -50,4 +50,4 @@ out_path_list = ["/home/jonander/Documents/compressed_sample1.pdf",
 
 # For readability purposes, place the method here,
 # alongside with the case usage parameters 
-pdf_file_compressor(in_path_list, out_path_list)
+file_compressor(in_path_list, out_path_list)

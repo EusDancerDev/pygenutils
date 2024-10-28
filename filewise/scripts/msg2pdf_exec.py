@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.format_converters.file_format_tweaker import msg2pdf
+from pyutils.utilities.format_converters.pdf_tools import msg_to_pdf
 
 #-------------------#
 # Define parameters #
@@ -20,4 +20,4 @@ delete_eml_files = False
 # Convert every Microsoft Outlook message  #
 #------------------------------------------#
 
-msg2pdf(path, delete_msg_files, delete_eml_files)
+msg_to_pdf(path, delete_msg_files, delete_eml_files)
