@@ -132,12 +132,12 @@ def detect_subarray_in_array(obj, test_obj,
     """
     
     # Input validation and reconversion of 'obj' object if necessary #
-    all_arg_names = get_caller_method_args()
-    adapt_method_opt_pos = find_substring_index(all_arg_names, "preferent_adapt_method")
+    param_keys = get_caller_method_args()
+    adapt_method_opt_pos = find_substring_index(param_keys, "preferent_adapt_method")
     
     if preferent_adapt_method not in modules_adaptation:
         raise ValueError("Invalid module for input object adaptations. "
-                         f"(argument '{all_arg_names[adapt_method_opt_pos]}'.\n"
+                         f"(argument '{param_keys[adapt_method_opt_pos]}'.\n"
                          f"Options are {modules_adaptation}.")
     else:
         obj = obj_conversion_opt_dict.get(preferent_adapt_method)(obj)

@@ -95,8 +95,8 @@ def get_method_all_args(method):
     def example_method(arg1, arg2, kwarg1=None):
         pass
     
-    all_arg_names = get_method_all_args(example_method)
-    print(all_arg_names)  # Output: ['arg1', 'arg2', 'kwarg1']
+    param_keys = get_method_all_args(example_method)
+    print(param_keys)  # Output: ['arg1', 'arg2', 'kwarg1']
     """
     sig = inspect.signature(method)
     all_arg_list = [param.name for param in sig.parameters.values()]
@@ -175,8 +175,8 @@ def get_caller_method_all_args():
     Example
     -------
     def example_method(arg1, arg2, kwarg1=None):
-        all_arg_names = get_caller_method_all_args()
-        print(all_arg_names)  # Output: {'arg1': 1, 'arg2': 2, 'kwarg1': None}
+        param_keys = get_caller_method_all_args()
+        print(param_keys)  # Output: {'arg1': 1, 'arg2': 2, 'kwarg1': None}
     """
     current_frame = inspect.currentframe()
     caller_frame = current_frame.f_back  # Go back one frame to get the caller's frame

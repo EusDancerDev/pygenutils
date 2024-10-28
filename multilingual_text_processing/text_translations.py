@@ -47,12 +47,12 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
     # Proper argument selection control #
     #-----------------------------------#
     
-    all_arg_names = get_caller_method_args()
-    meth_list_arg_pos = find_substring_index(all_arg_names, "action_list")
+    param_keys = get_caller_method_args()
+    meth_list_arg_pos = find_substring_index(param_keys, "action_list")
     
     if action not in action_list:
         raise ValueError("Invalid processing action "
-                         f"(argument '{all_arg_names[meth_list_arg_pos]}').\n"
+                         f"(argument '{param_keys[meth_list_arg_pos]}').\n"
                          f"Options are {action_list}.")
         
     

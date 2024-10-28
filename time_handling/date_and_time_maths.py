@@ -60,11 +60,11 @@ def _validate_option(arg_iterable, error_class, error_str):
         It is preferred to raise this error rather than another ValueError
         to avoid confusion with the above case.
     """
-    all_arg_names = get_caller_method_args()
-    err_clas_arg_pos = find_substring_index(all_arg_names, "error_class")
+    param_keys = get_caller_method_args()
+    err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
     if error_class not in error_class_list :
-        raise KeyError(f"Unsupported error class '{all_arg_names[err_clas_arg_pos]}'. "
+        raise KeyError(f"Unsupported error class '{param_keys[err_clas_arg_pos]}'. "
                        f"Choose one from {error_class_list}.")
     
     option = arg_iterable[0]
@@ -125,15 +125,15 @@ def sum_dt_times(dt_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    all_arg_names = get_caller_method_args()
-    obj_list_pos = all_arg_names.index("dt_obj_list")
+    param_keys = get_caller_method_args()
+    obj_list_pos = param_keys.index("dt_obj_list")
     
     if isinstance(dt_obj_list, str):
-        raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
+        raise TypeError(f"Argument '{param_keys[obj_list_pos]}' "
                         f"(number {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
-        raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
+        raise ValueError(f"Argument '{param_keys[obj_list_pos]}' "
                          "must contain at least two objects.")
     
     # Operation argument control #        
@@ -248,15 +248,15 @@ def dt_time_average(dt_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    all_arg_names = get_caller_method_args()
+    param_keys = get_caller_method_args()
     obj_list_pos = find_substring_index("dt_obj_list")
     
     if isinstance(dt_obj_list, str):
-        raise TypeError(f"Argument '{all_arg_names[obj_list_pos]}' "
+        raise TypeError(f"Argument '{param_keys[obj_list_pos]}' "
                         f"(number {obj_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
-        raise ValueError(f"Argument '{all_arg_names[obj_list_pos]}' "
+        raise ValueError(f"Argument '{param_keys[obj_list_pos]}' "
                          "must contain at least two objects.")
         
     # Output format parameter control #
@@ -437,11 +437,11 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
     ##############################
     
     # Date and/or time list format control and its length #
-    all_arg_names = get_caller_method_args()
-    date_list_pos = find_substring_index(all_arg_names, "date_list")
+    param_keys = get_caller_method_args()
+    date_list_pos = find_substring_index(param_keys, "date_list")
     
     if isinstance(date_list, str):
-        raise TypeError(f"Argument '{all_arg_names[date_list_pos]}' "
+        raise TypeError(f"Argument '{param_keys[date_list_pos]}' "
                         f"(number {date_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(date_list, (list, tuple, np.ndarray)) and len(date_list) < 2):
@@ -622,10 +622,10 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
     
     # Date-only return option #
-    all_arg_names = get_caller_method_args()
-    return_date_arg_pos = find_substring_index(all_arg_names, "return_date_only")
+    param_keys = get_caller_method_args()
+    return_date_arg_pos = find_substring_index(param_keys, "return_date_only")
     if not isinstance(return_date_only, bool):
-        raise TypeError(f"Parameter '{all_arg_names[return_date_arg_pos]}' "
+        raise TypeError(f"Parameter '{param_keys[return_date_arg_pos]}' "
                         "must be a boolean.")
     
 

@@ -109,8 +109,8 @@ def climat_periodic_statistics(obj,
     # Input validation #   
     #----------------------#
     
-    all_arg_names = get_caller_method_args()
-    seas_months_arg_pos = find_substring_index(all_arg_names, "season_months")
+    param_keys = get_caller_method_args()
+    seas_months_arg_pos = find_substring_index(param_keys, "season_months")
     
     seas_mon_arg_type = get_obj_type_str(season_months)
     
@@ -229,7 +229,7 @@ def climat_periodic_statistics(obj,
             
             if seas_mon_arg_type != "list":
                 raise TypeError("Expected a list for parameter "
-                                f"'{all_arg_names[seas_months_arg_pos]}', "
+                                f"'{param_keys[seas_months_arg_pos]}', "
                                 f"got '{seas_mon_arg_type}'.")
             
             if (season_months and len(season_months) != 3):
@@ -281,7 +281,7 @@ def climat_periodic_statistics(obj,
         elif time_freq == "seasonal":
             if seas_mon_arg_type != "list":
                 raise TypeError("Expected a list for parameter "
-                                f"'{all_arg_names[seas_months_arg_pos]}', "
+                                f"'{param_keys[seas_months_arg_pos]}', "
                                 f"got '{seas_mon_arg_type}'.")
                 
             if (season_months and len(season_months) != 3):

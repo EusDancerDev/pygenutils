@@ -72,8 +72,8 @@ def merge_audio_and_video_files(audio_file_list_or_file,
     #-#-#-#-#-#-#-#-#-#-
     
     # Get all arguments #
-    all_arg_names = get_caller_method_args()
-    zero_pad_pos = all_arg_names.index("zero_padding")
+    param_keys = get_caller_method_args()
+    zero_pad_pos = param_keys.index("zero_padding")
 
     # Helper function to load file list from external file if necessary
     def load_file_list(file_or_list):

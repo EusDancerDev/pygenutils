@@ -852,13 +852,13 @@ def merge_csv_files(input_file_list,
     #-----------------------------------#
     
     # Data merging #
-    all_arg_names = get_caller_method_args()
-    kdis_arg_pos = find_substring_index(all_arg_names, "keep_data_in_sections")
-    osd_arg_pos = find_substring_index(all_arg_names, "out_single_DataFrame")
+    param_keys = get_caller_method_args()
+    kdis_arg_pos = find_substring_index(param_keys, "keep_data_in_sections")
+    osd_arg_pos = find_substring_index(param_keys, "out_single_DataFrame")
     
     if out_single_DataFrame and keep_data_in_sections:
-        raise ValueError(f"Arguments '{all_arg_names[kdis_arg_pos]}' and "
-                         f"'{all_arg_names[osd_arg_pos]}' cannot be True at the same time. "
+        raise ValueError(f"Arguments '{param_keys[kdis_arg_pos]}' and "
+                         f"'{param_keys[osd_arg_pos]}' cannot be True at the same time. "
                          "Set one of them True and False the other one.")
     
     # Correct number of input files #

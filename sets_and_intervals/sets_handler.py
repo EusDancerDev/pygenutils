@@ -47,9 +47,9 @@ def sets_operator(array_of_sets1,
     # Argument validations #
     #-#-#-#-#-#-#-#-#-#-#-#-
 
-    all_arg_names = get_caller_method_args()
-    constructor_arg_pos = find_substring_index(all_arg_names, "constructor")
-    operator_arg_pos = find_substring_index(all_arg_names, "operator")
+    param_keys = get_caller_method_args()
+    constructor_arg_pos = find_substring_index(param_keys, "constructor")
+    operator_arg_pos = find_substring_index(param_keys, "operator")
     
     if operator not in sets_operation_list:
         raise ValueError(f"Invalid operator for mathematical sets (option {operator_arg_pos}). "

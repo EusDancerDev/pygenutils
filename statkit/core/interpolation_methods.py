@@ -124,9 +124,9 @@ def interp_np(data, method='linear', order=None, kind="nearest", fill_value="ext
     #####################
     
     # General, arguments #
-    all_arg_names = get_caller_method_args()
-    kind_arg_pos = all_arg_names.index("kind")
-    fillval_arg_pos = all_arg_names.index("fill_value")
+    param_keys = get_caller_method_args()
+    kind_arg_pos = param_keys.index("kind")
+    fillval_arg_pos = param_keys.index("fill_value")
     
     # Input data type #
     obj_type = get_obj_type_str(data)

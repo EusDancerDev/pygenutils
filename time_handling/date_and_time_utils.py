@@ -68,11 +68,11 @@ def _validate_option(arg_iterable, error_class, error_str):
         It is preferred to raise this error rather than another ValueError
         to avoid confusion with the above case.
     """
-    all_arg_names = get_caller_method_args()
-    err_clas_arg_pos = find_substring_index(all_arg_names, "error_class")
+    param_keys = get_caller_method_args()
+    err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
     if error_class not in error_class_list :
-        raise KeyError(f"Unsupported error class '{all_arg_names[err_clas_arg_pos]}'. "
+        raise KeyError(f"Unsupported error class '{param_keys[err_clas_arg_pos]}'. "
                        f"Choose one from {error_class_list}.")
     
     option = arg_iterable[0]
@@ -128,12 +128,12 @@ def get_current_datetime(dtype, time_fmt_str=None):
     current_time = current_datetime_dict.get(dtype)
     
     # A string does not have .strftime attribute, warn accordingly #
-    all_arg_names = get_caller_method_args()
-    fmt_str_arg_pos = find_substring_index(all_arg_names, "time_fmt_str")
+    param_keys = get_caller_method_args()
+    fmt_str_arg_pos = find_substring_index(param_keys, "time_fmt_str")
     if (isinstance(current_time, str) and time_fmt_str is not None):
         raise ValueError("Current time is already a string. "
                          f"Choose another data type or "
-                         f"set '{all_arg_names[fmt_str_arg_pos]}' to None.")
+                         f"set '{param_keys[fmt_str_arg_pos]}' to None.")
     
     # Format the object based on 'time_fmt_str' variable, if provided #
     if time_fmt_str is not None:
@@ -597,9 +597,9 @@ def merge_datetime_dataframes(df1, df2,
     #-#-#-#-#-#-#-#-#-#-#
     
     # Get the main argument names and their position on the function's arg list #    
-    all_arg_names = get_caller_method_args()
-    df1_arg_pos = find_substring_index(all_arg_names, "df1")
-    df2_arg_pos = find_substring_index(all_arg_names, "df2")
+    param_keys = get_caller_method_args()
+    df1_arg_pos = find_substring_index(param_keys, "df1")
+    df2_arg_pos = find_substring_index(param_keys, "df2")
     
     # Convert Series to DataFrame if necessary and standardize the column name #
     if isinstance(df1, pd.Series):
@@ -614,7 +614,7 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_time_key(df1)
     except Exception as err:
-        arg_tuple_df1 = (err, all_arg_names[df1_arg_pos])
+        arg_tuple_df1 = (err, param_keys[df1_arg_pos])
         print_format_string(date_colname_not_found_warning, arg_tuple_df1)
         
         df1_cols = list(df1.columns)
@@ -625,7 +625,7 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_time_key(df2)
     except Exception as err:
-        arg_tuple_df2 = (err, all_arg_names[df2_arg_pos])
+        arg_tuple_df2 = (err, param_keys[df2_arg_pos])
         print_format_string(date_colname_not_found_warning, arg_tuple_df2)
         
         df2_cols = list(df2.columns)

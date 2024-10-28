@@ -72,9 +72,9 @@ def modify_obj_permissions(path, extensions2skip="", attr_id=-1):
     """
     # Validate attr_id
     if not isinstance(attr_id, int):
-        all_arg_names = get_caller_method_args()
-        attr_id_arg_pos = all_arg_names.index("attr_id")
-        raise TypeError(f"'{all_arg_names[attr_id_arg_pos]}' "
+        param_keys = get_caller_method_args()
+        attr_id_arg_pos = param_keys.index("attr_id")
+        raise TypeError(f"'{param_keys[attr_id_arg_pos]}' "
                         f"(position {attr_id_arg_pos}) must be an integer, "
                         f"got '{type(attr_id)}' instead.")
     
@@ -159,19 +159,19 @@ def modify_obj_owner(path, module="shutil", extensions2skip="", new_owner=-1, ne
     # Input validations #
     #####################
 
-    all_arg_names = get_caller_method_args()    
+    param_keys = get_caller_method_args()    
     
     # New owner #
     if not (isinstance(new_owner, (int, str)) or new_owner == -1):
-        new_owner_arg_pos = find_substring_index(all_arg_names, "new_owner")
-        raise TypeError(f"'{all_arg_names[new_owner_arg_pos]}' "
+        new_owner_arg_pos = find_substring_index(param_keys, "new_owner")
+        raise TypeError(f"'{param_keys[new_owner_arg_pos]}' "
                         f"(position {new_owner_arg_pos}) must be an integer or string, "
                         f"got '{type(new_owner)}' instead.")
         
     # New group
     if not (isinstance(new_group, (int, str)) or new_group == -1):
-        new_grp_arg_pos = find_substring_index(all_arg_names, "new_group")
-        raise TypeError(f"{all_arg_names[new_grp_arg_pos]} "
+        new_grp_arg_pos = find_substring_index(param_keys, "new_group")
+        raise TypeError(f"{param_keys[new_grp_arg_pos]} "
                         f"(position {new_grp_arg_pos}) must be an integer or string, "
                         f"got '{type(new_group)}' instead.")
     

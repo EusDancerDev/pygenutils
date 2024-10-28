@@ -147,11 +147,11 @@ def snippet_exec_timer(snippet_str,
                        return_best_time=False):
         
     # Roundoff validation #
-    all_arg_names = get_caller_method_args()
-    roundoff_arg_pos = find_substring_index(all_arg_names, "roundoff")
+    param_keys = get_caller_method_args()
+    roundoff_arg_pos = find_substring_index(param_keys, "roundoff")
     
     if not isinstance(roundoff, int):
-        raise TypeError(format_string(type_error_str, f'{all_arg_names[roundoff_arg_pos]}'))
+        raise TypeError(format_string(type_error_str, f'{param_keys[roundoff_arg_pos]}'))
     
     # Set keyword argument dictionary for float time parsing #
     float_time_parsing_kwargs =  dict(

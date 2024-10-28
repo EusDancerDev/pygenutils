@@ -84,21 +84,21 @@ def find_substring_index(string,
     # Argument validation #
     #---------------------#
     
-    all_arg_names = get_caller_method_args()
-    match_index_pos = all_arg_names.index("return_match_index")
-    match_index_str_pos = all_arg_names.index("return_match_str")
+    param_keys = get_caller_method_args()
+    match_index_pos = param_keys.index("return_match_index")
+    match_index_str_pos = param_keys.index("return_match_str")
     
     if return_match_index and return_match_str:
-        raise ValueError(f"Arguments '{all_arg_names[match_index_pos]}' "
-                         f"and '{all_arg_names[match_index_str_pos]}' "
+        raise ValueError(f"Arguments '{param_keys[match_index_pos]}' "
+                         f"and '{param_keys[match_index_str_pos]}' "
                          "cannot both be True.")
         
     if return_match_index and not (return_match_index in match_obj_index_option_keys):
-        raise ValueError(f"Invalid '{all_arg_names[match_index_pos]}' value. "
+        raise ValueError(f"Invalid '{param_keys[match_index_pos]}' value. "
                          f"Choose from {match_obj_index_option_keys}.")
         
     if not (isinstance(return_match_str, bool)):
-        raise ValueError("Argument '{all_arg_names[match_index_str_pos]}' "
+        raise ValueError("Argument '{param_keys[match_index_str_pos]}' "
                          "must be a boolean.")
     
     # Case studies #
@@ -452,11 +452,11 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
     """
     
     # Ensure the provided obj_spec_key is valid #
-    all_arg_names = get_caller_method_args()
-    osk_arg_pos = find_substring_index(all_arg_names, "obj_spec_key")
+    param_keys = get_caller_method_args()
+    osk_arg_pos = find_substring_index(param_keys, "obj_spec_key")
     
     if obj_spec_key not in obj_specs_keylist:
-        raise ValueError(f"Invalid '{all_arg_names[osk_arg_pos]}' key. "
+        raise ValueError(f"Invalid '{param_keys[osk_arg_pos]}' key. "
                          f"Choose from {obj_specs_keylist}.")
         
     # If obj_path is not already a dictionary, get the path specifications
@@ -509,10 +509,10 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
     """
      
     # Argument validation and control #
-    all_arg_names = get_caller_method_args()
-    obj2ch_arg_pos = find_substring_index(all_arg_names, "obj2modify")
-    new_obj_arg_pos = find_substring_index(all_arg_names, "new_obj")
-    str2add_arg_pos = find_substring_index(all_arg_names, "str2add")
+    param_keys = get_caller_method_args()
+    obj2ch_arg_pos = find_substring_index(param_keys, "obj2modify")
+    new_obj_arg_pos = find_substring_index(param_keys, "new_obj")
+    str2add_arg_pos = find_substring_index(param_keys, "str2add")
     
     if not isinstance(str2add, str):
         str2add = str(str2add)
@@ -521,7 +521,7 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
     obj_specs_keylist_practical = obj_specs_keylist[:3] + [obj_specs_keylist[-1]]
     if obj2modify not in obj_specs_keylist_practical:
         raise ValueError("Invalid object name to modify, "
-                         f"argument '{all_arg_names[obj2ch_arg_pos]}'. "
+                         f"argument '{param_keys[obj2ch_arg_pos]}'. "
                          f"Choose one from {obj_specs_keylist}.")
     
     # Get path specifications as a dict if input is a path string
@@ -542,7 +542,7 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
         else:
             if not isinstance(new_obj, tuple):
                 raise TypeError(f"If modifying '{obj_specs_keylist[2]}', "
-                                f"'{all_arg_names[new_obj_arg_pos]}' must be a tuple.")
+                                f"'{param_keys[new_obj_arg_pos]}' must be a tuple.")
             else:
                 name_noext = get_obj_specs(target_path_obj, obj2modify)
                 new_obj = substring_replacer(name_noext, new_obj[0], new_obj[1])
@@ -550,11 +550,11 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
     else:
         # Handle other cases like 'parent' and 'name'
         if new_obj is None:
-            raise ValueError(f"Ambiguous '{all_arg_names[obj2ch_arg_pos]}' = '{obj2modify}' "
-                             f"modification with argument '{all_arg_names[str2add_arg_pos]}' "
+            raise ValueError(f"Ambiguous '{param_keys[obj2ch_arg_pos]}' = '{obj2modify}' "
+                             f"modification with argument '{param_keys[str2add_arg_pos]}' "
                              "being provided.\n"
                              "You must provide the new value "
-                             f"(argument '{all_arg_names[new_obj_arg_pos]}').")
+                             f"(argument '{param_keys[new_obj_arg_pos]}').")
     
     # Update the path specifications with the modified part
     obj_specs_dict.update({obj2modify: new_obj})

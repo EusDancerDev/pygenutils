@@ -65,13 +65,13 @@ def loop_renamer(obj_list,
                  dry_run=False,
                  splitdelim=None):
     
-    all_arg_names = list(get_caller_method_all_args().values())
-    obj_type_arg_pos = find_substring_index(all_arg_names, "obj_type")
-    zero_pad_pos = find_substring_index(all_arg_names, "zero_padding")
+    param_keys = list(get_caller_method_all_args().values())
+    obj_type_arg_pos = find_substring_index(param_keys, "obj_type")
+    zero_pad_pos = find_substring_index(param_keys, "zero_padding")
     
     if obj_type not in basic_object_types:
         raise ValueError("Unsupported object type "
-                         f"(argument '{all_arg_names[obj_type_arg_pos]}'). "
+                         f"(argument '{param_keys[obj_type_arg_pos]}'). "
                          f"Choose one from {basic_object_types}.")
             
     if not isinstance(zero_padding, int) or zero_padding < 1:
@@ -135,18 +135,18 @@ def reorder_objs(path,
     
     # Input parameter validation #
     all_arg_dict = get_caller_method_all_args()    
-    all_arg_names = list(all_arg_dict.keys())
+    param_keys = list(all_arg_dict.keys())
     defaults = list(all_arg_dict.values())
         
-    zp_arg_pos = find_substring_index(all_arg_names, "zero_padding")
-    start_num_arg_pos = find_substring_index(all_arg_names, "starting_number")
-    ir_arg_pos = find_substring_index(all_arg_names, "index_range")
+    zp_arg_pos = find_substring_index(param_keys, "zero_padding")
+    start_num_arg_pos = find_substring_index(param_keys, "starting_number")
+    ir_arg_pos = find_substring_index(param_keys, "index_range")
     
     if ((zero_padding != "default" and not isinstance(zero_padding, int))\
         or (zero_padding != "default"
             and isinstance(zero_padding, int) 
             and zero_padding < 1)):
-        raise TypeError(f"Argument '{all_arg_names[zp_arg_pos]}' "
+        raise TypeError(f"Argument '{param_keys[zp_arg_pos]}' "
                         f"(number {zp_arg_pos}) must either be an integer "
                         "equal or greater than 1.\n"
                         "Set to `None` if no zero padding is desired.")
@@ -329,7 +329,7 @@ def reorder_objs(path,
                                                       index_range)   
         
         if starting_number == "default":
-            raise ValueError(f"'{all_arg_names[start_num_arg_pos]}' argument "
+            raise ValueError(f"'{param_keys[start_num_arg_pos]}' argument "
                              f"(number {start_num_arg_pos}) "
                              f"cannot be '{defaults[start_num_arg_pos]}' "
                              f"if '{ir_arg_pos}' argument is not None")
