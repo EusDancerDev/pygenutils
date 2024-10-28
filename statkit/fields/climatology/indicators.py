@@ -12,7 +12,7 @@ import numpy as np
 #-----------------------#
 
 from pyutils.arrays_and_lists.patterns import count_consecutive
-from pyutils.statistics.core.time_series import consec_occurrences_mindata, consec_occurrences_maxdata
+from pyutils.statkit.core.time_series import consec_occurrences_mindata, consec_occurrences_maxdata
 
 #------------------#
 # Define functions #

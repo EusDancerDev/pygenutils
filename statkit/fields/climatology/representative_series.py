@@ -14,12 +14,12 @@ import pandas as pd
 
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.climalab.meteorological_variables import meteorological_wind_direction
-from pyutils.statistics.core import interpolation_methods, time_series
+from pyutils.statkit.core import interpolation_methods, time_series
 
 # Create aliases #
 #----------------#
 
-periodic_statistics = time_series.periodic_statistics
+periodic_statkit = time_series.periodic_statkit
 polynomial_fitting = interpolation_methods.polynomial_fitting
 
 #-------------------------#
@@ -66,17 +66,17 @@ def calculate_HDY(hourly_df: pd.DataFrame,
 
     for m in months:
         try:
-            # Filter data for the current month and calculate monthly statistics
+            # Filter data for the current month and calculate monthly statkit
             hdata_MONTH = hourly_df[hourly_df.date.dt.month == m].filter(items=varlist_primary).reset_index(drop=drop_new_idx_col)
             hdata_MONTH_rank_phi = hdata_MONTH.copy()
             
             # Step a: Calculate daily means for the primary variables
-            hdata_MONTH_dm_bymonth = periodic_statistics(hourly_df[hourly_df.date.dt.month == m], varlist_primary, 'day', 'mean')
+            hdata_MONTH_dm_bymonth = periodic_statkit(hourly_df[hourly_df.date.dt.month == m], varlist_primary, 'day', 'mean')
             
             
 
         except ValueError as e:
-            print(f"Error in periodic_statistics for month {m}: {e}")
+            print(f"Error in periodic_statkit for month {m}: {e}")
             continue  # Skip the current month if there’s an error
 
         # Get unique days for the current month

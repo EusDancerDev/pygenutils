@@ -312,9 +312,9 @@ def cdo_time_mean(input_file, var, freq, model, experiment, calc_method, period,
     exit_info(process_exit_info)
         
 
-def cdo_periodic_statistics(nc_file, statistic, is_climatic, freq, season_str=None):
+def cdo_periodic_statkit(nc_file, statistic, is_climatic, freq, season_str=None):
     """
-    Calculates basic periodic statistics on a netCDF file using CDO.
+    Calculates basic periodic statkit on a netCDF file using CDO.
 
     Parameters
     ----------
@@ -323,7 +323,7 @@ def cdo_periodic_statistics(nc_file, statistic, is_climatic, freq, season_str=No
     statistic : str
         Statistic to calculate (e.g., 'mean', 'sum').
     is_climatic : bool
-        Whether to calculate climatic statistics.
+        Whether to calculate climatic statkit.
     freq : str
         Time frequency (e.g., 'monthly', 'yearly').
     season_str : str, optional
@@ -333,8 +333,8 @@ def cdo_periodic_statistics(nc_file, statistic, is_climatic, freq, season_str=No
     -------
     None
     """
-    if statistic not in statistics:
-        raise ValueError(f"Unsupported statistic {statistic}. Options are {statistics}")
+    if statistic not in statkit:
+        raise ValueError(f"Unsupported statistic {statistic}. Options are {statkit}")
     
     period_abbr = freq_abbrs[find_substring_index(time_freqs, freq)]
 
@@ -693,8 +693,8 @@ freq_abbrs_delta = [freq_abbrs[0]] + freq_abbrs[2:4]
 # Statistics and operators #
 #--------------------------#
 
-# Basic statistics #
-statistics = ["max", "min", "sum", 
+# Basic statkit #
+statkit = ["max", "min", "sum", 
               "mean", "avg", 
               "var", "var1",
               "std", "std1"]

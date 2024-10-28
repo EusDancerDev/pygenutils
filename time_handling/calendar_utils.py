@@ -17,7 +17,7 @@ import pandas as pd
 
 from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
 from pyutils.strings.string_handler import modify_obj_specs
-from pyutils.statistics.core import interpolation_methods
+from pyutils.statkit.core import interpolation_methods
 from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
 from pyutils.utilities.introspection_utils import get_obj_type_str
 from pyutils.utilities.pandas_utils.pandas_obj_handler import save2csv, save2excel

@@ -5,12 +5,12 @@
 periodic_climat_stats.py
 ------------------------
 
-This module provides functionality to compute periodic climatology statistics 
+This module provides functionality to compute periodic climatology statkit 
 over specified time frequencies. These methods are particularly useful for 
 climatological and atmospheric sciences, where it's common to analyze data 
 on seasonal, monthly, daily, or even hourly time scales.
 
-The primary function calculates summary statistics (mean, median, etc.) 
+The primary function calculates summary statkit (mean, median, etc.) 
 for an observed or modeled data series across these time intervals, allowing for 
 the detection and comparison of climate patterns and trends.
 
@@ -23,7 +23,7 @@ Notes
   and xarray, making it adaptable for various data sources (e.g., observations, 
   reanalysis, or climate model outputs).
 - The function is optimised for efficiency with large datasets and supports 
-  both absolute and relative time-based statistics.
+  both absolute and relative time-based statkit.
 """
 
 
@@ -45,7 +45,7 @@ from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pyutils.statistics.core.time_series import periodic_statistics
+from pyutils.statkit.core.time_series import periodic_statkit
 from pyutils.time_handling.time_formatters import datetime_obj_converter
 from pyutils.utilities.xarray_utils.patterns import find_time_dimension
 
@@ -62,7 +62,7 @@ time_freqs2 = global_parameters.time_frequencies_short_1
 # Define functions #
 #------------------#
 
-def climat_periodic_statistics(obj,
+def climat_periodic_statkit(obj,
                                statistic,
                                time_freq,
                                keep_std_dates=False, 
@@ -70,7 +70,7 @@ def climat_periodic_statistics(obj,
                                season_months=None):
 
     """
-    Function that calculates climatologic statistics for a time-frequency.
+    Function that calculates climatologic statkit for a time-frequency.
     
     Parameters
     ----------
@@ -247,7 +247,7 @@ def climat_periodic_statistics(obj,
 
             
         elif time_freq == "yearly":
-            climat_df = periodic_statistics(obj, statistic, freq_abbr, drop_date_idx_col)
+            climat_df = periodic_statkit(obj, statistic, freq_abbr, drop_date_idx_col)
             climat_vals = [climat_df.iloc[:, 1:][statistic]()]
             climat_dates = [climat_df.iloc[-1,0]]
               
@@ -367,7 +367,7 @@ season_month_fmt_error_str = """Parameter 'season_months' must contain exactly \
 daytime_fmt_str = basic_time_format_strs["D"]
 
 # Statistics #
-statistics = ["max", "min", "sum", "mean", "std"]
+statkit = ["max", "min", "sum", "mean", "std"]
 
 # Time frequency abbreviations #
 freq_abbrs = ["Y", "S", "M", "D", "H"]

@@ -41,12 +41,12 @@ decompose_24h_cumulative_data = data_manipulation.decompose_24h_cumulative_data
 # Statistical Processing #
 #------------------------#
 
-def periodic_statistics(obj, statistic, freq,
+def periodic_statkit(obj, statistic, freq,
                         groupby_dates=False,
                         drop_date_idx_col=False,
                         season_months=None):
     """
-    Calculates basic statistics (not climatologies) for the given data 
+    Calculates basic statkit (not climatologies) for the given data 
     object over a specified time frequency.
 
     This function supports data analysis on Pandas DataFrames and 
@@ -56,7 +56,7 @@ def periodic_statistics(obj, statistic, freq,
     Parameters
     ----------
     obj : pandas.DataFrame or xarray.Dataset or xarray.DataArray
-        The data object for which statistics are to be calculated.
+        The data object for which statkit are to be calculated.
     
     statistic : {"max", "min", "mean", "std", "sum"}
         The statistical measure to compute.
@@ -83,7 +83,7 @@ def periodic_statistics(obj, statistic, freq,
     Returns
     -------
     pandas.DataFrame or xarray object
-        The computed statistics as a DataFrame or xarray object,
+        The computed statkit as a DataFrame or xarray object,
         depending on the type of input data.
 
     Raises
@@ -103,8 +103,8 @@ def periodic_statistics(obj, statistic, freq,
     obj_type = get_obj_type_str(obj, lowercase=True)
     seas_mon_arg_type = get_obj_type_str(season_months)
     
-    if statistic not in statistics:
-        arg_tuple_stat = ("statistic", statistic, statistics)
+    if statistic not in statkit:
+        arg_tuple_stat = ("statistic", statistic, statkit)
         raise ValueError(format_string(unsupported_option_error_str, arg_tuple_stat))
         
     
@@ -334,7 +334,7 @@ def autocorrelate(x, twosided=False):
 #--------------------------#
 
 # Statistics #
-statistics = ["max", "min", "sum", "mean", "std"]
+statkit = ["max", "min", "sum", "mean", "std"]
 
 # Time frequency abbreviations #
 freq_abbrs = ["Y", "SEAS", "M", "D", "H", "min", "S"]
