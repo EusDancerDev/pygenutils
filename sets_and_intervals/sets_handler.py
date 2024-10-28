@@ -7,7 +7,7 @@
 
 from pyutils.parameters_and_constants.global_parameters import sets_operation_list
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 
 #-------------------------#
 # Define custom functions #
@@ -47,7 +47,7 @@ def sets_operator(array_of_sets1,
     # Argument validations #
     #-#-#-#-#-#-#-#-#-#-#-#-
 
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     constructor_arg_pos = find_substring_index(param_keys, "constructor")
     operator_arg_pos = find_substring_index(param_keys, "operator")
     

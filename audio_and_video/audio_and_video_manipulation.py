@@ -19,7 +19,7 @@ import os
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.strings import information_output_formatters
 from pyutils.time_handling.time_formatters import parse_time_string
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#
@@ -72,7 +72,7 @@ def merge_audio_and_video_files(audio_file_list_or_file,
     #-#-#-#-#-#-#-#-#-#-
     
     # Get all arguments #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     zero_pad_pos = param_keys.index("zero_padding")
 
     # Helper function to load file list from external file if necessary

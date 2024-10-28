@@ -15,7 +15,7 @@ from intervaltree import Interval, IntervalTree
 
 from pyutils.parameters_and_constants.global_parameters import intervals_operation_list
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.instrospection_utils import get_caller_method_args
+from pyutils.filewise.instrospection_utils import get_caller_args
 
 #------------------#
 # Define functions #
@@ -58,7 +58,7 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     interval_contructor_options = ["pandas", "intervaltree", "numpy", "custom_tuple"]
     
     if constructor not in interval_contructor_options:
-        all_args = get_caller_method_args()
+        all_args = get_caller_args()
         constr_arg_pos = find_substring_index(all_args, "constructor")
         raise ValueError(f"Unsupported constructor '{constructor}' (position {constr_arg_pos}). "
                          f"Choose one from {interval_contructor_options}.")
@@ -124,7 +124,7 @@ def basic_interval_operator(interval_array,
     #------------------#
     
     particular_constructor_opts = interval_contructor_options[:2]
-    all_args = get_caller_method_args()
+    all_args = get_caller_args()
     constr_arg_pos = find_substring_index(all_args, "constructor")
     operator_arg_pos = find_substring_index(all_args, "operator")
     

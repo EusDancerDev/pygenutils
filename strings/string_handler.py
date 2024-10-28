@@ -19,7 +19,7 @@ import re
 #-----------------------#
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.filewise.general.introspection_utils import get_type_str, get_caller_method_args
+from pyutils.filewise.general.introspection_utils import get_type_str, get_caller_args
 
 #------------------#
 # Define functions #
@@ -84,7 +84,7 @@ def find_substring_index(string,
     # Argument validation #
     #---------------------#
     
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     match_index_pos = param_keys.index("return_match_index")
     match_index_str_pos = param_keys.index("return_match_str")
     
@@ -452,7 +452,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
     """
     
     # Ensure the provided obj_spec_key is valid #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     osk_arg_pos = find_substring_index(param_keys, "obj_spec_key")
     
     if obj_spec_key not in obj_specs_keylist:
@@ -509,7 +509,7 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
     """
      
     # Argument validation and control #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     obj2ch_arg_pos = find_substring_index(param_keys, "obj2modify")
     new_obj_arg_pos = find_substring_index(param_keys, "new_obj")
     str2add_arg_pos = find_substring_index(param_keys, "str2add")

@@ -7,7 +7,7 @@
 
 from pyutils.operative_systems.os_operations import catch_shell_prompt_output
 from pyutils.strings import string_handler, information_output_formatters
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 
 # Define aliases #
 #----------------#
@@ -47,7 +47,7 @@ def translate_string(phrase_or_words, lang_origin, lang_translation="en",
     # Proper argument selection control #
     #-----------------------------------#
     
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     meth_list_arg_pos = find_substring_index(param_keys, "action_list")
     
     if action not in action_list:

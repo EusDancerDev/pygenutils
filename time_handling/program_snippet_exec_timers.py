@@ -17,7 +17,7 @@ import timeit
 
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_formatters import parse_float_time
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#
@@ -147,7 +147,7 @@ def snippet_exec_timer(snippet_str,
                        return_best_time=False):
         
     # Roundoff validation #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     roundoff_arg_pos = find_substring_index(param_keys, "roundoff")
     
     if not isinstance(roundoff, int):

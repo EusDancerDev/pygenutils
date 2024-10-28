@@ -13,7 +13,7 @@ import scipy.interpolate as scintp
 # Import custom modules #
 #-----------------------#
 
-from pyutils.filewise.general.introspection_utils import get_caller_method_args, get_type_str
+from pyutils.filewise.general.introspection_utils import get_caller_args, get_type_str
 
 #------------------#
 # Define functions #
@@ -124,7 +124,7 @@ def interp_np(data, method='linear', order=None, kind="nearest", fill_value="ext
     #####################
     
     # General, arguments #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     kind_arg_pos = param_keys.index("kind")
     fillval_arg_pos = param_keys.index("fill_value")
     

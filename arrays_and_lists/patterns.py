@@ -18,7 +18,7 @@ from pandas import Series
 from pyutils.arrays_and_lists.data_manipulation import sort_1D_arr_rudimentary
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.filewise.introspection_utils import get_type_str, \
-                                                  get_caller_method_args
+                                                  get_caller_args
 
 #------------------#
 # Define functions # 
@@ -132,7 +132,7 @@ def detect_subarray_in_array(obj, test_obj,
     """
     
     # Input validation and reconversion of 'obj' object if necessary #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     adapt_method_opt_pos = find_substring_index(param_keys, "preferent_adapt_method")
     
     if preferent_adapt_method not in modules_adaptation:

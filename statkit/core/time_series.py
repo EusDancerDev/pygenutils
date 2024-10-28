@@ -25,7 +25,7 @@ from pyutils.arrays_and_lists import patterns, data_manipulation
 from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_caller_method_args, get_type_str
+from pyutils.filewise.introspection_utils import get_caller_args, get_type_str
 from pyutils.filewise.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
@@ -97,7 +97,7 @@ def periodic_statkit(obj, statistic, freq,
     # Input validation block #
     #-#-#-#-#-#-#-#-#-#-#-#-#-
     
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     seas_months_arg_pos = find_substring_index(param_keys, "season_months")
     
     obj_type = get_type_str(obj, lowercase=True)

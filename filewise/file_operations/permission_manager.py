@@ -17,7 +17,7 @@ import shutil
 
 from pyutils.filewise.file_operations import path_utils
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#
@@ -72,7 +72,7 @@ def modify_obj_permissions(path, extensions2skip="", attr_id=-1):
     """
     # Validate attr_id
     if not isinstance(attr_id, int):
-        param_keys = get_caller_method_args()
+        param_keys = get_caller_args()
         attr_id_arg_pos = param_keys.index("attr_id")
         raise TypeError(f"'{param_keys[attr_id_arg_pos]}' "
                         f"(position {attr_id_arg_pos}) must be an integer, "
@@ -159,7 +159,7 @@ def modify_obj_owner(path, module="shutil", extensions2skip="", new_owner=-1, ne
     # Input validations #
     #####################
 
-    param_keys = get_caller_method_args()    
+    param_keys = get_caller_args()    
     
     # New owner #
     if not (isinstance(new_owner, (int, str)) or new_owner == -1):

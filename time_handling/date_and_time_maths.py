@@ -25,7 +25,7 @@ from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.time_formatters import datetime_obj_converter,\
                                                   parse_float_time, \
                                                   parse_time_string
-from pyutils.filewise.introspection_utils import get_caller_method_args, get_type_str
+from pyutils.filewise.introspection_utils import get_caller_args, get_type_str
 
 #------------------#
 # Define functions #
@@ -60,7 +60,7 @@ def _validate_option(arg_iterable, error_class, error_str):
         It is preferred to raise this error rather than another ValueError
         to avoid confusion with the above case.
     """
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
     if error_class not in error_class_list :
@@ -125,7 +125,7 @@ def sum_dt_times(dt_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     obj_list_pos = param_keys.index("dt_obj_list")
     
     if isinstance(dt_obj_list, str):
@@ -248,7 +248,7 @@ def dt_time_average(dt_obj_list,
     ##############################
 
     # Date and/or time list format control and its length #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     obj_list_pos = find_substring_index("dt_obj_list")
     
     if isinstance(dt_obj_list, str):
@@ -318,7 +318,7 @@ def _time_to_radians(t, convert_to="datetime", time_fmt_str=None):
             dt_obj = datetime_obj_converter(t, convert_to)
         except Exception as e:
             obj_type = get_type_str(t)
-            convert_to = get_caller_method_args()[1]
+            convert_to = get_caller_args()[1]
             raise RuntimeError("Error during parse of object type "
                                f"'{obj_type}' to '{convert_to}': {e}.")
     
@@ -437,7 +437,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
     ##############################
     
     # Date and/or time list format control and its length #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     date_list_pos = find_substring_index(param_keys, "date_list")
     
     if isinstance(date_list, str):
@@ -622,7 +622,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
     
     # Date-only return option #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     return_date_arg_pos = find_substring_index(param_keys, "return_date_only")
     if not isinstance(return_date_only, bool):
         raise TypeError(f"Parameter '{param_keys[return_date_arg_pos]}' "

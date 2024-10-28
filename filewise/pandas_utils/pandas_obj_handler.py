@@ -17,7 +17,7 @@ from pyutils.strings.information_output_formatters import format_string, get_typ
 from pyutils.strings.string_handler import append_ext, find_substring_index, get_obj_specs
 from pyutils.filewise.file_operations.ops_handler import remove_files
 from pyutils.filewise.file_operations.path_utils import find_files
-from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_args
 from pyutils.filewise.pandas_utils.data_manipulation import polish_df_column_names
 
 #------------------#
@@ -852,7 +852,7 @@ def merge_csv_files(input_file_list,
     #-----------------------------------#
     
     # Data merging #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     kdis_arg_pos = find_substring_index(param_keys, "keep_data_in_sections")
     osd_arg_pos = find_substring_index(param_keys, "out_single_DataFrame")
     

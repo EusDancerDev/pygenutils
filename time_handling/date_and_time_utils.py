@@ -20,7 +20,7 @@ import pandas as pd
 from pyutils.pandas_data_frames.global_parameters import common_delim_list
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
-from pyutils.filewise.introspection_utils import get_caller_method_args, get_type_str
+from pyutils.filewise.introspection_utils import get_caller_args, get_type_str
 from pyutils.filewise.xarray_utils import file_utils, patterns
 
 # Create aliases #
@@ -68,7 +68,7 @@ def _validate_option(arg_iterable, error_class, error_str):
         It is preferred to raise this error rather than another ValueError
         to avoid confusion with the above case.
     """
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
     if error_class not in error_class_list :
@@ -128,7 +128,7 @@ def get_current_datetime(dtype, time_fmt_str=None):
     current_time = current_datetime_dict.get(dtype)
     
     # A string does not have .strftime attribute, warn accordingly #
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     fmt_str_arg_pos = find_substring_index(param_keys, "time_fmt_str")
     if (isinstance(current_time, str) and time_fmt_str is not None):
         raise ValueError("Current time is already a string. "
@@ -597,7 +597,7 @@ def merge_datetime_dataframes(df1, df2,
     #-#-#-#-#-#-#-#-#-#-#
     
     # Get the main argument names and their position on the function's arg list #    
-    param_keys = get_caller_method_args()
+    param_keys = get_caller_args()
     df1_arg_pos = find_substring_index(param_keys, "df1")
     df2_arg_pos = find_substring_index(param_keys, "df2")
     
