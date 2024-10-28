@@ -21,7 +21,7 @@ from pyutils.pandas_data_frames.data_frame_handler import csv2df, excel_handler,
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index, get_obj_specs
 
-from pyutils.filewise.introspection_utils import get_obj_type_str, retrieve_function_name
+from pyutils.filewise.introspection_utils import get_obj_type_str, get_func_name
 
 from pyutils.parameters_and_constants.global_parameters import data_uploading_error_dict
 
@@ -298,7 +298,7 @@ def load_file_to_sql(input_file_list,
     ##############################
     
     # Retrieve argument names for error handling #
-    arg_names = retrieve_function_name()
+    arg_names = get_func_name()
     dtype_dict_arg_pos = find_substring_index(arg_names, "dtype_dict")
     
     # Convert the input file list to that if it's a string

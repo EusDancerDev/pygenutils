@@ -20,7 +20,7 @@ import pandas as pd
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.time_handling.date_and_time_operators import get_datetime_object_unit, get_nano_datetime
-from pyutils.filewise.general.introspection_utils import get_obj_type_str, retrieve_function_name
+from pyutils.filewise.general.introspection_utils import get_obj_type_str, get_func_name
 
 #----------------#
 # Define aliases #
@@ -574,7 +574,7 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     #------------------#
     
     # Current method name #
-    current_method = retrieve_function_name()
+    current_method = get_func_name()
     
     # Operations #
     #------------#
@@ -618,7 +618,7 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
         `Series` or `DataFrame` type objects.
     """
     # Input validation #
-    current_method = retrieve_function_name()
+    current_method = get_func_name()
     
     # Operations #
     dt_obj_aux = datetime_obj.copy()
