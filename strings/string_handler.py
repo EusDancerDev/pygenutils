@@ -77,7 +77,9 @@ def find_substring_index(string,
     
     Notes
     -----
-    This method relies on the internal `_advanced_pattern_searcher` to perform the pattern search, which itself uses `_return_search_obj_spec` for handling regular expression matching and result extraction.
+    This method relies on the internal `_advanced_pattern_searcher` 
+    to perform the pattern search, which itself uses `_return_search_obj_spec` 
+    for handling regular expression matching and result extraction.
     """
     # Argument validation #
     #---------------------#
