@@ -144,7 +144,7 @@ def cdo_mergetime(file_list, variable, freq, model, experiment, calc_method, per
 
     allfiles_string = flatten_to_string(file_list_selyear)
     cmd = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' {output_name}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
 
 
@@ -186,7 +186,7 @@ def cdo_selyear(file_list, selyear_str, freq, model, experiment, calc_method, re
         var = _get_varname_in_filename(file)
         output_name = _standardise_filename(var, freq, model, experiment, calc_method, period, region, ext)
         cmd = f"cdo selyear,{selyear_cdo} '{file}' {output_name}"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
 
 
@@ -224,7 +224,7 @@ def cdo_sellonlatbox(file_list, coords, freq, model, experiment, calc_method, re
         period = f"{times.dt.year.values[0]}-{times.dt.year.values[-1]}"
         output_name = _standardise_filename(var, freq, model, experiment, calc_method, period, region, ext)
         cmd = f"cdo sellonlatbox,{coords} '{file}' {output_name}"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
         
 
@@ -270,7 +270,7 @@ def cdo_remap(file_list, remap_str, var, freq, model, experiment, calc_method, p
     
     for file in file_list:
         cmd = f"cdo {remap_cdo},{remap_str} '{file}' {output_name}"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
 
 
@@ -308,7 +308,7 @@ def cdo_time_mean(input_file, var, freq, model, experiment, calc_method, period,
     """
     output_name = _standardise_filename(var, freq, model, experiment, calc_method, period, region, ext)
     cmd = f"cdo -{calc_method} '{input_file}' {output_name}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
         
 
@@ -348,7 +348,7 @@ def cdo_periodic_statistics(nc_file, statistic, is_climatic, freq, season_str=No
     output_name = modify_obj_specs(nc_file, "name_noext", add_to_path(file_name_noext, string2add))
 
     cmd = f"cdo {statname} {nc_file} {output_name}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)    
     
 
@@ -385,7 +385,7 @@ def cdo_anomalies(input_file_full, input_file_avg, var, freq, model, experiment,
     """
     output_name = _standardise_filename(var, freq, model, experiment, calc_method, period, region, ext)
     cmd = f"cdo sub '{input_file_avg}' '{input_file_full}' {output_name}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
 
 
@@ -430,7 +430,7 @@ def calculate_periodic_deltas(proj_file, hist_file, operator="+", delta_period="
     
     operator_str = cdo_operator_str_dict[operator]
     cmd = f"cdo {operator_str} {hist_mean_cmd} {proj_mean_cmd} {delta_output}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
 
 
@@ -474,7 +474,7 @@ def apply_periodic_deltas(proj_file, hist_file, operator="+", delta_period="mont
     
     operator_str = cdo_operator_str_dict[operator]
     cmd = f"cdo {operator_str} {proj_file} {hist_mean_cmd} {delta_applied_output}"
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
 
 
@@ -506,7 +506,7 @@ def cdo_rename(file_list, varlist_orig, varlist_std):
         
         temp_file = add_to_path(file)
         cmd = f"cdo chname,{var_file},{var_std} '{file}' '{temp_file}'"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
         
         rename_objects(temp_file, file)
@@ -571,7 +571,7 @@ def cdo_inttime(file_list, year0, month0, day0, hour0, minute0, second0, time_st
         temp_file = add_to_path(file)
         start_date = f"{year0}-{month0:02d}-{day0:02d} {hour0:02d}:{minute0:02d}:{second0:02d}"
         cmd = f"cdo inttime,{start_date},{time_step} '{file}' '{temp_file}'"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
         rename_objects(temp_file, file)
         
@@ -594,7 +594,7 @@ def cdo_shifttime(file_list, shift_val):
     for file in file_list:
         temp_file = add_to_path(file)
         cmd = f"cdo shifttime,{shift_val} '{file}' '{temp_file}'"
-        process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+        process_exit_info = run_system_command(cmd, capture_output=True)
         exit_info(process_exit_info)
         rename_objects(temp_file, file)
 
@@ -668,7 +668,7 @@ def custom_cdo_mergetime(file_list, custom_output_name, create_temp_file=False):
         temp_file = add_to_path(file_list[0])
         cmd = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' {temp_file}"
                      
-    process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
+    process_exit_info = run_system_command(cmd, capture_output=True)
     exit_info(process_exit_info)
 
 

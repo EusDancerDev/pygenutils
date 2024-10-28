@@ -157,7 +157,7 @@ def merge_audio_and_video_files(audio_file_list_or_file,
     # Try each command and pass on errors
     for merge_command in commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_command, encoding="utf-8"))
+            process_exit_info = run_system_command(format_string(merge_command))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -255,7 +255,7 @@ def merge_audio_or_video_files(input_file_list_or_file,
     # Try each command until one succeeds or all fail
     for merge_command in commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_command, encoding="utf-8"))
+            process_exit_info = run_system_command(format_string(merge_command))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -392,7 +392,7 @@ def cut_media_files(input_file_list_or_file,
     # Try each command and pass on errors
     for cut_command in commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(cut_command, encoding="utf-8"))
+            process_exit_info = run_system_command(format_string(cut_command))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:

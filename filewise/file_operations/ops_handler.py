@@ -285,7 +285,7 @@ def rsync(source_paths,
         rsync_command.append(dp)
 
         # Run the rsync command
-        process_exit_info = run_system_command(" ".join(rsync_command), encoding="utf-8")
+        process_exit_info = run_system_command(" ".join(rsync_command))
         exit_info(process_exit_info)
             
 
