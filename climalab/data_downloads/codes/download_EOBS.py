@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.climate_data_utils.cds_tools import download_data
+from pyutils.climalab.cds_tools import download_data
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
 from pyutils.utilities.file_operations import ops_handler, path_utils

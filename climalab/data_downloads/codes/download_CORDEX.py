@@ -11,7 +11,7 @@ Created on Fri Nov  3 21:19:13 2023
 #-----------------------#
 
 from pyutils.arrays_and_lists.patterns import select_elements
-from pyutils.climate_data_utils.cds_tools import download_data
+from pyutils.climalab.cds_tools import download_data
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
 from pyutils.utilities.file_operations import ops_handler, path_utils

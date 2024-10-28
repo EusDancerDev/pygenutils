@@ -13,7 +13,7 @@ import pandas as pd
 #-----------------------#
 
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
-from pyutils.climate_data_utils.meteorological_variables import meteorological_wind_direction
+from pyutils.climalab.meteorological_variables import meteorological_wind_direction
 from pyutils.statistics.core import interpolation_methods, time_series
 
 # Create aliases #
