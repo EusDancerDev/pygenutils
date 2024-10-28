@@ -8,8 +8,8 @@
 from pyutils.climalab.cds_tools import download_data
 from pyutils.strings.string_handler import find_substring_index, substring_replacer
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.utilities.file_operations import ops_handler, path_utils
-from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
+from pyutils.filewise.file_operations import ops_handler, path_utils
+from pyutils.filewise.xarray_utils.file_utils import scan_ncfiles
 
 # Create aliases #
 #----------------#

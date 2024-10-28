@@ -9,8 +9,8 @@ from pyutils.climalab.cds_tools import download_data
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.utilities.file_operations import ops_handler, path_utils
-from pyutils.utilities.xarray_utils import file_utils, xarray_obj_handler
+from pyutils.filewise.file_operations import ops_handler, path_utils
+from pyutils.filewise.xarray_utils import file_utils, xarray_obj_handler
 
 # Create aliases #
 #----------------#

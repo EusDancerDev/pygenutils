@@ -15,8 +15,8 @@ from pyutils.arrays_and_lists.data_manipulation import select_elements
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.datetime_operators import get_current_datetime, get_obj_operation_datetime
-from pyutils.utilities.file_operations import ops_handler, path_utils
-from pyutils.utilities.introspection_utils import get_caller_method_all_args
+from pyutils.filewise.file_operations import ops_handler, path_utils
+from pyutils.filewise.introspection_utils import get_caller_method_all_args
 
 # Create aliases #
 #----------------#

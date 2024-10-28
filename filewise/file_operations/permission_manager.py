@@ -15,9 +15,9 @@ import shutil
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.file_operations import path_utils
+from pyutils.filewise.file_operations import path_utils
 from pyutils.strings import information_output_formatters, string_handler
-from pyutils.utilities.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

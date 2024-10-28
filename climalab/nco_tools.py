@@ -8,7 +8,7 @@
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.parameters_and_constants.global_parameters import basic_four_rules
-from pyutils.utilities.file_operations.ops_handler import add_to_path, rename_objects
+from pyutils.filewise.file_operations.ops_handler import add_to_path, rename_objects
 
 #-------------------------#
 # Define custom functions #

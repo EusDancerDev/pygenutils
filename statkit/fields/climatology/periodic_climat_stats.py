@@ -44,10 +44,10 @@ from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.introspection_utils import get_caller_method_args, get_obj_type_str
 from pyutils.statkit.core.time_series import periodic_statkit
 from pyutils.time_handling.time_formatters import datetime_obj_converter
-from pyutils.utilities.xarray_utils.patterns import find_time_dimension
+from pyutils.filewise.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
 #----------------#
