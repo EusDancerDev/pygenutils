@@ -4,7 +4,7 @@
 """
 **Note**
 
-This program is an application of the main module 'file_format_tweaker',
+This program is an application of the main module 'pdf_tools',
 and it uses the 'pdf_file_tweaker' attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.format_converters.file_format_tweaker import pdf_file_tweaker
+from pyutils.utilities.format_converters.pdf_tools import file_tweaker
 
 #-------------------#
 # Define parameters #
