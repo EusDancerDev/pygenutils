@@ -29,7 +29,7 @@ def run_system_command(command,
                        _class="run",
                        capture_output=False,
                        return_output_name=False,
-                       encoding=None,
+                       encoding="utf-8",
                        shell=True):
    
     """
@@ -58,7 +58,7 @@ def run_system_command(command,
     return_output_name : bool, optional, default: False
         If True, returns the file descriptors' names (if applicable) for stdin,
         stdout, and stderr.
-    encoding : str, optional, default None
+    encoding : str, optional, default 'utf-8'
         The encoding to use when decoding stdout and stderr. 
         If None, no decoding is applied.
     shell : bool, optional
