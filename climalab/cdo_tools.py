@@ -23,7 +23,7 @@ time_freqs = global_parameters.time_frequencies_short_1
 
 format_string = information_output_formatters.format_string
 
-add_str_to_path = string_handler.add_str_to_path
+add_to_path = string_handler.add_to_path
 find_substring_index = string_handler.find_substring_index
 obj_path_specs = string_handler.obj_path_specs
 modify_obj_specs = string_handler.modify_obj_specs
@@ -343,9 +343,9 @@ def cdo_periodic_statistics(nc_file, statistic, is_climatic, freq, season_str=No
     if period_abbr == freq_abbrs[3] and season_str:
         statname += f" -select,season={season_str}"
 
-    file_name_noext = add_str_to_path(nc_file, return_file_name_noext=True)
+    file_name_noext = add_to_path(nc_file, return_file_name_noext=True)
     string2add = f"{splitdelim1}{statname}" if not season_str else f"{splitdelim1}{statname}_{statname[-3:]}"
-    output_name = modify_obj_specs(nc_file, "name_noext", add_str_to_path(file_name_noext, string2add))
+    output_name = modify_obj_specs(nc_file, "name_noext", add_to_path(file_name_noext, string2add))
 
     cmd = f"cdo {statname} {nc_file} {output_name}"
     process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
@@ -421,9 +421,9 @@ def calculate_periodic_deltas(proj_file, hist_file, operator="+", delta_period="
     hist_mean_cmd = f"-y{period_abbr}mean {hist_file}"
     proj_mean_cmd = f"-y{period_abbr}mean {proj_file}"
     
-    delta_filename = add_str_to_path(hist_file, return_file_name_noext=True)
+    delta_filename = add_to_path(hist_file, return_file_name_noext=True)
     string2add = f"{period_abbr}Deltas_{model}.nc"
-    delta_output = add_str_to_path(delta_filename, string2add)
+    delta_output = add_to_path(delta_filename, string2add)
     
     if operator not in basic_four_rules:
         raise ValueError(f"Unsupported operator. Options are {basic_four_rules}")
@@ -463,9 +463,9 @@ def apply_periodic_deltas(proj_file, hist_file, operator="+", delta_period="mont
         raise ValueError("Model must be provided to apply deltas.")
     
     period_abbr = freq_abbrs_delta[period_idx]
-    delta_output = add_str_to_path(hist_file, return_file_name_noext=True)
+    delta_output = add_to_path(hist_file, return_file_name_noext=True)
     string2add = f"{period_abbr}DeltaApplied_{model}.nc"
-    delta_applied_output = add_str_to_path(delta_output, string2add)
+    delta_applied_output = add_to_path(delta_output, string2add)
     
     hist_mean_cmd = f"-y{period_abbr}mean {hist_file}"
     
@@ -504,7 +504,7 @@ def cdo_rename(file_list, varlist_orig, varlist_std):
         
         print(f"Renaming variable '{var_file}' to '{var_std}' in file {i}/{len(file_list)}...")
         
-        temp_file = add_str_to_path(file)
+        temp_file = add_to_path(file)
         cmd = f"cdo chname,{var_file},{var_std} '{file}' '{temp_file}'"
         process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
         exit_info(process_exit_info)
@@ -568,7 +568,7 @@ def cdo_inttime(file_list, year0, month0, day0, hour0, minute0, second0, time_st
     None
     """
     for file in file_list:
-        temp_file = add_str_to_path(file)
+        temp_file = add_to_path(file)
         start_date = f"{year0}-{month0:02d}-{day0:02d} {hour0:02d}:{minute0:02d}:{second0:02d}"
         cmd = f"cdo inttime,{start_date},{time_step} '{file}' '{temp_file}'"
         process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
@@ -592,7 +592,7 @@ def cdo_shifttime(file_list, shift_val):
     None
     """
     for file in file_list:
-        temp_file = add_str_to_path(file)
+        temp_file = add_to_path(file)
         cmd = f"cdo shifttime,{shift_val} '{file}' '{temp_file}'"
         process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")
         exit_info(process_exit_info)
@@ -665,7 +665,7 @@ def custom_cdo_mergetime(file_list, custom_output_name, create_temp_file=False):
     if not create_temp_file:
         cmd = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' {custom_output_name}"
     else:
-        temp_file = add_str_to_path(file_list[0])
+        temp_file = add_to_path(file_list[0])
         cmd = f"cdo -b F64 -f nc4 mergetime '{allfiles_string}' {temp_file}"
                      
     process_exit_info = run_system_command(cmd, capture_output=True, encoding="utf-8")

@@ -603,7 +603,7 @@ def _join_obj_path_specs(obj_specs_dict):
 # String part addition methods #
 #------------------------------#
 
-def add_str_to_path(path2tweak, str2add):
+def add_to_path(path2tweak, str2add):
     """
     Adds a user-defined string to the part of the path without the extension.
 
