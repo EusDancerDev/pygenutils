@@ -13,8 +13,8 @@ import os
 
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.strings.information_output_formatters import format_string, string_underliner
-from pyutils.utilities.file_operations import ops_handler
-from pyutils.utilities.xarray_utils import file_utils, patterns
+from pyutils.filewise.file_operations import ops_handler
+from pyutils.filewise.xarray_utils import file_utils, patterns
 
 # Create aliases #
 #----------------#

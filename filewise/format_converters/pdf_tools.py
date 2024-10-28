@@ -9,8 +9,8 @@ from pyutils.arrays_and_lists.data_manipulation import flatten_to_string
 from pyutils.operative_systems.os_operations import exit_info, run_system_command
 from pyutils.parameters_and_constants.global_parameters import common_delim_list
 from pyutils.strings import string_handler, information_output_formatters
-from pyutils.utilities.file_operations import ops_handler, path_utils
-from pyutils.utilities import introspection_utils 
+from pyutils.filewise.file_operations import ops_handler, path_utils
+from pyutils.filewise import introspection_utils 
 
 # Aliases for functions #
 #-----------------------#

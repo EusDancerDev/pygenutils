@@ -13,7 +13,7 @@ import pandas as pd
 
 from pyutils.parameters_and_constants.global_parameters import basic_time_format_strs
 from pyutils.time_handling.time_formatters import parse_time_string
-from pyutils.utilities.pandas_utils.pandas_obj_handler import csv2df
+from pyutils.filewise.pandas_utils.pandas_obj_handler import csv2df
 
 #------------------#
 # Define functions #

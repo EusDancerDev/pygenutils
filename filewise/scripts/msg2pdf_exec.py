@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.format_converters.pdf_tools import msg_to_pdf
+from pyutils.filewise.format_converters.pdf_tools import msg_to_pdf
 
 #-------------------#
 # Define parameters #

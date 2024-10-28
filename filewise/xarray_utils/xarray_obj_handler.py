@@ -13,7 +13,7 @@ import xarray as xr
 
 from pyutils.pandas_data_frames.data_frame_handler import save2csv
 from pyutils.string_handler.string_handler import append_ext, get_obj_specs
-from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, find_time_dimension
+from pyutils.filewise.xarray_utils.patterns import find_coordinate_variables, find_time_dimension
 
 #-------------------------#
 # Define custom functions #

@@ -15,10 +15,10 @@ import pandas as pd
 from pyutils.arrays_and_lists.data_manipulation import find_duplicated_elements
 from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
 from pyutils.strings.string_handler import append_ext, find_substring_index, get_obj_specs
-from pyutils.utilities.file_operations.ops_handler import remove_files
-from pyutils.utilities.file_operations.path_utils import find_files
-from pyutils.utilities.introspection_utils import get_caller_method_args
-from pyutils.utilities.pandas_utils.data_manipulation import polish_df_column_names
+from pyutils.filewise.file_operations.ops_handler import remove_files
+from pyutils.filewise.file_operations.path_utils import find_files
+from pyutils.filewise.introspection_utils import get_caller_method_args
+from pyutils.filewise.pandas_utils.data_manipulation import polish_df_column_names
 
 #------------------#
 # Define functions #

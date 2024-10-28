@@ -23,7 +23,7 @@ import os
 
 from pyutils.parameters_and_constants.global_parameters import climate_file_extensions
 from pyutils.string_handler import information_output_formatters, string_handler
-from pyutils.utilities.file_operations import path_utils
+from pyutils.filewise.file_operations import path_utils
 
 # Create aliases #
 #----------------#

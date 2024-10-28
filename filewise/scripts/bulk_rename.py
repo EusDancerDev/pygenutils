@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.file_operations.bulk_rename_auto import reorder_objs
+from pyutils.filewise.file_operations.bulk_rename_auto import reorder_objs
 
 #-------------------#
 # Define parameters #

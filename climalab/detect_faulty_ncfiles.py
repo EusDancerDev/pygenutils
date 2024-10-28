@@ -32,7 +32,7 @@ the execution of the program for performance analysis.
 #-----------------------#
 
 from pyutils.time_handling.program_snippet_exec_timers import program_exec_timer
-from pyutils.utilities.xarray_utils.file_utils import scan_ncfiles
+from pyutils.filewise.xarray_utils.file_utils import scan_ncfiles
 
 #-------------------#
 # Define parameters #
