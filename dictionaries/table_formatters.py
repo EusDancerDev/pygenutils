@@ -303,9 +303,11 @@ def format_table_from_lists(keys, values,
     display_index : bool, optional
         Whether to display an index column in the table. Default is True.
     index_header : str, optional
-        The header name for the index column, if `display_index` is True. Default is 'Index'.
+        The header name for the index column, if `display_index` is True.
+        Default is 'Index'.
     custom_start_index : int, optional
-        The starting number for the index column, if `display_index` is True. Default is 1.
+        The starting number for the index column, if `display_index` is True.
+        Default is 1.
     column_delimiter : str
         Character to delimit the columns, applying both for the header and the content.
             
