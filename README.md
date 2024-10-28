@@ -1,23 +1,32 @@
-# Pyutils
+# PyGenUtils
 
-* Originally created on Mon Apr 16, 2024, and re-created on Mon Jun 10, 2024, due to a critical failure in trying to reconcile local and remote work.
-* This project is a continuation of the almost-the-same referenced *pytools.old* repo.
+**PyGenUtils** is a versatile Python utility library that provides tools for handling data, performing array operations, processing media, and more. Originally created on April 16, 2024, and reimagined on June 10, 2024, PyGenUtils builds on its predecessor, *pytools.old*, with significant performance and usability enhancements.
 
-* The old project was in need of major improvements:
-    - Modules visible from anywhere:
-        - As of the mentioned date, it wasn't until I learned from the Advanced Course in Python that there is another simpler and faster way to import custom modules.
-        - Until now, there was a program called 'setup_repo.py' which served as an initializer, which, once the repository was cloned, it simulated an installation for the first time, asking the user if they wanted to:
-            1. Conserve every content in the same directory the repo had been cloned (default option).
-            2. Move everything to a user-defined directory.
-        - After choosing the directory, the initializer writes in the path /home/{user} a very simple and short program where it creates a function, which returns the recently chosen directory.
-        - Because there are modules that depend on other modules, there was a need of remembering and defining the paths of all these dependency modules, which was performed by a snippet defined in every single one of them.
-            - It takes advantage of precisely defining the /home path (Path.home())
-            - The program is imported and its function is called, returning the path where the repo has been cloned.
-            - From now on the directories of the dependency modules are defined, as well as method aliases, if the function calling syntax string was too long.
-            - In order to track record of every defined path and make the definitions effective, these paths are stored in a list of module paths, so that the interpreter searches in for the required modules (sys.path)
-    - Huge level-up in computation performance
-    - Unification of case usages
-    - Elimination of redundant conditional and instantiation instructions
-    - Possible incorporation of OOP
+## Project History
 
-* This project aims to perform and continue improving the mentioned steps.
+This project continues the functionality of *pytools.old*, which underwent a comprehensive re-structuring. The previous repository had multiple areas for improvement:
+
+- **Module Accessibility**:
+  - Initially, module accessibility required a setup program, `setup_repo.py`, to initialize paths and directories for the repository. This initializer allowed:
+    1. Keeping the repository content in the cloned directory (default).
+    2. Moving the repository content to a user-defined directory.
+  - The initializer wrote a simple configuration file in `/home/{user}`, defining repository paths and dependencies to ensure modules dependent on others had their directories accurately tracked.
+  
+- **Performance Optimization**:
+  - Enhanced computational performance and removed redundant operations, unifying conditional logic and refining execution paths.
+  - Applied OOP principles where appropriate to simplify function calls and improve code readability.
+
+## Key Features and Improvements
+
+PyGenUtils offers a diverse set of modules, each tailored for specific tasks:
+
+- **Array and List Operations**: 
+  - Tools for data manipulation, conversions, and mathematical operations on arrays and lists.
+- **Audio and Video Processing**: 
+  - Functions for cutting, merging, and handling audio and video files.
+- **Data Handling Utilities**:
+  - Support for handling JSON, pandas, and xarray data, along with tools for bulk file operations.
+- **Geospatial Tools**:
+  - Methods for raster file handling, conversion, and geospatial data processing.
+- **Text and String Processing**:
+  - Utilities for string formatting, multilingual text processing, and translation.
