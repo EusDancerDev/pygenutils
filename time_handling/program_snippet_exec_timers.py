@@ -17,7 +17,7 @@ import timeit
 
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_formatters import parse_float_time
-from pyutils.utilities.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

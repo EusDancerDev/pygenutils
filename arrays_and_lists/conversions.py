@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.introspection_utils import get_obj_type_str
+from pyutils.filewise.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #

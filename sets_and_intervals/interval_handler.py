@@ -15,7 +15,7 @@ from intervaltree import Interval, IntervalTree
 
 from pyutils.parameters_and_constants.global_parameters import intervals_operation_list
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.utilities.instrospection_utils import get_caller_method_args
+from pyutils.filewise.instrospection_utils import get_caller_method_args
 
 #------------------#
 # Define functions #

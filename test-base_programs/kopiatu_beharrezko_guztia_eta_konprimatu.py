@@ -22,7 +22,7 @@ import time
 #-----------------------#
 
 from pyutils.arrays_and_lists import conversions, data_manipulation, patterns
-from pyutils.utilities.file_operations import ops_handler, path_utils
+from pyutils.filewise.file_operations import ops_handler, path_utils
 from pyutils.strings.string_handler import find_substring_index
 
 # Create aliases #

@@ -19,7 +19,7 @@ import re
 #-----------------------#
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.utilities.general.introspection_utils import get_obj_type_str, get_caller_method_args
+from pyutils.filewise.general.introspection_utils import get_obj_type_str, get_caller_method_args
 
 #------------------#
 # Define functions #

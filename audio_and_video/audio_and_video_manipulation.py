@@ -19,7 +19,7 @@ import os
 from pyutils.operative_systems.os_operations import run_system_command, exit_info
 from pyutils.strings import information_output_formatters
 from pyutils.time_handling.time_formatters import parse_time_string
-from pyutils.utilities.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_method_args
 
 # Create aliases #
 #----------------#

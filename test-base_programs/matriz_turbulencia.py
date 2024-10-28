@@ -25,7 +25,7 @@ import warnings
 #-----------------------#
 
 from pyutils.arrays_and_lists import data_manipulation, patterns
-from pyutils.utilities.pandas_utils import pandas_obj_handler
+from pyutils.filewise.pandas_utils import pandas_obj_handler
 from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling import date_and_time_utils, program_snippet_exec_timers
 

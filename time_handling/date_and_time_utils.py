@@ -20,8 +20,8 @@ import pandas as pd
 from pyutils.pandas_data_frames.global_parameters import common_delim_list
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
-from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
-from pyutils.utilities.xarray_utils import file_utils, patterns
+from pyutils.filewise.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.xarray_utils import file_utils, patterns
 
 # Create aliases #
 #----------------#

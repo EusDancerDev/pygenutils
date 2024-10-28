@@ -25,7 +25,7 @@ from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.time_formatters import datetime_obj_converter,\
                                                   parse_float_time, \
                                                   parse_time_string
-from pyutils.utilities.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.introspection_utils import get_caller_method_args, get_obj_type_str
 
 #------------------#
 # Define functions #

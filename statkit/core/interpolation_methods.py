@@ -13,7 +13,7 @@ import scipy.interpolate as scintp
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.general.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.general.introspection_utils import get_caller_method_args, get_obj_type_str
 
 #------------------#
 # Define functions #

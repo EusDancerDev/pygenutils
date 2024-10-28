@@ -19,8 +19,8 @@ from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
 from pyutils.strings.string_handler import modify_obj_specs
 from pyutils.statkit.core import interpolation_methods
 from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
-from pyutils.utilities.introspection_utils import get_obj_type_str
-from pyutils.utilities.pandas_utils.pandas_obj_handler import save2csv, save2excel
+from pyutils.filewise.introspection_utils import get_obj_type_str
+from pyutils.filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 
 # Create aliases #
 #----------------#
@@ -166,7 +166,7 @@ def standardise_calendar(obj,
                                        for element in obj)):
         
         import xarray as xr
-        from pyutils.utilities.xarray_utils.patterns import find_time_dimension
+        from pyutils.filewise.xarray_utils.patterns import find_time_dimension
         
         if isinstance(obj, list):
             obj = obj[0]  # Assuming only one object in the list

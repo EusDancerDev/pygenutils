@@ -7,7 +7,7 @@
 
 from pyutils.parameters_and_constants.global_parameters import sets_operation_list
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.utilities.introspection_utils import get_caller_method_args
+from pyutils.filewise.introspection_utils import get_caller_method_args
 
 #-------------------------#
 # Define custom functions #

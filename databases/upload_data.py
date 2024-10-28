@@ -46,7 +46,7 @@ Data Files
 #-----------------------#
 
 from pyutils.databases.database_handler import load_file_to_sql
-from pyutils.utilities.file_operations.path_utils import find_files
+from pyutils.filewise.file_operations.path_utils import find_files
 from pyutils.parameters_and_constants.config_params import config_dict
 
 #-------------------#

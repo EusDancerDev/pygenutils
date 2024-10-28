@@ -21,7 +21,7 @@ from pyutils.pandas_data_frames.data_frame_handler import csv2df, excel_handler,
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index, get_obj_specs
 
-from pyutils.utilities.introspection_utils import get_obj_type_str, retrieve_function_name
+from pyutils.filewise.introspection_utils import get_obj_type_str, retrieve_function_name
 
 from pyutils.parameters_and_constants.global_parameters import data_uploading_error_dict
 

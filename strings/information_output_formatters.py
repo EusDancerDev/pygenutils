@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 """
-String formatting utilities module.
+String formatting filewise module.
 
 This module provides functions to handle different types of string formatting:
 - F-strings using Python's format method
@@ -30,7 +30,7 @@ Functions
 #-----------------------#
 
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.utilities.introspection_utils import get_obj_type_str
+from pyutils.filewise.introspection_utils import get_obj_type_str
 
 #-------------------------#
 # Define custom functions #

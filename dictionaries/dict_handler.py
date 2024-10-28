@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.utilities.general.introspection_utils import get_obj_type_str
+from pyutils.filewise.general.introspection_utils import get_obj_type_str
 
 #------------------#
 # Define functions #

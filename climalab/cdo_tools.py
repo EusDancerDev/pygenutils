@@ -10,8 +10,8 @@ from pyutils.operative_systems.os_operations import exit_info, run_system_comman
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings import information_output_formatters, string_handler
 from pyutils.time_handling.date_and_time_utils import find_time_key
-from pyutils.utilities.file_operations.ops_handler import rename_objects
-from pyutils.utilities.xarray_utils.patterns import get_file_variables, get_times
+from pyutils.filewise.file_operations.ops_handler import rename_objects
+from pyutils.filewise.xarray_utils.patterns import get_file_variables, get_times
 
 # Create aliases #
 #----------------#

@@ -20,7 +20,7 @@ import pandas as pd
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.time_handling.date_and_time_operators import get_datetime_object_unit, get_nano_datetime
-from pyutils.utilities.general.introspection_utils import get_obj_type_str, retrieve_function_name
+from pyutils.filewise.general.introspection_utils import get_obj_type_str, retrieve_function_name
 
 #----------------#
 # Define aliases #
