@@ -5,6 +5,7 @@
 # Import modules # 
 #----------------#
 
+from collections.abc import Iterable
 import inspect
 import sys
 
@@ -16,234 +17,270 @@ import sys
 #---------#
 
 # Function names #
-def retrieve_function_name(library="inspect"):
-    """Returns the name of the method defined in situ."""
+def get_func_name(lib="inspect"):
+    """
+    Retrieves the name of the caller function using the specified library.
 
-    if library not in method_name_retrieval_libraries:
-        raise ValueError("Unsupported library, choose one from "
-                          f"{method_name_retrieval_libraries}.")
-    else:
-        if library == "inspect":
-            current_frame = inspect.currentframe()
-            caller_frame = current_frame.f_back  # Get the caller's frame
-            frame_info = inspect.getframeinfo(caller_frame)
-            return frame_info.function
-        elif library == "sys":
-            method_name = sys._getframe(1).f_code.co_name  # Get the caller's frame (1 level up)
-        return method_name
+    Parameters
+    ----------
+    lib : str, optional
+        Library to use for function name retrieval. Must be one of 'inspect' or 'sys'.
+        Defaults to 'inspect'.
+
+    Returns
+    -------
+    str
+        Name of the caller function.
+
+    Raises
+    ------
+    ValueError
+        If `lib` is not a supported library.
+    """
+    if lib not in func_name_libs:
+        raise ValueError("Unsupported library. Choose from {func_name_libs}.")
+    if lib == "inspect":
+        return inspect.getframeinfo(inspect.currentframe().f_back).function
+    return sys._getframe(1).f_code.co_name
     
 
 # Function arguments #
-#-#-#-#-#-#-#-#-#-#-#-
+#--------------------#
 
 # General frame #
-#################
+#-#-#-#-#-#-#-#-#
 
-def get_method_args(method):
+def get_func_args(func):
     """
-    Returns the argument names of the given method.
+    Retrieves the required argument names of the provided function.
 
-    This function uses the inspect module to get the signature of the provided method
-    and then extracts the names of required arguments (those without default values).
-
-    Args
-    ----
-    method : function
-        The method whose argument names are to be retrieved.
+    Parameters
+    ----------
+    func : callable
+        Function whose required argument names are retrieved.
 
     Returns
     -------
-    required_arg_names : list
-        A list of required argument names of the given method.
+    list of str
+        List of required argument names.
 
     Example
     -------
-    def example_method(arg1, arg2, kwarg1=None):
-        pass
-    
-    arg_names = get_method_args(example_method)
-    print(arg_names)  # Output: ['arg1', 'arg2']
+    >>> def example_func(arg1, arg2, kwarg1=None): pass
+    >>> get_func_args(example_func)
+    ['arg1', 'arg2']
     """
-    sig = inspect.signature(method)
-    required_arg_names = [param.name 
-                          for param in sig.parameters.values()
-                          if param.default == inspect.Parameter.empty
-                          and param.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, 
-                                             inspect.Parameter.KEYWORD_ONLY)]
-    
-    return required_arg_names
+    sig = inspect.signature(func)
+    return [p.name for p in sig.parameters.values() if p.default == inspect.Parameter.empty
+            and p.kind in (inspect.Parameter.POSITIONAL_OR_KEYWORD, 
+                           inspect.Parameter.KEYWORD_ONLY)]
 
-def get_method_all_args(method):
+
+def get_all_func_args(func):
     """
-    Returns all argument names of the given method, including those with default values.
+    Retrieves all argument names of the provided function.
 
-    This function uses the inspect module to get the signature of the provided method
-    and then extracts all argument names.
-
-    Args
-    ----
-    method : function
-        The method whose argument names are to be retrieved.
+    Parameters
+    ----------
+    func : callable
+        Function whose argument names are retrieved.
 
     Returns
     -------
-    all_arg_list : list
-        A list of all argument names of the given method.
+    list of str
+        List of all argument names, including those with default values.
 
     Example
     -------
-    def example_method(arg1, arg2, kwarg1=None):
-        pass
-    
-    param_keys = get_method_all_args(example_method)
-    print(param_keys)  # Output: ['arg1', 'arg2', 'kwarg1']
+    >>> def example_func(arg1, arg2, kwarg1=None): pass
+    >>> get_all_func_args(example_func)
+    ['arg1', 'arg2', 'kwarg1']
     """
-    sig = inspect.signature(method)
-    all_arg_list = [param.name for param in sig.parameters.values()]
-    return all_arg_list
+    return [p.name for p in inspect.signature(func).parameters.values()]
 
-def get_full_method_signature(method):
+
+def get_func_signature(func):
     """
-    Returns the full signature of the given method, including argument names and default values.
+    Retrieves the full signature of the provided function.
 
-    This function uses the inspect module to get the signature of the provided method
-    and returns it as an inspect.Signature object.
-
-    Args
-    ----
-    method : function
-        The method whose signature is to be retrieved.
+    Parameters
+    ----------
+    func : callable
+        Function whose signature is retrieved.
 
     Returns
     -------
-    full_signature : inspect.Signature
-        The full signature of the given method, which includes
-        information about parameters and their default values.
+    inspect.Signature
+        The full function signature, including argument names and default values.
 
     Example
     -------
-    def example_method(arg1, arg2, kwarg1=None, kwarg2='default'):
-        pass
-    
-    full_signature = get_full_method_signature(example_method)
-    print(full_signature)  # Output: (arg1, arg2, kwarg1=None, kwarg2='default')
+    >>> def example_func(arg1, arg2, kwarg1=None): pass
+    >>> get_func_signature(example_func)
+    (arg1, arg2, kwarg1=None)
     """
-    full_signature = inspect.signature(method)
-    return full_signature
+    return inspect.signature(func)
 
 
 # Caller's frame #
-##################
+#-#-#-#-#-#-#-#-#-
 
-def get_caller_method_args():
+def get_caller_args():
     """
-    Returns the argument names of the caller method.
-
-    This function uses the inspect module to get the current stack frame
-    and then accesses the caller's stack frame to retrieve the argument names.
+    Retrieves the required argument names of the caller function.
 
     Returns
     -------
-    caller_args_list : list
-        A list of argument names used in the caller method.
+    list of str
+        List of argument names used in the caller function.
 
     Example
     -------
-    def example_method(arg1, arg2):
-        arg_names = get_caller_method_args()
-        print(arg_names)  # Output: ['arg1', 'arg2']
+    >>> def example_func(arg1, arg2): get_caller_args()
+    ['arg1', 'arg2']
     """
-    current_frame = inspect.currentframe()
-    caller_frame = current_frame.f_back  # Go back one frame to get the caller's frame
+    caller_frame = inspect.currentframe().f_back
     caller_args, _, _, _ = inspect.getargvalues(caller_frame)
-    caller_args_list = list(caller_args)  # Return the argument names as a list
-    return caller_args_list
+    return list(caller_args)
     
 
-def get_caller_method_all_args():
+def get_all_caller_args():
     """
-    Returns all argument names and their values of the caller method, including those with default values.
-
-    This function uses the inspect module to get the current stack frame
-    and then accesses the caller's stack frame to retrieve the argument names and their values.
+    Retrieves all argument names and their values in the caller function.
 
     Returns
     -------
-    caller_args_dict : dict
-        A dictionary where keys are argument names and values are the corresponding argument values.
+    dict
+        Dictionary of argument names and values used in the caller function.
 
     Example
     -------
-    def example_method(arg1, arg2, kwarg1=None):
-        param_keys = get_caller_method_all_args()
-        print(param_keys)  # Output: {'arg1': 1, 'arg2': 2, 'kwarg1': None}
+    >>> def example_func(arg1, kwarg1=None): get_all_caller_args()
+    {'arg1': value1, 'kwarg1': None}
     """
-    current_frame = inspect.currentframe()
-    caller_frame = current_frame.f_back  # Go back one frame to get the caller's frame
+    caller_frame = inspect.currentframe().f_back
     caller_args, _, _, caller_values = inspect.getargvalues(caller_frame)
-    caller_args_dict = {arg: caller_values[arg] for arg in caller_args}
-    return caller_args_dict
+    return {arg: caller_values[arg] for arg in caller_args}
 
-def get_full_caller_method_signature():
+
+def get_caller_signature():
     """
-    Returns the full signature of the caller method, including argument names and default values.
-
-    This function uses the inspect module to get the current stack frame,
-    accesses the caller's stack frame, and retrieves the method object
-    to get its full signature using inspect.signature.
+    Retrieves the full signature of the caller function.
 
     Returns
     -------
-    full_signature : inspect.Signature
-        The full signature of the caller method, which includes
-        information about parameters and their default values.
+    inspect.Signature
+        Full signature of the caller function, including argument names and default values.
 
     Example
     -------
-    def example_method(arg1, arg2, kwarg1=None, kwarg2='default'):
-        full_signature = get_full_caller_method_signature()
-        print(full_signature)  # Output: (arg1, arg2, kwarg1=None, kwarg2='default')
+    >>> def example_func(arg1, kwarg1=None): get_caller_signature()
+    (arg1, kwarg1=None)
     """
-    current_frame = inspect.currentframe()
-    caller_frame = current_frame.f_back  # Go back one frame to get the caller's frame
-    caller_code = caller_frame.f_code
-    caller_func_name = caller_code.co_name
-    caller_func = caller_frame.f_globals[caller_func_name]
-    full_signature = inspect.signature(caller_func)
-    return full_signature
+    caller_frame = inspect.currentframe().f_back
+    caller_func = caller_frame.f_globals[caller_frame.f_code.co_name]
+    return inspect.signature(caller_func)
 
 
 # Attributes #
 #------------#
 
-def get_attribute_names(obj):
-    """Returns the names of all attributes of an object."""
-    attr_list = [attr 
-                 for attr in dir(obj)
-                 if not callable(getattr(obj, attr))]
-    
-    return attr_list
+def get_attr_names(obj):
+    """
+    Retrieves all non-callable attribute names of the given object.
+
+    Parameters
+    ----------
+    obj : any
+        The object whose attribute names are retrieved.
+
+    Returns
+    -------
+    list of str
+        List of all non-callable attribute names.
+    """
+    return [attr for attr in dir(obj) if not callable(getattr(obj, attr))]
+
 
 # Object types #
 #--------------#
 
-def get_obj_type_str(obj, lowercase=False):
-    """Returns the type of an object as a string"""
-    obj_type_class = type(obj)
-    obj_type_str = obj_type_class.__name__
-    return obj_type_str.lower() if lowercase else obj_type_str
+def get_type_str(obj, lowercase=False):
+    """
+    Returns the type of an object as a string.
+
+    Parameters
+    ----------
+    obj : any
+        Object whose type is returned as a string.
+    lowercase : bool, optional
+        If True, returns the type string in lowercase. Defaults to False.
+
+    Returns
+    -------
+    str
+        String representation of the object's type.
+    """
+    return type(obj).__name__.lower() if lowercase else type(obj).__name__
+
 
 # More functions related to introspection or utility as needed #
 #--------------------------------------------------------------#
 
-# Example of potential future expansion
-def inspect_memory_usage(obj):
-    """Inspects memory usage of an object."""
-    # Implementation details
+def inspect_memory_usage(obj, seen=None):
+    """
+    Recursively calculates the memory usage of an object and its contents.
+
+    Parameters
+    ----------
+    obj : any
+        The object whose memory usage is to be calculated.
+    seen : set, optional
+        A set of object IDs already inspected to avoid double-counting 
+        in case of cyclic references. Defaults to None.
+
+    Returns
+    -------
+    int
+        Total memory usage of the object and its contents in bytes.
+
+    Raises
+    ------
+    TypeError
+        If the object type cannot be processed by `sys.getsizeof`.
+
+    Example
+    -------
+    >>> data = [1, 2, [3, 4], {'a': 5, 'b': 6}]
+    >>> inspect_memory_usage(data)
+    408  # output will vary depending on Python version and system
+    """
+    if seen is None:
+        seen = set()  # Initialize a set to track processed object IDs
+
+    obj_id = id(obj)
+    if obj_id in seen:
+        return 0  # Avoid double-counting objects
+
+    seen.add(obj_id)  # Mark the object ID as seen
+    size = sys.getsizeof(obj)  # Initial size of the object
+
+    # Recursively calculate size for container types
+    if isinstance(obj, dict):
+        size += sum(inspect_memory_usage(k, seen) + inspect_memory_usage(v, seen) for k, v in obj.items())
+    elif isinstance(obj, (list, tuple, set)):
+        size += sum(inspect_memory_usage(i, seen) for i in obj)
+    elif hasattr(obj, '__dict__'):
+        size += inspect_memory_usage(vars(obj), seen)
+    elif isinstance(obj, Iterable) and not isinstance(obj, (str, bytes)):
+        size += sum(inspect_memory_usage(i, seen) for i in obj)
+
+    return size
+
     
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
 
 # Supported library list for method name retrievals #
-method_name_retrieval_libraries = ["inspect", "sys"]
+func_name_libs = ["inspect", "sys"]
