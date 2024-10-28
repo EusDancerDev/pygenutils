@@ -1,16 +1,149 @@
 # Changelog
 
-## [v13.3.2] - 2024-10-2X
+## [v14.0.0] - 2024-10-28
 
 ### Changed
 
-**General**
+<h3>General</h3>
 
+**Varnames**
+- Variable name `all_arg_names`, which contains all variables (required and optional) of the caller function, has been renamed to `param_keys`.
+	- All this changes have been applied to all affected modules.
+
+<h3>Specific changes in sub-packages</h3>
+
+**Dictionaries**
+- Module `table_formatters`:
+	- Moved all methods to the module `information_output_formatters` (**Strings** sub-package)
+
+**General File Utils**
+- Module `introspection_utils`:
+	- The following method renamings were made:
+	<table>
+		<thead>
+			<tr>
+				<th>Original Function Name</th>
+				<th>Refactored Function Name</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>retrieve_function_name</td>
+				<td>get_func_name</td>
+			</tr>
+			<tr>
+				<td>get_method_args</td>
+				<td>get_func_args</td>
+			</tr>
+			<tr>
+				<td>get_method_all_args</td>
+				<td>get_all_func_args</td>
+			</tr>
+			<tr>
+				<td>get_full_method_signature</td>
+				<td>get_func_signature</td>
+			</tr>
+			<tr>
+				<td>get_caller_method_args</td>
+				<td>get_caller_args</td>
+			</tr>
+			<tr>
+				<td>get_caller_method_all_args</td>
+				<td>get_all_caller_args</td>
+			</tr>
+			<tr>
+				<td>get_full_caller_method_signature</td>
+				<td>get_caller_signature</td>
+			</tr>
+			<tr>
+				<td>get_attribute_names</td>
+				<td>get_attr_names</td>
+			</tr>
+			<tr>
+				<td>get_obj_type_str</td>
+				<td>get_type_str</td>
+			</tr>
+		</tbody>
+	</table>
+
+- All this changes have been applied to all affected modules.
+
+**Format Converters**
+- Module `file_format_tweaker`:
+	- The following method renamings were made:
+	<table>
+		<tr>
+			<th><span style="font-size:13.7pt">Old function name</span></th>
+			<th><span style="font-size:13.7pt">New function name</span></th>
+		</tr>
+		<tr>
+			<td>check_essential_prog_installation</td>
+			<td>_check_essential_progs (marked as internal)</td>
+		</tr>
+		<tr>
+			<td>pdf_file_tweaker</td>
+			<td>file_tweaker</td>
+		</tr>
+		<tr>
+			<td>pdf_file_compressor</td>
+			<td>file_compressor</td>
+		</tr>
+		<tr>
+			<td>merge_pdf_files</td>
+			<td>merge_files</td>
+		</tr>
+		<tr>
+			<td>eml2pdf</td>
+			<td>eml_to_pdf</td>
+		</tr>
+		<tr>
+			<td>msg2pdf</td>
+			<td>msg_to_pdf</td>
+		</tr>
+	</table>
+
+- All this changes have been applied to all affected modules.
+- After having these changes made, the module has been **renamed** to `pdf_tools`.
+
+**Operative systems**
+- Module `OS Operations`
+	- In method `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
+		- This change has been applied in every affected module.
+
+**Strings**
+- Module `string_handler`:
+	- The following method renamings were made:
+	<table>
+		<tr>
+			<th><span style="font-size:13.7pt">Old function name</span></th>
+			<th><span style="font-size:13.7pt">New function name</span></th>
+		</tr>
+		<tr>
+			<td>add_str_to_path</td>
+			<td>add_to_path</td>
+		</tr>
+		<tr>
+			<td>ext_adder</td>
+			<td>append_ext</td>
+		</tr>
+	</table>
+
+- All this changes have been applied to all affected modules.
+
+---
+
+## [v13.3.2] - 2024-10-25 
+
+### Changed
+
+<h3>General changes</h3>
+
+**General**
 - Switched to British English every verb written in American accent. For example:
 	- *standardize* -> <i>standardi**S**e</i>
 	- *serialize* -> <i>seriali**S**</i>
 	
-- All `.lower()` instances of the string returned by the method `get_obj_type_str` (module `introspection_utils`, subpackage **General Utils**),<br>
+- All `.lower()` instances of the string returned by the method `get_obj_type_str` (module `introspection_utils`, sub-package **General Utils**),<br>
   have been substituted in favour of setting the argument `lowercase` to True.
   
 - The renaming of the module `file_and_directory_handler` to `ops_handler` has been applied to all affected files.
@@ -21,22 +154,52 @@
 	- Refactored multiple CDO processing functions, optimized internal helpers, and updated file handling methods with section headers and internal visibility changes.
 	- The following method renamings were made:
 	<table>
+		<tr>
+			<th><span style="font-size:13.7pt">Old function name</span></th>
+			<th><span style="font-size:13.7pt">New function name</span></th>
+		</tr>
+		<tr>
+			<td>get_variable_name_in_file_name</td>
+			<td>_get_varname_in_filename (marked as internal)</td>
+		</tr>
+		<tr>
+			<td>change_file_names_byvar</td>
+			<td>change_filenames_by_var</td>
+		</tr>
+		<tr>
+			<td>standardise_file_name</td>
+			<td>_standardise_filename (marked as internal)</td>
+		</tr>
+	</table>
+	
+	
+<h3>Specific changes in sub-packages</h3>
+
+- The following renamings were made:
+<table>
 	<tr>
-		<th><span style="font-size:13.7pt">Old function name</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-	<tr>
-		<td>get_variable_name_in_file_name</td>
-		<td>_get_varname_in_filename (marked as internal)</td>
+		<th><span style="font-size:13.7pt">Old sub-package name</span></th>
+		<th><span style="font-size:13.7pt">New sub-package name</span></th>
 	</tr>
 	<tr>
-		<td>change_file_names_byvar</td>
-		<td>change_filenames_by_var</td>
+		<th>climate_data_utils</th>
+		<th>climalab</th>
 	</tr>
 	<tr>
-		<td>standardise_file_name</td>
-		<td>_standardise_filename (marked as internal)</td>
+		<th>statistics</th>
+		<th>statkit</th>
+	</tr>
+	<tr>
+		<th>utilities</th>
+		<th>filewise</th>
+	</tr>
+	<tr>
+		<th>complementary-to_remodule</th>
+		<th>supplementary_tools</th>
 	</tr>
 </table>
+
+- All this changes have been applied to all affected modules.
 
 ---
 
@@ -171,7 +334,7 @@
 	
 <h2>General Utilities</h2>
 
-<h4>'file_operations' subpackage</h4>
+<h4>'file_operations' sub-package</h4>
 
 - The following **module** renamings were made:
 <table>
@@ -189,9 +352,9 @@
 	</tr>
 </table>
 
-<h4>'scripts' subpackage</h4>
+<h4>'scripts' sub-package</h4>
 
-- Contains application programs of several methods in the modules of subpackage `file_operations`:
+- Contains application programs of several methods in the modules of sub-package `file_operations`:
 - The following **module** renamings were made:
 <table>
 	<tr>
@@ -336,10 +499,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Function name 1</span></th>
 		<th><span style="font-size:13.7pt">Module referring to 1</span></th>
-		<th><span style="font-size:13.7pt">Subpackage referring to 1</span></th>
+		<th><span style="font-size:13.7pt">sub-package referring to 1</span></th>
 		<th><span style="font-size:13.7pt">Function name 2</span></th>
 		<th><span style="font-size:13.7pt">Module referring to 2</span></th>
-		<th><span style="font-size:13.7pt">Subpackage referring to 2</span></th>
+		<th><span style="font-size:13.7pt">sub-package referring to 2</span></th>
 		<th><span style="font-size:13.7pt">Merged function name</span></th>
 	</tr>
 	<tr>
@@ -389,11 +552,11 @@ so it is worth describing their origins, referring to the latest version in whic
 	- **Climate Data Utils**: `cdo_tools`
 	- **Xarray Utils**: `patterns` and `data_manipulation`
 
-- Rename module `date_and_time_operators` to `date_and_time_utils` to emphasize <i>utility</i> or <u>tool</i> concept; originally in subpackage `time_handling`, no displacement.
+- Rename module `date_and_time_operators` to `date_and_time_utils` to emphasize <i>utility</i> or <u>tool</i> concept; originally in sub-package `time_handling`, no displacement.
 
 ### Removed
 
-- Delete subpackage `varied_documentation` as its content has been relocated to a local directory.
+- Delete sub-package `varied_documentation` as its content has been relocated to a local directory.
 
 ---
 
@@ -401,11 +564,11 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add the following directories and modules in `statistics` subpackage:
+- Add the following directories and modules in `statistics` sub-package:
 	- **Core Statistics**: 
 		- `signal_processing`: signal processing methods (signal whitening, low-pass, high-pass, and band-pass filters) 
 
-- Add the following directories and modules in `utilities` subpackage:
+- Add the following directories and modules in `utilities` sub-package:
 	- **Pandas Utils**: 
 		- `conversions`: module designed to handle pandas object type conversions, starting with DataFrame to NumPy`s structured array conversion.
 		- `data_manipulation`: higher-level data manipulations using pandas.
@@ -425,10 +588,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>signal_whitening</th>
@@ -488,10 +651,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>create_ds_component</th>
@@ -541,10 +704,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>get_netcdf_file_dir_list</th>
@@ -586,10 +749,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>find_coordinate_variables</th>
@@ -679,10 +842,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>grib2netcdf</th>
@@ -722,7 +885,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Removed
 
-- Once every addition and changes performed regarding **Xarray Utils**, removed subpackage `netcdf_handler`.
+- Once every addition and changes performed regarding **Xarray Utils**, removed sub-package `netcdf_handler`.
 
 ---
 
@@ -730,7 +893,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add the following directories and modules in `statistics` subpackage:
+- Add the following directories and modules in `statistics` sub-package:
 	- **Core Statistics**: 
 		- `approximation_techniques`: for methods focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
 		- `curve_fitting`: for methods like polynomial fitting and other curve fitting techniques.
@@ -744,16 +907,16 @@ so it is worth describing their origins, referring to the latest version in whic
 
 **Methods**
 
-1. In `statistics` subpackage:
+1. In `statistics` sub-package:
 
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>polynomial_fitting</th>
@@ -782,16 +945,16 @@ so it is worth describing their origins, referring to the latest version in whic
 	</tr>
 </table>
 	
-2. To `time_handling` subpackage:
+2. To `time_handling` sub-package:
 
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>infer_full_period_of_time</th>
@@ -835,7 +998,7 @@ so it is worth describing their origins, referring to the latest version in whic
 	</tr>
 </table>
 
-3. To `utilities/pandas_utils` subpackage (depth level 2)
+3. To `utilities/pandas_utils` sub-package (depth level 2)
 <br>
 
 3.1  To `conversions.py` module
@@ -844,10 +1007,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>df_to_structured_array</th>
@@ -866,10 +1029,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>create_pivot_table</th>
@@ -952,10 +1115,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>csv2df</th>
@@ -1045,10 +1208,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>---</th>
@@ -1078,7 +1241,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Removed
 
-- Once every addition and changes performed, removed subpackage `pandas_data_frames`.
+- Once every addition and changes performed, removed sub-package `pandas_data_frames`.
 
 ---
 
@@ -1086,7 +1249,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-1. Subpackage `climate_data_utils`:
+1. sub-package `climate_data_utils`:
 
 - Handles operations focused on data manipulation for climate datasets, with a special focus on file management, downloads, and plotting.
 - The following content has been added, each supporting specific utilities:
@@ -1117,10 +1280,10 @@ so it is worth describing their origins, referring to the latest version in whic
 * `weather_software_file_creator`
 	- Contains functions for creating weather software files based on processed climate data, ensuring compatibility with various weather analysis tools.
 
-<u>**Further subpackages**</u>
+<u>**Further sub-packages**</u>
 
 * `complementary-to_remodule`
-	- A subpackage containing various auxiliary and complementary functions aimed at climate data analysis and visualization. It includes:
+	- A sub-package containing various auxiliary and complementary functions aimed at climate data analysis and visualization. It includes:
 		- <b>auxiliary_functions</b>: Utility functions to assist with common tasks such as file handling, data transformations, and helper routines.
 		- <b>ba_mean_and_var</b>: Implements methods to compute bias-adjusted mean and variance from climate data.
 		- <b>ba_mean</b>: Provides functions for calculating bias-adjusted means from climate datasets, allowing for more accurate representation of data characteristics.
@@ -1131,9 +1294,9 @@ so it is worth describing their origins, referring to the latest version in whic
 		- <b>input_data</b> A folder for storing downloaded climate data, ensuring organised access to data files.
 
 
-2. Subpackage `statistics`:
+2. sub-package `statistics`:
 
-- Introduced a new subpackage `statistics` to encapsulate numerical and statistical methods.,<br>
+- Introduced a new sub-package `statistics` to encapsulate numerical and statistical methods.,<br>
   aiming for modularity and organization across general and field-specific domains.
 
 - **Core Modules:**
@@ -1145,7 +1308,7 @@ so it is worth describing their origins, referring to the latest version in whic
 	- **Signal Processing:** Includes signal filtering, whitening, and band-pass filters.
 	- **Statistical Testing:** Initial support for statistical tests.
 
-- **Improved Structure:** Consolidated statistical logic from various modules under a unified subpackage, with plans for expanding into domain-specific methods.
+- **Improved Structure:** Consolidated statistical logic from various modules under a unified sub-package, with plans for expanding into domain-specific methods.
 
 
 3. `statistical_tests` as a `core` module:
@@ -1158,17 +1321,17 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Changed
 
-- Many functions have been moved out from the modules in the old `weather_and_climate` subpackage to `statistics`.
+- Many functions have been moved out from the modules in the old `weather_and_climate` sub-package to `statistics`.
 - Information about the original module and new function name and location is displayed next:
   
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>calculate_WSDI</th>
@@ -1268,10 +1431,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>periodic_statistics</th>
@@ -1319,10 +1482,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>autocorrelate</th>
@@ -1338,10 +1501,10 @@ so it is worth describing their origins, referring to the latest version in whic
 	<tr>
 		<th><span style="font-size:13.7pt">Original function name</span></th>
 		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original subpackage path</span></th>
+		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
 		<th><span style="font-size:13.7pt">New function name</span></th>
 		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New subpackage path</span></th>
+		<th><span style="font-size:13.7pt">New sub-package path</span></th>
 	</tr>
 	<tr>
 		<th>get_1hour_time_step_data</th>
@@ -1373,7 +1536,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 5. Rest of the content:
 
-- The following content has been moved to the new subpackage `climate_data_utils`:
+- The following content has been moved to the new sub-package `climate_data_utils`:
 
 1. **Modules**:
 	* `cdo_tools`
@@ -1386,13 +1549,13 @@ so it is worth describing their origins, referring to the latest version in whic
 	* `netcdf_handler`
 	* `weather_software_file_creator`
 	
-2. **Further Subpackages**:
+2. **Further sub-packages**:
 	* `data_downloads`
 	* `complementary-to_remodule`
 
 ### Removed
 
-- Once every operation above performed, delete subpackage `weather_and_climate`.
+- Once every operation above performed, delete sub-package `weather_and_climate`.
 
 ---
 
@@ -1449,7 +1612,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Changed
 
-- Delete part of the file name `arrays_` contained in all modules of the subpackage `arrays_and_lists`,<br>
+- Delete part of the file name `arrays_` contained in all modules of the sub-package `arrays_and_lists`,<br>
   then delete all old-named modules.
 - Module `climate_statistics`: refactor the following methods to improve performance, readability and maintainability:
 	* `periodic_statistics`
@@ -1605,7 +1768,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Created a subpackage for JSON functionalities.
+- Created a sub-package for JSON functionalities.
 
 ### Changed
 
@@ -1632,7 +1795,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Several subpackages for various utility functions and modules.
+- Several sub-packages for various utility functions and modules.
 
 ### Changed
 
@@ -1703,7 +1866,6 @@ so it is worth describing their origins, referring to the latest version in whic
 ---
 
 ## [v2.0.0] - 2024-06-10
-
 
 ### Added
 - Add module for climate and environment data manipulation and extraction.
