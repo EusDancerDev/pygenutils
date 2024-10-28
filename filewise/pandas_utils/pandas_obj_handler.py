@@ -14,7 +14,7 @@ import pandas as pd
 
 from pyutils.arrays_and_lists.data_manipulation import find_duplicated_elements
 from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
-from pyutils.strings.string_handler import ext_adder, find_substring_index, get_obj_specs
+from pyutils.strings.string_handler import append_ext, find_substring_index, get_obj_specs
 from pyutils.utilities.file_operations.ops_handler import remove_files
 from pyutils.utilities.file_operations.path_utils import find_files
 from pyutils.utilities.introspection_utils import get_caller_method_args
@@ -258,7 +258,7 @@ def save2excel(file_path,
     lne = len(file_ext)
     
     if lne == 0:
-        file_path = ext_adder(file_path, extensions[1])
+        file_path = append_ext(file_path, extensions[1])
     
     # Name and parent #
     file_name = get_obj_specs(file_path, obj_spec_key="name")
@@ -539,7 +539,7 @@ def save2csv(file_path,
         lne = len(file_ext)
         
         if lne == 0:
-            file_path = ext_adder(file_path, extensions[0])
+            file_path = append_ext(file_path, extensions[0])
         
         
         # Name and parent #

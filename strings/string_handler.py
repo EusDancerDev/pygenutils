@@ -624,7 +624,7 @@ def add_to_path(path2tweak, str2add):
     return modify_obj_specs(path2tweak, obj2change, str2add=str2add)
 
 
-def ext_adder(path2tweak, extension):
+def append_ext(path2tweak, extension):
     """
     Adds an extension to the path if it does not already have one.
 

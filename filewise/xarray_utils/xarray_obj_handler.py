@@ -12,7 +12,7 @@ import xarray as xr
 #-----------------------#
 
 from pyutils.pandas_data_frames.data_frame_handler import save2csv
-from pyutils.string_handler.string_handler import ext_adder, get_obj_specs
+from pyutils.string_handler.string_handler import append_ext, get_obj_specs
 from pyutils.utilities.xarray_utils.patterns import find_coordinate_variables, find_time_dimension
 
 #-------------------------#
@@ -164,7 +164,7 @@ def save2nc(file_name, data=None, file_format="NETCDF4",
     
         # Add netCDF file extension ('.nc') if not present
         if get_obj_specs(file_name, "ext") != f".{extensions[0]}":
-            file_name = ext_adder(file_name, extensions[0])
+            file_name = append_ext(file_name, extensions[0])
         
         # Save to file
         _save_ds_as_nc(ds, file_name, global_attrs_dict)

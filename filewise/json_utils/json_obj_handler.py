@@ -14,7 +14,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings.string_handler import ext_adder, get_obj_specs
+from pyutils.strings.string_handler import append_ext, get_obj_specs
 
 #------------------#
 # Define functions #
@@ -87,7 +87,7 @@ def serialise_dict_to_json(dictionary,
     if out_file_path is not None:
         # Determine the output file path
         if not os.path.splitext(out_file_path)[1]:
-            out_file_path = ext_adder(out_file_path, extensions[0])
+            out_file_path = append_ext(out_file_path, extensions[0])
 
         try:
             # Check if file already exists

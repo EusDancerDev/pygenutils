@@ -20,7 +20,7 @@ from ibm_cloud_sdk_core.authenticators import IAMAuthenticator
 #-----------------------#
 
 from pyutils.utilities.file_operations.path_utils import find_files
-from pyutils.strings.string_handler import ext_adder, modify_obj_specs
+from pyutils.strings.string_handler import append_ext, modify_obj_specs
 from pyutils.strings.information_output_formatters import print_format_string
 
 #------------------#
@@ -30,7 +30,7 @@ from pyutils.strings.information_output_formatters import print_format_string
 def save_transcription_in_file(transcript, relative_path_noext, ext="txt"):
     
     # Add the extension to the input file #
-    relative_path = ext_adder(relative_path_noext, ext)
+    relative_path = append_ext(relative_path_noext, ext)
     
     # Create the file object #
     file_object = open(relative_path, "w")
