@@ -5,7 +5,7 @@
 **Note**
 
 This program is an application of the main module 'pdf_tools',
-and it uses the 'pdf_file_tweaker' attributes and/or functions.
+and it uses the 'file_tweaker' attributes and/or functions.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 """
@@ -77,7 +77,7 @@ input_path_n --> type string --> it corresponds this object:
  output_path_n+m : cat_str_n+m}
 
 
-In order to maintain the required variable names to use the 'pdf_file_tweaker'
+In order to maintain the required variable names to use the 'file_tweaker'
 method, instead of centralizing under a generic name,
 the program is splitted into three blocks, each for a case usage,
 where at the end of it the method is implemented.
@@ -98,7 +98,7 @@ cat_out_str = f"{cat_str}; {output_path_str}"
 
 # For readability purposes, place the method here,
 # alongside with the case usage parameters 
-pdf_file_tweaker(path_str, cat_out_str)
+file_tweaker(path_str, cat_out_str)
 
 #%%
 # 2nd case usage #
@@ -121,7 +121,7 @@ cat_out_dict = {out_path : cat_str
 
 # For readability purposes, place the method here,
 # alongside with the case usage parameters 
-pdf_file_tweaker(path_str, cat_out_dict)
+file_tweaker(path_str, cat_out_dict)
 
 #%%
 # 3rd case usage #
@@ -162,4 +162,4 @@ cat_out_dict_list\
 
 # For readability purposes, place the method here,
 # alongside with the case usage parameters 
-pdf_file_tweaker(path_list, cat_out_dict_list)
+file_tweaker(path_list, cat_out_dict_list)
