@@ -1,16 +1,43 @@
-# Changelog
+# pyutils Changelog
+
+All notable changes to this project will be documented in this file.
+
+---
+
+## [v15.0.0] - 2024-10-29
+
+### Changed
+
+- Current package `pyutils` has been renamed to `pygenutils` to align with the purpose of being a general-tool, Swiss army knife.
+
+- The following sub-packages have been moved out to form separate packages as their own:
+	- `climalab`
+	- `geosptools`
+	- `filewise`
+	- `LinguaLab`
+	- `paramlib`
+	- `statkit`
+	- `test-base_programs`
+		- Will not be a candidate to release, as it consists of programs for testing code snippets
+		
+	- The following sub-packages form a new package:
+		- `data_entry_forms` |
+		- `databases`        | -> `DataOpsHub`
+		- `security`         |
+
+---
 
 ## [v14.0.0] - 2024-10-28
 
 ### Changed
 
-<h3>General</h3>
+<h3>Changes in methods along modules and sub-packages</h3>
 
 **Varnames**
 - Variable name `all_arg_names`, which contains all variables (required and optional) of the caller function, has been renamed to `param_keys`.
 	- All this changes have been applied to all affected modules.
 
-<h3>Specific changes in sub-packages</h3>
+<h3>Specific changes regarding sub-packages</h3>
 
 **Dictionaries**
 - Module `table_formatters`:
@@ -18,7 +45,7 @@
 
 **General File Utils**
 - Module `introspection_utils`:
-	- The following method renamings were made:
+	- The following method renamings have been made:
 	<table>
 		<thead>
 			<tr>
@@ -70,7 +97,7 @@
 
 **Format Converters**
 - Module `file_format_tweaker`:
-	- The following method renamings were made:
+	- The following method renamings have been made:
 	<table>
 		<tr>
 			<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -112,7 +139,7 @@
 
 **Strings**
 - Module `string_handler`:
-	- The following method renamings were made:
+	- The following method renamings have been made:
 	<table>
 		<tr>
 			<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -130,13 +157,38 @@
 
 - All this changes have been applied to all affected modules.
 
+<h3>Changes in **sub-package** names</h3>
+- The following renamings have been performed:
+	<table>
+		<thead>
+			<tr>
+				<th><span style="font-size:13.7pt">Old package name</span></th>
+				<th><span style="font-size:13.7pt">New package name</span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>geospatial_tools</td>
+				<td>geosptools</td>
+			</tr>
+			<tr>
+				<td>parameters_and_constants</td>
+				<td>paramlib</td>
+			</tr>
+			<tr>
+				<td>multilingual_text_processing</td>
+				<td>LinguaLab</td>
+			</tr>
+		</tbody>
+	</table>
+
 ---
 
 ## [v13.3.2] - 2024-10-25 
 
 ### Changed
 
-<h3>General changes</h3>
+<h3>Changes in methods along modules and sub-packages</h3>
 
 **General**
 - Switched to British English every verb written in American accent. For example:
@@ -152,7 +204,7 @@
 **Climate Data Utils**
 - Module `cdo_tools`:
 	- Refactored multiple CDO processing functions, optimized internal helpers, and updated file handling methods with section headers and internal visibility changes.
-	- The following method renamings were made:
+	- The following method renamings have been made:
 	<table>
 		<tr>
 			<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -173,13 +225,13 @@
 	</table>
 	
 	
-<h3>Specific changes in sub-packages</h3>
+<h3>Specific changes regarding sub-packages</h3>
 
-- The following renamings were made:
+- The following renamings have been made:
 <table>
 	<tr>
-		<th><span style="font-size:13.7pt">Old sub-package name</span></th>
-		<th><span style="font-size:13.7pt">New sub-package name</span></th>
+		<th><span style="font-size:13.7pt">Old package name</span></th>
+		<th><span style="font-size:13.7pt">New package name</span></th>
 	</tr>
 	<tr>
 		<th>climate_data_utils</th>
@@ -212,7 +264,7 @@
 <h4>Module <i>file_and_directory_handler</i></h4>
 
 - Refactored and optimized file and directory operations; consolidated methods, introduced helper functions, and removed shell command dependencies.
-- The following method renamings were made:
+- The following method renamings have been made:
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -274,7 +326,7 @@
 <h4>Module <i>file_and_directory_paths</i></h4>
 
 - Refactored file and directory path search logic; introduced switch-case for match_type, shortened method names, and optimized code.
-- The following methods were merged and renamed:
+- The following methods have been merged and renamed:
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">First function</span></th>
@@ -312,7 +364,7 @@
 <h4>Module <i>conversions</i></h4>
 
 - Optimized data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
-- The following method renamings were made:
+- The following method renamings have been made:
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -336,7 +388,7 @@
 
 <h4>'file_operations' sub-package</h4>
 
-- The following **module** renamings were made:
+- The following **module** renamings have been made:
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -355,7 +407,7 @@
 <h4>'scripts' sub-package</h4>
 
 - Contains application programs of several methods in the modules of sub-package `file_operations`:
-- The following **module** renamings were made:
+- The following **module** renamings have been made:
 <table>
 	<tr>
 		<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -416,7 +468,7 @@
 **Xarray Utils**
 - Module `data_manipulation`:
 	- Shortened method/variable names, optimized code, added docstrings.
-	- The following method renamings were made:
+	- The following method renamings have been made:
 	<table>
 		<tr>
 			<th><span style="font-size:13.7pt">Old function name</span></th>
@@ -492,8 +544,8 @@
 **`date_and_time_utils`**
 - Merged and optimised methods for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: although every method has been moved to this module, except in one case the method pairs were named identically,<br>
-so it is worth describing their origins, referring to the latest version in which these moves were performed (to this module).
+- <span style="font-weight:bold; color:maroon">NOTE</span>: although every method has been moved to this module, except in one case the method pairs have been named identically,<br>
+so it is worth describing their origins, referring to the latest version in which these moves have been performed (to this module).
 
 <table>
 	<tr>
