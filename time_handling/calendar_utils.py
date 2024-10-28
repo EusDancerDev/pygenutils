@@ -19,7 +19,7 @@ from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
 from pyutils.strings.string_handler import modify_obj_specs
 from pyutils.statkit.core import interpolation_methods
 from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
-from pyutils.filewise.introspection_utils import get_obj_type_str
+from pyutils.filewise.introspection_utils import get_type_str
 from pyutils.filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 
 # Create aliases #
@@ -90,11 +90,11 @@ def standardise_calendar(obj,
     For Excel files, data will be saved with separate sheets for each variable (if applicable).
     """
 
-    obj_type = get_obj_type_str(obj, lowercase=True)
+    obj_type = get_type_str(obj, lowercase=True)
     
     # Handling pandas dataframes #
     if obj_type == "pandas" \
-        or (obj_type == "list" and all(get_obj_type_str(element) == "dataframe")
+        or (obj_type == "list" and all(get_type_str(element) == "dataframe")
             for element in obj):
         
         obj = np.atleast_1d(obj)  # Ensure obj is list-like
@@ -162,7 +162,7 @@ def standardise_calendar(obj,
     
     # Handling xarray datasets or data arrays #
     elif obj_type in ["dataarray", "dataset"] \
-        or (obj_type == "list" and all(get_obj_type_str(element) in ["dataarray", "dataset"] 
+        or (obj_type == "list" and all(get_type_str(element) in ["dataarray", "dataset"] 
                                        for element in obj)):
         
         import xarray as xr

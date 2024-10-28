@@ -13,7 +13,7 @@ import pandas as pd
 #-----------------------#
 
 from pyutils.arrays_and_lists.data_manipulation import find_duplicated_elements
-from pyutils.strings.information_output_formatters import format_string, get_obj_type_str
+from pyutils.strings.information_output_formatters import format_string, get_type_str
 from pyutils.strings.string_handler import append_ext, find_substring_index, get_obj_specs
 from pyutils.filewise.file_operations.ops_handler import remove_files
 from pyutils.filewise.file_operations.path_utils import find_files
@@ -626,7 +626,7 @@ def save2csv(file_path,
                 return 0
             
     else:        
-        input_obj_type = get_obj_type_str(data_frame)
+        input_obj_type = get_type_str(data_frame)
         raise TypeError(format_string(unsupported_obj_type_err_str, input_obj_type))
         
         

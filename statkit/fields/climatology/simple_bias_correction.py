@@ -33,7 +33,7 @@ from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string, print_format_string
 from pyutils.statkit.fields.climatology.periodic_climatology_stats import climat_periodic_statkit
-from pyutils.filewise.general.introspection_utils import get_obj_type_str
+from pyutils.filewise.general.introspection_utils import get_type_str
 from pyutils.filewise.xarray_utils.patterns import find_time_dimension
 
 # Create aliases #
@@ -148,8 +148,8 @@ def calculate_and_apply_deltas(observed_series,
     # Determine object type #
     #-#-#-#-#-#-#-#-#-#-#-#-#
     
-    obj_type_observed = get_obj_type_str(observed_series, lowercase=True)
-    obj_type_reanalysis = get_obj_type_str(reanalysis_series, lowercase=True)
+    obj_type_observed = get_type_str(observed_series, lowercase=True)
+    obj_type_reanalysis = get_type_str(reanalysis_series, lowercase=True)
     
     # Identify the time dimension #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#

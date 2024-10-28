@@ -5,7 +5,7 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.filewise.general.introspection_utils import get_obj_type_str
+from pyutils.filewise.general.introspection_utils import get_type_str
 
 #------------------#
 # Define functions #
@@ -41,11 +41,11 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
     # Input object type validation #
     #------------------------------#
     
-    if get_obj_type_str(obj) not in ["dict", "list", "tuple", "ndarray"]:
+    if get_type_str(obj) not in ["dict", "list", "tuple", "ndarray"]:
         raise TypeError("Unsupported object type. "
                         "It must be dict, list, tuple or NumPy array.")
         
-    if (get_obj_type_str(obj) in ["list", "tuple", "ndarray"] and len(obj)) < 2:
+    if (get_type_str(obj) in ["list", "tuple", "ndarray"] and len(obj)) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")
         
     # Sort dictionaries #
@@ -98,7 +98,7 @@ def merge_dictionaries(dict_list):
     """
 
     # Validate the input type
-    obj_type = get_obj_type_str(dict_list)
+    obj_type = get_type_str(dict_list)
     if obj_type not in ["list", "tuple", "ndarray"]:
         raise TypeError("Unsupported object type. Must be list, tuple, or NumPy array.")
     

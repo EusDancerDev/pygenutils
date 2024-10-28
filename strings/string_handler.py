@@ -19,7 +19,7 @@ import re
 #-----------------------#
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.filewise.general.introspection_utils import get_obj_type_str, get_caller_method_args
+from pyutils.filewise.general.introspection_utils import get_type_str, get_caller_method_args
 
 #------------------#
 # Define functions #
@@ -116,12 +116,12 @@ def find_substring_index(string,
             return string.find(substring)
 
     
-    elif get_obj_type_str(string) in ["list", "ndarray", "tuple"]:
+    elif get_type_str(string) in ["list", "ndarray", "tuple"]:
         if isinstance(substring, str):
     
             # Simple search without advanced features
             if not advanced_search:
-                if get_obj_type_str(string) == "ndarray":
+                if get_type_str(string) == "ndarray":
                     match_indices = char.find(string, substring, start=start, end=end)
                     return [idx for idx in match_indices if idx != -1]
                 
@@ -141,7 +141,7 @@ def find_substring_index(string,
       
                 return [n for n in match_indices if n != -1]
                 
-        elif get_obj_type_str(substring) in ["list", "ndarray", "tuple"]:
+        elif get_type_str(substring) in ["list", "ndarray", "tuple"]:
             if not advanced_search:
                 return char.find(string, substring, start=start, end=end)  
             else:   
@@ -157,7 +157,7 @@ def find_substring_index(string,
     # Handle case: search in pandas Series #
     #--------------------------------------#
     
-    elif get_obj_type_str(string) == "Series":
+    elif get_type_str(string) == "Series":
         try:
             match_series = string.str.contains(substring)
         except AttributeError:
@@ -274,7 +274,7 @@ def _advanced_pattern_searcher(string, substring,
         all_matches
     ]
     
-    if get_obj_type_str(string) in ["list", "ndarray", "tuple"]:        
+    if get_type_str(string) in ["list", "ndarray", "tuple"]:        
         match_obj_spec = vectorize(_return_search_obj_spec)(*arg_list)
     else:
         match_obj_spec = _return_search_obj_spec(*arg_list)
@@ -700,7 +700,7 @@ def substring_replacer(string, substr2find, substr2replace, count_std=-1,
       for all supported input types, enabling straightforward substring replacements.
     """
     
-    obj_type = get_obj_type_str(string, lowercase=True)
+    obj_type = get_type_str(string, lowercase=True)
     
     if obj_type not in str_repl_obj_types:
         raise TypeError("Input object must be of type 'string', 'list', "

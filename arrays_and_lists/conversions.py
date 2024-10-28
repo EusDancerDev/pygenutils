@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.filewise.introspection_utils import get_obj_type_str
+from pyutils.filewise.introspection_utils import get_type_str
 
 #------------------#
 # Define functions #
@@ -55,7 +55,7 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
         If specified columns are not found in pandas DataFrame.
     """
     # Get input object's type
-    obj_type = get_obj_type_str(obj_data)
+    obj_type = get_type_str(obj_data)
     
     # Handle pandas DataFrames
     if obj_type == "DataFrame":
@@ -236,7 +236,7 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     that require string input.
     """
     # Get input object type 
-    obj_type = get_obj_type_str(obj)
+    obj_type = get_type_str(obj)
     
     # Validate input type #
     if obj_type not in ["list", "ndarray", "DataFrame", "Series"]:

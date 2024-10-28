@@ -12,7 +12,7 @@ import os
 #-----------------------#
 
 from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.strings.string_handler import get_obj_type_str
+from pyutils.strings.string_handler import get_type_str
 from pyutils.strings.information_output_formatters import format_string
 
 # %%
@@ -122,7 +122,7 @@ def os_system_helper(command, capture_output):
     
     # Command and class #
     if not isinstance(command, str):
-        obj_type = get_obj_type_str(command)
+        obj_type = get_type_str(command)
         raise TypeError(f"Expected str, not '{obj_type}'.")
      
     # Output capturing #
@@ -163,7 +163,7 @@ def os_popen_helper(command, capture_output):
     
     # Command and class #
     if not isinstance(command, str):
-        obj_type = get_obj_type_str(command)
+        obj_type = get_type_str(command)
         raise TypeError(f"Expected str, not '{obj_type}'.")
         
     # Output capturing #

@@ -25,7 +25,7 @@ from pyutils.strings.string_handler import find_substring_index
 from pyutils.time_handling.time_formatters import datetime_obj_converter,\
                                                   parse_float_time, \
                                                   parse_time_string
-from pyutils.filewise.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.introspection_utils import get_caller_method_args, get_type_str
 
 #------------------#
 # Define functions #
@@ -317,7 +317,7 @@ def _time_to_radians(t, convert_to="datetime", time_fmt_str=None):
         try:
             dt_obj = datetime_obj_converter(t, convert_to)
         except Exception as e:
-            obj_type = get_obj_type_str(t)
+            obj_type = get_type_str(t)
             convert_to = get_caller_method_args()[1]
             raise RuntimeError("Error during parse of object type "
                                f"'{obj_type}' to '{convert_to}': {e}.")

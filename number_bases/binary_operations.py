@@ -14,7 +14,7 @@ bytes objects to integers, and decoding bytes objects back to string
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings.information_output_formatters import get_obj_type_str
+from pyutils.strings.information_output_formatters import get_type_str
 
 #------------------#
 # Define functions #
@@ -170,8 +170,8 @@ def validate_input(obj, expected_type):
     TypeError: If the object is not of the expected type.
     """
     if not isinstance(obj, expected_type):
-        obj_type = get_obj_type_str(obj)
-        expected_type_str = get_obj_type_str(expected_type)
+        obj_type = get_type_str(obj)
+        expected_type_str = get_type_str(expected_type)
         raise TypeError(f"Expected '{expected_type_str}', got '{obj_type}'.")
 
 

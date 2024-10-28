@@ -44,7 +44,7 @@ from pyutils.pandas_data_frames.data_frame_handler import find_date_key
 from pyutils.parameters_and_constants import global_parameters
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.introspection_utils import get_caller_method_args, get_type_str
 from pyutils.statkit.core.time_series import periodic_statkit
 from pyutils.time_handling.time_formatters import datetime_obj_converter
 from pyutils.filewise.xarray_utils.patterns import find_time_dimension
@@ -112,7 +112,7 @@ def climat_periodic_statkit(obj,
     param_keys = get_caller_method_args()
     seas_months_arg_pos = find_substring_index(param_keys, "season_months")
     
-    seas_mon_arg_type = get_obj_type_str(season_months)
+    seas_mon_arg_type = get_type_str(season_months)
     
     tf_idx = time_freqs2.index(time_freq)
     if tf_idx == -1:
@@ -128,7 +128,7 @@ def climat_periodic_statkit(obj,
     # Determine object type #
     #-#-#-#-#-#-#-#-#-#-#-#-#
     
-    obj_type = get_obj_type_str(obj, lowercase=True)
+    obj_type = get_type_str(obj, lowercase=True)
     
     # Identify the time dimension #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#

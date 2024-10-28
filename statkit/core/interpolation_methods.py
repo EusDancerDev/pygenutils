@@ -13,7 +13,7 @@ import scipy.interpolate as scintp
 # Import custom modules #
 #-----------------------#
 
-from pyutils.filewise.general.introspection_utils import get_caller_method_args, get_obj_type_str
+from pyutils.filewise.general.introspection_utils import get_caller_method_args, get_type_str
 
 #------------------#
 # Define functions #
@@ -129,7 +129,7 @@ def interp_np(data, method='linear', order=None, kind="nearest", fill_value="ext
     fillval_arg_pos = param_keys.index("fill_value")
     
     # Input data type #
-    obj_type = get_obj_type_str(data)
+    obj_type = get_type_str(data)
     if obj_type != "ndarray":
         raise TypeError("Unsupported data type. The date provided must be a NumPy array.")
     
@@ -144,7 +144,7 @@ def interp_np(data, method='linear', order=None, kind="nearest", fill_value="ext
                         f"must be an integer or one of {kind_options}.")
         
     # Fill value (scipy's interp1D class) #
-    fillval_type = get_obj_type_str(fill_value)
+    fillval_type = get_type_str(fill_value)
     if fillval_type not in fillval_types or fill_value != "extrapolate":
         raise TypeError(f"Fill value (position {fillval_arg_pos}) "
                         f"must be one of {fillval_types} or 'extrapolate'.")
@@ -204,7 +204,7 @@ def interp_pd(data, method='linear', order=None, axis=0):
     #####################
     
     # Object type #
-    obj_type = get_obj_type_str(data, lowercase=True)
+    obj_type = get_type_str(data, lowercase=True)
     
     if obj_type not in ["dataframe", "series"]:
         raise TypeError("Unsupported data type. The date provided must be a "
@@ -252,7 +252,7 @@ def interp_xr(data, method='linear', order=None, dim=None):
     #####################
     
     # Object type #
-    obj_type = get_obj_type_str(data, lowercase=True)
+    obj_type = get_type_str(data, lowercase=True)
     if obj_type not in ["dataset", "dataarray"]:
         raise TypeError("Unsupported data type. The date provided must be a "
                         "xarray.Dataset or xarray.DataArray object.")

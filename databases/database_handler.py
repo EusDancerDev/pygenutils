@@ -21,7 +21,7 @@ from pyutils.pandas_data_frames.data_frame_handler import csv2df, excel_handler,
 from pyutils.strings.information_output_formatters import format_string
 from pyutils.strings.string_handler import find_substring_index, get_obj_specs
 
-from pyutils.filewise.introspection_utils import get_obj_type_str, get_func_name
+from pyutils.filewise.introspection_utils import get_type_str, get_func_name
 
 from pyutils.parameters_and_constants.global_parameters import data_uploading_error_dict
 
@@ -377,7 +377,7 @@ def load_file_to_sql(input_file_list,
             raise ValueError(format_string(unsupported_dtype_err_str, file))
         except TypeError:
             # Handle TypeError for incorrect dtype_dict type
-            dtype_arg_type = get_obj_type_str(dtype_dict)
+            dtype_arg_type = get_type_str(dtype_dict)
             arg_list_typeerror = [file, arg_names[dtype_dict_arg_pos], dtype_arg_type]
             raise TypeError(incorrect_arg_type_str, arg_list_typeerror)
         

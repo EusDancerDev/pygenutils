@@ -30,7 +30,7 @@ Functions
 #-----------------------#
 
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_obj_type_str
+from pyutils.filewise.introspection_utils import get_type_str
 
 #-------------------------#
 # Define custom functions #
@@ -68,12 +68,12 @@ def format_string(string2format, arg_obj):
     num_brackets = len(bracket_index_list)
     
     try:               
-        if (get_obj_type_str(arg_obj) in main_input_dtype_list_strfmt\
+        if (get_type_str(arg_obj) in main_input_dtype_list_strfmt\
             and num_brackets >= 2):
             formatted_string = string2format.format(*arg_obj)
             
-        elif ((get_obj_type_str(arg_obj) in main_input_dtype_list_strfmt and num_brackets < 2)\
-            or (get_obj_type_str(arg_obj) not in main_input_dtype_list_strfmt\
+        elif ((get_type_str(arg_obj) in main_input_dtype_list_strfmt and num_brackets < 2)\
+            or (get_type_str(arg_obj) not in main_input_dtype_list_strfmt\
             and not isinstance(arg_obj, dict))):
             formatted_string = string2format.format(arg_obj)
         

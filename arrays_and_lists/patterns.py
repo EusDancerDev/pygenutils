@@ -17,7 +17,7 @@ from pandas import Series
 
 from pyutils.arrays_and_lists.data_manipulation import sort_1D_arr_rudimentary
 from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_obj_type_str, \
+from pyutils.filewise.introspection_utils import get_type_str, \
                                                   get_caller_method_args
 
 #------------------#
@@ -157,7 +157,7 @@ def detect_subarray_in_array(obj, test_obj,
             return is_test_obj_contained
             
         
-    elif get_obj_type_str(obj) == "Series":        
+    elif get_type_str(obj) == "Series":        
         if not reverse_arg_order:
             is_test_obj_contained = obj.isin(test_obj)
         else:

@@ -19,7 +19,7 @@ format_string = information_output_formatters.format_string
 format_table_from_lists = information_output_formatters.format_table_from_lists
 
 get_caller_method_args = introspection_utils.get_caller_method_args
-get_obj_type_str = introspection_utils.get_obj_type_str
+get_type_str = introspection_utils.get_type_str
 
 remove_files = ops_handler.remove_files
 find_files = path_utils.find_files
@@ -93,7 +93,7 @@ def file_tweaker(path, cat_obj):
                 tweak_pages(p, cat_str, out_path)
     else:
         param_keys = get_caller_method_args()
-        type_param1, type_param2 = get_obj_type_str(path), get_obj_type_str(cat_obj)
+        type_param1, type_param2 = get_type_str(path), get_type_str(cat_obj)
         type_combo_list1 = [["str", "str"], ["str", "dict"], ["list", "list"]]
         
         raise TypeError(format_string(format_string(type_error_str, (type_param1, type_param2)), 
@@ -144,7 +144,7 @@ def file_compressor(in_path, out_path=None):
         out_path = [op or "compressed_doc" for op in out_path]
     else:
         param_keys = get_caller_method_args()
-        type_param1, type_param2 = get_obj_type_str(in_path), get_obj_type_str(out_path)
+        type_param1, type_param2 = get_type_str(in_path), get_type_str(out_path)
         type_combo_list2 = [["str", "str"], ["str", "None"], ["list", "list"]]
         
         raise TypeError(format_string(format_string(type_error_str, (type_param1, type_param2)), 
