@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.0.0] - 2024-10-29
+## [v15.0.0] - 2024-10-30
 
 ### Changed
 
@@ -24,6 +24,8 @@ All notable changes to this project will be documented in this file.
 		- `data_entry_forms` |
 		- `databases`        | -> `DataOpsHub`
 		- `security`         |
+		
+- Once all above changes made, absolutely all imports have been updated to match the package where a sub-package or module is.
 
 ---
 
