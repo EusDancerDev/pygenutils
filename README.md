@@ -1,6 +1,6 @@
-# PyGenUtils
+# pygenutils
 
-**PyGenUtils** is a versatile Python utility library that provides tools for handling data, performing array operations, processing media, and more. Originally created on April 16, 2024, and reimagined on June 10, 2024, PyGenUtils builds on its predecessor, *pytools.old*, with significant performance and usability enhancements.
+**pygenutils** is a versatile Python utility library that provides tools for handling data, performing array operations, processing media, and more. Originally created on April 16, 2024, and reimagined on June 10, 2024, pygenutils builds on its predecessor, *pytools.old*, with significant performance and usability enhancements.
 
 ## Project History
 
@@ -18,7 +18,7 @@ This project continues the functionality of *pytools.old*, which underwent a com
 
 ## Key Features and Improvements
 
-PyGenUtils offers a diverse set of modules, each tailored for specific tasks:
+pygenutils offers a diverse set of modules, each tailored for specific tasks:
 
 - **Array and List Operations**: 
   - Tools for data manipulation, conversions, and mathematical operations on arrays and lists.
