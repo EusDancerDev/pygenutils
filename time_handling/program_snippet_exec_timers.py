@@ -15,9 +15,9 @@ import timeit
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings import information_output_formatters, string_handler
-from pyutils.time_formatters import parse_float_time
-from pyutils.filewise.introspection_utils import get_caller_args
+from pygenutils.strings import information_output_formatters, string_handler
+from pygenutils.time_formatters import parse_float_time
+from filewise.general.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#

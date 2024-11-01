@@ -16,10 +16,10 @@ import os
 # Import custom modules #
 #-----------------------#
 
-from pyutils.operative_systems.os_operations import run_system_command, exit_info
-from pyutils.strings import information_output_formatters
-from pyutils.time_handling.time_formatters import parse_time_string
-from pyutils.filewise.introspection_utils import get_caller_args
+from pygenutils.operative_systems.os_operations import run_system_command, exit_info
+from pygenutils.strings import information_output_formatters
+from pygenutils.time_handling.time_formatters import parse_time_string
+from filewise.general.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#

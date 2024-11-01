@@ -18,8 +18,8 @@ import re
 # Import custom modules # 
 #-----------------------#
 
-from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.filewise.general.introspection_utils import get_type_str, get_caller_args
+from paramlib.parameters_and_constants.global_parameters import filesystem_context_modules
+from filewise.general.introspection_utils import get_type_str, get_caller_args
 
 #------------------#
 # Define functions #

@@ -11,9 +11,9 @@ import os
 # Import custom modules # 
 #-----------------------#
 
-from pyutils.parameters_and_constants.global_parameters import filesystem_context_modules
-from pyutils.strings.string_handler import get_type_str
-from pyutils.strings.information_output_formatters import format_string
+from paramlib.parameters_and_constants.global_parameters import filesystem_context_modules
+from pygenutils.strings.string_handler import get_type_str
+from pygenutils.strings.information_output_formatters import format_string
 
 # %%
 

@@ -15,9 +15,9 @@ from pandas import Series
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import sort_1D_arr_rudimentary
-from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_type_str, \
+from pygenutils.arrays_and_lists.data_manipulation import sort_1D_arr_rudimentary
+from pygenutils.strings.string_handler import find_substring_index
+from filewise.general.introspection_utils import get_type_str, \
                                                   get_caller_args
 
 #------------------#

@@ -29,8 +29,8 @@ Functions
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_type_str
+from pygenutils.strings.string_handler import find_substring_index
+from filewise.general.introspection_utils import get_type_str
 
 #-------------------------#
 # Define custom functions #

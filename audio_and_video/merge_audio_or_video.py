@@ -13,7 +13,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import custom modules #
 #-----------------------#
 
-from pyutils.audio_and_video.audio_and_video_manipulation import merge_audio_or_video_files
+from pygenutils.audio_and_video.audio_and_video_manipulation import merge_audio_or_video_files
 
 #-------------------#
 # Define parameters #

@@ -19,13 +19,13 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import select_elements
-from pyutils.strings.information_output_formatters import format_string, print_format_string
-from pyutils.strings.string_handler import find_substring_index
-from pyutils.time_handling.time_formatters import datetime_obj_converter,\
+from pygenutils.arrays_and_lists.data_manipulation import select_elements
+from pygenutils.strings.information_output_formatters import format_string, print_format_string
+from pygenutils.strings.string_handler import find_substring_index
+from pygenutils.time_handling.time_formatters import datetime_obj_converter,\
                                                   parse_float_time, \
                                                   parse_time_string
-from pyutils.filewise.introspection_utils import get_caller_args, get_type_str
+from filewise.general.introspection_utils import get_caller_args, get_type_str
 
 #------------------#
 # Define functions #

@@ -11,7 +11,7 @@ import numpy as np
 # Import custom modules #
 #-----------------------#
 
-from pyutils.filewise.introspection_utils import get_type_str
+from filewise.general.introspection_utils import get_type_str
 
 #------------------#
 # Define functions #

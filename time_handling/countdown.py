@@ -12,8 +12,8 @@ from time import sleep
 # Import custom modules #
 #-----------------------#
 
-from pyutils.strings.information_output_formatters import print_format_string
-from pyutils.time_handling.time_formatters import parse_time_string
+from pygenutils.strings.information_output_formatters import print_format_string
+from pygenutils.time_handling.time_formatters import parse_time_string
 
 #------------------#
 # Define functions #

@@ -15,12 +15,12 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pyutils.arrays_and_lists.data_manipulation import unique_type_objects
-from pyutils.strings.string_handler import modify_obj_specs
-from pyutils.statkit.core import interpolation_methods
-from pyutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
-from pyutils.filewise.introspection_utils import get_type_str
-from pyutils.filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
+from pygenutils.arrays_and_lists.data_manipulation import unique_type_objects
+from pygenutils.strings.string_handler import modify_obj_specs
+from statkit.core import interpolation_methods
+from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
+from filewise.general.introspection_utils import get_type_str
+from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 
 # Create aliases #
 #----------------#
@@ -166,7 +166,7 @@ def standardise_calendar(obj,
                                        for element in obj)):
         
         import xarray as xr
-        from pyutils.filewise.xarray_utils.patterns import find_time_dimension
+        from filewise.xarray_utils.patterns import find_time_dimension
         
         if isinstance(obj, list):
             obj = obj[0]  # Assuming only one object in the list

@@ -5,9 +5,9 @@
 # Import custom modules #
 #-----------------------#
 
-from pyutils.parameters_and_constants.global_parameters import sets_operation_list
-from pyutils.strings.string_handler import find_substring_index
-from pyutils.filewise.introspection_utils import get_caller_args
+from paramlib.parameters_and_constants.global_parameters import sets_operation_list
+from pygenutils.strings.string_handler import find_substring_index
+from filewise.general.introspection_utils import get_caller_args
 
 #-------------------------#
 # Define custom functions #
