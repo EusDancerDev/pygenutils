@@ -2,8 +2,6 @@
 
 All notable changes to this project will be documented in this file.
 
----
-
 ## [v15.0.0] - 2024-10-30
 
 ### Changed
@@ -1919,7 +1917,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ---
 
-## [v2.0.0] - 2024-06-10
+## [v2.0.0] - Initial release - 2024-06-10
 
 ### Added
 - Add module for climate and environment data manipulation and extraction.
