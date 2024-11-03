@@ -17,7 +17,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from paramlib.parameters_and_constants import global_parameters
+from paramlib import global_parameters
 from pygenutils.strings.information_output_formatters import format_string
 from pygenutils.time_handling.date_and_time_operators import get_datetime_object_unit, get_nano_datetime
 from filewise.general.introspection_utils import get_type_str, get_func_name

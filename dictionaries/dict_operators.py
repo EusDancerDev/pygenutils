@@ -6,7 +6,7 @@
 #-----------------------#
 
 from pygenutils.dictionaries.dict_handler import sort_dictionary_by_keys
-from paramlib.parameters_and_constants.global_parameters import basic_four_rules
+from paramlib.global_parameters import basic_four_rules
 
 from functools import reduce
 

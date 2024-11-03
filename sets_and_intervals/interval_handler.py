@@ -13,7 +13,7 @@ from intervaltree import Interval, IntervalTree
 # Import custom modules #
 #-----------------------#
 
-from paramlib.parameters_and_constants.global_parameters import intervals_operation_list
+from paramlib.global_parameters import intervals_operation_list
 from pygenutils.strings.string_handler import find_substring_index
 from filewise.instrospection_utils import get_caller_args
 

@@ -18,7 +18,7 @@ import re
 # Import custom modules # 
 #-----------------------#
 
-from paramlib.parameters_and_constants.global_parameters import filesystem_context_modules
+from paramlib.global_parameters import filesystem_context_modules
 from filewise.general.introspection_utils import get_type_str, get_caller_args
 
 #------------------#

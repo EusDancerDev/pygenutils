@@ -17,7 +17,7 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from paramlib.parameters_and_constants.global_parameters import common_delim_list
+from paramlib.global_parameters import common_delim_list
 from pygenutils.strings import information_output_formatters, string_handler
 from pygenutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
 from filewise.general.introspection_utils import get_caller_args, get_type_str
