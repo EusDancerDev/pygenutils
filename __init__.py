@@ -1,3 +1,6 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+
 # pygenutils/__init__.py
 
 # Import sub-packages to expose them as attributes of the pygenutils package.
