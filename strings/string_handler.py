@@ -5,7 +5,7 @@
 # Import modules # 
 #----------------#
 
-import os.path
+import os
 from pathlib import Path
 from sys import maxsize
 
@@ -453,7 +453,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
     
     # Ensure the provided obj_spec_key is valid #
     param_keys = get_caller_args()
-    osk_arg_pos = find_substring_index(param_keys, "obj_spec_key")
+    osk_arg_pos = param_keys.index("obj_spec_key")
     
     if obj_spec_key not in obj_specs_keylist:
         raise ValueError(f"Invalid '{param_keys[osk_arg_pos]}' key. "
@@ -857,4 +857,3 @@ replace_actions = {
     "dataframe": lambda s, sb2find, sb2replace, _ : DataFrame.replace(s, sb2find, sb2replace),
     "series": lambda s, sb2find, sb2replace, _ : Series.replace(s, sb2find, sb2replace),
 }
-    
