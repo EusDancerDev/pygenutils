@@ -1,22 +1,5 @@
 # Ignore the Spyder project manager directory #
 .spyproject
 
-# Ignore every Jupyter Notebook checkpoint directory in all subdirectories
-**/.ipynb_checkpoints
-
-# Ignore every Python caching directory in all subdirectories #
-**/__pycache__
-
-# Ignore the guidance files #
-
-# Ignore the file to make text changes, if present #
-modify_text_in_file
-
 # Ignore configuration and generated files #
 .chglog
-
-# Ignore commit number calculator by time frequency #
-commit_number.py
-
-# Ignore Copernicus-ECMWF data download directory #
-climate_data_utils/data_downloads/input_data
