@@ -3,6 +3,7 @@
 
 # pygenutils/time_handling/__init__.py
 
+from . import __init__
 from . import calendar_utils
 from . import countdown
 from . import date_and_time_maths

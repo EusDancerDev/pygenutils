@@ -3,6 +3,7 @@
 
 # pygenutils/number_bases/__init__.py
 
+from . import __init__
 from . import base_converters
 from . import binary_operations
 from . import bitwise_operators

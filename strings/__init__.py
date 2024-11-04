@@ -3,5 +3,6 @@
 
 # pygenutils/strings/__init__.py
 
+from . import __init__
 from . import information_output_formatters
 from . import string_handler

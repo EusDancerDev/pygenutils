@@ -3,6 +3,7 @@
 
 # pygenutils/arrays_and_lists/__init__.py
 
+from . import __init__
 from . import conversions
 from . import data_manipulation
 from . import maths
