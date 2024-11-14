@@ -12,4 +12,3 @@ from . import operative_systems
 from . import sets_and_intervals
 from . import strings
 from . import time_handling
-from . import web_scraping
