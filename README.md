@@ -47,6 +47,7 @@ Before installing, please ensure the following dependencies are available on you
     ```bash
     pip3 install more_itertools numpy pandas 
     ```
+    
   - Alternatively, you can install them via Anaconda. Currenlty, the recommended channel from where to install for best practices is `conda-forge`:
     ```bash
     conda install -c conda-forge more_itertools numpy pandas 
