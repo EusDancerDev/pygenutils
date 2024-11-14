@@ -10,7 +10,7 @@ All notable changes to this project will be documented in this file.
 
 **Web Scraping**
 
-- Renamed the subpakcage to `web_automation` for broader web automation use.
+- Renamed the sub-pakcage to `web_automation` for broader web automation use.
 - After performing the operation, moved it from `pygenutils` package to `DataOpsHub` package.
 
 ---
