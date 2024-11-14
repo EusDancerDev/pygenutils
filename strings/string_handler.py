@@ -82,7 +82,7 @@ def find_substring_index(string,
     for handling regular expression matching and result extraction.
     """
     # Argument validation #
-    #---------------------#
+    #######################
     
     param_keys = get_caller_args()
     match_index_pos = param_keys.index("return_match_index")
@@ -102,7 +102,7 @@ def find_substring_index(string,
                          "must be a boolean.")
     
     # Case studies #
-    #--------------#
+    ################
     
     if (isinstance(string, str) and isinstance(substring, str)):
         if advanced_search:
@@ -154,9 +154,7 @@ def find_substring_index(string,
       
             return [n for n in match_indices if n != -1]
                 
-    # Handle case: search in pandas Series #
-    #--------------------------------------#
-    
+    # Handle case: search in pandas Series # 
     elif get_type_str(string) == "Series":
         try:
             match_series = string.str.contains(substring)
@@ -166,9 +164,7 @@ def find_substring_index(string,
             return list(match_series[match_series].index)
        
 
-    # Handle the return based on the result type #
-    #--------------------------------------------#
-    
+    # Handle the return based on the result type #    
     if isinstance(substr_match_obj, list):
         if len(substr_match_obj) == 0:
             return -1
@@ -221,14 +217,18 @@ def _advanced_pattern_searcher(string, substring,
     This method serves as an auxiliary to `find_substring_index`, 
     utilizing `_return_search_obj_spec` for detailed pattern matching and result extraction.
     """    
-    # Determine if the input string is multi-line
+    # Determine if the input string is multi-line #
+    ###############################################
+
     multiline = '\n' in string \
                 if isinstance(string, str) \
                 else any('\n' in s for s in string)
     flags = re.MULTILINE if multiline else 0
 
+    # Case studies #
+    ################
+
     # No option selected #
-    #--------------------#
     if not case_sensitive and not all_matches and not find_whole_words:
         re_obj_str = lambda substring, string: re.search(substring, 
                                                          string, 
@@ -236,7 +236,6 @@ def _advanced_pattern_searcher(string, substring,
         iterator_considered = False
 
     # One option selected #
-    #---------------------#
     elif case_sensitive and not all_matches and not find_whole_words:
         re_obj_str = lambda substring, string: re.search(substring, string, flags)
         iterator_considered = False
@@ -254,7 +253,6 @@ def _advanced_pattern_searcher(string, substring,
         iterator_considered = False
 
     # Two options selected #
-    #----------------------# 
     elif case_sensitive and all_matches and not find_whole_words:
         re_obj_str = lambda substring, string: re.finditer(substring, string, flags)
         iterator_considered = True        
@@ -264,7 +262,8 @@ def _advanced_pattern_searcher(string, substring,
         iterator_considered = False
 
     # Extract the matching information #
-    #----------------------------------#
+    ####################################
+
     arg_list = [
         string, substring, re_obj_str,
         return_match_index, return_match_str,
