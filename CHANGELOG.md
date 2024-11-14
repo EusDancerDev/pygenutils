@@ -2,11 +2,24 @@
 
 All notable changes to this project will be documented in this file.
 
+---
+
+## [v15.3.0] - 2024-11-14
+
+### Changed
+
+**Web Scraping**
+
+- Renamed the subpakcage to `web_automation` for broader web automation use.
+- After performing the operation, moved it from `pygenutils` package to `DataOpsHub` package.
+
+---
+
 ## [v15.2.0] - 2024-11-03 
 
 ### Added
 
-- Added `__init__.py` files to all first-level and deeper sub-packages for enhanced import access
+- Added `__init__.py` files to all first-level and deeper sub-packages for enhanced import access.
 
 ### Changed
 
