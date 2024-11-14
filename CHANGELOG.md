@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 - The following sub-packages have been moved out to form separate packages as their own:
 	- `climalab`
-	- `geosptools`
+ 	- `geosptools`
 	- `filewise`
 	- `LinguaLab`
 	- `paramlib`
@@ -111,34 +111,38 @@ All notable changes to this project will be documented in this file.
 - Module `file_format_tweaker`:
 	- The following method renamings have been made:
 	<table>
-		<tr>
-			<th><span style="font-size:13.7pt">Old function name</span></th>
-			<th><span style="font-size:13.7pt">New function name</span></th>
-		</tr>
-		<tr>
-			<td>check_essential_prog_installation</td>
-			<td>_check_essential_progs (marked as internal)</td>
-		</tr>
-		<tr>
-			<td>pdf_file_tweaker</td>
-			<td>file_tweaker</td>
-		</tr>
-		<tr>
-			<td>pdf_file_compressor</td>
-			<td>file_compressor</td>
-		</tr>
-		<tr>
-			<td>merge_pdf_files</td>
-			<td>merge_files</td>
-		</tr>
-		<tr>
-			<td>eml2pdf</td>
-			<td>eml_to_pdf</td>
-		</tr>
-		<tr>
-			<td>msg2pdf</td>
-			<td>msg_to_pdf</td>
-		</tr>
+		<thead>
+			<tr>
+				<th>Old function name</span></th>
+				<th>New function name</span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>check_essential_prog_installation</td>
+				<td>_check_essential_progs (marked as internal)</td>
+			</tr>
+			<tr>
+				<td>pdf_file_tweaker</td>
+				<td>file_tweaker</td>
+			</tr>
+			<tr>
+				<td>pdf_file_compressor</td>
+				<td>file_compressor</td>
+			</tr>
+			<tr>
+				<td>merge_pdf_files</td>
+				<td>merge_files</td>
+			</tr>
+			<tr>
+				<td>eml2pdf</td>
+				<td>eml_to_pdf</td>
+			</tr>
+			<tr>
+				<td>msg2pdf</td>
+				<td>msg_to_pdf</td>
+			</tr>
+		</tbody>
 	</table>
 
 - All this changes have been applied to all affected modules.
@@ -150,13 +154,15 @@ All notable changes to this project will be documented in this file.
 		- This change has been applied in every affected module.
 
 **Strings**
-- Module `string_handler`:
-	- The following method renamings have been made:
-	<table>
+- Module `string_handler`: the following method renamings have been made:
+<table>
+	<thead>
 		<tr>
-			<th><span style="font-size:13.7pt">Old function name</span></th>
-			<th><span style="font-size:13.7pt">New function name</span></th>
+			<th>Old function name</span></th>
+			<th>New function name</span></th>
 		</tr>
+	</thead>
+	<tbody>
 		<tr>
 			<td>add_str_to_path</td>
 			<td>add_to_path</td>
@@ -165,34 +171,35 @@ All notable changes to this project will be documented in this file.
 			<td>ext_adder</td>
 			<td>append_ext</td>
 		</tr>
-	</table>
+	</tbody>
+</table>
 
 - All this changes have been applied to all affected modules.
 
 <h3>Changes in **sub-package** names</h3>
 - The following renamings have been performed:
-	<table>
-		<thead>
-			<tr>
-				<th><span style="font-size:13.7pt">Old package name</span></th>
-				<th><span style="font-size:13.7pt">New package name</span></th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr>
-				<td>geospatial_tools</td>
-				<td>geosptools</td>
-			</tr>
-			<tr>
-				<td>parameters_and_constants</td>
-				<td>paramlib</td>
-			</tr>
-			<tr>
-				<td>multilingual_text_processing</td>
-				<td>LinguaLab</td>
-			</tr>
-		</tbody>
-	</table>
+<table>
+	<thead>
+		<tr>
+			<th>Old package name</span></th>
+			<th>New package name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>geospatial_tools</td>
+			<td>geosptools</td>
+		</tr>
+		<tr>
+			<td>parameters_and_constants</td>
+			<td>paramlib</td>
+		</tr>
+		<tr>
+			<td>multilingual_text_processing</td>
+			<td>LinguaLab</td>
+		</tr>
+	</tbody>
+</table>
 
 ---
 
@@ -218,22 +225,26 @@ All notable changes to this project will be documented in this file.
 	- Refactored multiple CDO processing functions, optimized internal helpers, and updated file handling methods with section headers and internal visibility changes.
 	- The following method renamings have been made:
 	<table>
-		<tr>
-			<th><span style="font-size:13.7pt">Old function name</span></th>
-			<th><span style="font-size:13.7pt">New function name</span></th>
-		</tr>
-		<tr>
-			<td>get_variable_name_in_file_name</td>
-			<td>_get_varname_in_filename (marked as internal)</td>
-		</tr>
-		<tr>
-			<td>change_file_names_byvar</td>
-			<td>change_filenames_by_var</td>
-		</tr>
-		<tr>
-			<td>standardise_file_name</td>
-			<td>_standardise_filename (marked as internal)</td>
-		</tr>
+		<thead>
+			<tr>
+				<th>Old function name</span></th>
+				<th>New function name</span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>get_variable_name_in_file_name</td>
+				<td>_get_varname_in_filename (marked as internal)</td>
+			</tr>
+			<tr>
+				<td>change_file_names_byvar</td>
+				<td>change_filenames_by_var</td>
+			</tr>
+			<tr>
+				<td>standardise_file_name</td>
+				<td>_standardise_filename (marked as internal)</td>
+			</tr>
+		</tbody>
 	</table>
 	
 	
@@ -241,26 +252,30 @@ All notable changes to this project will be documented in this file.
 
 - The following renamings have been made:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Old package name</span></th>
-		<th><span style="font-size:13.7pt">New package name</span></th>
-	</tr>
-	<tr>
-		<th>climate_data_utils</th>
-		<th>climalab</th>
-	</tr>
-	<tr>
-		<th>statistics</th>
-		<th>statkit</th>
-	</tr>
-	<tr>
-		<th>utilities</th>
-		<th>filewise</th>
-	</tr>
-	<tr>
-		<th>complementary-to_remodule</th>
-		<th>supplementary_tools</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Old package name</span></th>
+			<th>New package name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>climate_data_utils</th>
+			<th>climalab</th>
+		</tr>
+		<tr>
+			<th>statistics</th>
+			<th>statkit</th>
+		</tr>
+		<tr>
+			<th>utilities</th>
+			<th>filewise</th>
+		</tr>
+		<tr>
+			<th>complementary-to_remodule</th>
+			<th>supplementary_tools</th>
+		</tr>
+	</tbody>
 </table>
 
 - All this changes have been applied to all affected modules.
@@ -278,58 +293,62 @@ All notable changes to this project will be documented in this file.
 - Refactored and optimized file and directory operations; consolidated methods, introduced helper functions, and removed shell command dependencies.
 - The following method renamings have been made:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Old function name</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-	</tr>
-	<tr>
-		<td>move_files_by_ext_from_exec_code</td>
-		<td>move_files</td>
-	</tr>
-	<tr>
-		<td>copy_files_by_ext_from_exec_code</td>
-		<td>copy_files</td>
-	</tr>
-	<tr>
-		<td>remove_files_by_ext</td>
-		<td>remove_files</td>
-	</tr>
-	<tr>
-		<td>move_entire_directories</td>
-		<td>move_directories</td>
-	</tr>
-	<tr>
-		<td>copy_entire_directories</td>
-		<td>copy_directories</td>
-	</tr>
-	<tr>
-		<td>remove_entire_directories</td>
-		<td>remove_directories</td>
-	</tr>
-	<tr>
-		<td>make_parent_directories</td>
-		<td>make_directories</td>
-	</tr>
-	<tr>
-		<td>move_files_by_globstr_from_exec_code</td>
-		<td>move_files</td>
-	</tr>
-	<tr>
-		<td>copy_files_by_globstr_from_exec_code</td>
-		<td>copy_files</td>
-	</tr>
-	<tr>
-		<td>remove_files_by_globstr</td>
-		<td>remove_files</td>
-	</tr>
-	<tr>
-		<td>rsync</td>
-		<td>(unchanged)</td>
-	</tr>
-	<tr>
-		<td>rename_objects</td>
-		<td>(unchanged)</td>
-	</tr>
+	<thead>
+		<tr>
+			<th>Old function name</span></th>
+			<th>New function name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>move_files_by_ext_from_exec_code</td>
+			<td>move_files</td>
+		</tr>
+		<tr>
+			<td>copy_files_by_ext_from_exec_code</td>
+			<td>copy_files</td>
+		</tr>
+		<tr>
+			<td>remove_files_by_ext</td>
+			<td>remove_files</td>
+		</tr>
+		<tr>
+			<td>move_entire_directories</td>
+			<td>move_directories</td>
+		</tr>
+		<tr>
+			<td>copy_entire_directories</td>
+			<td>copy_directories</td>
+		</tr>
+		<tr>
+			<td>remove_entire_directories</td>
+			<td>remove_directories</td>
+		</tr>
+		<tr>
+			<td>make_parent_directories</td>
+			<td>make_directories</td>
+		</tr>
+		<tr>
+			<td>move_files_by_globstr_from_exec_code</td>
+			<td>move_files</td>
+		</tr>
+		<tr>
+			<td>copy_files_by_globstr_from_exec_code</td>
+			<td>copy_files</td>
+		</tr>
+		<tr>
+			<td>remove_files_by_globstr</td>
+			<td>remove_files</td>
+		</tr>
+		<tr>
+			<td>rsync</td>
+			<td>(unchanged)</td>
+		</tr>
+		<tr>
+			<td>rename_objects</td>
+			<td>(unchanged)</td>
+		</tr>
+	</tbody>
 </table>
 
 - All this changes have been applied to all affected modules.
@@ -340,26 +359,30 @@ All notable changes to this project will be documented in this file.
 - Refactored file and directory path search logic; introduced switch-case for match_type, shortened method names, and optimized code.
 - The following methods have been merged and renamed:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">First function</span></th>
-		<th><span style="font-size:13.7pt">Second function</span></th>
-		<th><span style="font-size:13.7pt">Merged function name</span></th>
-	</tr>
-	<tr>
-		<td>find_files_by_ext</td>
-		<td>find_files_by_globstr</td>
-		<td>find_files</td>
-	</tr>
+	<thead>
 		<tr>
-		<td>find_all_directories</td>
-		<td>find_all_file_extensions</td>
-		<td>find_all_ext_or_dirs (later renamed to `find_items`)</td>
-	</tr>
-	<tr>
-		<td>find_file_containing_dirs_by_ext</td>
-		<td>find_file_containing_dirs_by_globstr</td>
-		<td>find_dirs_with_files</td>
-	</tr>
+			<th>First function</span></th>
+			<th>Second function</span></th>
+			<th>Merged function name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>find_files_by_ext</td>
+			<td>find_files_by_globstr</td>
+			<td>find_files</td>
+		</tr>
+			<tr>
+			<td>find_all_directories</td>
+			<td>find_all_file_extensions</td>
+			<td>find_all_ext_or_dirs (later renamed to `find_items`)</td>
+		</tr>
+		<tr>
+			<td>find_file_containing_dirs_by_ext</td>
+			<td>find_file_containing_dirs_by_globstr</td>
+			<td>find_dirs_with_files</td>
+		</tr>
+	</tbody>
 </table>
 
 - All this changes have been applied to all affected files.
@@ -378,22 +401,26 @@ All notable changes to this project will be documented in this file.
 - Optimized data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
 - The following method renamings have been made:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Old function name</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-	</tr>
-	<tr>
-		<th>basic_value_data_type_converter</th>
-		<th>convert_data_type</th>
-	</tr>
-	<tr>
-		<th>list_array_to_std_array</th>
-		<th>combine_arrays</th>
-	</tr>
-	<tr>
-		<th>flatten_content_to_string</th>
-		<th>flatten_to_string</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Old function name</span></th>
+			<th>New function name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>basic_value_data_type_converter</th>
+			<th>convert_data_type</th>
+		</tr>
+		<tr>
+			<th>list_array_to_std_array</th>
+			<th>combine_arrays</th>
+		</tr>
+		<tr>
+			<th>flatten_content_to_string</th>
+			<th>flatten_to_string</th>
+		</tr>
+	</tbody>
 </table>
 	
 <h2>General Utilities</h2>
@@ -402,18 +429,22 @@ All notable changes to this project will be documented in this file.
 
 - The following **module** renamings have been made:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Old function name</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-	</tr>
-	<tr>
-		<th>bulk_rename_index_main</th>
-		<th>bulk_rename_auto</th>
-	</tr>
-	<tr>
-		<th>bulk_rename_index_manual</th>
-		<th>bulk_rename_manual</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Old function name</span></th>
+			<th>New function name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>bulk_rename_index_main</th>
+			<th>bulk_rename_auto</th>
+		</tr>
+		<tr>
+			<th>bulk_rename_index_manual</th>
+			<th>bulk_rename_manual</th>
+		</tr>
+	</tbody>
 </table>
 
 <h4>'scripts' sub-package</h4>
@@ -421,26 +452,30 @@ All notable changes to this project will be documented in this file.
 - Contains application programs of several methods in the modules of sub-package `file_operations`:
 - The following **module** renamings have been made:
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Old function name</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-	</tr>
-	<tr>
-		<th>change_permissions_exec</th>
-		<th>modify_properties</th>
-	</tr>
-	<tr>
-		<th>pdf_file_compressor_exec</th>
-		<th>compress_pdf</th>
-	</tr>
-	<tr>
-		<th>pdf_file_tweaker_exec</th>
-		<th>tweak_pdf</th>
-	</tr>
-	<tr>
-		<th>bulk_rename_index_exec</th>
-		<th>bulk_rename</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Old function name</span></th>
+			<th>New function name</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>change_permissions_exec</th>
+			<th>modify_properties</th>
+		</tr>
+		<tr>
+			<th>pdf_file_compressor_exec</th>
+			<th>compress_pdf</th>
+		</tr>
+		<tr>
+			<th>pdf_file_tweaker_exec</th>
+			<th>tweak_pdf</th>
+		</tr>
+		<tr>
+			<th>bulk_rename_index_exec</th>
+			<th>bulk_rename</th>
+		</tr>
+	</tbody>
 </table>
 
 <h2>Databases</h2>
@@ -482,22 +517,26 @@ All notable changes to this project will be documented in this file.
 	- Shortened method/variable names, optimized code, added docstrings.
 	- The following method renamings have been made:
 	<table>
-		<tr>
-			<th><span style="font-size:13.7pt">Old function name</span></th>
-			<th><span style="font-size:13.7pt">New function name</span></th>
-		</tr>
-		<tr>
-			<th>extract_and_store_latlon_bounds</th>
-			<th>extract_latlon_bounds</th>
-		</tr>
-		<tr>
-			<th>extract_and_store_period_bounds</th>
-			<th>extract_time_bounds</th>
-		</tr>
-		<tr>
-			<th>extract_and_store_time_formats</th>
-			<th>extract_time_formats</th>
-		</tr>
+		<thead>
+			<tr>
+				<th>Old function name</span></th>
+				<th>New function name</span></th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<th>extract_and_store_latlon_bounds</th>
+				<th>extract_latlon_bounds</th>
+			</tr>
+			<tr>
+				<th>extract_and_store_period_bounds</th>
+				<th>extract_time_bounds</th>
+			</tr>
+			<tr>
+				<th>extract_and_store_time_formats</th>
+				<th>extract_time_formats</th>
+			</tr>
+		</tbody>
 	</table>
 
 - Moved method `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
@@ -560,42 +599,46 @@ All notable changes to this project will be documented in this file.
 so it is worth describing their origins, referring to the latest version in which these moves have been performed (to this module).
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Function name 1</span></th>
-		<th><span style="font-size:13.7pt">Module referring to 1</span></th>
-		<th><span style="font-size:13.7pt">sub-package referring to 1</span></th>
-		<th><span style="font-size:13.7pt">Function name 2</span></th>
-		<th><span style="font-size:13.7pt">Module referring to 2</span></th>
-		<th><span style="font-size:13.7pt">sub-package referring to 2</span></th>
-		<th><span style="font-size:13.7pt">Merged function name</span></th>
-	</tr>
-	<tr>
-		<th>find_date_key</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames/core</th>
-		<th>find_time_dimension</th>
-		<th>netcdf_handler</th>
-		<th>weather_and_climate</th>
-		<th>find_time_key</th>
-	</tr>
-	<tr>
-		<th>infer_full_period_of_time</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames/core</th>
-		<th>infer_full_period_of_time</th>
-		<th>netcdf_handler</th>
-		<th>weather_and_climate</th>
-		<th>infer_dt_range</th>
-	</tr>
-	<tr>
-		<th>infer_time_frequency</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames/core</th>
-		<th>infer_time_frequency</th>
-		<th>netcdf_handler</th>
-		<th>weather_and_climate</th>
-		<th>infer_frequency</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Function name 1</th>
+			<th>Module referring to 1</th>
+			<th>sub-package referring to 1</th>
+			<th>Function name 2</th>
+			<th>Module referring to 2</th>
+			<th>sub-package referring to 2</th>
+			<th>Merged function name</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>find_date_key</td>
+			<td>data_frame_handler</td>
+			<td>pandas_data_frames/core</td>
+			<td>find_time_dimension</td>
+			<td>netcdf_handler</td>
+			<td>weather_and_climate</td>
+			<td>find_time_key</td>
+		</tr>
+		<tr>
+			<td>infer_full_period_of_time</td>
+			<td>data_frame_handler</td>
+			<td>pandas_data_frames/core</td>
+			<td>infer_full_period_of_time</td>
+			<td>netcdf_handler</td>
+			<td>weather_and_climate</td>
+			<td>infer_dt_range</td>
+		</tr>
+		<tr>
+			<td>infer_time_frequency</td>
+			<td>data_frame_handler</td>
+			<td>pandas_data_frames/core</td>
+			<td>infer_time_frequency</td>
+			<td>netcdf_handler</td>
+			<td>weather_and_climate</td>
+			<td>infer_frequency</td>
+		</tr>
+	</tbody>
 </table>
 
 ### Removed
@@ -649,62 +692,66 @@ so it is worth describing their origins, referring to the latest version in whic
 - After the creations in **Core Statistics**, the following changes have been made:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>signal_whitening</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>low_pass_filter</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>high_pass_filter</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>band_pass1</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>band_pass2</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>band_pass3</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>signal_processing</th>
-		<th>(unchanged)</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>signal_whitening</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>low_pass_filter</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>high_pass_filter</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>band_pass1</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>band_pass2</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>band_pass3</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>signal_processing</th>
+			<th>(unchanged)</th>
+		</tr>
+	</tbody>
 </table>
 
 - After the creations in **Xarray Utils**, the following changes have been made:
@@ -712,237 +759,253 @@ so it is worth describing their origins, referring to the latest version in whic
 1. To `time_handling` and `data_manipulation`:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>create_ds_component</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>data_manipulation</th>
-	</tr>
-	<tr>
-		<th>extract_and_store_latlon_bounds</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>data_manipulation</th>
-	</tr>
-	<tr>
-		<th>extract_and_store_period_bounds</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>data_manipulation</th>
-	</tr>
-	<tr>
-		<th>extract_and_store_time_formats</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>data_manipulation</th>
-	</tr>
-	<tr>
-		<th>netcdf_regridder</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>data_manipulation</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>create_ds_component</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>data_manipulation</th>
+		</tr>
+		<tr>
+			<th>extract_and_store_latlon_bounds</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>data_manipulation</th>
+		</tr>
+		<tr>
+			<th>extract_and_store_period_bounds</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>data_manipulation</th>
+		</tr>
+		<tr>
+			<th>extract_and_store_time_formats</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>data_manipulation</th>
+		</tr>
+		<tr>
+			<th>netcdf_regridder</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>data_manipulation</th>
+		</tr>	
+	</tbody>
 <table>
 	
 2. To `file_utils`:
 	
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>get_netcdf_file_dir_list</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>file_utils</th>
-	</tr>
-	<tr>
-		<th>get_netcdf_file_list</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>file_utils</th>
-	</tr>
-	<tr>
-		<th>netcdf_file_scanner</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>scan_ncfiles</th>
-		<th>file_utils</th>
-		<th>utilities/xarray_utils</th>
-	</tr>
-	<tr>
-		<th>ncfile_integrity_status</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>file_utils</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>get_netcdf_file_dir_list</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>file_utils</th>
+		</tr>
+		<tr>
+			<th>get_netcdf_file_list</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>file_utils</th>
+		</tr>
+		<tr>
+			<th>netcdf_file_scanner</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>scan_ncfiles</th>
+			<th>file_utils</th>
+			<th>utilities/xarray_utils</th>
+		</tr>
+		<tr>
+			<th>ncfile_integrity_status</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>file_utils</th>
+		</tr>
+	</tbody>
 </table>
 
 3. To `patterns`:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>find_coordinate_variables</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>find_coordinate_variables_raise_none</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>find_nearest_coordinates</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>find_time_dimension</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>find_time_dimension_raise_none</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>get_file_dimensions</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>get_file_variables</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>get_latlon_bounds</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>get_latlon_deltas</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
-	<tr>
-		<th>get_model_list</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>patterns</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>find_coordinate_variables</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>find_coordinate_variables_raise_none</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>find_nearest_coordinates</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>find_time_dimension</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>find_time_dimension_raise_none</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>get_file_dimensions</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>get_file_variables</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>get_latlon_bounds</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>get_latlon_deltas</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+		<tr>
+			<th>get_model_list</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>patterns</th>
+		</tr>
+	</tbody>
 </table>
 
 4. To `xarray_obj_handler`:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>grib2netcdf</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>grib2nc</th>
-		<th>utilities/xarray_utils</th>
-		<th>conversions</th>
-	</tr>
-	<tr>
-		<th>save_data_array_as_csv</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>xarray_obj_handler</th>
-	</tr>
-	<tr>
-		<th>save_data_as_netcdf_std</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>xarray_obj_handler</th>
-	</tr>
-	<tr>
-		<th>save_nc_data_as_csv</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>utilities/xarray_utils</th>
-		<th>xarray_obj_handler</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<thead>
+		<tr>
+			<th>grib2netcdf</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>grib2nc</th>
+			<th>utilities/xarray_utils</th>
+			<th>conversions</th>
+		</tr>
+		<tr>
+			<th>save_data_array_as_csv</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>xarray_obj_handler</th>
+		</tr>
+		<tr>
+			<th>save_data_as_netcdf_std</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>xarray_obj_handler</th>
+		</tr>
+		<tr>
+			<th>save_nc_data_as_csv</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>utilities/xarray_utils</th>
+			<th>xarray_obj_handler</th>
+		</tr>
+	</tbody>	
 </table>
 
 - <span style="font-weight:bold; color:maroon">NOTE</span>: any method rename above has also been applied to all files using the old method name.
@@ -974,92 +1037,99 @@ so it is worth describing their origins, referring to the latest version in whic
 1. In `statistics` sub-package:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>polynomial_fitting</th>
-		<th>regressions</th>
-		<th>statistics/core</th>
-		<th>(unchanged)</th>
-		<th>curve_fitting</th>
-		<th>(unchanged)</th>
-		
-	</tr>
-	<tr>
-		<th>calculate_HDY</th>
-		<th>variables</th>
-		<th>statistics/fields/climatology</th>
-		<th>(unchanged)</th>
-		<th>representative_series</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>hdy_interpolation (once moved, changed visibility to internal)</th>
-		<th>variables</th>
-		<th>statistics/fields/climatology</th>
-		<th>(unchanged)</th>
-		<th>representative_series</th>
-		<th>(unchanged)</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	</tbody>
+		<tr>
+			<th>polynomial_fitting</th>
+			<th>regressions</th>
+			<th>statistics/core</th>
+			<th>(unchanged)</th>
+			<th>curve_fitting</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>calculate_HDY</th>
+			<th>variables</th>
+			<th>statistics/fields/climatology</th>
+			<th>(unchanged)</th>
+			<th>representative_series</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>hdy_interpolation (once moved, changed visibility to internal)</th>
+			<th>variables</th>
+			<th>statistics/fields/climatology</th>
+			<th>(unchanged)</th>
+			<th>representative_series</th>
+			<th>(unchanged)</th>
+		</tr>
+	</tbody>	
 </table>
 	
 2. To `time_handling` sub-package:
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>infer_full_period_of_time</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
-	</tr>
-	<tr>
-		<th>infer_full_period_of_time</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
-	</tr>
-	<tr>
-		<th>find_date_key</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
-	</tr>
-	<tr>
-		<th>infer_time_frequency</th>
-		<th>netcdf_handler</th>
-		<th>climate_data_utils</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
-	</tr>
-	<tr>
-		<th>infer_time_frequency</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>date_and_time_operators</th>
-		<th>time_handling</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>infer_full_period_of_time</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>date_and_time_operators</th>
+			<th>time_handling</th>
+		</tr>
+		<tr>
+			<th>infer_full_period_of_time</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>date_and_time_operators</th>
+			<th>time_handling</th>
+		</tr>
+		<tr>
+			<th>find_date_key</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>date_and_time_operators</th>
+			<th>time_handling</th>
+		</tr>
+		<tr>
+			<th>infer_time_frequency</th>
+			<th>netcdf_handler</th>
+			<th>climate_data_utils</th>
+			<th>(unchanged)</th>
+			<th>date_and_time_operators</th>
+			<th>time_handling</th>
+		</tr>
+		<tr>
+			<th>infer_time_frequency</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>date_and_time_operators</th>
+			<th>time_handling</th>
+		</tr>
+	</tbody>
 </table>
 
 3. To `utilities/pandas_utils` sub-package (depth level 2)
@@ -1068,239 +1138,255 @@ so it is worth describing their origins, referring to the latest version in whic
 3.1  To `conversions.py` module
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>df_to_structured_array</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>conversions</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>df_to_structured_array</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>conversions</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+	</tbody>
 </table>
 
 <br>
 3.2 To `data_manipulation` module
 	
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>create_pivot_table</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>concat_dfs_aux</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>count_data_by_concept</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>insert_column_in_df</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>insert_row_in_df</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>polish_df_column_names</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>reindex_df</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>sort_df_indices</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>sort_df_values</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>data_manipulation</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>create_pivot_table</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>concat_dfs_aux</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>count_data_by_concept</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>insert_column_in_df</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>insert_row_in_df</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>polish_df_column_names</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>reindex_df</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>sort_df_indices</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>sort_df_values</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>data_manipulation</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+	</tbody>
 </table>
 <br>
 
 3.3  To `pandas_obj_handler` module
 	
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>csv2df</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>excel_handler</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>merge_csv_files</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>merge_excel_files</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>merge_ods_files</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>ods_handler</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>read_table</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>save2csv</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>save2excel</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
-	<tr>
-		<th>save2ods</th>
-		<th>data_frame_handler</th>
-		<th>pandas_data_frames</th>
-		<th>(unchanged)</th>
-		<th>pandas_obj_handler</th>
-		<th>utilities/pandas_utils</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>csv2df</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>excel_handler</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>merge_csv_files</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>merge_excel_files</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>merge_ods_files</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>ods_handler</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>read_table</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>save2csv</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>save2excel</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+		<tr>
+			<th>save2ods</th>
+			<th>data_frame_handler</th>
+			<th>pandas_data_frames</th>
+			<th>(unchanged)</th>
+			<th>pandas_obj_handler</th>
+			<th>utilities/pandas_utils</th>
+		</tr>
+	</tbody>
 </table>
 
 **Modules**
 	
 </table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>---</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-		<th>---</th>
-		<th>indicators</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>---</th>
-		<th>climate_variables</th>
-		<th>statistics/fields/climatology</th>
-		<th>---</th>
-		<th>variables</th>
-		<th>(unchanged)</th>
-	</tr>
-	<tr>
-		<th>---</th>
-		<th>calendar_operators</th>
-		<th>time_handling</th>
-		<th>---</th>
-		<th>calendar_utils</th>
-		<th>(unchanged)</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</span></th>
+			<th>Original module</span></th>
+			<th>Original sub-package path</span></th>
+			<th>New function name</span></th>
+			<th>New module</span></th>
+			<th>New sub-package path</span></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>---</th>
+			<th>climate_indicators</th>
+			<th>statistics/fields/climatology</th>
+			<th>---</th>
+			<th>indicators</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>---</th>
+			<th>climate_variables</th>
+			<th>statistics/fields/climatology</th>
+			<th>---</th>
+			<th>variables</th>
+			<th>(unchanged)</th>
+		</tr>
+		<tr>
+			<th>---</th>
+			<th>calendar_operators</th>
+			<th>time_handling</th>
+			<th>---</th>
+			<th>calendar_utils</th>
+			<th>(unchanged)</th>
+		</tr>
+	</tbody>
 </table>
 
 ### Removed
@@ -1387,213 +1473,229 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Many functions have been moved out from the modules in the old `weather_and_climate` sub-package to `statistics`.
 - Information about the original module and new function name and location is displayed next:
-  
+
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>calculate_WSDI</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>WSDI</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_SU</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>SU</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_CSU</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>CSU</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_FD/th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>FD</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_TN</th>
-		<th>TN</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_RR</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>RR</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_CWD</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>CWD</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_HWD</th>
-		<th>HWD</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_HWD</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>HWD</th>
-		<th>climate_indicators</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_HDY</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>HDY</th>
-		<th>climate_variables</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>hdy_interpolation</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>climate_variables</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_biovars</th>
-		<th>climate_indicators</th>
-		<th>weather_and_climate</th>
-		<th>biovars</th>
-		<th>climate_variables</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</th>
+			<th>Original module</th>
+			<th>Original sub-package path</th>
+			<th>New function name</th>
+			<th>New module</th>
+			<th>New sub-package path</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>calculate_WSDI</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>WSDI</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_SU</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>SU</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_CSU</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>CSU</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_FD/td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>FD</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_TN</td>
+			<td>TN</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_RR</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>RR</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_CWD</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>CWD</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_HWD</td>
+			<td>HWD</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_HWD</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>HWD</td>
+			<td>climate_indicators</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_HDY</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>HDY</td>
+			<td>climate_variables</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>hdy_interpolation</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>climate_variables</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_biovars</td>
+			<td>climate_indicators</td>
+			<td>weather_and_climate</td>
+			<td>biovars</td>
+			<td>climate_variables</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+	</tbody>
 </table>
 	
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>periodic_statistics</th>
-		<th>climate_statistics</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>climat_periodic_statistics</th>
-		<th>climate_statistics</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>periodic_climat_stats</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>calculate_and_apply_deltas</th>
-		<th>climate_statistics</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>simple_bias_correction</th>
-		<th>statistics/fields/climatology</th>
-	</tr>
-	<tr>
-		<th>window_sum/th>
-		<th>climate_statistics</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>moving_operations</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>moving_average</th>
-		<th>climate_statistics</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>moving_operations</th>
-		<th>statistics/core</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</th>
+			<th>Original module</th>
+			<th>Original sub-package path</th>
+			<th>New function name</th>
+			<th>New module</th>
+			<th>New sub-package path</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>periodic_statistics</td>
+			<td>climate_statistics</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>time_series</td>
+			<td>statistics/core</td>
+		</tr>
+		<tr>
+			<td>climat_periodic_statistics</td>
+			<td>climate_statistics</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>periodic_climat_stats</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>calculate_and_apply_deltas</td>
+			<td>climate_statistics</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>simple_bias_correction</td>
+			<td>statistics/fields/climatology</td>
+		</tr>
+		<tr>
+			<td>window_sum/td>
+			<td>climate_statistics</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>moving_operations</td>
+			<td>statistics/core</td>
+		</tr>
+		<tr>
+			<td>moving_average</td>
+			<td>climate_statistics</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>moving_operations</td>
+			<td>statistics/core</td>
+		</tr>
+	</tbody>
 </table>
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>autocorrelate</th>
-		<th>climatic_signal_modulators</th>
-		<th>weather_and_climate</th>
-		<th>(unchanged)</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
+	<thead>
+		<tr>
+			<th>Original function name</th>
+			<th>Original module</th>
+			<th>Original sub-package path</th>
+			<th>New function name</th>
+			<th>New module</th>
+			<th>New sub-package path</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>autocorrelate</td>
+			<td>climatic_signal_modulators</td>
+			<td>weather_and_climate</td>
+			<td>(unchanged)</td>
+			<td>time_series</td>
+			<td>statistics/core</td>
+		</tr>
+	</tbody>
 </table>
 
 <table>
-	<tr>
-		<th><span style="font-size:13.7pt">Original function name</span></th>
-		<th><span style="font-size:13.7pt">Original module</span></th>
-		<th><span style="font-size:13.7pt">Original sub-package path</span></th>
-		<th><span style="font-size:13.7pt">New function name</span></th>
-		<th><span style="font-size:13.7pt">New module</span></th>
-		<th><span style="font-size:13.7pt">New sub-package path</span></th>
-	</tr>
-	<tr>
-		<th>get_1hour_time_step_data</th>
-		<th>consecutive_idx_statistics</th>
-		<th>weather_and_climate</th>
-		<th>hourly_ts_cumul</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>count_consecutive_days_maxdata</th>
-		<th>consecutive_idx_statistics</th>
-		<th>weather_and_climate</th>
-		<th>consec_occurrences_maxdata</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
-	<tr>
-		<th>count_consecutive_days_mindata</th>
-		<th>consecutive_idx_statistics</th>
-		<th>weather_and_climate</th>
-		<th>consec_occurrences_mindata</th>
-		<th>time_series</th>
-		<th>statistics/core</th>
-	</tr>
+	<thead>
+		<tr>
+			<td>Original function name</td>
+			<td>Original module</td>
+			<td>Original sub-package path</td>
+			<td>New function name</td>
+			<td>New module</td>
+			<td>New sub-package path</td>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<th>get_1hour_time_step_data</th>
+			<th>consecutive_idx_statistics</th>
+			<th>weather_and_climate</th>
+			<th>hourly_ts_cumul</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+		</tr>
+		<tr>
+			<th>count_consecutive_days_maxdata</th>
+			<th>consecutive_idx_statistics</th>
+			<th>weather_and_climate</th>
+			<th>consec_occurrences_maxdata</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+		</tr>
+		<tr>
+			<th>count_consecutive_days_mindata</th>
+			<th>consecutive_idx_statistics</th>
+			<th>weather_and_climate</th>
+			<th>consec_occurrences_mindata</th>
+			<th>time_series</th>
+			<th>statistics/core</th>
+		</tr>
+	</tbody>
 </table>
 	
 - <span style="font-weight:bold; color:maroon">NOTE</span>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
