@@ -235,7 +235,7 @@ All notable changes to this project will be documented in this file.
 
 **Climate Data Utils**
 - Module `cdo_tools`:
-	- Refactored multiple CDO processing functions, optimized internal helpers, and updated file handling methods with section headers and internal visibility changes.
+	- Refactored multiple CDO processing functions, optimised internal helpers, and updated file handling methods with section headers and internal visibility changes.
 	- The following method renamings have been made:
 	<table>
 		<thead>
@@ -303,7 +303,7 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>file_and_directory_handler</i></h4>
 
-- Refactored and optimized file and directory operations; consolidated methods, introduced helper functions, and removed shell command dependencies.
+- Refactored and optimised file and directory operations; consolidated methods, introduced helper functions, and removed shell command dependencies.
 - The following method renamings have been made:
 <table>
 	<thead>
@@ -369,7 +369,7 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>file_and_directory_paths</i></h4>
 
-- Refactored file and directory path search logic; introduced switch-case for match_type, shortened method names, and optimized code.
+- Refactored file and directory path search logic; introduced switch-case for match_type, shortened method names, and optimised code.
 - The following methods have been merged and renamed:
 <table>
 	<thead>
@@ -411,7 +411,7 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>conversions</i></h4>
 
-- Optimized data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
+- Optimised data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
 - The following method renamings have been made:
 <table>
 	<thead>
@@ -513,7 +513,7 @@ All notable changes to this project will be documented in this file.
 
 **Arrays and Lists**
 - Module `data_manipulation`
-	- Optimized and grouped methods by categories, added support for pandas objects, and improved docstrings.
+	- Optimised and grouped methods by categories, added support for pandas objects, and improved docstrings.
 	- In methods `sort_rows_by_column` and `sort_columns_by_row`, argument `sort_order` has been substituted by `reverse`, where its mechanism is the same as for lists.
 	- Method `decompose_24h_cumulative_data`:
 		- Rename to `decompose_cumulative_data`.
@@ -527,7 +527,7 @@ All notable changes to this project will be documented in this file.
 	
 **Xarray Utils**
 - Module `data_manipulation`:
-	- Shortened method/variable names, optimized code, added docstrings.
+	- Shortened method/variable names, optimised code, added docstrings.
 	- The following method renamings have been made:
 	<table>
 		<thead>
