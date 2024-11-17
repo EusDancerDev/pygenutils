@@ -14,7 +14,7 @@ bytes objects to integers, and decoding bytes objects back to string
 # Import custom modules #
 #-----------------------#
 
-from pygenutils.strings.information_output_formatters import get_type_str
+from pygenutils.strings.text_formatters import get_type_str
 
 #------------------#
 # Define functions #

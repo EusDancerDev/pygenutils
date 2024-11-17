@@ -13,7 +13,7 @@ import os
 
 from paramlib.global_parameters import filesystem_context_modules
 from pygenutils.strings.string_handler import get_type_str
-from pygenutils.strings.information_output_formatters import format_string
+from pygenutils.strings.text_formatters import format_string
 
 # %%
 

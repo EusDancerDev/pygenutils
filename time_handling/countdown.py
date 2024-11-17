@@ -12,7 +12,7 @@ from time import sleep
 # Import custom modules #
 #-----------------------#
 
-from pygenutils.strings.information_output_formatters import print_format_string
+from pygenutils.strings.text_formatters import print_format_string
 from pygenutils.time_handling.time_formatters import parse_time_string
 
 #------------------#
