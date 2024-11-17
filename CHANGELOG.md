@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.4.1] - 2024-11-17
+
+### Changed
+
+**General**
+
+- Minor syntax appearance improvements in many modules.
+
+**Strings**
+
+- Renamed module `information_output_formatters` to `text_formatters` for improved clarity. Changes have been applied for all affected modules.
+
+**Time Handling**
+
+- Module `date_and_time_utils`: added timezone handling to `get_current_datetime` function with optional 'pytz' support
+
+---
+
 ## [v15.3.0] - 2024-11-14
 
 ### Changed
@@ -15,7 +33,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.2.0] - 2024-11-03 
+## [v15.2.0] - 2024-11-03
 
 ### Added
 
