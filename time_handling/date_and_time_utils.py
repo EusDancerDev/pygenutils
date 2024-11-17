@@ -703,10 +703,6 @@ current_datetime_dict = {
     dt_dtype_options[2] : pd.Timestamp.now()
     }
 
-#--------------------------#
-# Parameters and constants #
-#--------------------------#
-
 # Error strings #
 #---------------#
 
