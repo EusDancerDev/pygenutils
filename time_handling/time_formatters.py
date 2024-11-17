@@ -17,17 +17,17 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from paramlib import global_parameters
-from pygenutils.strings.information_output_formatters import format_string
-from pygenutils.time_handling.date_and_time_operators import get_datetime_object_unit, get_nano_datetime
 from filewise.general.introspection_utils import get_type_str, get_func_name
+from paramlib import global_parameters
+from pygenutils.strings.text_formatters import format_string
+from pygenutils.time_handling.date_and_time_utils import get_datetime_object_unit, get_nano_datetime
 
 #----------------#
 # Define aliases #
 #----------------#
 
-numpy_unit_list = global_parameters.numpy_unit_list
-pandas_unit_list = global_parameters.pandas_unit_list
+numpy_date_unit_list = global_parameters.numpy_date_unit_list
+pandas_date_unit_list = global_parameters.pandas_date_unit_list
 unit_factor_dict = global_parameters.unit_factor_dict
 
 #------------------#
@@ -419,7 +419,7 @@ def _format_arbitrary_time(floated_time, frac_precision):
 #--------------#
 
 # All except 'float' #
-#--------------------#
+#-#-#-#-#-#-#-#-#-#-#-
 
 def datetime_obj_converter(datetime_obj,
                            convert_to,
@@ -442,7 +442,7 @@ def datetime_obj_converter(datetime_obj,
         - numpy : `np.datetime64`, `np.ndarray`,
         - pandas : `pd.Timestamp`, `pd.DataFrame`, `pd.Series`
         - arrow : `arrow`, 
-        - time : `time.struct_time`, 
+        - struct_time : `time.struct_time`
         
     convert_to : str
         The target type to convert `datetime_obj` to.
@@ -472,7 +472,7 @@ def datetime_obj_converter(datetime_obj,
         
     Conversion Options:   
     +------------------+---------+--------------+---------------+------------+--------------+---------+-------+
-    | Input Type       | `float` | `datetime`   | `struct_time` | `Timestamp`| `datetime64` | `arrow` | `str` |
+    |    Input Type    | `float` | `datetime`   | `struct_time` | `Timestamp`| `datetime64` | `arrow` | `str` |
     +------------------+---------+--------------+---------------+------------+--------------+---------+-------+
     | `datetime`       | Yes     | Yes          | Yes           | Yes        | Yes          | Yes     | Yes   |
     | `datetime64`     | Yes     | Yes          | Yes           | Yes        | No           | Yes     | Yes   |
