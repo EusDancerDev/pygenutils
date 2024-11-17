@@ -18,7 +18,11 @@ All notable changes to this project will be documented in this file.
 
 **Time Handling**
 
-- Module `date_and_time_utils`: added timezone handling to `get_current_datetime` function with optional 'pytz' support
+- Module `date_and_time_utils`:
+	- Added timezone handling to `get_current_datetime` function with optional 'pytz' support
+	- Added `display_user_timestamp` function with conditional timezone support.
+	- Enhanced module with global timezone handling using a `pytz` availability check.
+	- Minor refactoring and structure reorganization for improved modularity.
 
 ---
 
