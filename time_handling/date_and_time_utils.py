@@ -23,6 +23,13 @@ from pygenutils.time_handling.time_formatters import datetime_obj_converter, flo
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from filewise.xarray_utils import file_utils, patterns
 
+# Try to import `pytz` and set a flag for availability
+try:
+    import pytz
+    pytz_installed = True
+except ImportError:
+    pytz_installed = False
+
 # Create aliases #
 #----------------#
 
@@ -83,6 +90,73 @@ def _validate_option(arg_iterable, error_class, error_str):
             
 # %%
 
+# Display and Conversion Utilities #
+#----------------------------------#
+
+def display_user_timestamp(user_timestamp, user_timezone_str):
+    """
+    Converts a UTC timestamp to the user's local timezone and formats it for display.
+    
+    Parameters
+    ----------
+    user_timestamp : datetime.datetime or str
+        The timestamp to be converted. If a string, it should be in ISO format (e.g., "2023-01-01T12:00:00Z").
+        The function assumes `user_timestamp` is in UTC if naive (no timezone).
+        
+    user_timezone_str : str
+        The IANA timezone name (e.g., "America/New_York", "Europe/London") for the target timezone.
+
+    Returns
+    -------
+    datetime.datetime or str
+        The timestamp converted to the specified timezone.
+        Returns as a `datetime` object if conversion is successful; otherwise, as a string with error details.
+
+    Notes
+    -----
+    - If the `pytz` library is available, it is used for timezone conversion, providing extensive IANA timezone support.
+    - If `pytz` is unavailable, the function defaults to using `datetime`'s built-in `astimezone()` mechanism, but limited to standard UTC offset conversions.
+    
+    Example
+    -------
+    >>> display_user_timestamp(datetime.now(timezone.utc), "America/New_York")
+    datetime.datetime(2023, 1, 1, 7, 0, tzinfo=<DstTzInfo 'America/New_York' EST-1 day, 19:00:00 STD>)
+    
+    >>> display_user_timestamp("2023-01-01T12:00:00Z", "Europe/London")
+    datetime.datetime(2023, 1, 1, 12, 0, tzinfo=<DstTzInfo 'Europe/London' GMT0:00:00 STD>)
+    """
+    # Ensure user_timestamp is a datetime object in UTC
+    if isinstance(user_timestamp, str):
+        try:
+            user_timestamp = datetime.fromisoformat(user_timestamp.replace("Z", "+00:00"))
+        except ValueError:
+            return "Invalid timestamp format. Expected ISO format (e.g., '2023-01-01T12:00:00Z')."
+    elif not isinstance(user_timestamp, datetime):
+        return "Invalid timestamp type. Expected `datetime` or ISO format string."
+    
+    if user_timestamp.tzinfo is None:
+        user_timestamp = user_timestamp.replace(tzinfo=timezone.utc)
+
+    # Convert timestamp using pytz if available, or fallback otherwise
+    try:
+        if pytz_installed:
+            try:
+                user_timezone = pytz.timezone(user_timezone_str)
+            except pytz.UnknownTimeZoneError:
+                raise ValueError(f"Invalid timezone: {user_timezone_str}")
+            localized_timestamp = user_timestamp.astimezone(user_timezone)
+        else:
+            offset_hours = int(user_timezone_str.split("UTC")[-1].split(":")[0])
+            offset_minutes = int(user_timezone_str.split(":")[1]) if ":" in user_timezone_str else 0
+            offset = timedelta(hours=offset_hours, minutes=offset_minutes)
+            localized_timestamp = user_timestamp.astimezone(timezone(offset))
+            
+    except Exception as e:
+        raise RuntimeError(f"Error converting timestamp: {e}")
+
+    return localized_timestamp
+
+
 # Dates and times #
 #-----------------#
 
@@ -121,24 +195,11 @@ def get_current_datetime(dtype, time_fmt_str=None, tz_arg=None):
     current_time : str or datetime.datetime or pd.Timestamp
         Current date and time object based on the dtype.
         If 'time_fmt_str' is provided, returns a formatted string representation.
-    """
-    # Input validations #
-    #####################
-
-    # Check if 'pytz' is available for timezone handling
-    try:
-        import pytz
-        pytz_installed = True
-    except ImportError:
-        pytz_installed = False
-    
+    """    
     # Validate string representing the data type #
     arg_tuple_current_time = (dtype, dt_dtype_options)
     _validate_option(arg_tuple_current_time, ValueError, unsupported_option_str)
     
-    # Operations #
-    ##############
-
     # Handle timezone argument
     if tz_arg is None:
         tz = None
@@ -687,7 +748,6 @@ def merge_datetime_dataframes(df1, df2,
         res_dts = datetime_obj_converter(res_dts, convert_to="str", dt_fmt_str=time_fmt_str)
         
     return res_dts
-
   
 #%%
 
