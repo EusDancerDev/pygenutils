@@ -5,7 +5,7 @@
 # Import modules #
 #----------------#
 
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import time
 
 import os
@@ -18,8 +18,8 @@ import pandas as pd
 #-----------------------#
 
 from paramlib.global_parameters import common_delim_list
-from pygenutils.strings import information_output_formatters, string_handler
-from pygenutils.time_handling.time_formatters import floated_time_parsing_dict, datetime_obj_converter
+from pygenutils.strings import text_formatters, string_handler
+from pygenutils.time_handling.time_formatters import datetime_obj_converter, floated_time_parsing_dict
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from filewise.xarray_utils import file_utils, patterns
 
@@ -28,8 +28,8 @@ from filewise.xarray_utils import file_utils, patterns
 
 check_ncfile_integrity = file_utils.check_ncfile_integrity
 
-format_string = information_output_formatters.format_string
-print_format_string = information_output_formatters.print_format_string
+format_string = text_formatters.format_string
+print_format_string = text_formatters.print_format_string
 find_substring_index = string_handler.find_substring_index
 
 get_file_dimensions = patterns.get_file_dimensions
@@ -86,8 +86,7 @@ def _validate_option(arg_iterable, error_class, error_str):
 # Dates and times #
 #-----------------#
 
-def get_current_datetime(dtype, time_fmt_str=None):   
-    
+def get_current_datetime(dtype, time_fmt_str=None, tz_arg=None):    
     """
     Returns the current date and time based on the specified data type.
 
@@ -104,6 +103,10 @@ def get_current_datetime(dtype, time_fmt_str=None):
         Optional format string for datetime formatting using .strftime().
         Default is None.
 
+    tz_arg : timezone or str, optional
+        Optional timezone object or string for specifying the timezone.
+        If a string is provided, it will be converted to a timezone using pytz.
+
     Raises
     ------
     ValueError
@@ -119,13 +122,44 @@ def get_current_datetime(dtype, time_fmt_str=None):
         Current date and time object based on the dtype.
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """
+    # Input validations #
+    #####################
+
+    # Check if 'pytz' is available for timezone handling
+    try:
+        import pytz
+        pytz_installed = True
+    except ImportError:
+        pytz_installed = False
     
     # Validate string representing the data type #
     arg_tuple_current_time = (dtype, dt_dtype_options)
     _validate_option(arg_tuple_current_time, ValueError, unsupported_option_str)
     
+    # Operations #
+    ##############
+
+    # Handle timezone argument
+    if tz_arg is None:
+        tz = None
+    
+    elif isinstance(tz_arg, str):
+        if pytz_installed:
+            try:
+                tz_arg = pytz.timezone(tz_arg)
+            except pytz.UnknownTimeZoneError:
+                raise ValueError(f"Invalid timezone: {tz_arg}")
+        else:
+            raise ValueError("'pytz' library is required for string timezone arguments.")
+    elif isinstance(tz_arg, int):
+        tz = timezone(timedelta(hours=tz_arg))
+    elif isinstance(tz_arg, timezone):
+        tz = tz_arg
+    else:
+        raise TypeError("'tz_arg' must be a timezone object, string, or integer for UTC offset.")
+
     # Get the current date and time #
-    current_time = current_datetime_dict.get(dtype)
+    current_time = current_datetime_dict.get(dtype)(tz)
     
     # A string does not have .strftime attribute, warn accordingly #
     param_keys = get_caller_args()
@@ -667,15 +701,8 @@ dt_dtype_options = ["datetime", "str", "timestamp"]
 attr_options = ["creation", "modification", "access"]
 error_class_list = [ValueError, AttributeError]
 
-# File extension list #
-extensions = ["csv", "xlsx"]
-
-# String splitting character #
-splitdelim = common_delim_list[4]
-
 # Time span shortands #
 time_kws = ["da", "fe", "tim", "yy"]
-
 
 # Preformatted strings #
 #----------------------#
@@ -698,12 +725,7 @@ struct_time_attr_dict = {
 
 # Dictionary mapping current time provider methods to the corresponding methods #
 current_datetime_dict = {
-    dt_dtype_options[0] : datetime.datetime.now(),
-    dt_dtype_options[1] : time.ctime(),
-    dt_dtype_options[2] : pd.Timestamp.now()
+    dt_dtype_options[0] : lambda tz_arg: datetime.datetime.now(tz_arg),
+    dt_dtype_options[1] : lambda tz_arg: time.ctime(tz_arg),
+    dt_dtype_options[2] : lambda tz_arg: pd.Timestamp.now(tz_arg)
     }
-
-# Error strings #
-#---------------#
-
-unsupported_obj_type_err_str = "Expected a pandas.DataFrame object, got {}"
