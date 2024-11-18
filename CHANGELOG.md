@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.4.1] - 2024-11-17
+## [v15.4.4] - 2024-11-17
 
 ### Changed
 
