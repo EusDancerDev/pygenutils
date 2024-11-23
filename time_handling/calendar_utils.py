@@ -15,12 +15,12 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from pygenutils.arrays_and_lists.data_manipulation import unique_type_objects
-from pygenutils.strings.string_handler import modify_obj_specs
-from statkit.core import interpolation_methods
-from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
 from filewise.general.introspection_utils import get_type_str
 from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
+from pygenutils.arrays_and_lists.patterns import unique_type_objects
+from pygenutils.strings.string_handler import modify_obj_specs
+from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
+from statkit.core import interpolation_methods
 
 # Create aliases #
 #----------------#
