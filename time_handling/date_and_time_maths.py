@@ -24,8 +24,8 @@ from pygenutils.arrays_and_lists.data_manipulation import select_elements
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.time_handling.time_formatters import datetime_obj_converter,\
-                                                  parse_float_time, \
-                                                  parse_time_string
+                                                     parse_float_time, \
+                                                     parse_time_string
 
 #------------------#
 # Define functions #
