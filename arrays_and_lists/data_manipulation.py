@@ -339,8 +339,8 @@ def remove_elements(array, idx2access, axis=None):
     array : list, numpy.ndarray, or pandas.Series
         List, numpy array, or pandas Series from which elements will be removed.
     idx2access : int, list, or numpy.ndarray
-        Indices to access the elements that will be removed. For lists, only a single
-        index is allowed, while numpy arrays and pandas Series support multiple indices.
+        Indices to access the elements that will be removed. For lists, multiple
+        indices are now allowed.
     axis : int, optional
         Axis along which to remove elements for numpy arrays. Default is None.
     
@@ -350,8 +350,8 @@ def remove_elements(array, idx2access, axis=None):
 
     Examples
     --------
-    >>> remove_elements([1, 2, 3, 4], 2)
-    [1, 2, 4]
+    >>> remove_elements([1, 2, 3, 4], [1, 3])
+    [1, 3]
 
     >>> remove_elements(np.array([10, 20, 30, 40]), [1, 3])
     array([10, 30])
@@ -362,10 +362,15 @@ def remove_elements(array, idx2access, axis=None):
     dtype: int64
     """
     if isinstance(array, list):
-        if isinstance(idx2access, int):
+        if isinstance(idx2access, int):  # Handle single index
             array.pop(idx2access)
+        elif isinstance(idx2access, (list, np.ndarray)):  # Handle multiple indices
+            for index in sorted(idx2access, reverse=True):
+                if index < 0 or index >= len(array):
+                    raise IndexError(f"Index {index} is out of range for list of size {len(array)}.")
+                del array[index]
         else:
-            raise TypeError("For list inputs, only an integer index is allowed.")
+            raise TypeError("For list inputs, indices must be an integer or a list/array of integers.")
     elif isinstance(array, np.ndarray):
         array = np.delete(array, idx2access, axis=axis)
     elif isinstance(array, Series):
