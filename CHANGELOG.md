@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.5.0] - 2024-11-23
+
+### Changed
+
+**Arrays and Lists**
+
+- Module `data_manipulation`: enhance `remove_elements` function to support multiple indices for list inputs.
+
+**Time Handling**
+
+- Module `calendar_utils`: corrected the absolute path in the import of the `unique_type_objects` function.
+---
+
 ## [v15.4.4] - 2024-11-17
 
 ### Changed
