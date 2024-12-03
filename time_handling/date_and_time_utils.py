@@ -160,7 +160,7 @@ def display_user_timestamp(user_timestamp, user_timezone_str):
 # Dates and times #
 #-----------------#
 
-def get_current_datetime(dtype, time_fmt_str=None, tz_arg=None):    
+def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):    
     """
     Returns the current date and time based on the specified data type.
 
@@ -172,6 +172,7 @@ def get_current_datetime(dtype, time_fmt_str=None, tz_arg=None):
         - 'datetime'  : Returns datetime object using datetime.datetime.now()
         - 'str'       : Returns string representation of current time using time.ctime()
         - 'timestamp' : Returns timestamp object using pd.Timestamp.now()
+        Default is 'datetime'.
 
     time_fmt_str : str, optional
         Optional format string for datetime formatting using .strftime().
