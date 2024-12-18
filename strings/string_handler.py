@@ -86,15 +86,7 @@ def find_substring_index(string,
     #######################
     
     param_keys = get_caller_args()
-    advanced_search_pos = param_keys.index("advanced_search")
     match_index_pos = param_keys.index("return_match_index")
-    match_index_str_pos = param_keys.index("return_match_str")
-
-    if not return_match_index and not return_match_str:
-        raise ValueError(f"Arguments '{param_keys[match_index_pos]}' "
-                         f"and '{param_keys[match_index_str_pos]}' "
-                         "cannot both be False "
-                         f"with argument '{param_keys[advanced_search_pos]}' being True.")
         
     if not (return_match_index in match_obj_index_option_keys):
         raise ValueError(f"Invalid '{param_keys[match_index_pos]}' value. "
