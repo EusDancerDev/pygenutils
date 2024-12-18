@@ -31,6 +31,7 @@ from filewise.general.introspection_utils import get_type_str, get_caller_args
 # Main method #
 #-#-#-#-#-#-#-#
 
+
 def find_substring_index(string,
                          substring, 
                          start=0,
@@ -55,7 +56,7 @@ def find_substring_index(string,
         Start index for search. Default is 0.
     end : int, optional
         End index for search. If None, it searches to the end of the string or collection. 
-    return_match_index :  {"lo", "hi", "both"}, optional
+    return_match_index :  {"lo", "hi", "both"}
         Defines which match index to return.
     return_match_str : bool, optional
         If True, returns the matched substring instead of the index.
@@ -85,15 +86,17 @@ def find_substring_index(string,
     #######################
     
     param_keys = get_caller_args()
+    advanced_search_pos = param_keys.index("advanced_search")
     match_index_pos = param_keys.index("return_match_index")
     match_index_str_pos = param_keys.index("return_match_str")
-    
-    if return_match_index and return_match_str:
+
+    if not return_match_index and not return_match_str:
         raise ValueError(f"Arguments '{param_keys[match_index_pos]}' "
                          f"and '{param_keys[match_index_str_pos]}' "
-                         "cannot both be True.")
+                         "cannot both be False "
+                         f"with argument '{param_keys[advanced_search_pos]}' being True.")
         
-    if return_match_index and not (return_match_index in match_obj_index_option_keys):
+    if not (return_match_index in match_obj_index_option_keys):
         raise ValueError(f"Invalid '{param_keys[match_index_pos]}' value. "
                          f"Choose from {match_obj_index_option_keys}.")
         
@@ -153,16 +156,6 @@ def find_substring_index(string,
                                                            all_matches)
       
             return [n for n in match_indices if n != -1]
-                
-    # Handle case: search in pandas Series # 
-    elif get_type_str(string) == "Series":
-        try:
-            match_series = string.str.contains(substring)
-        except AttributeError:
-            match_series = string.iloc[:, 0].str.contains(substring)
-        else:
-            return list(match_series[match_series].index)
-       
 
     # Handle the return based on the result type #    
     if isinstance(substr_match_obj, list):
@@ -267,10 +260,7 @@ def _advanced_pattern_searcher(string, substring,
     arg_list = [
         string, substring, re_obj_str,
         return_match_index, return_match_str,
-        iterator_considered,
-        case_sensitive,
-        find_whole_words,
-        all_matches
+        iterator_considered
     ]
     
     if get_type_str(string) in ["list", "ndarray", "tuple"]:        
@@ -286,8 +276,7 @@ def _advanced_pattern_searcher(string, substring,
 
 def _return_search_obj_spec(string, substring, re_obj_str,
                             return_match_index, return_match_str,
-                            iterator_considered, case_sensitive,
-                            find_whole_words, all_matches):
+                            iterator_considered):
     """
     Handles the regular expression search and result extraction for advanced search.
     
@@ -305,12 +294,6 @@ def _return_search_obj_spec(string, substring, re_obj_str,
         If True, returns the matched substrings.
     iterator_considered : bool
         If True, collects all matches in an iterable.
-    case_sensitive : bool
-        Whether or not to perform a case-sensitive match.
-    find_whole_words : bool
-        Match whole words only if set to True.
-    all_matches : bool
-        If True, finds all matches rather than just the first.
     
     Returns
     -------
@@ -347,7 +330,13 @@ def _return_search_obj_spec(string, substring, re_obj_str,
     else:
         match_strings = []
     
-    return indices, match_strings
+    # Adjust return values based on the number of matches
+    if not indices:
+        return (-1, -1) if return_match_str else -1
+    elif len(indices) == 1:
+        return (indices[0], match_strings[0]) if return_match_str else indices[0]
+    else:
+        return (indices, match_strings) if return_match_str else indices
  
 # %%
    
