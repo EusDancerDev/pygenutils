@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.6.0] - 2024-12-18
+
+### Changed 
+
+**Strings**
+
+- Module `string_handler`: enhanced substring search logic: returns single data object for one match, (-1, -1) for no matches, and enforces {"lo", "hi", "both"} for index return options.
+
+---
+
 ## [v15.5.0] - 2024-11-23
 
 ### Changed
