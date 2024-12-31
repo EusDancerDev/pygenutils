@@ -174,7 +174,7 @@ def detect_subarray_in_array(obj, test_obj,
                         "'numpy.ndarray' or 'pandas.Series'.")
         
 
-def find_duplicated_elements(array_like, remove_duplicated=False):    
+def find_duplicated_elements(array_like, remove_duplicated=False):
     """
     Finds duplicated or N-folded elements in an array-like object,
     and returns the indices in which the element is present, 
@@ -217,13 +217,13 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
     # Convert the flattened indices back to N-dim indices 
     for element, indices in duplicated_indices_dict.items():
         duplicated_element_indices_dict[element] = [
-            tuple(np.unravel_index(idx, array_like.shape))
-            if len(array_like.shape) > 1 else idx
+            tuple(np.unravel_index(idx, flattened_array.shape))
+            if len(flattened_array.shape) > 1 else idx
             for idx in indices
         ]
         
     if remove_duplicated:
-        return list(dict.fromkeys(array_like))
+        return list(dict.fromkeys(flattened_array))
     else:
         return duplicated_element_indices_dict
     
