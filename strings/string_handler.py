@@ -31,7 +31,6 @@ from filewise.general.introspection_utils import get_type_str, get_caller_args
 # Main method #
 #-#-#-#-#-#-#-#
 
-
 def find_substring_index(string,
                          substring, 
                          start=0,
@@ -215,9 +214,7 @@ def _advanced_pattern_searcher(string, substring,
 
     # No option selected #
     if not case_sensitive and not all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string: re.search(substring, 
-                                                         string, 
-                                                         re.IGNORECASE | flags)
+        re_obj_str = lambda substring, string: re.search(substring, string, re.IGNORECASE | flags)
         iterator_considered = False
 
     # One option selected #
@@ -226,15 +223,11 @@ def _advanced_pattern_searcher(string, substring,
         iterator_considered = False
         
     elif not case_sensitive and all_matches and not find_whole_words:
-        re_obj_str = lambda substring, string: re.finditer(substring,
-                                                           string, 
-                                                           re.IGNORECASE | flags)
+        re_obj_str = lambda substring, string: re.finditer(substring, string, re.IGNORECASE | flags)
         iterator_considered = True        
         
     elif not case_sensitive and not all_matches and find_whole_words:
-        re_obj_str = lambda substring, string: re.fullmatch(substring,
-                                                            string, 
-                                                            re.IGNORECASE | flags)
+        re_obj_str = lambda substring, string: re.fullmatch(substring, string, re.IGNORECASE | flags)
         iterator_considered = False
 
     # Two options selected #
@@ -692,8 +685,7 @@ def substring_replacer(string, substr2find, substr2replace, count_std=-1,
             
     else:
         if isinstance(string, str):
-            string_replaced = re.sub(substr2find, substr2replace, 
-                                     string, count_adv, flags)
+            string_replaced = re.sub(substr2find, substr2replace, string, count_adv, flags)
         else:
             # Apply regex replacement to each element in lists/arrays
             string_replaced = [
