@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.6.0] - 2024-12-18
 
-### Changed 
+### Changed
 
 **Strings**
 
