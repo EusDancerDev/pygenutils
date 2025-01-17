@@ -22,10 +22,9 @@ from filewise.general.introspection_utils import get_caller_args
 # Create aliases #
 #----------------#
 
+find_substring_index = string_handler.find_substring_index
 format_string = text_formatters.format_string
 print_format_string = text_formatters.print_format_string
-
-find_substring_index = string_handler.find_substring_index
 
 #------------------#
 # Define functions #
