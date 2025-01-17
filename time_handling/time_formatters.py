@@ -103,13 +103,13 @@ def _validate_unit(unit, module):
     """
     
     # Define allowed date units for each module    
-    if module == "numpy" and unit not in numpy_unit_list:
+    if module == "numpy" and unit not in numpy_date_unit_list:
         raise ValueError("Unsupported date unit for numpy.datetime64 objects. "
-                         f"Choose one from {numpy_unit_list}.")
+                         f"Choose one from {numpy_date_unit_list}.")
         
-    if module == "pandas" and unit not in pandas_unit_list:
+    if module == "pandas" and unit not in pandas_date_unit_list:
         raise ValueError("Unsupported date unit for pandas.Timestamp objects. "
-                         f"Choose one from {pandas_unit_list}.")
+                         f"Choose one from {pandas_date_unit_list}.")
 
 
 
