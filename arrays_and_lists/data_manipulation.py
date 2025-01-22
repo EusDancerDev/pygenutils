@@ -19,9 +19,52 @@ from pandas import Series, DataFrame
 # Sorting Methods #
 #-----------------#
 
-# Simple sorting methods #
-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# Simple sorting #
+#-#-#-#-#-#-#-#-#-
 
+# Helpers #
+def _pos_swapper(A, x, y):
+    """
+    Swap two elements in a list or numpy array at specified positions.
+    
+    This function exchanges the values located at positions `x` and `y` in the 
+    provided list or numpy array `A`. It operates in-place, meaning the input
+    object is modified directly without returning a new object.
+    
+    Parameters
+    ----------
+    A : list or numpy.ndarray
+        The list or numpy array where the elements will be swapped.
+    x : int
+        The index of the first element to be swapped.
+    y : int
+        The index of the second element to be swapped.
+    
+    Returns
+    -------
+    None
+        The input array `A` is modified in-place.
+    
+    Raises
+    ------
+    IndexError
+        If `x` or `y` are out of bounds for the list or array `A`.
+    
+    Examples
+    --------
+    >>> A = [1, 2, 3, 4]
+    >>> _pos_swapper(A, 0, 2)
+    >>> A
+    [3, 2, 1, 4]
+    
+    >>> A = np.array([10, 20, 30, 40])
+    >>> _pos_swapper(A, 1, 3)
+    >>> A
+    array([10, 40, 30, 20])
+    """
+    A[x], A[y] = A[y], A[x]
+
+# Main #
 def sort_values_standard(array, key=None, reverse=False,
                          axis=-1, order=None,
                          want_numpy_array=False):
@@ -98,57 +141,15 @@ def sort_1D_arr_rudimentary(obj, reverse=False):
                 current = k
             elif reverse and obj[k] > obj[current]:
                 current = k
-        pos_swapper(obj, current, i)
+        _pos_swapper(obj, current, i)
     return obj
 
 
-def pos_swapper(A, x, y):
-    """
-    Swap two elements in a list or numpy array at specified positions.
-    
-    This function exchanges the values located at positions `x` and `y` in the 
-    provided list or numpy array `A`. It operates in-place, meaning the input
-    object is modified directly without returning a new object.
-    
-    Parameters
-    ----------
-    A : list or numpy.ndarray
-        The list or numpy array where the elements will be swapped.
-    x : int
-        The index of the first element to be swapped.
-    y : int
-        The index of the second element to be swapped.
-    
-    Returns
-    -------
-    None
-        The input array `A` is modified in-place.
-    
-    Raises
-    ------
-    IndexError
-        If `x` or `y` are out of bounds for the list or array `A`.
-    
-    Examples
-    --------
-    >>> A = [1, 2, 3, 4]
-    >>> pos_swapper(A, 0, 2)
-    >>> A
-    [3, 2, 1, 4]
-    
-    >>> A = np.array([10, 20, 30, 40])
-    >>> pos_swapper(A, 1, 3)
-    >>> A
-    array([10, 40, 30, 20])
-    """
-    A[x], A[y] = A[y], A[x]
-
-
-# Advanced sorting methods #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+# Advanced sorting #
+#-#-#-#-#-#-#-#-#-#-
 
 def sort_rows_by_column(array, ncol, reverse=False, order=None): 
-    """
+    """*
     Sort a 2D array by a specific column, preserving row structure.    
     The mechanism preserves the original structure of each row, 
     only sorting based on the specified column. 
