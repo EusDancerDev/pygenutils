@@ -9,14 +9,23 @@ The supported bases include binary, octal, decimal, and hexadecimal, as well as
 arbitrary bases.
 """
 
+#-----------------------#
+# Import custom modules # 
+#-----------------------#
+
+from pygenutils.strings.string_handler import find_substring_index, substring_replacer
+
 #------------------#
 # Define functions #
 #------------------#
 
-# Validation functions #
-#----------------------#
+# Validator helpers #
+#-------------------#
 
-def check_input_number_format(x):
+# Input format checkers #
+#-#-#-#-#-#-#-#-#-#-#-#-#
+
+def _check_input_str(x):
     """
     Ensures the input number is in string format.
 
@@ -27,7 +36,7 @@ def check_input_number_format(x):
 
     Returns
     -------
-    str
+    x_str : str
         The input number as a string.
     """
     if isinstance(x, int):
@@ -36,26 +45,106 @@ def check_input_number_format(x):
         x_str = x
     return x_str
 
-def method_checker(arg):
+def _check_input_binary(b):
     """
-    Checks if the provided method is valid.
+    Checks if the input binary number is in the correct format.
+
+    Parameters
+    ----------
+    b : str
+        The binary number as a string. It can contain the 'b' or '0b' prefix.
+
+    Returns
+    -------
+    str
+        The binary number as a string without the 'b' or '0b' prefix.
+    """
+    b_clean = substring_replacer(substring_replacer(b, "b", ""), "0b", "")
+    are_only_binaries = find_substring_index(b_clean, "^[01]+$")
+    if are_only_binaries == -1:
+        raise ValueError("The input binary number is not in the correct format.")
+    return b_clean
+
+
+def _check_input_int(x):
+    """
+    Ensures the input number is in integer format.
+
+    Parameters
+    ----------
+    x : int or str
+        The input number.
+
+    Returns
+    -------
+    x_int : int
+        The input number as an integer.
+    """
+    if isinstance(x, int):
+        x_int = x
+    else:
+        if substring_replacer(x, '-', '').isdigit():
+            x_int = int(x)
+        else:
+            raise ValueError("The input value will not be convertible to an integer.")
+    return x_int
+
+# Procedure checker #
+#-#-#-#-#-#-#-#-#-#-#
+
+def _procedure_checker(arg):
+    """
+    Checks if the provided procedure is valid.
 
     Parameters
     ----------
     arg : str
-        The method to check.
+        The procedure to check.
 
     Raises
     ------
-    ValueError : If the method is not valid.
+    ValueError : If the procedure is not valid.
     """
-    if arg not in method_opts:
-        raise ValueError(f"Unsupported method. Choose one from {method_opts}.")
+    if arg not in procedure_opts:
+        raise ValueError(f"Unsupported procedure. Choose one from {procedure_opts}.")
         
 # Frequently used bases #
 #-----------------------#
 
-def base2bin(n, method="format_string", zero_pad=4):
+# Basic #
+#-#-#-#-#
+
+def dec2bin_basic(n):
+    """
+    Converts a decimal number to binary, using mathematical operations
+    by definition (hence the name 'basic').
+
+    Parameters
+    ----------
+    n : int
+        The decimal number to convert.
+        
+    Returns
+    -------
+    str
+        The binary representation of the input number.
+    """
+    n_checked = _check_input_int(n)
+    b = ''
+    while True:
+        floordiv, mod = divmod(n_checked,2)
+        b += str(mod)
+        if floordiv == 0:
+            break
+        n_checked //= 2
+    b_actual = b[::-1]
+    return b_actual
+
+# Advanced #
+#-#-#-#-#-#-
+
+# From decimal to bases 2, 8, 16 #
+def base2bin(n, procedure="format_string", zero_pad=4):
     """
     Converts a number to binary.
 
@@ -63,8 +152,8 @@ def base2bin(n, method="format_string", zero_pad=4):
     ----------
     n : int
         The input number.
-    method : str
-        The method to use for conversion ('default' or 'format_string').
+    procedure : str
+        The procedure to use for conversion ('default' or 'format_string').
     zero_pad : int
         The number of zeros to pad (used with 'format_string').
 
@@ -73,15 +162,15 @@ def base2bin(n, method="format_string", zero_pad=4):
     str
         The binary representation of the input number.
     """
-    method_checker(method)
+    _procedure_checker(procedure)
 
-    if method == "default":
+    if procedure == "default":
         n_bin = bin(n)
-    elif method == "format_string":
+    elif procedure == "format_string":
         n_bin = f"{n:0{zero_pad}b}"
     return n_bin
 
-def base2oct(n, method="format_string", zero_pad=4):
+def base2oct(n, procedure="format_string", zero_pad=4):
     """
     Converts a number to octal.
 
@@ -89,8 +178,8 @@ def base2oct(n, method="format_string", zero_pad=4):
     ----------
     n : int
         The input number.
-    method : str
-        The method to use for conversion ('default' or 'format_string').
+    procedure : str
+        The procedure to use for conversion ('default' or 'format_string').
     zero_pad : int
         The number of zeros to pad (used with 'format_string').
 
@@ -99,15 +188,15 @@ def base2oct(n, method="format_string", zero_pad=4):
     str
         The octal representation of the input number.
     """
-    method_checker(method)
+    _procedure_checker(procedure)
 
-    if method == "default":
+    if procedure == "default":
         n_oct = oct(n)
-    elif method == "format_string":
+    elif procedure == "format_string":
         n_oct = f"{n:0{zero_pad}o}"
     return n_oct
 
-def base2hex(n, method="format_string", zero_pad=4):
+def base2hex(n, procedure="format_string", zero_pad=4):
     """
     Converts a number to hexadecimal.
 
@@ -115,8 +204,8 @@ def base2hex(n, method="format_string", zero_pad=4):
     ----------
     n : int
         The input number.
-    method : str
-        The method to use for conversion ('default' or 'format_string').
+    procedure : str
+        The procedure to use for conversion ('default' or 'format_string').
     zero_pad : int
         The number of zeros to pad (used with 'format_string').
 
@@ -125,14 +214,14 @@ def base2hex(n, method="format_string", zero_pad=4):
     str
         The hexadecimal representation of the input number.
     """
-    method_checker(method)
+    _procedure_checker(procedure)
 
-    if method == "default":
+    if procedure == "default":
         if isinstance(n, float):
             n_hex = n.hex()
         else:
             n_hex = hex(n)
-    elif method == "format_string":
+    elif procedure == "format_string":
         n_hex = f"{n:0{zero_pad}x}"
     return n_hex
 
@@ -156,6 +245,33 @@ def bin2dec(n_bin):
     else:
         n = int(n_bin, base=2)
     return n
+
+def bin2dec_basic(b):
+    """
+    Converts a binary number to decimal, using mathematical operations
+    by definition (hence the name 'basic').
+
+    Parameters
+    ----------
+    b : str
+        The binary number as a string.
+        It can contain the 'b' or '0b' prefix. If so, the function 
+        will take into account the string without the prefix.
+
+    Returns
+    -------
+    int
+        The decimal equivalent of the binary number.
+    """
+
+    b_checked = _check_input_binary(b)
+    lb = len(b_checked)
+
+    res = 0
+    for bit_pos, i_str in enumerate(range(lb-1,-1,-1)):
+        res += int(b_checked[i_str]) * 2 ** bit_pos
+    return res
+
 
 def oct2dec(n_oct):
     """
@@ -200,7 +316,7 @@ def hex2dec(n_hex):
 # Arbitrary bases #
 #-----------------#
 
-def arbitrary_base_to_dec(x, base=10):
+def arbitrary2dec(x, base=10):
     """
     Converts a number from an arbitrary base to decimal.
 
@@ -216,11 +332,11 @@ def arbitrary_base_to_dec(x, base=10):
     int
         The decimal equivalent of the input number.
     """
-    x = check_input_number_format(x)
-    n = int(x, base=base)
+    x_checked = _check_input_str(x)
+    n = int(x_checked, base=base)
     return n
 
-def convert_among_arbitrary_bases(x, base):
+def convert_among_arbitraries(x, base):
     """
     Converts a number from one arbitrary base to another.
 
@@ -236,12 +352,12 @@ def convert_among_arbitrary_bases(x, base):
     int
         The number converted to the specified base.
     """
-    x = check_input_number_format(x)
-    y = int(x, base=base)
+    x_checked = _check_input_str(x)
+    y = int(x_checked, base=base)
     return y
 
 #--------------------------#
 # Parameters and constants #
 #--------------------------#
 
-method_opts = ['default', 'format_string']
+procedure_opts = ['default', 'format_string']
