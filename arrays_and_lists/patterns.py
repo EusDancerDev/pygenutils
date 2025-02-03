@@ -16,9 +16,8 @@ from pandas import Series
 #-----------------------#
 
 from filewise.general.introspection_utils import get_type_str, get_caller_args
-from pygenutils.arrays_and_lists.data_manipulation import sort_1D_arr_rudimentary
+from pygenutils.arrays_and_lists.data_manipulation import sort_1d_basic
 from pygenutils.strings.string_handler import find_substring_index
-
 
 #------------------#
 # Define functions # 
@@ -27,10 +26,10 @@ from pygenutils.strings.string_handler import find_substring_index
 # Pattern searching #
 #-------------------#
 
-# Simple methods #
-#-#-#-#-#-#-#-#-#-
+# Basic #
+#-#-#-#-#
 
-def find_item_rudimentary(obj, obj2find):
+def find_item_basic(obj, obj2find):
     """
     Function that finds a given element in an array.
     For that, it always starts searching from its middle position,
@@ -41,7 +40,7 @@ def find_item_rudimentary(obj, obj2find):
     or external library.
     In order the latter to be effective, the input object must already be sorted,
     and since the mathematics are simple, that task is also going to be
-    accomplished using the simple 'sort_1D_arr_rudimentary' function.
+    accomplished using the simple 'sort_1d_basic' function.
     
     Parameters
     ----------
@@ -59,7 +58,7 @@ def find_item_rudimentary(obj, obj2find):
     """
     
     length = len(obj)
-    sorted_obj = sort_1D_arr_rudimentary(obj)
+    sorted_obj = sort_1d_basic(obj)
     
     i = 0
     start = 0
@@ -77,11 +76,11 @@ def find_item_rudimentary(obj, obj2find):
     return False
 
 
-# Advanced methods #
-#-#-#-#-#-#-#-#-#-#-
+# Advanced #
+#-#-#-#-#-#-
 
 def detect_subarray_in_array(obj, test_obj, 
-                             preferent_adapt_method="numpy",
+                             preferent_adapt_module="numpy",
                              reverse_arg_order=False,
                              return_all=False):
     
@@ -107,10 +106,10 @@ def detect_subarray_in_array(obj, test_obj,
         type(obj) === 'pandas.Series'; type(test_obj) === 'numpy.ndarray'
         type(obj) === 'pandas.Series'; type(test_obj) === 'pandas.Series'
                 
-    preferent_adapt_method : {'numpy', 'pandas'}
+    preferent_adapt_procedure : {'numpy', 'pandas'}
         If the input 'obj' argument is neither an array or pandas Series,
         it will be converted accordingly.
-        Default method is 'numpy', which means that if this case is satisfied,
+        Default procedure is 'numpy', which means that if this case is satisfied,
         it will be converted to a NumPy array.            
     reverse_arg_order : bool
         Some times is more logical to strictly limit to the size of
@@ -133,14 +132,14 @@ def detect_subarray_in_array(obj, test_obj,
     
     # Input validation and reconversion of 'obj' object if necessary #
     param_keys = get_caller_args()
-    adapt_method_opt_pos = find_substring_index(param_keys, "preferent_adapt_method")
+    adapt_module_opt_pos = find_substring_index(param_keys, "preferent_adapt_module")
     
-    if preferent_adapt_method not in modules_adaptation:
+    if preferent_adapt_module not in modules_adaptation:
         raise ValueError("Invalid module for input object adaptations. "
-                         f"(argument '{param_keys[adapt_method_opt_pos]}'.\n"
+                         f"(argument '{param_keys[adapt_module_opt_pos]}'.\n"
                          f"Options are {modules_adaptation}.")
     else:
-        obj = obj_conversion_opt_dict.get(preferent_adapt_method)(obj)
+        obj = obj_conversion_opt_dict.get(preferent_adapt_module)(obj)
       
     
     # Determine the element-wise presence #
@@ -469,4 +468,4 @@ modules_adaptation = ["numpy", "pandas"]
 obj_conversion_opt_dict = {
     modules_adaptation[0] : lambda obj: np.array(obj),
     modules_adaptation[1] : lambda obj: Series(obj)
-    }
+}
