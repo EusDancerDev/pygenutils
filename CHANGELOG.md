@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.7.0] - 2025-02-03
+
+### Added
+
+**Number Bases**
+- Module `base_converters`:
+	- Added helper function `_check_input_binary` to check if the input binary number is in the correct format.
+	- Introduce two basic functions to convert between base 10 and base 2: `dec2bin_basic` and `bin2dec_basic`. Both perform mathematical computations by definition.
+
+**Arrays and Lists**
+- Module `data_manipulation`: add flipping utilities of lists and NumPy arrays with N >= 1 dimensions.
+
+### Changed
+
+**General**
+
+- Peform several term replacements in many modules:
+	- `method` with `function`, if no object is instantiated throughout the module.
+	- `method` with `procedure` (or `algorithm`/`module`), to more accurately describe the approach or technique used in functions.
+	Additionally, this change effectively communicates that a function can employ different methods or techniques to achieve its goal.
+
+---
+
 ## [v15.6.0] - 2024-12-18
 
 ### Changed
@@ -90,7 +113,7 @@ All notable changes to this project will be documented in this file.
 		
 	- The following sub-packages form a new package:
 		- `data_entry_forms` |
-		- `databases`        | -> `DataOpsHub`
+		- `databases`        | <span>&#8594;</span> `DataOpsHub`
 		- `security`         |
 		
 - Once all above changes made, absolutely all imports have been updated to match the package where a sub-package or module is.
@@ -101,7 +124,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-<h3>Changes in methods along modules and sub-packages</h3>
+<h3>Changes in functions along modules and sub-packages</h3>
 
 **Varnames**
 - Variable name `all_arg_names`, which contains all variables (required and optional) of the caller function, has been renamed to `param_keys`.
@@ -111,11 +134,11 @@ All notable changes to this project will be documented in this file.
 
 **Dictionaries**
 - Module `table_formatters`:
-	- Moved all methods to the module `information_output_formatters` (**Strings** sub-package)
+	- Moved all functions to the module `information_output_formatters` (**Strings** sub-package)
 
 **General File Utils**
 - Module `introspection_utils`:
-	- The following method renamings have been made:
+	- Renamed the following functions:
 	<table>
 		<thead>
 			<tr>
@@ -129,27 +152,27 @@ All notable changes to this project will be documented in this file.
 				<td>get_func_name</td>
 			</tr>
 			<tr>
-				<td>get_method_args</td>
+				<td>get_function_args</td>
 				<td>get_func_args</td>
 			</tr>
 			<tr>
-				<td>get_method_all_args</td>
+				<td>get_function_all_args</td>
 				<td>get_all_func_args</td>
 			</tr>
 			<tr>
-				<td>get_full_method_signature</td>
+				<td>get_full_function_signature</td>
 				<td>get_func_signature</td>
 			</tr>
 			<tr>
-				<td>get_caller_method_args</td>
+				<td>get_caller_function_args</td>
 				<td>get_caller_args</td>
 			</tr>
 			<tr>
-				<td>get_caller_method_all_args</td>
+				<td>get_caller_function_all_args</td>
 				<td>get_all_caller_args</td>
 			</tr>
 			<tr>
-				<td>get_full_caller_method_signature</td>
+				<td>get_full_caller_function_signature</td>
 				<td>get_caller_signature</td>
 			</tr>
 			<tr>
@@ -167,7 +190,7 @@ All notable changes to this project will be documented in this file.
 
 **Format Converters**
 - Module `file_format_tweaker`:
-	- The following method renamings have been made:
+	- Renamed the following functions:
 	<table>
 		<thead>
 			<tr>
@@ -208,11 +231,11 @@ All notable changes to this project will be documented in this file.
 
 **Operative systems**
 - Module `OS Operations`
-	- In method `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
+	- In function `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
 		- This change has been applied in every affected module.
 
 **Strings**
-- Module `string_handler`: the following method renamings have been made:
+- Module `string_handler`: Renamed the following functions:
 <table>
 	<thead>
 		<tr>
@@ -265,14 +288,14 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
-<h3>Changes in methods along modules and sub-packages</h3>
+<h3>Changes in functions along modules and sub-packages</h3>
 
 **General**
 - Switched to British English every verb written in American accent. For example:
-	- *standardize* -> <i>standardi**S**e</i>
-	- *serialize* -> <i>seriali**S**</i>
+	- *standardize* <span>&#8594;</span> <i>standardi**S**e</i>
+	- *serialize* <span>&#8594;</span> <i>seriali**S**</i>
 	
-- All `.lower()` instances of the string returned by the method `get_obj_type_str` (module `introspection_utils`, sub-package **General Utils**),<br>
+- All `.lower()` instances of the string returned by the function `get_obj_type_str` (module `introspection_utils`, sub-package **General Utils**),<br>
   have been substituted in favour of setting the argument `lowercase` to True.
   
 - The renaming of the module `file_and_directory_handler` to `ops_handler` has been applied to all affected files.
@@ -280,8 +303,8 @@ All notable changes to this project will be documented in this file.
 
 **Climate Data Utils**
 - Module `cdo_tools`:
-	- Refactored multiple CDO processing functions, optimised internal helpers, and updated file handling methods with section headers and internal visibility changes.
-	- The following method renamings have been made:
+	- Refactored multiple CDO processing functions, optimised internal helpers, and updated file handling functions with section headers and internal visibility changes.
+	- Renamed the following functions:
 	<table>
 		<thead>
 			<tr>
@@ -348,8 +371,8 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>file_and_directory_handler</i></h4>
 
-- Refactored and optimised file and directory operations; consolidated methods, introduced helper functions, and removed shell command dependencies.
-- The following method renamings have been made:
+- Refactored and optimised file and directory operations; consolidated functions, introduced helper functions, and removed shell command dependencies.
+- Renamed the following functions:
 <table>
 	<thead>
 		<tr>
@@ -414,8 +437,8 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>file_and_directory_paths</i></h4>
 
-- Refactored file and directory path search logic; introduced switch-case for match_type, shortened method names, and optimised code.
-- The following methods have been merged and renamed:
+- Refactored file and directory path search logic; introduced switch-case for match_type, shortened function names, and optimised code.
+- The following functions have been merged and renamed:
 <table>
 	<thead>
 		<tr>
@@ -456,8 +479,8 @@ All notable changes to this project will be documented in this file.
 
 <h4>Module <i>conversions</i></h4>
 
-- Optimised data conversion and flattening methods, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
-- The following method renamings have been made:
+- Optimised data conversion and flattening functions, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
+- Renamed the following functions:
 <table>
 	<thead>
 		<tr>
@@ -507,7 +530,7 @@ All notable changes to this project will be documented in this file.
 
 <h4>'scripts' sub-package</h4>
 
-- Contains application programs of several methods in the modules of sub-package `file_operations`:
+- Contains application programs of several functions in the modules of sub-package `file_operations`:
 - The following **module** renamings have been made:
 <table>
 	<thead>
@@ -558,22 +581,22 @@ All notable changes to this project will be documented in this file.
 
 **Arrays and Lists**
 - Module `data_manipulation`
-	- Optimised and grouped methods by categories, added support for pandas objects, and improved docstrings.
-	- In methods `sort_rows_by_column` and `sort_columns_by_row`, argument `sort_order` has been substituted by `reverse`, where its mechanism is the same as for lists.
-	- Method `decompose_24h_cumulative_data`:
+	- Optimised and grouped functions by categories, added support for pandas objects, and improved docstrings.
+	- In functions `sort_rows_by_column` and `sort_columns_by_row`, argument `sort_order` has been substituted by `reverse`, where its mechanism is the same as for lists.
+	- function `decompose_24h_cumulative_data`:
 		- Rename to `decompose_cumulative_data`.
 		- Introduce a new `fill_value` parameter to allow the user to choose how to handle negative differences.
 	
 **File Utils**
 - Module `change_permissions_main`:
-	- Refactored method `modify_obj_permissions` to allow no-change option for permissions and improved detection of files/directories.
+	- Refactored function `modify_obj_permissions` to allow no-change option for permissions and improved detection of files/directories.
 	- Enhanced `modify_obj_owner` with no-change defaults for owner/group, flexible ID handling, and improved error handling.
 	- After performing these changes, rename the module to `permission_manager`.
 	
 **Xarray Utils**
 - Module `data_manipulation`:
-	- Shortened method/variable names, optimised code, added docstrings.
-	- The following method renamings have been made:
+	- Shortened function/variable names, optimised code, added docstrings.
+	- Renamed the following functions:
 	<table>
 		<thead>
 			<tr>
@@ -597,11 +620,11 @@ All notable changes to this project will be documented in this file.
 		</tbody>
 	</table>
 
-- Moved method `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
+- Moved function `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
 
 ### Removed
 
-- After the displacement of the method `create_ds_component`, `change_permissions_main` module was removed.
+- After the displacement of the function `create_ds_component`, `change_permissions_main` module was removed.
 
 ---
 
@@ -610,22 +633,22 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 **Core Statistics**
-- Created `interpolation_methods` module with `interpolate_numpy`, `interpolate_pandas`, and `interpolate_xarray` for flexible interpolation across various object types.
+- Created `interpolation_functions` module with `interpolate_numpy`, `interpolate_pandas`, and `interpolate_xarray` for flexible interpolation across various object types.
 
 ### Changed
 
 **Climatology Statistics**
 - Module `representative_series`
-	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_methods` (**Core Statistics**).
+	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_functions` (**Core Statistics**).
 
 **Time Handling**
-- Method `standardize_calendar`:
+- function `standardize_calendar`:
 	- Rename to British English nomenclature: `standardise_calendar`.
 	- Optimised by refactoring type handling.
-	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_methods` (**Core Statistics**).
+	- Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_functions` (**Core Statistics**).
 	
 **Geospatial Tools**
-- In module `geospatial_tools`, rename method `netcdf2raster` to `nc2raster`.
+- In module `geospatial_tools`, rename function `netcdf2raster` to `nc2raster`.
 
 ---
 
@@ -634,7 +657,7 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 **General Utilities**
-- `introspection_utils`: method `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
+- `introspection_utils`: function `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
 
 ### Changed
 
@@ -642,18 +665,18 @@ All notable changes to this project will be documented in this file.
 - Modules
 	- `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually 
 	- Refactored the `interval_operators` to support switch-case dictionaries, improved `union` behaviour with `force_union` parameter for true unions.
-- Methods
+- functions
 	- Refactored `operations_with_sets`, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
-		- After that, renamed the method to `sets_operator`.
+		- After that, renamed the function to `sets_operator`.
 		
 **Core Statistics**
-- Method `polynomial_fitting` has been moved from module `curve_fitting` to `interpolation_methods`.
+- function `polynomial_fitting` has been moved from module `curve_fitting` to `interpolation_functions`.
 
 <u>**Time handling**</u>
 **`date_and_time_utils`**
-- Merged and optimised methods for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
+- Merged and optimised functions for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: although every method has been moved to this module, except in one case the method pairs have been named identically,<br>
+- <span style="font-weight:bold; color:maroon">NOTE</span>: although every function has been moved to this module, except in one case the function pairs have been named identically,<br>
 so it is worth describing their origins, referring to the latest version in which these moves have been performed (to this module).
 
 <table>
@@ -701,7 +724,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Removed
 
-- After the displacement of the method `polynomial_fitting`, `curve_fitting` module was removed.
+- After the displacement of the function `polynomial_fitting`, `curve_fitting` module was removed.
 
 ---
 
@@ -709,9 +732,9 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Changed
 
-- The following methods in **Xarray Utils** have been merged into a single one:
-	- `find_time_dimension` and `find_time_dimension_raise_none` -> `find_time_dimension`.
-	- `find_coordinate_variables` and `find_coordinate_variables_raise_none` -> `find_coordinate_variables`.
+- The following functions in **Xarray Utils** have been merged into a single one:
+	- `find_time_dimension` and `find_time_dimension_raise_none` <span>&#8594;</span> `find_time_dimension`.
+	- `find_coordinate_variables` and `find_coordinate_variables_raise_none` <span>&#8594;</span> `find_coordinate_variables`.
 	
 - As a consequence, the following modules which originally used `find_time_dimension_raise_none` and/or `find_coordinate_variables_raise_none` have been adapted:
 	- **Climate Data Utils**: `cdo_tools`
@@ -731,7 +754,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Add the following directories and modules in `statistics` sub-package:
 	- **Core Statistics**: 
-		- `signal_processing`: signal processing methods (signal whitening, low-pass, high-pass, and band-pass filters) 
+		- `signal_processing`: signal processing functions (signal whitening, low-pass, high-pass, and band-pass filters) 
 
 - Add the following directories and modules in `utilities` sub-package:
 	- **Pandas Utils**: 
@@ -742,7 +765,7 @@ so it is worth describing their origins, referring to the latest version in whic
 		- `conversions`: module designed to handle xarray object type conversions, starting with GRIB to netCDF conversion.
 		- `data_manipulation`: higher-level data manipulations using xarray.
 		- `file_utils`: comprehensive utilities for scanning, validating, and managing netCDF files.
-		- `patterns`: utility methods for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
+		- `patterns`: utility functions for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
 		- `xarray_obj_handler`: optimised module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
 
 ### Changed
@@ -1066,7 +1089,7 @@ so it is worth describing their origins, referring to the latest version in whic
 	</tbody>	
 </table>
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: any method rename above has also been applied to all files using the old method name.
+- <span style="font-weight:bold; color:maroon">NOTE</span>: any function rename above has also been applied to all files using the old function name.
 
 ### Removed
 
@@ -1080,9 +1103,9 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Add the following directories and modules in `statistics` sub-package:
 	- **Core Statistics**: 
-		- `approximation_techniques`: for methods focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
-		- `curve_fitting`: for methods like polynomial fitting and other curve fitting techniques.
-		- `interpolation_methods`: for interpolation techniques, including the `hdy_interpolation` method.
+		- `approximation_techniques`: for functions focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
+		- `curve_fitting`: for functions like polynomial fitting and other curve fitting techniques.
+		- `interpolation_functions`: for interpolation techniques, including the `hdy_interpolation` function.
 	- **Climate Statistics** (`fields/climatology`)
 		- `representative_series`: analysis of time series resulting from representativity criteria.
 
@@ -1090,7 +1113,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Once above creations done, the following moves and/or renamings have been made:
 
-**Methods**
+**functions**
 
 1. In `statistics` sub-package:
 
@@ -1493,7 +1516,7 @@ so it is worth describing their origins, referring to the latest version in whic
 * `complementary-to_remodule`
 	- A sub-package containing various auxiliary and complementary functions aimed at climate data analysis and visualization. It includes:
 		- <b>auxiliary_functions</b>: Utility functions to assist with common tasks such as file handling, data transformations, and helper routines.
-		- <b>ba_mean_and_var</b>: Implements methods to compute bias-adjusted mean and variance from climate data.
+		- <b>ba_mean_and_var</b>: Implements functions to compute bias-adjusted mean and variance from climate data.
 		- <b>ba_mean</b>: Provides functions for calculating bias-adjusted means from climate datasets, allowing for more accurate representation of data characteristics.
 
 * `data_downloads`
@@ -1504,27 +1527,27 @@ so it is worth describing their origins, referring to the latest version in whic
 
 2. sub-package `statistics`:
 
-- Introduced a new sub-package `statistics` to encapsulate numerical and statistical methods.,<br>
+- Introduced a new sub-package `statistics` to encapsulate numerical and statistical functions.,<br>
   aiming for modularity and organization across general and field-specific domains.
 
 - **Core Modules:**
-	- `time_series`: General methods for time series analysis, including signal processing.
+	- `time_series`: General functions for time series analysis, including signal processing.
 	- `regressions`: Polynomial regression and other regression models.
 	- `signal_forcing`: Signal whitening and noise handling.
 - **Domains Supported:**
-	- **Time Series Analysis:** Methods for handling trends, noise, and filtering in time-series data.
+	- **Time Series Analysis:** functions for handling trends, noise, and filtering in time-series data.
 	- **Signal Processing:** Includes signal filtering, whitening, and band-pass filters.
 	- **Statistical Testing:** Initial support for statistical tests.
 
-- **Improved Structure:** Consolidated statistical logic from various modules under a unified sub-package, with plans for expanding into domain-specific methods.
+- **Improved Structure:** Consolidated statistical logic from various modules under a unified sub-package, with plans for expanding into domain-specific functions.
 
 
 3. `statistical_tests` as a `core` module:
 
 - **Hypothesis Testing**:
-	* Added basic methods for hypothesis testing in the `statistical_tests.py` module, including:
+	* Added basic functions for hypothesis testing in the `statistical_tests.py` module, including:
 		* `z_test_two_means` and `chi_square_test` which provide common statistical hypothesis tests.
-	* Each method includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
+	* Each function includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
 
 
 ### Changed
@@ -1756,7 +1779,7 @@ so it is worth describing their origins, referring to the latest version in whic
 	</tbody>
 </table>
 	
-- <span style="font-weight:bold; color:maroon">NOTE</span>: prior to these movements, every single method until here has been refactored, functionalities enhanced and optimised inner codes.
+- <span style="font-weight:bold; color:maroon">NOTE</span>: prior to these movements, every single function until here has been refactored, functionalities enhanced and optimised inner codes.
 
 5. Rest of the content:
 
@@ -1793,20 +1816,20 @@ so it is worth describing their origins, referring to the latest version in whic
    * Streamlined the logic by handling smaller arrays using `numpy.correlate` and larger arrays with `scipy.signal.correlate`.
    * Updated the docstring to clarify parameters and computation flow, explaining when to use two-sided or one-sided autocorrelation.
 
-- **Signal Whitening Methods**:
-   * Developed two signal whitening methods: `signal_whitening_classic` and `signal_whitening_pca`.
+- **Signal Whitening functions**:
+   * Developed two signal whitening functions: `signal_whitening_classic` and `signal_whitening_pca`.
    * `signal_whitening_classic` applies a traditional approach using Cholesky decomposition with `numpy.linalg`.
    * `signal_whitening_pca` uses Principal Component Analysis (PCA) via `sklearn` for whitening data.
-   * Enhanced docstrings for both methods, clarifying inputs, outputs, and providing comprehensive usage examples.
+   * Enhanced docstrings for both functions, clarifying inputs, outputs, and providing comprehensive usage examples.
    
-- **Band-Pass Filtering Methods**:
-	* Refined three band-pass filtering methods (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated:
+- **Band-Pass Filtering functions**:
+	* Refined three band-pass filtering functions (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated:
 		* Simplified internal variable names and loops for more concise code.
-		* Added detailed docstrings, explaining how each method works with frequency domain transformations and filtering based on custom low and high-frequency ranges.
+		* Added detailed docstrings, explaining how each function works with frequency domain transformations and filtering based on custom low and high-frequency ranges.
 		* Used consistent terminology and enhanced explanations for different approaches to band-pass filtering.
    
-- **Low and High-Pass Filtering Methods**:
-	- Refined `low_pass_filter` and `high_pass_filter` methods, also created during the Master in Meteorology: 
+- **Low and High-Pass Filtering functions**:
+	- Refined `low_pass_filter` and `high_pass_filter` functions, also created during the Master in Meteorology: 
 		* Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
 		* Expanded the docstring to include explanations on filter design and its effect on different time series data.
 
@@ -1822,7 +1845,7 @@ so it is worth describing their origins, referring to the latest version in whic
 - `moving_average`:
 	* Rewritten using `np.convolve` for efficient computation of moving averages over a window.
 	* Added option for handling arrays shorter than the window size, ensuring graceful failure or warning.
-	* Clarified the docstring, highlighting that this method handles general numerical arrays, and specifying the nature of the windowing process.
+	* Clarified the docstring, highlighting that this function handles general numerical arrays, and specifying the nature of the windowing process.
 	
 2. `climatic_signal_modulators`
 
@@ -1838,13 +1861,13 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Delete part of the file name `arrays_` contained in all modules of the sub-package `arrays_and_lists`,<br>
   then delete all old-named modules.
-- Module `climate_statistics`: refactor the following methods to improve performance, readability and maintainability:
+- Module `climate_statistics`: refactor the following functions to improve performance, readability and maintainability:
 	* `periodic_statistics`
 	* `climat_periodic_statistics`
 	* `calculate_and_apply_deltas`
 	* `window_sum`
 	* `moving_average`
-- Remove the substring `array_` of methods `select_array_elements` (module `patterns`), <btr>
+- Remove the substring `array_` of functions `select_array_elements` (module `patterns`), <btr>
   `sort_array_rows_by_column` and `sort_array_columns_by_row` (both in module `data_manipulation`).
 - Remove triple quoted template string.
 
@@ -1854,8 +1877,8 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add functionalities to media manipulation methods for merging and cutting audio/video files
-- Add two external programs that apply methods of the module `audio_and_video_manipulation`.
+- Add functionalities to media manipulation functions for merging and cutting audio/video files
+- Add two external programs that apply functions of the module `audio_and_video_manipulation`.
 - Add and reorganize section header comments
 
 ### Changed
@@ -1870,15 +1893,15 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add docstring for every method
+- Add docstring for every function
 - Add module to store configuration data like credentials, host info, etc.
 - Add type to every parameter missing it in all docstrings
 - Add dictionary with conversion factors from the provided floated time to the given unit
 
 ### Changed
 
-- Rename method `remove_elements_from_array` to `remove_elements`
-- Eliminate `exec_command_shell` method and, if present, `catch_shell_prompt_output` <br>
+- Rename function `remove_elements_from_array` to `remove_elements`
+- Eliminate `exec_command_shell` function and, if present, `catch_shell_prompt_output` <br>
   in favour of the renewed and complete `run_system_command` from module `os_operations`
 - Refactor command execution module
 
@@ -1889,13 +1912,13 @@ so it is worth describing their origins, referring to the latest version in whic
 ### Added
 
 - Add optional argument, comments explaining key parts of the code and simplify the f-strings
-- Add type to the parameter `datetime_obj` in the docstring of the internal method `_total_time_unit`
+- Add type to the parameter `datetime_obj` in the docstring of the internal function `_total_time_unit`
 - Add type to every parameter missing it in all docstrings.
 
 ### Changed
 
 - Delete `todo` from the code as the task there is already done
-- Specify the name and type of the returning variable in method `string_underliner`
+- Specify the name and type of the returning variable in function `string_underliner`
 
 ---
 
@@ -1903,12 +1926,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add further fractional second precision choice at internal method `_format_arbitrary_time`
+- Add further fractional second precision choice at internal function `_format_arbitrary_time`
 - Add support for `datetime.time` object conversion to other datetime-like objects
 
 ### Changed
 
-- Eliminate need of the old method `time_format_tweaker` in favour of the renewed `datetime_obj_converter` from module `time_formatters`
+- Eliminate need of the old function `time_format_tweaker` in favour of the renewed `datetime_obj_converter` from module `time_formatters`
 - Rewrite some lazy imports and fix a typo as a result
 
 ---
@@ -1920,14 +1943,14 @@ so it is worth describing their origins, referring to the latest version in whic
 - Created directories for lambda functions and assertion documentation in Python.
 - Enhanced performance by importing frequently used NumPy libraries and utilizing `get_obj_type_str` for type checks.
 - Implemented a simple calculator functionality using a dictionary-based switch-case approach, accepting multiple arguments.
-- Improved input validation and functionalities in `sort_dictionary_by_keys` and `merge_dictionaries` methods.
+- Improved input validation and functionalities in `sort_dictionary_by_keys` and `merge_dictionaries` functions.
   
 ### Changed
 
 - Restored accidentally removed code during editing.
 - Sub-package `arrays_and_lists`:
-	* Move out some methods in `array_data_manipulation` and `array_maths` to other modules in this sub-package.
-	* Rewrite section headers to align with the nature of methods under them. Clarity and precision gained.
+	* Move out some functions in `array_data_manipulation` and `array_maths` to other modules in this sub-package.
+	* Rewrite section headers to align with the nature of functions under them. Clarity and precision gained.
 - Renamed directories for improved readability and intuitive understanding.
 - Removed unnecessary directories due to renaming or redundancy.
 
@@ -1946,7 +1969,7 @@ so it is worth describing their origins, referring to the latest version in whic
   
 ### Changed
 
-- Enhanced the `format_table_from_lists` method for better error handling.
+- Enhanced the `format_table_from_lists` function for better error handling.
 - Improved readability by splitting long lines into shorter ones.
 - Introduced a new folder for Web Scraping modules.
 
@@ -1956,13 +1979,13 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Functionality to select column delimiters in all relevant methods.
-- New method to underline single or multiple line strings.
+- Functionality to select column delimiters in all relevant functions.
+- New function to underline single or multiple line strings.
 
 ### Changed
 
 - Revised the docstring in `format_table_from_lists` to reflect new functionalities.
-- Fixed issues in the `format_table_from_lists` method related to multi-row values.
+- Fixed issues in the `format_table_from_lists` function related to multi-row values.
 
 ### Removed
 
@@ -2023,7 +2046,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Changed
 
-- Relocated methods and optimised imports.
+- Relocated functions and optimised imports.
 
 ### Removed
 
@@ -2047,17 +2070,17 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add todo for when method `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
-- Add detailed docstring to the method `natural_year` and optimize inner code and comments.
+- Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
+- Add detailed docstring to the function `natural_year` and optimize inner code and comments.
 
 ### Changed
 
-- Modify method `datetime_range_operator` to `merge_datetime_dataframes`.
-- Update method `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
-- Optimize the code of the main method `clock_time_average`, as well as the auxiliary methods, and add and refine the docstrings in all of them.
-- Refine module and custom module import syntax in method `standardize_calendar`.
+- Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
+- Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
+- Optimize the code of the main function `clock_time_average`, as well as the auxiliary functions, and add and refine the docstrings in all of them.
+- Refine module and custom module import syntax in function `standardize_calendar`.
 - Rename `ofile` variable to `out_file_obj`, which all `.write` instances are referenced from.
-- Fix todo list for main method `clock_time_average` and auxiliaries
+- Fix todo list for main function `clock_time_average` and auxiliaries
 - Optimize the whole try-except block and handle specific errors gracefully.
 
 ---
@@ -2067,8 +2090,8 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Add docstrings and polish the main methods `sum_clock_times` and `sum_date_objects`, as well as their auxiliary methods.
-- Add methods to sum or subtract dates and/or times (preliminary version).
+- Add docstrings and polish the main functions `sum_clock_times` and `sum_date_objects`, as well as their auxiliary functions.
+- Add functions to sum or subtract dates and/or times (preliminary version).
 
 ### Removed
 
@@ -2080,12 +2103,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 
-- Import the method to return an object type`s string part.
-- Add multidimensional indexing functionality for NumPy arrays in `select_array_elements` method.
+- Import the function to return an object type`s string part.
+- Add multidimensional indexing functionality for NumPy arrays in `select_array_elements` function.
 
 ### Renamed
 
-- Rename the method to return an object type`s string part.
+- Rename the function to return an object type`s string part.
 
 ---
 
@@ -2093,12 +2116,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added
 - Add module for climate and environment data manipulation and extraction.
-- Add module for date and time management methods.
+- Add module for date and time management functions.
 - Add module initiator file.
 - Add module for string management.
-- Add directory containing small manuals and web extracts about external Python modules and methods.
+- Add directory containing small manuals and web extracts about external Python modules and functions.
 - Add module for mathematical operations with sets.
 
 ### Removed
 
-- Remove method `json2dict` as dictionaries are semantically handled.
+- Remove function `json2dict` as dictionaries are semantically handled.
