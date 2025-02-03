@@ -16,11 +16,11 @@ from pandas import Series, DataFrame
 # Define functions # 
 #------------------#
 
-# Sorting algorithms #
-#--------------------#
+# Sorting Methods #
+#-----------------#
 
-# Basic #
-#-#-#-#-#
+# Simple sorting #
+#-#-#-#-#-#-#-#-#-
 
 # Helpers #
 def _pos_swapper(A, x, y):
@@ -117,35 +117,36 @@ def sort_values_standard(array, key=None, reverse=False,
     else:
         raise TypeError(f"Unsupported type '{type(array)}' for sorting.")
 
-def sort_1d_basic(arr, reverse=False):
+
+def sort_1D_arr_rudimentary(obj, reverse=False):
     """
-    Sort a 1D array or list without external libraries (basic function).
+    Sort a 1D array or list without external libraries (rudimentary method).
     
     Parameters
     ----------
-    arr : list or numpy.ndarray of int, float, complex, or str
+    obj : list or numpy.ndarray of int, float, complex, or str
         1D array or list with values to sort.
     reverse : bool
         Sort in ascending (False) or descending (True) order. Default is False.
     
     Returns
     -------
-    arr : list or numpy.ndarray
+    obj : list or numpy.ndarray
         Sorted array.
     """
-    for i in range(len(arr)):
+    for i in range(len(obj)):
         current = i
-        for k in range(i+1, len(arr)):
-            if not reverse and arr[k] < arr[current]:
+        for k in range(i+1, len(obj)):
+            if not reverse and obj[k] < obj[current]:
                 current = k
-            elif reverse and arr[k] > arr[current]:
+            elif reverse and obj[k] > obj[current]:
                 current = k
-        _pos_swapper(arr, current, i)
-    return arr
+        _pos_swapper(obj, current, i)
+    return obj
 
 
-# Advanced #
-#-#-#-#-#-#-
+# Advanced sorting #
+#-#-#-#-#-#-#-#-#-#-
 
 def sort_rows_by_column(array, ncol, reverse=False, order=None): 
     """*
@@ -199,7 +200,7 @@ def sort_rows_by_column(array, ncol, reverse=False, order=None):
 def sort_columns_by_row(array, nrow, reverse=False): 
     """
     Sort columns of a 2D array by a specific row, preserving column structure.
-    Just like `sort_rows_by_column`, this function sorts the columns based on 
+    Just like `sort_rows_by_column`, this method sorts the columns based on 
     the values in the specified row while maintaining the column structure.
     
     Parameters
@@ -237,70 +238,6 @@ def sort_columns_by_row(array, nrow, reverse=False):
     array = np.array(array).T
     sorted_array = sort_rows_by_column(array, ncol=nrow, reverse=reverse).T
     return sorted_array
-
-# Flipping or reversing #
-#-----------------------#
-
-# Basic #
-#-#-#-#-#
-
-def revert_1d_basic(arr, procedure="index"):
-    """
-    Reverses a 1D array in-place.
-I
-    Parameters
-    ----------
-    arr : list or numpy.ndarray
-        The array to reverse.
-    procedure : str
-        The procedure to use for reversing the array.
-    
-    Returns
-    -------
-    numpy.ndarray
-        The reversed array.
-    """
-
-    if procedure not in flip_basic_options:
-        raise ValueError(f"Invalid procedure '{procedure}' for reversing an array. "
-                         f"Choose from: {flip_basic_options}.")
-    
-    arr_len = len(arr)-1
-    if procedure == "iterative":
-        for i in range(arr_len//2):
-            arr[i], arr[arr_len-i] = arr[arr_len-i], arr[i]
-    elif procedure == "index":
-        arr = arr[::-1]
-    return arr
-
-
-# Advanced #
-#-#-#-#-#-#-
-
-def flip_array(array, procedure="numpy_default", axis=None):
-    """
-    Flip a numpy array or list along a specified axis.
-
-    Parameters
-    ----------
-    array : list or numpy.ndarray
-        The array to flip.
-    procedure : str
-        The procedure to use for flipping the array.
-        Options:
-            - "numpy_default": Use numpy.flip.
-            - "numpy_lr": Use numpy.fliplr (equivalent to numpy.flip(array, axis=1)).
-            - "numpy_ud": Use numpy.flipud (equivalent to numpy.flip(array, axis=0)).
-            - "index_lr": Use left-right list slicing (equivalent to array[:,::-1]).
-            - "index_ud": Use up-down list slicing (equivalent to array[::-1,:]).
-    axis : int, optional
-        The axis to flip the array along. Default is None.
-    """
-    if procedure not in flip_advanced_options:
-        raise ValueError(f"Invalid procedure '{procedure}' for flipping an array. "
-                         f"Choose from: {flip_advanced_options}.")
-    
-    return advanced_flip_dict[procedure](array, axis=axis)
 
 
 # Inserting, Extending, and Removing Data #
@@ -506,27 +443,3 @@ def decompose_cumulative_data(cumulative_array, fill_value=None, zeros_dtype='d'
                                         axis=0)
     
     return individual_values_array
-
-#--------------------------#
-# Parameters and constants #
-#--------------------------#
-
-# Procedure options #
-#-------------------#
-
-# Array flipping #
-flip_basic_options = ["iterative", "index"]
-
-# Switch case dictionaries #
-#--------------------------#
-
-# Array flipping #
-advanced_flip_dict = {
-    "numpy_default": lambda array, axis: np.flip(array, axis=axis),
-    "numpy_lr": lambda array: np.fliplr(array),
-    "numpy_ud": lambda array: np.flipud(array),
-    "index_lr": lambda array: array[:,::-1],
-    "index_ud": lambda array: array[::-1,:]
-}
-
-flip_advanced_options = advanced_flip_dict.keys()
