@@ -9,11 +9,13 @@ All notable changes to this project will be documented in this file.
 ### Added
 
 **Number Bases**
+
 - Module `base_converters`:
 	- Added helper function `_check_input_binary` to check if the input binary number is in the correct format.
 	- Introduce two basic functions to convert between base 10 and base 2: `dec2bin_basic` and `bin2dec_basic`. Both perform mathematical computations by definition.
 
 **Arrays and Lists**
+
 - Module `data_manipulation`: add flipping utilities of lists and NumPy arrays with N >= 1 dimensions.
 
 ### Changed
