@@ -142,7 +142,7 @@ def parse_time_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
         According the standards, this parameter defaults to 'ns' for Pandas 
         and 'us' for NumPy.
         Then, in order to maintain compatibility, the largest common time unit 'us'
-        has been defined as default in this method.
+        has been defined as default in this function.
     
     Returns
     -------
@@ -185,7 +185,7 @@ def parse_time_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
 # Input format: int, float #
 #--------------------------#
 
-# Main method #
+# Main function #
 #-#-#-#-#-#-#-#
 
 def parse_float_time(datetime_float, 
@@ -268,7 +268,7 @@ def parse_float_time(datetime_float,
         return _float_time_parser(datetime_float, module, unit)
     
     
-# Auxiliary methods #
+# Auxiliary functions #
 #-#-#-#-#-#-#-#-#-#-#
 
 def _parse_float_to_string(floated_time, 
@@ -368,9 +368,9 @@ def _format_arbitrary_time(floated_time, frac_precision):
         Time representing a time unit relative to an arbitrary origin.
     frac_precision : int [0,6] or None
         Precision of the fractional seconds.
-        This parameter is originally set in 'parse_float_time' method,
+        This parameter is originally set in 'parse_float_time' function,
         which allows integers in [0,9], because for 6 < frac_precision <=9 
-        it performs optional nanoscale time computing, unlike this internal method.
+        it performs optional nanoscale time computing, unlike this internal function.
         So in order to maintain organization, the upper bound for the precision
         will be 6.
     
@@ -415,7 +415,7 @@ def _format_arbitrary_time(floated_time, frac_precision):
 
 # %% PARSING AMONG COMPLEX DATA OBJECTS
 
-# Main methods #
+# Main functions #
 #--------------#
 
 # All except 'float' #
@@ -534,7 +534,7 @@ def datetime_obj_converter(datetime_obj,
                               dt_fmt_str=dt_fmt_str)
     
         
-# Auxiliary methods #
+# Auxiliary functions #
 #-------------------#
 
 # Exclusively to 'float' #
@@ -573,8 +573,8 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     # Input validation #
     #------------------#
     
-    # Current method name #
-    current_method = get_func_name()
+    # Current function name #
+    current_function = get_func_name()
     
     # Operations #
     #------------#
@@ -584,10 +584,10 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
     try:
         conversion_func = _total_time_unit_dict.get(obj_type)
         if conversion_func is None:
-            raise ValueError(f"Unsupported object type, method '{current_method}': {obj_type}")
+            raise ValueError(f"Unsupported object type, function '{current_function}': {obj_type}")
         return conversion_func(datetime_obj, unit, float_class, int_class, unit_factor)
     except Exception as err:
-        raise RuntimeError(f"Error in conversion process, method '{current_method}': {err}")
+        raise RuntimeError(f"Error in conversion process, function '{current_function}': {err}")
         
         
 # Array-like complex data #
@@ -618,7 +618,7 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
         `Series` or `DataFrame` type objects.
     """
     # Input validation #
-    current_method = get_func_name()
+    current_function = get_func_name()
     
     # Operations #
     dt_obj_aux = datetime_obj.copy()
@@ -627,7 +627,7 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
         try:
             return dt_obj_aux.astype(int_class) * unit_factor
         except (ValueError, Exception) as err:
-            raise RuntimeError(f"Error in '{current_method}' method "
+            raise RuntimeError(f"Error in '{current_function}' function "
                                f"for 'Series' type object:\n{err}.")
 
     elif isinstance(datetime_obj, pd.DataFrame):
@@ -639,7 +639,7 @@ def _total_time_complex_data(datetime_obj, int_class, unit_factor):
                     pass
             return dt_obj_aux
         except Exception as err:
-            raise RuntimeError(f"Error in '{current_method}' method "
+            raise RuntimeError(f"Error in '{current_function}' function "
                                f"for 'DataFrame' type object:\n{err}.")
 
 
