@@ -5,7 +5,7 @@
 **General note**
 
 This module provides functionalities for converting between 
-strings, bytes, and integers. It includes methods for converting 
+strings, bytes, and integers. It includes functions for converting 
 strings to bytes objects using different procedures, converting 
 bytes objects to integers, and decoding bytes objects back to string
 """
