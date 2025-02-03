@@ -108,7 +108,7 @@ def unique_pairs(array_like, library="python-default"):
 # Supported options #
 #-------------------#
 
-# Method options #
+# Procedure options #
 return_pairs_library_list = ["python-default", "itertools-comb"]
 
 # Switch case dictionaries #
