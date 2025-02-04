@@ -268,7 +268,7 @@ I
     arr_len = len(arr)-1
     if procedure == "iterative":
         for i in range(arr_len//2):
-            arr[i], arr[arr_len-i] = arr[arr_len-i], arr[i]
+            _pos_swapper(arr, i, arr_len-i)
     elif procedure == "index":
         arr = arr[::-1]
     return arr
