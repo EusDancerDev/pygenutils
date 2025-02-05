@@ -133,6 +133,14 @@ def sort_1d_basic(arr, reverse=False):
     arr : list or numpy.ndarray
         Sorted array.
     """
+    # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
+    if isinstance(arr, np.ndarray):
+        if arr.ndim >= 2:
+            arr = arr.flatten()
+    elif isinstance(arr, list):
+        arr = list(flatten_list(arr))
+
+    # Operations #
     for i in range(len(arr)):
         current = i
         for k in range(i+1, len(arr)):
@@ -260,11 +268,19 @@ I
     numpy.ndarray
         The reversed array.
     """
-
+    # Parameter validation #
     if procedure not in flip_basic_options:
         raise ValueError(f"Invalid procedure '{procedure}' for reversing an array. "
                          f"Choose from: {flip_basic_options}.")
     
+    # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
+    if isinstance(arr, np.ndarray):
+        if arr.ndim >= 2:
+            arr = arr.flatten()
+    elif isinstance(arr, list):
+        arr = list(flatten_list(arr))
+
+    # Operations #
     arr_len = len(arr)-1
     if procedure == "iterative":
         for i in range(arr_len//2):
@@ -443,6 +459,113 @@ def remove_elements(array, idx2access, axis=None):
         raise TypeError(f"Unsupported type '{type(array)}' for removal.")
     return array
 
+# Extracting Unique Values #
+#--------------------------#
+
+# Basic #
+#-#-#-#-#
+
+def flatten_list(lst):
+    """
+    Recursively flatten a nested list.
+    
+    This generator function takes a potentially nested list and yields
+    each element in a flattened manner. It handles lists of arbitrary
+    depth, ensuring that all nested elements are extracted in a single
+    flat sequence.
+    
+    Parameters
+    ----------
+    lst : list
+        The list to be flattened, which may contain nested lists.
+    
+    Yields
+    ------
+    item
+        Each non-list element from the nested structure, in order.
+    
+    Examples
+    --------
+    >>> list(flatten_list([1, [2, 3], [4, [5, 6]]]))
+    [1, 2, 3, 4, 5, 6]
+    """
+    for item in lst:
+        if isinstance(item, list):
+            yield from flatten_list(item)
+        else:
+            yield item
+
+def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
+    """
+    Extract unique values from an array or list.
+    
+    This function flattens the input if it is a Numpy array with dimensions 
+    greater than or equal to 2, or if it is a list, regardless of whether 
+    the list contains inhomogeneous parts (e.g., [1, [2, 3], 4]).
+    
+    Parameters
+    ----------
+    arr : list or numpy.ndarray
+        The input array or list from which to extract unique values. If the 
+        input is a Numpy array with N >= 2 dimensions, it will be flattened. 
+        Similarly, if the input is a list, it will be recursively flattened 
+        to handle any nested lists.
+    procedure : {'dict', 'list', 'set'}, optional
+        The method to use for extracting unique values. Default is 'dict'.
+    sort : bool, optional
+        Whether to sort the unique values. Default is False.
+    reverse : bool, optional
+        Whether to sort in descending order. Only applicable if sort is True.
+    
+    Returns
+    -------
+    unique_val_arr : list
+        A list of unique values from the input array or list. If `sort` is True,
+        the list is sorted in ascending order by default, or in descending order
+        if `reverse` is also True. If `sort` is False, the order of unique values
+        is determined by the order of their first appearance in the input.
+    
+    Raises
+    ------
+    ValueError
+        If 'sort' is False and 'reverse' is True.
+    """
+    # Parameter validation #
+    if not sort and reverse:
+        raise ValueError("If keyword argument 'sort' is set to False, "
+                         "'reverse' is not allowed to be True.")
+    
+    if procedure not in procedure_options:
+        raise ValueError(f"Invalid procedure '{procedure}' for extracting unique values. "
+                         f"Choose from: {procedure_options}.")
+    
+    # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
+    if isinstance(arr, np.ndarray):
+        if arr.ndim >= 2:
+            arr = arr.flatten()
+    elif isinstance(arr, list):
+        arr = list(flatten_list(arr))
+
+    # Operations #
+    if procedure == "dict":
+        unique_key_dict = dict.fromkeys(arr)
+        unique_val_arr = list(unique_key_dict.keys())
+    
+    elif procedure == "list":
+        unique_val_arr = []
+        [unique_val_arr.append(num) for num in arr if num not in unique_val_arr]
+    
+    elif procedure == "set":
+        unique_val_arr = list(set(arr))
+                
+    if sort:
+        return sort_1d_basic(unique_val_arr, reverse)
+    return unique_val_arr
+    
+# Advanced #
+#-#-#-#-#-#-
+
+
 
 # Time-Series Manipulations #
 #---------------------------#
@@ -516,6 +639,9 @@ def decompose_cumulative_data(cumulative_array, fill_value=None, zeros_dtype='d'
 
 # Array flipping #
 flip_basic_options = ["iterative", "index"]
+
+# Unique values extraction #
+procedure_options = ["dict", "list", "set"]
 
 # Switch case dictionaries #
 #--------------------------#
