@@ -16,7 +16,7 @@ from pandas import Series
 #-----------------------#
 
 from filewise.general.introspection_utils import get_type_str, get_caller_args
-from pygenutils.arrays_and_lists.data_manipulation import sort_1d_basic
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list, sort_1d_basic
 from pygenutils.strings.string_handler import find_substring_index
 
 #------------------#
@@ -56,7 +56,15 @@ def find_item_basic(obj, obj2find):
     bool
         Returns True if the element is found, else returns False.
     """
+    # Flatten the object if it is a list or NumPy array with N >= 2 
+    # (irrespective of having inhomogeneous parts) 
+    if isinstance(obj, np.ndarray):
+        if obj.ndim >= 2:
+            obj = obj.flatten()
+    elif isinstance(obj, list):
+        obj = list(flatten_list(obj))
     
+    # Operations #
     length = len(obj)
     sorted_obj = sort_1d_basic(obj)
     
