@@ -85,7 +85,7 @@ def unique_pairs(array_like, library="python-default"):
                         "{'int', 'float', 'complex', 'str'} "
                         "or a combination of them.")
         
-    if len(arr.shape) > 1:
+    if arr.ndim > 1:
         arr = arr.flatten()
     
     # Library #
