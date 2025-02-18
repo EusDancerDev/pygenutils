@@ -225,7 +225,7 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
     for element, indices in duplicated_indices_dict.items():
         duplicated_element_indices_dict[element] = [
             tuple(np.unravel_index(idx, flattened_array.shape))
-            if len(flattened_array.shape) > 1 else idx
+            if flattened_array.ndim > 1 else idx
             for idx in indices
         ]
         
@@ -429,8 +429,7 @@ def approach_value(array, given_value):
     """
     
     if not isinstance(array, list):
-        shape = array.shape
-        lsh = len(shape)
+        dims = array.ndim
         
         if "pandas" in str(type(array)):
             array = array.values
@@ -438,7 +437,7 @@ def approach_value(array, given_value):
         diff_array = abs(array - given_value)
         
         value_approach_idx = np.where(array==np.min(diff_array))     
-        if lsh == 1:        
+        if dims == 1:        
             value_approach_idx = value_approach_idx[0][0]
             
         value_approach = array[value_approach_idx]
