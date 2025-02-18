@@ -170,7 +170,7 @@ def combine_arrays(array_of_lists):
     - This function assumes that the input contains valid NumPy arrays or lists.
     """    
     # Get the list of unique dimensions of the arrays #
-    dim_list = np.unique([len(arr.shape) for arr in array_of_lists])
+    dim_list = np.unique([arr.ndim for arr in array_of_lists])
     ld = len(dim_list)
     
     # If all arrays/lists are of the same dimension #
