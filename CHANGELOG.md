@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.7.7] - 2025-02-18
+
+### Changed
+
+**General**
+
+- For all relevant modules, perform several term replacements:
+    - Replace `method` with `procedure` to more accurately describe the approach or technique used in functions, except when referring to class method calls.
+    - Replace `action` with `procedure` to align with the context of operations being performed.
+    Additionally, these changes improve clarity by ensuring consistent terminology, making it clear that functions can employ different procedures to achieve their goals.
+
+These changes enhance terminology consistency in all affected modules. No user-facing changes are expected, hence only the patch number is incremented.
+
+---
+
 ## [v15.7.0] - 2025-02-03
 
 ### Added
