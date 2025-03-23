@@ -40,8 +40,8 @@ end_time_list = ["00:05:21", "end", "00:07:56.851"]
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
-zero_padding = 1
-quality = 1
+ZERO_PADDING = 1
+quality = 4
 
 #------------#
 # Operations #
@@ -51,5 +51,5 @@ cut_media_files(media_input,
                 start_time_list,
                 end_time_list,
                 output_file_list=output_file_list,
-                zero_padding=zero_padding,
+                ZERO_PADDING=ZERO_PADDING,
                 quality=quality)
