@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.8.0] - 2025-03-23
+
+### Added
+
+#### **Audio and Video**
+
+- Module `audio_and_video_manipulation`: add import for `find_files` from the `filewise` package to enable dynamic file discovery.
+
+### Changed
+
+#### **General**
+- Update terminology from `Preformatted Strings` to `Template Strings` in headers and variables.
+	- Based on that principle, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
+	- Update comments and variable names to replace `syntax` and `command` with `template strings` for better clarity in describing variables and constants that use empty `{}` for formatting.
+
+#### **Audio and Video**
+- Module `audio_and_video_manipulation`:
+	- Renamed functions for clarity: `merge_audio_and_video_files` to `merge_media_files`, and `merge_audio_or_video_files` to `merge_individual_media_files`.
+	- Improved argument naming.
+- Module `trim_media`:
+	- Rename from `cut_media_files` to avoid conflicts.
+	- Update `zero_padding` to `ZERO_PADDING` and improve quality settings.
+- Modules `merge_audio_and_video` and `merge_audio_or_video`:
+	- Enhance script flexibility with dynamic file handling.
+	- Update variable names for clarity and consistency.
+
+### Removed
+
+**Audio and Video**
+- Deleted the old `cut_media_files` module as it has been renamed to `trim_media`.
+
 ## [v15.7.7] - 2025-02-18
 
 ### Changed
@@ -11,9 +42,9 @@ All notable changes to this project will be documented in this file.
 **General**
 
 - For all relevant modules, perform several term replacements:
-    - Replace `method` with `procedure` to more accurately describe the approach or technique used in functions, except when referring to class method calls.
-    - Replace `action` with `procedure` to align with the context of operations being performed.
-    Additionally, these changes improve clarity by ensuring consistent terminology, making it clear that functions can employ different procedures to achieve their goals.
+  - Replace `method` with `procedure` to more accurately describe the approach or technique used in functions, except when referring to class method calls.
+  - Replace `action` with `procedure` to align with the context of operations being performed.
+  - Additionally, these changes improve clarity by ensuring consistent terminology, making it clear that functions can employ different procedures to achieve their goals.
 
 These changes enhance terminology consistency in all affected modules. No user-facing changes are expected, hence only the patch number is incremented.
 
