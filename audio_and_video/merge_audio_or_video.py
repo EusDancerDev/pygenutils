@@ -1,10 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# FIXME: artxibo honen izena, inportatzen den moduluaren ANTZEKOA da!
-# TODO: egokitu eta optimizatu alkartzeko pasatzen diren artxiboak zerrenda edo fitxategi moduan pasatzen direlako mekanismoak
-
-
 """
 **Note**
 
