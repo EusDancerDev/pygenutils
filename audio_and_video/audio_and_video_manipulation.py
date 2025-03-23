@@ -30,11 +30,11 @@ from pygenutils.time_handling.time_formatters import parse_time_string
 
 # %% 
 
-def merge_audio_and_video_files(audio_file_list_or_file, 
-                                video_file_list_or_file, 
-                                output_file_list=None, 
-                                zero_padding=1, 
-                                quality=1):
+def merge_media_files(audio_file_list_or_file, 
+                      video_file_list_or_file, 
+                      output_file_list=None, 
+                      zero_padding=1, 
+                      quality=1):
     """
     Merges audio and video files into a single output file for each pair.
 
@@ -86,13 +86,6 @@ def merge_audio_and_video_files(audio_file_list_or_file,
             if not os.path.exists(file):
                 raise FileNotFoundError(f"{list_name}: '{file}' not found.")
     
-    # Automatically detect audio/video files based on common extensions
-    def is_audio_file(file):
-        return file.endswith(common_audio_formats)
-
-    def is_video_file(file):
-        return file.endswith(common_video_formats)
-    
     # Load the file lists, automatically detecting whether input is file or list
     audio_file_list = load_file_list(audio_file_list_or_file)
     video_file_list = load_file_list(video_file_list_or_file)
@@ -132,37 +125,37 @@ def merge_audio_and_video_files(audio_file_list_or_file,
             for i in range(len(video_file_list))
         ]
     
-    # Try multiple ffmpeg merge commands with different syntax to handle errors
-    commands_to_try = []
+    # Try multiple ffmpeg merge template strings with different variations to handle errors
+    template_strings_to_try = []
     for audio_file, video_file, output_file in zip(audio_file_list,
                                                    video_file_list,
                                                    output_file_list):
-        # Create a list of ffmpeg commands to try
-        merge_command = f"ffmpeg -i {audio_file} -i {video_file} "\
-                        f"-c:v copy -c:a aac -b:a {quality*32}k {output_file}"
-        commands_to_try.append(merge_command)
+        # Create a list of ffmpeg template strings to try
+        merge_template = f"ffmpeg -i {audio_file} -i {video_file} "\
+                         f"-c:v copy -c:a aac -b:a {quality*32}k {output_file}"
+        template_strings_to_try.append(merge_template)
 
-        # Additional ffmpeg command variations for error handling
-        commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
-                               f"-c:v libx264 -b:a {quality*32}k "
-                               f"-preset fast {output_file}")
-        commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
-                               f"-c:v libx265 -b:a {quality*32}k -c:a copy {output_file}")
+        # Additional ffmpeg template string variations for error handling
+        template_strings_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
+                                       f"-c:v libx264 -b:a {quality*32}k "
+                                       f"-preset fast {output_file}")
+        template_strings_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
+                                       f"-c:v libx265 -b:a {quality*32}k -c:a copy {output_file}")
 
     # Try each command and pass on errors
-    for merge_command in commands_to_try:
+    for merge_template in template_strings_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_command))
+            process_exit_info = run_system_command(format_string(merge_template))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
             pass  # Continue with the next ffmpeg command if there's an error
 
 # %%
-def merge_audio_or_video_files(input_file_list_or_file,
-                               safe=True, 
-                               output_file_name=None,
-                               quality=1):
+def merge_individual_media_files(input_file_list_or_file,
+                                 safe=True, 
+                                 output_file_name=None,
+                                 quality=1):
     """
     Merges either audio or video files into a single output file.
 
@@ -235,22 +228,22 @@ def merge_audio_or_video_files(input_file_list_or_file,
     if not output_file_name:
         output_file_name = "out_file"
     
-    # Attempt multiple ffmpeg syntax commands to handle potential errors
-    commands_to_try = []
+    # Attempt multiple ffmpeg template strings to handle potential errors
+    template_strings_to_try = []
     input_str = '|'.join(file_list)
-    commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
+    template_strings_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
                            f"-c copy {output_file_name}.mp4")
 
     # Add variations of ffmpeg commands in case errors occur
-    commands_to_try.append(f"ffmpeg -safe {int(safe)} -f concat -i {input_file_list_or_file} "
+    template_strings_to_try.append(f"ffmpeg -safe {int(safe)} -f concat -i {input_file_list_or_file} "
                            f"-c:v libx264 -b:a {quality*32}k -preset slow {output_file_name}.mp4")
-    commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
+    template_strings_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
                            f"-c:v libx265 -c:a copy {output_file_name}.mp4")
 
     # Try each command until one succeeds or all fail
-    for merge_command in commands_to_try:
+    for merge_template in template_strings_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_command))
+            process_exit_info = run_system_command(format_string(merge_template))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -367,27 +360,27 @@ def cut_media_files(input_file_list_or_file,
         output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
                             for i in range(len(file_list))]
     
-    # Try multiple ffmpeg cut commands with different syntax to handle errors
-    commands_to_try = []
+    # Try multiple ffmpeg cut template strings with different variations to handle errors
+    template_strings_to_try = []
     for input_file, output_file, start_time, end_time in zip(file_list, 
                                                              output_file_list,
                                                              start_time_list,
                                                              end_time_list):
-        cut_command = f"ffmpeg -i {input_file}"
+        cut_template = f"ffmpeg -i {input_file}"
         if start_time != 'start':
-            cut_command += f" -ss {start_time}"
+            cut_template += f" -ss {start_time}"
         if end_time != 'end':
-            cut_command += f" -to {end_time}"
-        cut_command += f" -b:a {quality*32}k -c copy {output_file}"
+            cut_template += f" -to {end_time}"
+        cut_template += f" -b:a {quality*32}k -c copy {output_file}"
     
-        commands_to_try.append(cut_command)
-        commands_to_try.append(f"ffmpeg -i {input_file} -b:a {quality*32}k "
-                               f"-c:v libx264 -preset medium {output_file}")
+        template_strings_to_try.append(cut_template)
+        template_strings_to_try.append(f"ffmpeg -i {input_file} -b:a {quality*32}k "
+                                       f"-c:v libx264 -preset medium {output_file}")
 
     # Try each command and pass on errors
-    for cut_command in commands_to_try:
+    for cut_template in template_strings_to_try:
         try:
-            process_exit_info = run_system_command(format_string(cut_command))
+            process_exit_info = run_system_command(format_string(cut_template))
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
