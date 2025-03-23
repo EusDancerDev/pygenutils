@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
 """
 **Note**
 
@@ -22,11 +23,9 @@ from pygenutils.audio_and_video.audio_and_video_manipulation import cut_media_fi
 # Input media #
 #-------------#
 
-# List #
-media_file_list = []
-
-# External file containing file names #
-# media_name_containing_file = "media_name_containing_file.txt"
+# Media input can be a list of files or a single file containing file names
+media_input = []
+# media_input = "media_name_containing_file.txt"
 
 # Output media #
 #--------------#
@@ -48,16 +47,9 @@ quality = 1
 # Operations #
 #------------#
 
-cut_media_files(media_file_list,
+cut_media_files(media_input,
                 start_time_list,
                 end_time_list,
                 output_file_list=output_file_list,
                 zero_padding=zero_padding,
                 quality=quality)
-
-# cut_media_files(media_name_containing_file,
-#                 start_time_list,
-#                 end_time_list,
-#                 output_file_list=output_file_list,
-#                 zero_padding=zero_padding,
-#                 quality=quality)
