@@ -3,8 +3,8 @@
 """
 **Note**
 
-This program is an application of the main module 'audio_and_video',
-and it relies on the method 'merge_audio_and_video_files'.
+This program is an application of the main module 'audio_and_video_manipulation',
+and it relies on the method 'merge_media_files'.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 """
@@ -14,7 +14,7 @@ but keep in mind that the module is designed to work with absolute paths.
 #-----------------------#
 
 from filewise.utilities.file_operations.path_utils import find_files
-from pygenutils.audio_and_video.audio_and_video_manipulation import merge_audio_and_video_files
+from pygenutils.audio_and_video.audio_and_video_manipulation import merge_media_files
 
 #-------------------#
 # Define parameters #
@@ -54,6 +54,7 @@ output_file_name_list = [
     f"{input_audio_file.split(audio_delimiter)[0][:-1]}.{video_extension}"
     for input_audio_file in input_audio_file_list
 ]
+# output_file_name_list = None
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
@@ -64,8 +65,9 @@ quality = 4
 # Program operation #
 #-------------------#
 
-merge_audio_and_video_files(input_video_file_list,
-                            input_audio_file_list,
-                            output_file_name_list=None,
-                            ZERO_PADDING=ZERO_PADDING,
-                            quality=quality)
+merge_media_files(input_video_file_list,
+                  input_audio_file_list,
+                  output_file_name_list=output_file_name_list,
+                  ZERO_PADDING=ZERO_PADDING,
+                  quality=quality)
+
