@@ -352,7 +352,7 @@ def exit_info(process_exit_info_obj):
         else:
             err_arg_tuple = (return_code, process_exit_info_obj.get("stderr"))
             raise RuntimeError("An error ocurred during command execution: "
-                               f"{format_string(nonzero_exit_status_str, err_arg_tuple)}")
+                               f"{format_string(nonzero_exit_status_template, err_arg_tuple)}")
 
 # %%
 
@@ -369,12 +369,11 @@ system_command_modules = filesystem_context_modules[0::3]
 # Command run classes #
 class_list = ["system", "popen", "Popen", "call", "run"]
 
-
-# Preformatted strings #
-#----------------------#
+# Template strings #
+#------------------#
 
 # Errors #
-nonzero_exit_status_str = """Process exited with status {} with the following error:\n{}"""
+nonzero_exit_status_template = """Process exited with status {} with the following error:\n{}"""
 
 # Switch case dictionaries #
 #--------------------------#
