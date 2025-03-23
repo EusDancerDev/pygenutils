@@ -4,7 +4,7 @@
 """
 **Note**
 
-This program is an application of the main module 'audio_and_video',
+This program is an application of the main module 'audio_and_video_manipulation',
 and it relies on the method 'cut_media_files'.
 YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
