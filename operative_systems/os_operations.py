@@ -299,9 +299,7 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
     
     # Raise an error for non-zero return codes
     if result.returncode != 0:
-        return dict(stdout=stdout, stderr=stderr, return_code=result.returncode)
         raise CalledProcessError(result.returncode, command)
-    
     return dict(stdout=stdout, stderr=stderr, return_code=result.returncode)
 
 # %%
