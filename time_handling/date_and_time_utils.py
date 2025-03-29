@@ -17,11 +17,11 @@ import pandas as pd
 # Import custom modules #
 #-----------------------#
 
-from paramlib.global_parameters import common_delim_list
-from pygenutils.strings import text_formatters, string_handler
-from pygenutils.time_handling.time_formatters import datetime_obj_converter, floated_time_parsing_dict
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from filewise.xarray_utils import file_utils, patterns
+from pygenutils.strings import text_formatters, string_handler
+from pygenutils.time_handling.time_formatters import datetime_obj_converter, floated_time_parsing_dict
+
 
 # Try to import `pytz` and set a flag for availability
 try:
@@ -199,7 +199,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
     """    
     # Validate string representing the data type #
     arg_tuple_current_time = (dtype, dt_dtype_options)
-    _validate_option(arg_tuple_current_time, ValueError, unsupported_option_str)
+    _validate_option(arg_tuple_current_time, ValueError, unsupported_option_template)
     
     # Handle timezone argument
     if tz_arg is None:
@@ -294,8 +294,7 @@ def _convert_floated_time_to_datetime(floated_time, module):
     """
     # Validate the module #
     arg_tuple_float_time_to_dt = (module, list(floated_time_parsing_dict.keys()))
-    _validate_option(arg_tuple_float_time_to_dt, ValueError, unsupported_option_str)
-
+    _validate_option(arg_tuple_float_time_to_dt, ValueError, unsupported_option_template)
     # Convert to float if input is a string
     if isinstance(floated_time, str):
         floated_time = float128(floated_time)
@@ -627,7 +626,7 @@ def get_obj_operation_datetime(obj_list,
     
     # Validate the type of time attribute #
     arg_tuple_operation_datetime = (attr, attr_options)
-    _validate_option(arg_tuple_operation_datetime, AttributeError, attribute_error_str)
+    _validate_option(arg_tuple_operation_datetime, AttributeError, attribute_error_template)
     
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
@@ -711,7 +710,7 @@ def merge_datetime_dataframes(df1, df2,
         dt_colname = find_time_key(df1)
     except Exception as err:
         arg_tuple_df1 = (err, param_keys[df1_arg_pos])
-        print_format_string(date_colname_not_found_warning, arg_tuple_df1)
+        print_format_string(date_colname_not_found_template, arg_tuple_df1)
         
         df1_cols = list(df1.columns)
         df1_cols[0] = std_date_colname
@@ -722,7 +721,7 @@ def merge_datetime_dataframes(df1, df2,
         dt_colname = find_time_key(df2)
     except Exception as err:
         arg_tuple_df2 = (err, param_keys[df2_arg_pos])
-        print_format_string(date_colname_not_found_warning, arg_tuple_df2)
+        print_format_string(date_colname_not_found_template, arg_tuple_df2)
         
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
@@ -730,7 +729,7 @@ def merge_datetime_dataframes(df1, df2,
                 
     # Operator argument choice #    
     arg_tuple_dt_range_op1 = (operator, dt_range_operators)
-    _validate_option(arg_tuple_dt_range_op1, ValueError, unsupported_option_str)
+    _validate_option(arg_tuple_dt_range_op1, ValueError, unsupported_option_template)
         
     # Operations #
     #-#-#-#-#-#-#-
@@ -765,13 +764,13 @@ error_class_list = [ValueError, AttributeError]
 # Time span shortands #
 time_kws = ["da", "fe", "tim", "yy"]
 
-# Preformatted strings #
-#----------------------#
+# Template strings #
+#------------------#
 
 # Error strings #
-unsupported_option_str = """Unsupported option '{}'. Options are {}."""
-attribute_error_str = "Invalid attribute '{}'. Options are {}. "
-date_colname_not_found_warning = """{} at object '{}'.
+unsupported_option_template = """Unsupported option '{}'. Options are {}."""
+attribute_error_template = "Invalid attribute '{}'. Options are {}. "
+date_colname_not_found_template = """{} at object '{}'.
 Setting default name 'Date' to column number 0."""
 
 # Switch dictionaries #
