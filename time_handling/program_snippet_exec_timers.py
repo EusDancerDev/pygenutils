@@ -15,9 +15,9 @@ import timeit
 # Import custom modules #
 #-----------------------#
 
+from filewise.general.introspection_utils import get_caller_args
 from pygenutils.strings import text_formatters, string_handler
 from pygenutils.time_formatters import parse_float_time
-from filewise.general.introspection_utils import get_caller_args
 
 # Create aliases #
 #----------------#
@@ -150,7 +150,7 @@ def snippet_exec_timer(snippet_str,
     roundoff_arg_pos = find_substring_index(param_keys, "roundoff")
     
     if not isinstance(roundoff, int):
-        raise TypeError(format_string(type_error_str, f'{param_keys[roundoff_arg_pos]}'))
+        raise TypeError(format_string(type_error_template, f'{param_keys[roundoff_arg_pos]}'))
     
     # Set keyword argument dictionary for float time parsing #
     float_time_parsing_kwargs =  dict(
@@ -181,7 +181,7 @@ def snippet_exec_timer(snippet_str,
         
         # Complete and display the corresponding output information table #
         arg_tuple_exec_timer1 = (time_unit_str, trials, exec_time_norep)
-        print_format_string(norep_exec_time_info_str, arg_tuple_exec_timer1)
+        print_format_string(norep_exec_time_info_template, arg_tuple_exec_timer1)
       
     # Execution time in the specified number of trials for several repeats #
     else:
@@ -207,13 +207,13 @@ def snippet_exec_timer(snippet_str,
           
         # Complete and display the corresponding output information table
         arg_tuple_exec_timer2 = (time_unit_str, repeats, trials, exec_time_rep)
-        exec_timer2_str = format_string(rep_exec_time_info_str, arg_tuple_exec_timer2)
+        exec_timer2_str = format_string(rep_exec_time_info_template, arg_tuple_exec_timer2)
         
         if not return_best_time:
-            print_format_string(rep_exec_time_info_str, arg_tuple_exec_timer2)
+            print_format_string(rep_exec_time_info_template, arg_tuple_exec_timer2)
         else:
             arg_tuple_exec_timer3 = (exec_timer2_str, best_time)
-            print_format_string(rep_exec_time_info_best_str, arg_tuple_exec_timer3)
+            print_format_string(rep_exec_time_info_best_template, arg_tuple_exec_timer3)
     
 #%%
 
@@ -228,22 +228,22 @@ module_list = ["os", "time", "timeit"]
 sec_time_unit_str = 's'
 default_time_unit_str = 'formatted'
 
-# Preformatted strings #
-#----------------------#
+# Template strings #
+#------------------#
 
 # Informative #
-norep_exec_time_info_str = \
+norep_exec_time_info_template = \
 """Snippet execution time ({}), for {} trials with no repeats: {}"""
 
-rep_exec_time_info_str = \
+rep_exec_time_info_template = \
 """Snippet execution time ({}), for {} trials with and {} repeats:\n{}"""
 
-rep_exec_time_info_best_str = \
+rep_exec_time_info_best_template = \
 """{}\nBest: {}"""
 
 # Error messages #
-type_error_str = """Argument '{}' must be of type 'int'."""
-unsupported_module_choice_str = """Unsupported module option, choose one from {}."""
+type_error_template = """Argument '{}' must be of type 'int'."""
+unsupported_module_choice_template = """Unsupported module option, choose one from {}."""
 
 # Switch case dictionaries #
 #--------------------------#
