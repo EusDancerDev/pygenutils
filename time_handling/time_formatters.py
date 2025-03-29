@@ -404,13 +404,13 @@ def _format_arbitrary_time(floated_time, frac_precision):
     try:
         if days > 0:
             time_tuple = (days, hours, minutes, seconds)
-            time_parts_string = format_string(_time_str_parts_fmts[0], time_tuple)
+            time_parts_formatted = format_string(_time_str_parts_templates[0], time_tuple)
         else:
             time_tuple = (hours, minutes, seconds)
-            time_parts_string = format_string(_time_str_parts_fmts[1], time_tuple)
+            time_parts_formatted = format_string(_time_str_parts_templates[1], time_tuple)
     except (KeyError, IndexError, ValueError) as e:
         raise ValueError(f"Invalid format string or time components: {e}")
-    return time_parts_string 
+    return time_parts_formatted 
         
 
 # %% PARSING AMONG COMPLEX DATA OBJECTS
@@ -535,7 +535,7 @@ def datetime_obj_converter(datetime_obj,
     
         
 # Auxiliary functions #
-#-------------------#
+#---------------------#
 
 # Exclusively to 'float' #
 #-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -1044,10 +1044,10 @@ _total_time_unit_dict = {
     }
 
 
-# Preformatted strings #
-#----------------------#
+# Template strings #
+#------------------#
 
-_time_str_parts_fmts = [
+_time_str_parts_templates = [
     "{} days {} hours {} minutes {} seconds",
     "{} hours {} minutes {} seconds",
 ]
