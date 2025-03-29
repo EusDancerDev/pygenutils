@@ -142,7 +142,7 @@ def sum_dt_times(dt_obj_list,
         
     # Output format parameter control         
     arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
     
     # Operations #
     ##############
@@ -192,7 +192,7 @@ def extract_datetime_part(datetime_obj, part="time", arg_list=None):
         value of 'part'.
     """
     arg_tuple_extract = (part, ["time", "date"])
-    _validate_option(arg_tuple_extract, ValueError, invalid_output_format_str)
+    _validate_option(arg_tuple_extract, ValueError, invalid_output_format_template)
     
     return datetime_object_part_dict.get(part)(datetime_obj, arg_list)
 
@@ -261,7 +261,7 @@ def dt_time_average(dt_obj_list,
         
     # Output format parameter control #
     arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
         
     # Operations #
     ##############
@@ -445,7 +445,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
                         f"(number {date_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(date_list, (list, tuple, np.ndarray)) and len(date_list) < 2):
-        raise ValueError(format_string(too_few_arg_error_str, "time"))
+        raise ValueError(format_string(too_few_arg_error_template, "time"))
     
     # Operation argument control #
     arg_tuple_math_op = (operation, basic_math_opt_list)
@@ -453,7 +453,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
         
     # Output format parameter control #
     arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
     
     # Operations #
     ##############
@@ -619,7 +619,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     
     # Output format parameter control #
     arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_str)
+    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
     
     # Date-only return option #
     param_keys = get_caller_args()
@@ -727,15 +727,13 @@ time_output_format_options = ["default", "string", "time_only", "tuple"]
 date_output_format_options = \
 select_elements(time_output_format_options, [0,1,-1])
 
-# Preformatted strings #
-#----------------------#
+# Template strings #
+#------------------#
 
 # Error #
-type_error_str = "Argument '{}' (number {}) must be of type '{}'."
-
-invalid_output_format_str = """Unsupported output format '{}'. Options are: {}"""
+invalid_output_format_template = """Unsupported output format '{}'. Options are: {}"""
         
-unsupported_obj_type_str1 = """Unsupported {} type. Supported types are:
+unsupported_obj_type_template1 = """Unsupported {} type. Supported types are:
     - string
     - datetime.datetime
     - datetime.{}
@@ -744,7 +742,7 @@ unsupported_obj_type_str1 = """Unsupported {} type. Supported types are:
     - time.struct_time
 """
 
-unsupported_obj_type_str2 = """Unsupported datetime type. Supported types are:
+unsupported_obj_type_template2 = """Unsupported datetime type. Supported types are:
     - string
     - datetime.datetime
     - numpy.datetime64
@@ -754,7 +752,7 @@ unsupported_obj_type_str2 = """Unsupported datetime type. Supported types are:
 
 invalid_math_operation_error = \
 f"Only sum and subtraction operation are supported: {basic_math_opt_list}"
-too_few_arg_error_str = \
+too_few_arg_error_template = \
 "At least two {} or datetime objects are required to perform the addition."
 
 # Informative #
