@@ -77,9 +77,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Module `data_manipulation`: add flipping utilities of lists and NumPy arrays with N >= 1 dimensions.
 
-### Changed
+### Changed (v15.7.0)
 
-#### **General**
+#### **General** (v15.7.0)
 
 - Peform several term replacements in many modules:
   - `method` with `function`, if no object is instantiated throughout the module.
@@ -238,7 +238,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - In function `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
     - This change has been applied in every affected module.
 
-#### **Strings**
+#### **Strings** (v15.3.0)
 
 - Module `string_handler`: Renamed the following functions:
 
@@ -415,7 +415,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed v11.0.0
 
-#### **Arrays and Lists**
+#### **Arrays and Lists** (v11.0.0)
 
 - Module `data_manipulation`
   - Optimised and grouped functions by categories, added support for pandas objects, and improved docstrings.
@@ -445,7 +445,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Moved function `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
 
-### Removed
+### Removed (v11.0.0)
 
 - After the displacement of the function `create_ds_component`, `change_permissions_main` module was removed.
 
