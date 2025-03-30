@@ -6,7 +6,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.8.1] - 2025-03-29
 
-### Changed
+### Changed v15.8.1
 
 #### **General**
 
@@ -16,21 +16,21 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.8.0] - 2025-03-23
 
-### Added
+### Added v15.8.0
 
 #### **Audio and Video**
 
 - Module `audio_and_video_manipulation`: add import for `find_files` from the `filewise` package to enable dynamic file discovery.
 
-### Changed
+### Changed v15.8.0
 
-#### **General**
+#### **General** (v15.8.0)
 
 - Update terminology from `Preformatted Strings` to `Template Strings` in headers and variables.
   - Based on that principle, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
   - Update comments and variable names to replace `syntax` and `command` with `template` for better clarity in describing variables and constants that use empty `{}` for formatting.
 
-#### **Audio and Video**
+#### **Audio and Video** (v15.8.0)
 
 - Module `audio_and_video_manipulation`:
   - Renamed functions for clarity: `merge_audio_and_video_files` to `merge_media_files`, and `merge_audio_or_video_files` to `merge_individual_media_files`.
@@ -42,17 +42,17 @@ All notable changes to this project will be documented in this file.
   - Enhance script flexibility with dynamic file handling.
   - Update variable names for clarity and consistency.
 
-### Removed
+### Removed v15.8.0
 
-#### **Audio and Video**
+#### **Audio and Video** (v15.8.0)
 
 - Deleted the old `cut_media_files` module as it has been renamed to `trim_media`.
 
 ## [v15.7.7] - 2025-02-18
 
-### Changed
+### Changed v15.7.7
 
-#### **General**
+#### **General** (v15.7.7)
 
 - For all relevant modules, perform several term replacements:
   - Replace `method` with `procedure` to more accurately describe the approach or technique used in functions, except when referring to class method calls.
@@ -90,7 +90,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.6.0] - 2024-12-18
 
-### Changed
+### Changed v15.6.0
 
 #### **Strings**
 
@@ -100,9 +100,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.5.0] - 2024-11-23
 
-### Changed
+### Changed v15.5.0
 
-#### **Arrays and Lists**
+#### **Arrays and Lists** (v15.5.0)
 
 - Module `data_manipulation`: enhance `remove_elements` function to support multiple indices for list inputs.
 
@@ -114,17 +114,17 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.4.4] - 2024-11-17
 
-### Changed
+### Changed v15.4.4
 
-#### **General**
+#### **General** (v15.4.4)
 
 - Minor syntax appearance improvements in many modules.
 
-#### **Strings**
+#### **Strings** (v15.4.4)
 
 - Renamed module `information_output_formatters` to `text_formatters` for improved clarity. Changes have been applied for all affected modules.z
 
-#### **Time Handling**
+#### **Time Handling** (v15.4.4)
 
 - Module `date_and_time_utils`:
   - Added timezone handling to `get_current_datetime` function with optional 'pytz' support
@@ -136,7 +136,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.3.0] - 2024-11-14
 
-### Changed
+### Changed v15.3.0
 
 #### **Web Scraping**
 
@@ -147,11 +147,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.2.0] - 2024-11-03
 
-### Added
+### Added v15.2.0
 
 - Added `__init__.py` files to all first-level and deeper sub-packages for enhanced import access.
 
-### Changed
+### Changed v15.2.0
 
 - Remove the redundant import of the deprecated and removed `parameters_and_constants` module in all affected modules.
 
@@ -159,7 +159,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.0.0] - 2024-10-30
 
-### Changed
+### Changed v15.0.0
 
 - Current package `pyutils` has been renamed to `pygenutils` to align with the purpose of being a general-tool, Swiss army knife.
 
@@ -183,7 +183,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v14.0.0] - 2024-10-28
 
-### Changed
+### Changed v14.0.0
 
 <h3>Changes in functions along modules and sub-packages</h3>
 
@@ -263,11 +263,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v13.3.2] - 2024-10-25
 
-### Changed
+### Changed v13.3.2
 
 <h3>Changes in functions along modules and sub-packages</h3>
 
-#### **General**
+#### **General** (v13.3.2)
 
 - Switched to British English every verb written in American accent. For example:
   - *standardize* <span>&#8594;</span> <i>standardi**S**e</i>
@@ -308,7 +308,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v13.0.0] - 2024-10-22
 
-### Changed
+### Changed v13.0.0
 
 <h2>File Operations</h2>
 
@@ -355,7 +355,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v12.0.0] - 2024-10-18
 
-### Changed
+### Changed v12.0.0
 
 <h2>Arrays and Lists</h2>
 
@@ -413,7 +413,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v11.0.0] - 2024-10-17
 
-### Changed
+### Changed v11.0.0
 
 #### **Arrays and Lists**
 
@@ -453,20 +453,20 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v10.11.3] - 2024-10-12
 
-### Added
+### Added (v10.11.3)
 
 #### **Core Statistics**
 
 - Created `interpolation_functions` module with `interpolate_numpy`, `interpolate_pandas`, and `interpolate_xarray` for flexible interpolation across various object types.
 
-### Changed
+### Changed (v10.11.3)
 
 #### **Climatology Statistics**
 
 - Module `representative_series`
   - Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_functions` (**Core Statistics**).
 
-#### **Time Handling**
+#### **Time Handling** (v10.11.3)
 
 - function `standardize_calendar`:
   - Rename to British English nomenclature: `standardise_calendar`.
@@ -481,13 +481,13 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v10.9.2] - 2024-10-11
 
-### Added
+### Added (v10.9.2)
 
 #### **General Utilities**
 
 - `introspection_utils`: function `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
 
-### Changed
+### Changed (v10.9.2)
 
 #### **Sets and Intervals**
 
@@ -498,11 +498,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Refactored `operations_with_sets`, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
   - After that, renamed the function to `sets_operator`.
 
-#### **Core Statistics**
+#### **Core Statistics** (v10.9.2)
 
 - function `polynomial_fitting` has been moved from module `curve_fitting` to `interpolation_functions`.
 
-#### **Time handling**
+#### **Time handling** (v10.9.2)
 
 - Module `date_and_time_utils`:
   - Merged and optimised functions for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
@@ -516,7 +516,7 @@ so it is worth describing their origins, referring to the latest version in whic
 | infer_full_period_of_time | data_frame_handler | pandas_data_frames/core | infer_full_period_of_time | netcdf_handler | weather_and_climate | infer_dt_range |
 | infer_time_frequency | data_frame_handler | pandas_data_frames/core | infer_time_frequency | netcdf_handler | weather_and_climate | infer_frequency |
 
-### Removed
+### Removed (v10.9.2)
 
 - After the displacement of the function `polynomial_fitting`, `curve_fitting` module was removed.
 
@@ -524,7 +524,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v10.4.0] - 2024-10-06
 
-### Changed
+### Changed v10.4.0
 
 - The following functions in **Xarray Utils** have been merged into a single one:
   - `find_time_dimension` and `find_time_dimension_raise_none` <span>&#8594;</span> `find_time_dimension`.
@@ -536,7 +536,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Rename module `date_and_time_operators` to `date_and_time_utils` to emphasize <i>utility</i> or <u>tool</i> concept; originally in sub-package `time_handling`, no displacement.
 
-### Removed
+### Removed (v10.4.0)
 
 - Delete sub-package `varied_documentation` as its content has been relocated to a local directory.
 
@@ -544,7 +544,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v10.0.0] - 2024-10-02
 
-### Added
+### Added (v10.0.0)
 
 - Add the following directories and modules in `statistics` sub-package:
   - **Core Statistics**
@@ -562,7 +562,7 @@ so it is worth describing their origins, referring to the latest version in whic
     - `patterns`: utility functions for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
     - `xarray_obj_handler`: optimised module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
 
-### Changed
+### Changed (v10.0.0)
 
 - After the creations in **Core Statistics**, the following changes have been made:
 
@@ -622,7 +622,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - <span style="font-weight:bold; color:maroon">NOTE</span>: any function rename above has also been applied to all files using the old function name.
 
-### Removed
+### Removed (v10.0.0)
 
 - Once every addition and changes performed regarding **Xarray Utils**, removed sub-package `netcdf_handler`.
 
@@ -630,7 +630,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v9.0.0] - 2024-10-01
 
-### Added
+### Added (v9.0.0)
 
 - Add the following directories and modules in `statistics` sub-package:
   - **Core Statistics**: 
@@ -640,7 +640,7 @@ so it is worth describing their origins, referring to the latest version in whic
   - **Climate Statistics** (`fields/climatology`)
     - `representative_series`: analysis of time series resulting from representativity criteria.
 
-### Changed
+### Changed (v9.0.0)
 
 - Once above creations done, the following moves and/or renamings have been made:
 
@@ -708,7 +708,7 @@ so it is worth describing their origins, referring to the latest version in whic
 | --- | climate_variables | statistics/fields/climatology | --- | variables | (unchanged) |
 | --- | calendar_operators | time_handling | --- | calendar_utils | (unchanged) |
 
-### Removed
+### Removed (v9.0.0)
 
 - Once every addition and changes performed, removed sub-package `pandas_data_frames`.
 
@@ -716,7 +716,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v8.0.0] - 2024-09-29
 
-### Added
+### Added (v8.0.0)
 
 1. sub-package `climate_data_utils`:
 
@@ -784,7 +784,7 @@ so it is worth describing their origins, referring to the latest version in whic
   - Added basic functions for hypothesis testing in the `statistical_tests.py` module, including: `z_test_two_means` and `chi_square_test` which provide common statistical hypothesis tests.
   - Each function includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
 
-### Changed
+### Changed (v8.0.0)
 
 - Many functions have been moved out from the modules in the old `weather_and_climate` sub-package to `statistics`.
 - Information about the original module and new function name and location is displayed next:
@@ -845,7 +845,7 @@ so it is worth describing their origins, referring to the latest version in whic
 - `data_downloads`
 - `complementary-to_remodule`
 
-### Removed
+### Removed (v8.0.0)
 
 - Once every operation above performed, delete sub-package `weather_and_climate`.
 
@@ -853,7 +853,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v7.3.3] - 2024-09-28
 
-### Added
+### Added (v7.3.3)
 
 `climatic_signal_modulators`
 
@@ -878,7 +878,7 @@ so it is worth describing their origins, referring to the latest version in whic
     - Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
     - Expanded the docstring to include explanations on filter design and its effect on different time series data.
 
-### Changed
+### Changed (v7.3.3)
 
 1. `climatic_statistics`
 
@@ -902,7 +902,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v7.0.0] - 2024-09-26
 
-### Changed
+### Changed (v7.0.0)
 
 - Delete part of the file name `arrays_` contained in all modules of the sub-package `arrays_and_lists`, then delete all old-named modules.
 - Module `climate_statistics`: refactor the following functions to improve performance, readability and maintainability:
@@ -919,13 +919,13 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v6.8.2] - 2024-09-25
 
-### Added
+### Added (v6.8.2)
 
 - Add functionalities to media manipulation functions for merging and cutting audio/video files
 - Add two external programs that apply functions of the module `audio_and_video_manipulation`.
 - Add and reorganize section header comments
 
-### Changed
+### Changed (v6.8.2)
 
 - Improve readability and streamline functions
 - Substitute `print_exit_info` with `exit_info` as done in the original module `os_operations`
@@ -935,14 +935,14 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v6.6.0] - 2024-09-23
 
-### Added
+### Added (v6.6.0)
 
 - Add docstring for every function
 - Add module to store configuration data like credentials, host info, etc.
 - Add type to every parameter missing it in all docstrings
 - Add dictionary with conversion factors from the provided floated time to the given unit
 
-### Changed
+### Changed (v6.6.0)
 
 - Rename function `remove_elements_from_array` to `remove_elements`
 - Eliminate `exec_command_shell` function and, if present, `catch_shell_prompt_output` <br>
@@ -953,13 +953,13 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v6.3.4] - 2024-09-20
 
-### Added
+### Added (v6.3.4)
 
 - Add optional argument, comments explaining key parts of the code and simplify the f-strings
 - Add type to the parameter `datetime_obj` in the docstring of the internal function `_total_time_unit`
 - Add type to every parameter missing it in all docstrings.
 
-### Changed
+### Changed (v6.3.4)
 
 - Delete `todo` from the code as the task there is already done
 - Specify the name and type of the returning variable in function `string_underliner`
@@ -968,12 +968,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v6.3.0] - 2024-09-18
 
-### Added
+### Added (v6.3.0)
 
 - Add further fractional second precision choice at internal function `_format_arbitrary_time`
 - Add support for `datetime.time` object conversion to other datetime-like objects
 
-### Changed
+### Changed (v6.3.0)
 
 - Eliminate need of the old function `time_format_tweaker` in favour of the renewed `datetime_obj_converter` from module `time_formatters`
 - Rewrite some lazy imports and fix a typo as a result
@@ -982,23 +982,23 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v6.0.0] (2024-09-06)
 
-### Added
+### Added (v6.0.0)
 
 - Created directories for lambda functions and assertion documentation in Python.
 - Enhanced performance by importing frequently used NumPy libraries and utilizing `get_obj_type_str` for type checks.
 - Implemented a simple calculator functionality using a dictionary-based switch-case approach, accepting multiple arguments.
 - Improved input validation and functionalities in `sort_dictionary_by_keys` and `merge_dictionaries` functions.
   
-### Changed
+### Changed (v6.0.0)
 
 - Restored accidentally removed code during editing.
 - Sub-package `arrays_and_lists`:
-    * Move out some functions in `array_data_manipulation` and `array_maths` to other modules in this sub-package.
-    * Rewrite section headers to align with the nature of functions under them. Clarity and precision gained.
+  - Move out some functions in `array_data_manipulation` and `array_maths` to other modules in this sub-package.
+  - Rewrite section headers to align with the nature of functions under them. Clarity and precision gained.
 - Renamed directories for improved readability and intuitive understanding.
 - Removed unnecessary directories due to renaming or redundancy.
 
-### Removed
+### Removed (v6.0.0)
 
 - Deleted `webdriver_Firefox-Chrome_settings_check.py` in favour of the more descriptively named `webdriver_Firefox-Chrome_setup_test.py`.
 - Eliminated `git` directory as Git does not depend on Python.
@@ -1007,11 +1007,11 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v5.5.5] (2024-08-20)
 
-### Added
+### Added (v5.5.5)
 
 - Combined character splitting instructions into single lines for efficiency.
   
-### Changed
+### Changed (v5.5.5)
 
 - Enhanced the `format_table_from_lists` function for better error handling.
 - Improved readability by splitting long lines into shorter ones.
@@ -1021,17 +1021,17 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v5.4.2] (2024-08-08)
 
-### Added
+### Added (v5.4.2)
 
 - Functionality to select column delimiters in all relevant functions.
 - New function to underline single or multiple line strings.
 
-### Changed
+### Changed (v5.4.2)
 
 - Revised the docstring in `format_table_from_lists` to reflect new functionalities.
 - Fixed issues in the `format_table_from_lists` function related to multi-row values.
 
-### Removed
+### Removed (v5.4.2)
 
 - Removed the `Constants` section from general notes.
 
@@ -1039,17 +1039,17 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v5.2.2] (2024-07-15)
 
-### Added
+### Added (v5.2.2)
 
 - Optional argument for setting the index starting number in `format_table_from_list` and `format_table_from_lists`.
 - New module for formatting dictionaries or lists into tables.
 
-### Changed
+### Changed (v5.2.2)
 
 - Clarified overwriting behaviour in `serialize_dict_to_json`.
 - Simplified the try-except block structure in `print_format_string`.
 
-### Removed
+### Removed (v5.2.2)
 
 - Removed a JSON test file.
 
@@ -1057,15 +1057,15 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v5.0.0] (2024-07-10)
 
-### Added
+### Added (v5.0.0)
 
 - Created a sub-package for JSON functionalities.
 
-### Changed
+### Changed v5.0.0
 
 - Polished section comments for clarity.
 
-### Removed
+### Removed v5.0.0
 
 - Removed redundant JSON file utilities, centralizing them in the `json_file_handler` module.
 
@@ -1073,12 +1073,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v4.9.0] (2024-06-29)
 
-### Added
+### Added (v4.9.0)
 
 - Various references updated from `pytools` to `pyutils`.
 - New warning codes and documentation improvements.
 
-### Changed
+### Changed (v4.9.0)
 
 - Created a file to track significant changes in the repository.
 
@@ -1086,15 +1086,15 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v4.0.0] (2024-06-26)
 
-### Added
+### Added (v4.0.0)
 
 - Several sub-packages for various utility functions and modules.
 
-### Changed
+### Changed (v4.0.0)
 
 - Relocated functions and optimised imports.
 
-### Removed
+### Removed (v4.0.0)
 
 - Deleted files that have been relocated.
 
@@ -1102,11 +1102,11 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v3.0.0] (2024-06-24)
 
-### Added
+### Added (v3.0.0)
 
 - Introduced new functionalities for handling regex and optimizing code structure.
 
-### Changed
+### Changed (v3.0.0)
 
 - Updated imports to absolute and improved error handling.
 
@@ -1114,12 +1114,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v2.7.4] - 2024-06-14
 
-### Added
+### Added (v2.7.4)
 
 - Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
 - Add detailed docstring to the function `natural_year` and optimize inner code and comments.
 
-### Changed
+### Changed (v2.7.4)
 
 - Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
 - Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
@@ -1133,12 +1133,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v2.4.0] - 2024-06-12
 
-### Added
+### Added (v2.4.0)
 
 - Add docstrings and polish the main functions `sum_clock_times` and `sum_date_objects`, as well as their auxiliary functions.
 - Add functions to sum or subtract dates and/or times (preliminary version).
 
-### Removed
+### Removed (v2.4.0)
 
 - Delete to-do list with `date_and_time_maths`.
 
@@ -1146,12 +1146,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v2.1.0] - 2024-06-11
 
-### Added
+### Added (v2.1.0)
 
 - Import the function to return an object type`s string part.
 - Add multidimensional indexing functionality for NumPy arrays in `select_array_elements` function.
 
-### Renamed
+### Renamed (v2.1.0)
 
 - Rename the function to return an object type`s string part.
 
@@ -1159,7 +1159,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v2.0.0] - Initial release - 2024-06-10
 
-### Added
+### Added (v2.0.0)
 
 - Add module for climate and environment data manipulation and extraction.
 - Add module for date and time management functions.
@@ -1168,6 +1168,6 @@ so it is worth describing their origins, referring to the latest version in whic
 - Add directory containing small manuals and web extracts about external Python modules and functions.
 - Add module for mathematical operations with sets.
 
-### Removed
+### Removed (v2.0.0)
 
 - Remove function `json2dict` as dictionaries are semantically handled.
