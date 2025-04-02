@@ -2,6 +2,10 @@
 
 All notable changes to this project will be documented in this file.
 
+TODO:
+
+- [ ] Check the versioning scheme.
+
 ---
 
 ## [v15.8.1] - 2025-03-29
@@ -30,7 +34,7 @@ All notable changes to this project will be documented in this file.
   - Based on that principle, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
   - Update comments and variable names to replace `syntax` and `command` with `template` for better clarity in describing variables and constants that use empty `{}` for formatting.
 
-#### **Audio and Video** (v15.8.0)
+#### **Audio and Video** (v15.8.0; changed)
 
 - Module `audio_and_video_manipulation`:
   - Renamed functions for clarity: `merge_audio_and_video_files` to `merge_media_files`, and `merge_audio_or_video_files` to `merge_individual_media_files`.
@@ -44,7 +48,7 @@ All notable changes to this project will be documented in this file.
 
 ### Removed v15.8.0
 
-#### **Audio and Video** (v15.8.0)
+#### **Audio and Video** (v15.8.0; removed)
 
 - Deleted the old `cut_media_files` module as it has been renamed to `trim_media`.
 
@@ -174,7 +178,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
     - Will not be a candidate to release, as it consists of programs for testing code snippets
   - The following sub-packages form a new package:
     - `data_entry_forms` |
-    - `databases`        | <span>&#8594;</span> `DataOpsHub`
+    - `databases`        | → `DataOpsHub`
     - `security`         |
 
 - Once all above changes made, absolutely all imports have been updated to match the package where a sub-package or module is.
@@ -185,24 +189,25 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed v14.0.0
 
-<h3>Changes in functions along modules and sub-packages</h3>
+#### **Changes in functions along modules and sub-packages**
 
-#### **Varnames**
+##### **Varnames**
 
 - Variable name `all_arg_names`, which contains all variables (required and optional) of the caller function, has been renamed to `param_keys`.
   - All this changes have been applied to all affected modules.
 
-<h3>Specific changes regarding sub-packages</h3>
+#### **Specific changes regarding sub-packages**
 
-#### **Dictionaries**
+##### **Dictionaries**
 
 - Module `table_formatters`:
   - Moved all functions to the module `information_output_formatters` (**Strings** sub-package)
 
-#### **General File Utils**
+##### **General File Utils**
 
 - Module `introspection_utils`:
-  - Renamed the following functions:
+  - Renamed the following functions
+
   | Original Function Name | Refactored Function Name |
   |----------------------|-------------------------|
   | retrieve_function_name | get_func_name |
@@ -215,10 +220,10 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | get_attribute_names | get_attr_names |
   | get_obj_type_str | get_type_str |
 
-#### **Format Converters**
+##### **Format Converters**
 
 - Module `file_format_tweaker`:
-  - Renamed the following functions:
+  - Renamed the following functions
 
   | Old function name | New function name |
   |:----------------:|:-----------------:|
@@ -232,13 +237,13 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - All this changes have been applied to all affected modules.
 - After having these changes made, the module has been **renamed** to `pdf_tools`.
 
-#### **Operative systems**
+##### **Operative systems**
 
 - Module `OS Operations`
   - In function `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
     - This change has been applied in every affected module.
 
-#### **Strings** (v15.3.0)
+##### **Strings** (v15.3.0)
 
 - Module `string_handler`: Renamed the following functions:
 
@@ -249,7 +254,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - All this changes have been applied to all affected modules.
 
-<h3>Changes in **sub-package** names</h3>
+#### **Changes in sub-package names**
 
 - The following renamings have been performed:
 
@@ -265,21 +270,21 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed v13.3.2
 
-<h3>Changes in functions along modules and sub-packages</h3>
+#### **Changes in functions along modules and sub-packages** (v13.3.2)
 
-#### **General** (v13.3.2)
+##### **General** (v13.3.2)
 
 - Switched to British English every verb written in American accent. For example:
-  - *standardize* <span>&#8594;</span> <i>standardi**S**e</i>
-  - *serialize* <span>&#8594;</span> <i>seriali**S**e</i>
+  - *standardize* → 'standardi**S**e'
+  - *serialize* → 'seriali**S**e'
 
-- All `.lower()` instances of the string returned by the function `get_obj_type_str` (module `introspection_utils`, sub-package **General Utils**),<br>
+- All `.lower()` instances of the string returned by the function `get_obj_type_str` (module `introspection_utils`, sub-package **General Utils**),  
   have been substituted in favour of setting the argument `lowercase` to True.
   
 - The renaming of the module `file_and_directory_handler` to `ops_handler` has been applied to all affected files.
 - The renaming of the module `file_and_directory_paths` to `path_utils` has been applied to all affected files.
 
-#### **Climate Data Utils**
+##### **Climate Data Utils**
 
 - Module `cdo_tools`:
   - Refactored multiple CDO processing functions, optimised internal helpers, and updated file handling functions with section headers and internal visibility changes.
@@ -291,7 +296,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | change_file_names_byvar | change_filenames_by_var |
   | standardise_file_name | _standardise_filename (marked as internal) |
 
-<h3>Specific changes regarding sub-packages</h3>
+##### **Specific changes regarding sub-packages** (v13.3.2)
 
 - The following renamings have been made:
 
@@ -310,9 +315,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed v13.0.0
 
-<h2>File Operations</h2>
+#### **File Operations**
 
-<h4>Module <i>file_and_directory_handler</i></h4>
+##### **Module 'file_and_directory_handler'**
 
 - Refactored and optimised file and directory operations; consolidated functions, introduced helper functions, and removed shell command dependencies.
 
@@ -336,7 +341,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - All this changes have been applied to all affected modules.
 - After having these changes made, the module has been **renamed** to simply `ops_handler`.
 
-<h4>Module <i>file_and_directory_paths</i></h4>
+##### **Module 'file_and_directory_paths'**
 
 - Refactored file and directory path search logic; introduced switch-case for match_type, shortened function names, and optimised code.
 
@@ -357,9 +362,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed v12.0.0
 
-<h2>Arrays and Lists</h2>
+#### **Arrays and Lists** (v12.0.0)
 
-<h4>Module <i>conversions</i></h4>
+##### **Module 'conversions'**
 
 - Optimised data conversion and flattening functions, improved handling of pandas and NumPy objects, added error handling, and streamlined code structure.
 
@@ -371,9 +376,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | list_array_to_std_array | combine_arrays |
   | flatten_content_to_string | flatten_to_string |
 
-<h2>General Utilities</h2>
+##### **General Utilities**
 
-<h4>'file_operations' sub-package</h4>
+##### **'file_operations' sub-package**
 
 - The following **module** renamings have been made:
 
@@ -382,7 +387,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | bulk_rename_index_main | bulk_rename_auto |
   | bulk_rename_index_manual | bulk_rename_manual |
 
-<h4>'scripts' sub-package</h4>
+##### **'scripts' sub-package**
 
 - Contains application programs of several functions in the modules of sub-package `file_operations`.
 
@@ -395,7 +400,8 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | pdf_file_tweaker_exec | tweak_pdf |
   | bulk_rename_index_exec | bulk_rename |
 
-<h2>Databases</h2>
+##### **Databases**
+
 - Rename module `upload_data_to_mysql_database` to `upload_data`.
 
 ### Removed
@@ -483,7 +489,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Added (v10.9.2)
 
-#### **General Utilities**
+#### **General Utilities** (v10.9.2)
 
 - `introspection_utils`: function `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
 
@@ -507,7 +513,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - Module `date_and_time_utils`:
   - Merged and optimised functions for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: although every function has been moved to this module, except in one case the function pairs have been named identically,<br>
+- **NOTE**: although every function has been moved to this module, except in one case the function pairs have been named identically,  
 so it is worth describing their origins, referring to the latest version in which these moves have been performed (to this module).
 
 | Function name 1 | Module referring to 1 | sub-package referring to 1 | Function name 2 | Module referring to 2 | sub-package referring to 2 | Merged function name |
@@ -527,14 +533,14 @@ so it is worth describing their origins, referring to the latest version in whic
 ### Changed v10.4.0
 
 - The following functions in **Xarray Utils** have been merged into a single one:
-  - `find_time_dimension` and `find_time_dimension_raise_none` <span>&#8594;</span> `find_time_dimension`.
-  - `find_coordinate_variables` and `find_coordinate_variables_raise_none` <span>&#8594;</span> `find_coordinate_variables`.
+  - `find_time_dimension` and `find_time_dimension_raise_none` → `find_time_dimension`.
+  - `find_coordinate_variables` and `find_coordinate_variables_raise_none` → `find_coordinate_variables`.
 
 - As a consequence, the following modules which originally used `find_time_dimension_raise_none` and/or `find_coordinate_variables_raise_none` have been adapted:
   - **Climate Data Utils**: `cdo_tools`
   - **Xarray Utils**: `patterns` and `data_manipulation`
 
-- Rename module `date_and_time_operators` to `date_and_time_utils` to emphasize <i>utility</i> or <u>tool</i> concept; originally in sub-package `time_handling`, no displacement.
+- Rename module `date_and_time_operators` to `date_and_time_utils` to emphasise 'utility' or 'tool' concept; originally in sub-package `time_handling`, no displacement.
 
 ### Removed (v10.4.0)
 
@@ -566,6 +572,10 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - After the creations in **Core Statistics**, the following changes have been made:
 
+#### **Functions**
+
+In `statistics` sub-package:
+
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
   | signal_whitening | time_series | statistics/core | (unchanged) | signal_processing | (unchanged) |
@@ -575,9 +585,9 @@ so it is worth describing their origins, referring to the latest version in whic
   | band_pass2 | time_series | statistics/core | (unchanged) | signal_processing | (unchanged) |
   | band_pass3 | time_series | statistics/core | (unchanged) | signal_processing | (unchanged) |
 
-- After the creations in **Xarray Utils**, the following changes have been made:
+- After the creations in **Xarray Utils**, the following changes between sub-packages have been made:
 
-1. To `time_handling` and `data_manipulation`:
+1.1. To `time_handling` and `data_manipulation`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -587,7 +597,7 @@ so it is worth describing their origins, referring to the latest version in whic
   | extract_and_store_time_formats | netcdf_handler | climate_data_utils | (unchanged) | data_manipulation | utilities/xarray_utils |
   | netcdf_regridder | netcdf_handler | climate_data_utils | (unchanged) | data_manipulation | utilities/xarray_utils |
 
-2. To `file_utils`:
+1.2. To `file_utils`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -596,7 +606,7 @@ so it is worth describing their origins, referring to the latest version in whic
   | netcdf_file_scanner | netcdf_handler | climate_data_utils | (unchanged) | file_utils | utilities/xarray_utils |
   | ncfile_integrity_status | netcdf_handler | climate_data_utils | (unchanged) | file_utils | utilities/xarray_utils |
 
-3. To `patterns`:
+1.3. To `patterns`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -611,7 +621,7 @@ so it is worth describing their origins, referring to the latest version in whic
   | get_latlon_deltas | netcdf_handler | climate_data_utils | (unchanged) | patterns | utilities/xarray_utils |
   | get_model_list | netcdf_handler | climate_data_utils | (unchanged) | patterns | utilities/xarray_utils |
 
-4. To `xarray_obj_handler`:
+1.4. To `xarray_obj_handler`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -620,7 +630,7 @@ so it is worth describing their origins, referring to the latest version in whic
   | save_data_as_netcdf_std | netcdf_handler | climate_data_utils | (unchanged) | xarray_obj_handler | utilities/xarray_utils |
   | save_nc_data_as_csv | netcdf_handler | climate_data_utils | (unchanged) | xarray_obj_handler | utilities/xarray_utils |
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: any function rename above has also been applied to all files using the old function name.
+- **NOTE**: any function rename above has also been applied to all files using the old function name.
 
 ### Removed (v10.0.0)
 
@@ -633,7 +643,7 @@ so it is worth describing their origins, referring to the latest version in whic
 ### Added (v9.0.0)
 
 - Add the following directories and modules in `statistics` sub-package:
-  - **Core Statistics**: 
+  - **Core Statistics**:
     - `approximation_techniques`: for functions focusing on general approximation techniques not necessarily tied to specific curve fitting or interpolation.
     - `curve_fitting`: for functions like polynomial fitting and other curve fitting techniques.
     - `interpolation_functions`: for interpolation techniques, including the `hdy_interpolation` function.
@@ -644,9 +654,9 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Once above creations done, the following moves and/or renamings have been made:
 
-#### **Functions**
+#### **Functions** (v9.0.0)
 
-1. In `statistics` sub-package:
+##### In `statistics` sub-package
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -654,24 +664,24 @@ so it is worth describing their origins, referring to the latest version in whic
   | calculate_HDY | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
   | hdy_interpolation (once moved, changed visibility to internal) | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
 
-2. To `time_handling` sub-package:
+##### To `time_handling` sub-package
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
-  | infer_full_period_of_time | data_frame_handler | pandas_data_frames | (unchanged) | date_and_time_operators | (unchanged) | 
+  | infer_full_period_of_time | data_frame_handler | pandas_data_frames | (unchanged) | date_and_time_operators | (unchanged) |
   | infer_time_frequency | data_frame_handler | pandas_data_frames | (unchanged) | date_and_time_operators | (unchanged) |
   | find_date_key | data_frame_handler | pandas_data_frames | (unchanged) | date_and_time_operators | (unchanged) |
   | infer_time_frequency | data_frame_handler | pandas_data_frames | (unchanged) | date_and_time_operators | (unchanged) |  
 
-3. To `utilities/pandas_utils` sub-package (depth level 2)
+##### To `utilities/pandas_utils` sub-package (depth level 2)
 
-3.1  To `conversions.py` module
+1.1 To `conversions.py` module
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
   | df_to_structured_array | data_frame_handler | pandas_data_frames | (unchanged) | conversions | (unchanged) |
 
-3.2 To `data_manipulation` module
+1.2 To `data_manipulation` module
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -685,7 +695,7 @@ so it is worth describing their origins, referring to the latest version in whic
   | sort_df_indices | data_frame_handler | pandas_data_frames | (unchanged) | data_manipulation | (unchanged) |
   | sort_df_values | data_frame_handler | pandas_data_frames | (unchanged) | data_manipulation | (unchanged) |
 
-3.3  To `pandas_obj_handler` module
+1.3 To `pandas_obj_handler` module
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
 |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -695,10 +705,10 @@ so it is worth describing their origins, referring to the latest version in whic
 | merge_excel_files | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
 | merge_ods_files | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
 | ods_handler | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
-| read_table | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) | 
+| read_table | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
 | save2csv | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
 | save2excel | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
-| save2ods | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) | 
+| save2ods | data_frame_handler | pandas_data_frames | (unchanged) | pandas_obj_handler | (unchanged) |
 
 #### **Modules**
 
@@ -718,12 +728,12 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added (v8.0.0)
 
-1. sub-package `climate_data_utils`:
+#### sub-package `climate_data_utils`
 
 - Handles operations focused on data manipulation for climate datasets, with a special focus on file management, downloads, and plotting.
 - The following content has been added, each supporting specific utilities:
 
-<u>**Modules**</u>
+  **Modules**
 
 - `cdo_tools.py`
   - Provides wrappers and utilities for working with the Climate Data Operators (CDO) tool.
@@ -749,22 +759,22 @@ so it is worth describing their origins, referring to the latest version in whic
 - `weather_software_file_creator`
   - Contains functions for creating weather software files based on processed climate data, ensuring compatibility with various weather analysis tools.
 
-<u>**Further sub-packages**</u>
+  **Further sub-packages**
 
 - `complementary-to_remodule`
   - A sub-package containing various auxiliary and complementary functions aimed at climate data analysis and visualization. It includes:
-    - <b>auxiliary_functions</b>: Utility functions to assist with common tasks such as file handling, data transformations, and helper routines.
-    - <b>ba_mean_and_var</b>: Implements functions to compute bias-adjusted mean and variance from climate data.
-    - <b>ba_mean</b>: Provides functions for calculating bias-adjusted means from climate datasets, allowing for more accurate representation of data characteristics.
+    - **auxiliary_functions**: Utility functions to assist with common tasks such as file handling, data transformations, and helper routines.
+    - **ba_mean_and_var**: Implements functions to compute bias-adjusted mean and variance from climate data.
+    - **ba_mean**: Provides functions for calculating bias-adjusted means from climate datasets, allowing for more accurate representation of data characteristics.
 
 - `data_downloads`
   - A module dedicated to managing the download of climate data. It contains:
-    - <b>codes</b>: Includes scripts and configurations necessary for utilizing the Copernicus API for efficient data downloads.
-    - <b>input_data</b> A folder for storing downloaded climate data, ensuring organised access to data files.
+    - **codes**: Includes scripts and configurations necessary for utilizing the Copernicus API for efficient data downloads.
+    - **input_data** A folder for storing downloaded climate data, ensuring organised access to data files.
 
-2. sub-package `statistics`:
+#### sub-package `statistics`
 
-- Introduced a new sub-package `statistics` to encapsulate numerical and statistical functions.,<br>
+- Introduced a new sub-package `statistics` to encapsulate numerical and statistical functions,  
   aiming for modularity and organization across general and field-specific domains.
 
 - **Core Modules:**
@@ -778,7 +788,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - **Improved Structure:** Consolidated statistical logic from various modules under a unified sub-package, with plans for expanding into domain-specific functions.
 
-3. `statistical_tests` as a `core` module:
+#### `statistical_tests` as a `core` module
 
 - **Hypothesis Testing**:
   - Added basic functions for hypothesis testing in the `statistical_tests.py` module, including: `z_test_two_means` and `chi_square_test` which provide common statistical hypothesis tests.
@@ -822,13 +832,13 @@ so it is worth describing their origins, referring to the latest version in whic
 | count_consecutive_days_maxdata | consecutive_idx_statistics | weather_and_climate | consec_occurrences_maxdata | time_series | statistics/core |
 | count_consecutive_days_mindata | consecutive_idx_statistics | weather_and_climate | consec_occurrences_mindata | time_series | statistics/core |
 
-- <span style="font-weight:bold; color:maroon">NOTE</span>: prior to these movements, every single function until here has been refactored, functionalities enhanced and optimised inner codes.
+- **NOTE**: prior to these movements, every single function until here has been refactored, functionalities enhanced and optimised inner codes.
 
-5. Rest of the content:
+#### Rest of the content
 
 - The following content has been moved to the new sub-package `climate_data_utils`:
 
-1. **Modules**
+1.1. **Modules**
 
 - `cdo_tools`
 - `cds_tools`
@@ -840,7 +850,7 @@ so it is worth describing their origins, referring to the latest version in whic
 - `netcdf_handler`
 - `weather_software_file_creator`
 
-2. **Further sub-packages**
+1.2. **Further sub-packages**
 
 - `data_downloads`
 - `complementary-to_remodule`
@@ -855,44 +865,44 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ### Added (v7.3.3)
 
-`climatic_signal_modulators`
+Sub-package `climatic_signal_modulators`
 
-- **Autocorrelation Function**:
+- **Autocorrelation Function**
   - Streamlined the logic by handling smaller arrays using `numpy.correlate` and larger arrays with `scipy.signal.correlate`.
   - Updated the docstring to clarify parameters and computation flow, explaining when to use two-sided or one-sided autocorrelation.
 
-- **Signal Whitening functions**:
+- **Signal Whitening functions**
   - Developed two signal whitening functions: `signal_whitening_classic` and `signal_whitening_pca`.
   - `signal_whitening_classic` applies a traditional approach using Cholesky decomposition with `numpy.linalg`.
   - `signal_whitening_pca` uses Principal Component Analysis (PCA) via `sklearn` for whitening data.
   - Enhanced docstrings for both functions, clarifying inputs, outputs, and providing comprehensive usage examples.
 
-- **Band-Pass Filtering functions**:
+- **Band-Pass Filtering functions**
   - Refined three band-pass filtering functions (`band_pass1`, `band_pass2`, `band_pass3`), created during the Master in Meteorology, now translated:
     - Simplified internal variable names and loops for more concise code.
     - Added detailed docstrings, explaining how each function works with frequency domain transformations and filtering based on custom low and high-frequency ranges.
     - Used consistent terminology and enhanced explanations for different approaches to band-pass filtering.
 
-- **Low and High-Pass Filtering functions**:
-  - Refined `low_pass_filter` and `high_pass_filter` functions, also created during the Master in Meteorology: 
+- **Low and High-Pass Filtering functions**
+  - Refined `low_pass_filter` and `high_pass_filter` functions, also created during the Master in Meteorology:
     - Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
     - Expanded the docstring to include explanations on filter design and its effect on different time series data.
 
 ### Changed (v7.3.3)
 
-1. `climatic_statistics`
+#### Sub-package `climatic_statistics`
 
-- `window_sum`:
+- `window_sum`
   - Optimised performance by using `np.convolve` for faster sliding window summation.
   - Added edge case handling for empty arrays or when the window size exceeds the array length.
   - Refined docstring to clarify input parameters, particularly around window size and handling of edge cases.
 
-- `moving_average`:
+- `moving_average`
   - Rewritten using `np.convolve` for efficient computation of moving averages over a window.
   - Added option for handling arrays shorter than the window size, ensuring graceful failure or warning.
   - Clarified the docstring, highlighting that this function handles general numerical arrays, and specifying the nature of the windowing process.
 
-2. `climatic_signal_modulators`
+#### Sub-package `climatic_signal_modulators`
 
 - `polynomial_fitting`
   - Optimised the logic by simplifying variable names and improving handling of edge cases.
@@ -911,7 +921,7 @@ so it is worth describing their origins, referring to the latest version in whic
   - `calculate_and_apply_deltas`
   - `window_sum`
   - `moving_average`
-- Remove the substring `array_` of functions `select_array_elements` (module `patterns`), <br>
+- Remove the substring `array_` of functions `select_array_elements` (module `patterns`),  
   `sort_array_rows_by_column` and `sort_array_columns_by_row` (both in module `data_manipulation`).
 - Remove triple quoted template string.
 
@@ -923,7 +933,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Add functionalities to media manipulation functions for merging and cutting audio/video files
 - Add two external programs that apply functions of the module `audio_and_video_manipulation`.
-- Add and reorganize section header comments
+- Add and reorganise section header comments
 
 ### Changed (v6.8.2)
 
@@ -945,7 +955,7 @@ so it is worth describing their origins, referring to the latest version in whic
 ### Changed (v6.6.0)
 
 - Rename function `remove_elements_from_array` to `remove_elements`
-- Eliminate `exec_command_shell` function and, if present, `catch_shell_prompt_output` <br>
+- Eliminate `exec_command_shell` function and, if present, `catch_shell_prompt_output`  
   in favour of the renewed and complete `run_system_command` from module `os_operations`
 - Refactor command execution module
 
@@ -1117,17 +1127,17 @@ so it is worth describing their origins, referring to the latest version in whic
 ### Added (v2.7.4)
 
 - Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
-- Add detailed docstring to the function `natural_year` and optimize inner code and comments.
+- Add detailed docstring to the function `natural_year` and optimise inner code and comments.
 
 ### Changed (v2.7.4)
 
 - Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
 - Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
-- Optimize the code of the main function `clock_time_average`, as well as the auxiliary functions, and add and refine the docstrings in all of them.
+- Optimise the code of the main function `clock_time_average`, as well as the auxiliary functions, and add and refine the docstrings in all of them.
 - Refine module and custom module import syntax in function `standardize_calendar`.
 - Rename `ofile` variable to `out_file_obj`, which all `.write` instances are referenced from.
 - Fix todo list for main function `clock_time_average` and auxiliaries
-- Optimize the whole try-except block and handle specific errors gracefully.
+- Optimise the whole try-except block and handle specific errors gracefully.
 
 ---
 
