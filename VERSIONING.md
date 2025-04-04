@@ -4,13 +4,10 @@ This document outlines the versioning scheme used in the `pygenutils` package.
 
 ## Version Format
 
-The package follows semantic versioning (SemVer) with the format:
-
-```
-vX.Y.Z
-```
+The package follows semantic versioning (SemVer) with the format `vX.Y.Z`
 
 Where:
+
 - **X** (Major): Incremented when making incompatible API changes or significant structural modifications
 - **Y** (Minor): Incremented when adding functionality in a backward-compatible manner
 - **Z** (Patch): Incremented when making backward-compatible bug fixes or minor improvements
@@ -20,6 +17,7 @@ Where:
 ### Major Version (X)
 
 The major version number is incremented when:
+
 - Breaking changes are introduced that are incompatible with previous versions
 - Significant structural changes are made to the package
 - Major refactoring of code or architecture occurs
@@ -27,6 +25,7 @@ The major version number is incremented when:
 - Package name changes occur
 
 Examples from our history:
+
 - v14.0.0 → v15.0.0: Package renamed from `pyutils` to `pygenutils`
 - v13.0.0 → v14.0.0: Function renames and terminology updates
 - v12.0.0 → v13.0.0: File operations refactoring
@@ -34,18 +33,21 @@ Examples from our history:
 ### Minor Version (Y)
 
 The minor version number is incremented when:
+
 - New features are added in a backward-compatible manner
 - New modules or sub-packages are introduced
 - Significant enhancements to existing functionality are made
 - New dependencies are added
 
 Examples from our history:
+
 - v15.7.0 → v15.8.0: Added dynamic file discovery in audio and video manipulation
 - v15.6.0 → v15.7.0: Added base conversion utilities and array flipping functions
 
 ### Patch Version (Z)
 
 The patch version number is incremented when:
+
 - Bug fixes are made
 - Minor improvements to existing functionality occur
 - Documentation updates are made
@@ -53,12 +55,14 @@ The patch version number is incremented when:
 - Variable or function name changes for clarity are made
 
 Examples from our history:
+
 - v15.7.6 → v15.7.7: Terminology updates for better clarity
 - v15.7.5 → v15.7.6: Minor syntax improvements
 
 ## Pre-release Versions
 
 For pre-release versions, we may use the following suffixes:
+
 - `alpha`: For early testing
 - `beta`: For beta testing
 - `rc`: For release candidates
@@ -108,4 +112,4 @@ When deciding which version number to increment:
 3. **Patch (Z)**:
    - Is this a bug fix?
    - Does it improve existing functionality without breaking changes?
-   - Is it a documentation or code style update? 
+   - Is it a documentation or code style update?
