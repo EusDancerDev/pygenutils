@@ -31,7 +31,7 @@ TODO:
 #### **General** (v15.8.0)
 
 - Update terminology from `Preformatted Strings` to `Template Strings` in headers and variables.
-  - Based on that principle, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
+  - On that basis, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
   - Update comments and variable names to replace `syntax` and `command` with `template` for better clarity in describing variables and constants that use empty `{}` for formatting.
 
 #### **Audio and Video** (v15.8.0; changed)
