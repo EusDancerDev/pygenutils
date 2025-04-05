@@ -3,6 +3,8 @@
 
 # pygenutils/__init__.py
 
+__version__ = "15.8.1"
+
 from . import __init__
 from . import arrays_and_lists
 from . import audio_and_video
