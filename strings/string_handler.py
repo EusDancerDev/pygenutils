@@ -242,16 +242,16 @@ def _advanced_pattern_searcher(string, substring,
     # Extract the matching information #
     ####################################
 
-    arg_list = [
+    format_args_list = [
         string, substring, re_obj_str,
         return_match_index, return_match_str,
         iterator_considered
     ]
     
     if get_type_str(string) in ["list", "ndarray", "tuple"]:        
-        match_obj_spec = vectorize(_return_search_obj_spec)(*arg_list)
+        match_obj_spec = vectorize(_return_search_obj_spec)(*format_args_list)
     else:
-        match_obj_spec = _return_search_obj_spec(*arg_list)
+        match_obj_spec = _return_search_obj_spec(*format_args_list)
         
     return match_obj_spec
        

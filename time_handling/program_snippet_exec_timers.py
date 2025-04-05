@@ -180,8 +180,8 @@ def snippet_exec_timer(snippet_str,
             time_unit_str = default_time_unit_str
         
         # Complete and display the corresponding output information table #
-        arg_tuple_exec_timer1 = (time_unit_str, trials, exec_time_norep)
-        print_format_string(norep_exec_time_info_template, arg_tuple_exec_timer1)
+        format_args_exec_timer1 = (time_unit_str, trials, exec_time_norep)
+        print_format_string(norep_exec_time_info_template, format_args_exec_timer1)
       
     # Execution time in the specified number of trials for several repeats #
     else:
@@ -206,14 +206,14 @@ def snippet_exec_timer(snippet_str,
             time_unit_str = default_time_unit_str
           
         # Complete and display the corresponding output information table
-        arg_tuple_exec_timer2 = (time_unit_str, repeats, trials, exec_time_rep)
-        exec_timer2_str = format_string(rep_exec_time_info_template, arg_tuple_exec_timer2)
+        format_args_exec_timer2 = (time_unit_str, repeats, trials, exec_time_rep)
+        exec_timer2_str = format_string(rep_exec_time_info_template, format_args_exec_timer2)
         
         if not return_best_time:
-            print_format_string(rep_exec_time_info_template, arg_tuple_exec_timer2)
+            print_format_string(rep_exec_time_info_template, format_args_exec_timer2)
         else:
-            arg_tuple_exec_timer3 = (exec_timer2_str, best_time)
-            print_format_string(rep_exec_time_info_best_template, arg_tuple_exec_timer3)
+            format_args_exec_timer3 = (exec_timer2_str, best_time)
+            print_format_string(rep_exec_time_info_best_template, format_args_exec_timer3)
     
 #%%
 

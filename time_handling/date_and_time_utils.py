@@ -198,8 +198,8 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """    
     # Validate string representing the data type #
-    arg_tuple_current_time = (dtype, dt_dtype_options)
-    _validate_option(arg_tuple_current_time, ValueError, unsupported_option_template)
+    format_args_current_time = (dtype, dt_dtype_options)
+    _validate_option(format_args_current_time, ValueError, unsupported_option_template)
     
     # Handle timezone argument
     if tz_arg is None:
@@ -293,8 +293,8 @@ def _convert_floated_time_to_datetime(floated_time, module):
         The formatted datetime string with nanoseconds.
     """
     # Validate the module #
-    arg_tuple_float_time_to_dt = (module, list(floated_time_parsing_dict.keys()))
-    _validate_option(arg_tuple_float_time_to_dt, ValueError, unsupported_option_template)
+    format_args_float_time_to_dt = (module, list(floated_time_parsing_dict.keys()))
+    _validate_option(format_args_float_time_to_dt, ValueError, unsupported_option_template)
     # Convert to float if input is a string
     if isinstance(floated_time, str):
         floated_time = float128(floated_time)
@@ -625,8 +625,8 @@ def get_obj_operation_datetime(obj_list,
     """
     
     # Validate the type of time attribute #
-    arg_tuple_operation_datetime = (attr, attr_options)
-    _validate_option(arg_tuple_operation_datetime, AttributeError, attribute_error_template)
+    format_args_operation_datetime = (attr, attr_options)
+    _validate_option(format_args_operation_datetime, AttributeError, attribute_error_template)
     
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
@@ -709,8 +709,8 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_time_key(df1)
     except Exception as err:
-        arg_tuple_df1 = (err, param_keys[df1_arg_pos])
-        print_format_string(date_colname_not_found_template, arg_tuple_df1)
+        format_args_df1 = (err, param_keys[df1_arg_pos])
+        print_format_string(date_colname_not_found_template, format_args_df1)
         
         df1_cols = list(df1.columns)
         df1_cols[0] = std_date_colname
@@ -720,16 +720,16 @@ def merge_datetime_dataframes(df1, df2,
     try:
         dt_colname = find_time_key(df2)
     except Exception as err:
-        arg_tuple_df2 = (err, param_keys[df2_arg_pos])
-        print_format_string(date_colname_not_found_template, arg_tuple_df2)
+        format_args_df2 = (err, param_keys[df2_arg_pos])
+        print_format_string(date_colname_not_found_template, format_args_df2)
         
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
         df2.columns = df2_cols
                 
     # Operator argument choice #    
-    arg_tuple_dt_range_op1 = (operator, dt_range_operators)
-    _validate_option(arg_tuple_dt_range_op1, ValueError, unsupported_option_template)
+    format_args_dt_range_op1 = (operator, dt_range_operators)
+    _validate_option(format_args_dt_range_op1, ValueError, unsupported_option_template)
         
     # Operations #
     #-#-#-#-#-#-#-

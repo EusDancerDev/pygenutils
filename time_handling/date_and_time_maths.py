@@ -137,8 +137,8 @@ def sum_dt_times(dt_obj_list,
                          "must contain at least two objects.")
     
     # Operation argument control #        
-    arg_tuple_math_op = (operation, basic_math_opt_list)
-    _validate_option(arg_tuple_math_op, ValueError, invalid_math_operation_error)
+    format_args_math_op = (operation, basic_math_opt_list)
+    _validate_option(format_args_math_op, ValueError, invalid_math_operation_error)
         
     # Output format parameter control         
     arg_iterable_output_format = (output_format, time_output_format_options)
@@ -191,8 +191,8 @@ def extract_datetime_part(datetime_obj, part="time", arg_list=None):
         The time or date part of the datetime object, depending on the
         value of 'part'.
     """
-    arg_tuple_extract = (part, ["time", "date"])
-    _validate_option(arg_tuple_extract, ValueError, invalid_output_format_template)
+    format_args_extract = (part, ["time", "date"])
+    _validate_option(format_args_extract, ValueError, invalid_output_format_template)
     
     return datetime_object_part_dict.get(part)(datetime_obj, arg_list)
 
@@ -448,8 +448,8 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
         raise ValueError(format_string(too_few_arg_error_template, "time"))
     
     # Operation argument control #
-    arg_tuple_math_op = (operation, basic_math_opt_list)
-    _validate_option(arg_tuple_math_op, ValueError, invalid_math_operation_error)
+    format_args_math_op = (operation, basic_math_opt_list)
+    _validate_option(format_args_math_op, ValueError, invalid_math_operation_error)
         
     # Output format parameter control #
     arg_iterable_output_format = (output_format, time_output_format_options)
@@ -668,8 +668,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     if output_format == "default":
         return (dt_start_natural, dt_end_natural)
     elif output_format == "string":
-        arg_tuple_natural_year2 = (dt_start_std, dt_end_std)
-        print_format_string(natural_year_range_table, arg_tuple_natural_year2)
+        format_args_natural_year2 = (dt_start_std, dt_end_std)
+        print_format_string(natural_year_range_table, format_args_natural_year2)
     elif output_format == "tuple" :
         if return_date_only:
             return ((dt_start_natural.year, dt_start_natural.month, dt_start_natural.day),

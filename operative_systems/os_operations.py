@@ -348,9 +348,9 @@ def exit_info(process_exit_info_obj):
         if return_code == 0:
             print("Process completed succesfully")
         else:
-            err_arg_tuple = (return_code, process_exit_info_obj.get("stderr"))
+            format_args_error = (return_code, process_exit_info_obj.get("stderr"))
             raise RuntimeError("An error ocurred during command execution: "
-                               f"{format_string(nonzero_exit_status_template, err_arg_tuple)}")
+                               f"{format_string(nonzero_exit_status_template, format_args_error)}")
 
 # %%
 
