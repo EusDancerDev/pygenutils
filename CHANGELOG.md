@@ -10,7 +10,7 @@ TODO:
 
 ## [v15.8.1] - 2025-03-29
 
-### Changed v15.8.1
+### Changed (v15.8.1)
 
 #### **General**
 
@@ -20,13 +20,13 @@ TODO:
 
 ## [v15.8.0] - 2025-03-23
 
-### Added v15.8.0
+### Added (v15.8.0)
 
 #### **Audio and Video**
 
 - Module `audio_and_video_manipulation`: add import for `find_files` from the `filewise` package to enable dynamic file discovery.
 
-### Changed v15.8.0
+### Changed (v15.8.0)
 
 #### **General** (v15.8.0)
 
@@ -46,7 +46,7 @@ TODO:
   - Enhance script flexibility with dynamic file handling.
   - Update variable names for clarity and consistency.
 
-### Removed v15.8.0
+### Removed (v15.8.0)
 
 #### **Audio and Video** (v15.8.0; removed)
 
@@ -54,7 +54,7 @@ TODO:
 
 ## [v15.7.7] - 2025-02-18
 
-### Changed v15.7.7
+### Changed (v15.7.7)
 
 #### **General** (v15.7.7)
 
@@ -94,7 +94,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.6.0] - 2024-12-18
 
-### Changed v15.6.0
+### Changed (v15.6.0)
 
 #### **Strings**
 
@@ -104,7 +104,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.5.0] - 2024-11-23
 
-### Changed v15.5.0
+### Changed (v15.5.0)
 
 #### **Arrays and Lists** (v15.5.0)
 
@@ -118,7 +118,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.4.4] - 2024-11-17
 
-### Changed v15.4.4
+### Changed (v15.4.4)
 
 #### **General** (v15.4.4)
 
@@ -140,7 +140,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.3.0] - 2024-11-14
 
-### Changed v15.3.0
+### Changed (v15.3.0)
 
 #### **Web Scraping**
 
@@ -151,11 +151,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.2.0] - 2024-11-03
 
-### Added v15.2.0
+### Added (v15.2.0)
 
 - Added `__init__.py` files to all first-level and deeper sub-packages for enhanced import access.
 
-### Changed v15.2.0
+### Changed (v15.2.0)
 
 - Remove the redundant import of the deprecated and removed `parameters_and_constants` module in all affected modules.
 
@@ -163,7 +163,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.0.0] - 2024-10-30
 
-### Changed v15.0.0
+### Changed (v15.0.0)
 
 - Current package `pyutils` has been renamed to `pygenutils` to align with the purpose of being a general-tool, Swiss army knife.
 
@@ -187,7 +187,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v14.0.0] - 2024-10-28
 
-### Changed v14.0.0
+### Changed (v14.0.0)
 
 #### **Changes in functions along modules and sub-packages**
 
@@ -268,7 +268,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v13.3.2] - 2024-10-25
 
-### Changed v13.3.2
+### Changed (v13.3.2)
 
 #### **Changes in functions along modules and sub-packages** (v13.3.2)
 
@@ -313,7 +313,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v13.0.0] - 2024-10-22
 
-### Changed v13.0.0
+### Changed (v13.0.0)
 
 #### **File Operations**
 
@@ -360,7 +360,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v12.0.0] - 2024-10-18
 
-### Changed v12.0.0
+### Changed (v12.0.0)
 
 #### **Arrays and Lists** (v12.0.0)
 
@@ -419,7 +419,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v11.0.0] - 2024-10-17
 
-### Changed v11.0.0
+### Changed (v11.0.0)
 
 #### **Arrays and Lists** (v11.0.0)
 
@@ -530,7 +530,7 @@ so it is worth describing their origins, referring to the latest version in whic
 
 ## [v10.4.0] - 2024-10-06
 
-### Changed v10.4.0
+### Changed (v10.4.0)
 
 - The following functions in **Xarray Utils** have been merged into a single one:
   - `find_time_dimension` and `find_time_dimension_raise_none` → `find_time_dimension`.
@@ -662,7 +662,7 @@ In `statistics` sub-package:
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
   | polynomial_fitting | regressions | statistics/core | (unchanged) | curve_fitting | (unchanged) |
   | calculate_HDY | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
-  | hdy_interpolation (once moved, changed visibility to internal) | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
+  | hdy_interpolation (once moved, Changed (visibility to internal) | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
 
 ##### To `time_handling` sub-package
 
@@ -1071,11 +1071,11 @@ Sub-package `climatic_signal_modulators`
 
 - Created a sub-package for JSON functionalities.
 
-### Changed v5.0.0
+### Changed (v5.0.0)
 
 - Polished section comments for clarity.
 
-### Removed v5.0.0
+### Removed (v5.0.0)
 
 - Removed redundant JSON file utilities, centralizing them in the `json_file_handler` module.
 
