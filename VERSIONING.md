@@ -12,6 +12,16 @@ Where:
 - **Y** (Minor): Incremented when adding functionality in a backward-compatible manner
 - **Z** (Patch): Incremented when making backward-compatible bug fixes or minor improvements
 
+## Version History
+
+The package started at version 2.0.0 rather than the conventional 0.1.0. This decision was made because:
+
+1. The project was a reimagining of an earlier codebase (*pytools.old*)
+2. The initial version already represented a significant improvement in code quality and structure
+3. The developer had already gained substantial programming experience before starting this project
+
+The complete version history can be found in the [CHANGELOG.md](CHANGELOG.md) file.
+
 ## Version Components
 
 ### Major Version (X)
@@ -69,10 +79,6 @@ For pre-release versions, we may use the following suffixes:
 - `dev`: For development versions
 
 Example: `v15.8.0-beta.1`
-
-## Version History
-
-The complete version history can be found in the [CHANGELOG.md](CHANGELOG.md) file.
 
 ## Best Practices
 
