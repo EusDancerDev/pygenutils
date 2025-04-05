@@ -2,9 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
-TODO:
+---
 
-- [ ] Check the versioning scheme.
+## [v15.9.0] - 2025-04-05
+
+### Changed (v15.9.0)
+
+#### **General**
+
+- Rename all variable names that start with `arg_tuple` to `format_args` to follow a more consistent naming convention `format_args` prefix.
 
 ---
 
@@ -12,7 +18,7 @@ TODO:
 
 ### Changed (v15.8.1)
 
-#### **General**
+#### **General** (v15.8.1)
 
 - Further update comments and variable names to replace `syntax` and `command` with `template`.
 
