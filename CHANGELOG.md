@@ -668,7 +668,7 @@ In `statistics` sub-package:
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
   | polynomial_fitting | regressions | statistics/core | (unchanged) | curve_fitting | (unchanged) |
   | calculate_HDY | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
-  | hdy_interpolation (once moved, Changed (visibility to internal) | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
+  | hdy_interpolation [once moved, Changed (visibility to internal)] | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
 
 ##### To `time_handling` sub-package
 
