@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.9.1] - 2025-04-05
+
+### Fixed (v15.9.1)
+
+#### **Time Handling**
+
+- Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
+
+---
+
 ## [v15.9.0] - 2025-04-13
 
 ### Changed (v15.9.0)
@@ -1190,4 +1200,4 @@ Sub-package `climatic_signal_modulators`
 
 ### Removed (v2.0.0)
 
-- Remove function `json2dict` as dictionaries are semantically handled.
+- Remove function `json2dict`
