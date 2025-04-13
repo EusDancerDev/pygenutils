@@ -20,14 +20,7 @@ from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 from pygenutils.arrays_and_lists.patterns import unique_type_objects
 from pygenutils.strings.string_handler import modify_obj_specs
 from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
-from statkit.core import interpolation_methods
-
-# Create aliases #
-#----------------#
-
-interp_np = interpolation_methods.interp_np
-interp_pd = interpolation_methods.interp_pd
-interp_xr = interpolation_methods.interp_xr
+from statkit.core.interpolation_methods import interp_pd, interp_xr
 
 #------------------#
 # Define functions #
