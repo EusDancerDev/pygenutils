@@ -158,16 +158,20 @@ def standardise_calendar(obj,
         or (obj_type == "list" and all(get_type_str(element) in ["dataarray", "dataset"] 
                                        for element in obj)):
         
-        import xarray as xr
-        from filewise.xarray_utils.patterns import find_time_dimension
-        
+        from xarray import cftime_range
+        from filewise.xarray_utils.patterns import get_file_dimensions
+            
         if isinstance(obj, list):
             obj = obj[0]  # Assuming only one object in the list
 
-        time_dim = find_time_dimension(obj)
-        full_times = xr.cftime_range(start=obj[time_dim][0].values, 
-                                     end=obj[time_dim][-1].values, 
-                                     freq=infer_frequency(obj[time_dim]))
+        # Get the time dimension using get_file_dimensions
+        time_dim = get_file_dimensions(obj)
+        if isinstance(time_dim, list):
+            time_dim = time_dim[0]  # Assuming time is the first dimension
+
+        full_times = cftime_range(start=obj[time_dim][0].values, 
+                                  end=obj[time_dim][-1].values, 
+                                  freq=infer_frequency(obj[time_dim]))
         obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)
         
         if interpolation_method:
