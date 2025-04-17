@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.9.1] - 2025-04-05
+## [v15.9.1] - 2025-04-13
 
 ### Fixed (v15.9.1)
 
@@ -14,7 +14,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.9.0] - 2025-04-13
+## [v15.9.0] - 2025-04-12
 
 ### Changed (v15.9.0)
 
@@ -22,7 +22,7 @@ All notable changes to this project will be documented in this file.
 
 - Rename all variable names that start with `arg_tuple` to `format_args` to follow a more consistent naming convention `format_args` prefix.
 
-#### **Time Handling**
+#### **Time Handling** (v15.9.0)
 
 - Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
 
