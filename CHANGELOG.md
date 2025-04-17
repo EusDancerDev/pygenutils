@@ -130,7 +130,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Module `data_manipulation`: enhance `remove_elements` function to support multiple indices for list inputs.
 
-#### **Time Handling**
+#### **Time Handling** (v15.5.0)
 
 - Module `calendar_utils`: corrected the absolute path in the import of the `unique_type_objects` function.
 
