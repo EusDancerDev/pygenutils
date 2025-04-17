@@ -3,7 +3,7 @@
 
 # pygenutils/__init__.py
 
-__version__ = "15.8.1"
+__version__ = "15.9.1"
 
 from . import __init__
 from . import arrays_and_lists
