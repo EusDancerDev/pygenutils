@@ -4,13 +4,15 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.9.1] - 2025-04-13
+## [v15.9.1] - 2025-04-17
 
 ### Fixed (v15.9.1)
 
 #### **Time Handling**
 
 - Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
+
+- Module `date_and_time_maths`: replace wrong package import for `select_elements` function.
 
 ---
 
