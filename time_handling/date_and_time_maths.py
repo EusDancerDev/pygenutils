@@ -20,7 +20,7 @@ import pandas as pd
 #-----------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
-from pygenutils.arrays_and_lists.data_manipulation import select_elements
+from pygenutils.arrays_and_lists.patterns import select_elements
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.time_handling.time_formatters import datetime_obj_converter,\
