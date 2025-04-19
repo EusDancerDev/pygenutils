@@ -561,11 +561,6 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     if sort:
         return sort_1d_basic(unique_val_arr, reverse)
     return unique_val_arr
-    
-# Advanced #
-#-#-#-#-#-#-
-
-
 
 # Time-Series Manipulations #
 #---------------------------#
