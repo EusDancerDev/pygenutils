@@ -255,7 +255,7 @@ def sort_columns_by_row(array, nrow, reverse=False):
 def revert_1d_basic(arr, procedure="index"):
     """
     Reverses a 1D array in-place.
-I
+
     Parameters
     ----------
     arr : list or numpy.ndarray
@@ -561,69 +561,6 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     if sort:
         return sort_1d_basic(unique_val_arr, reverse)
     return unique_val_arr
-
-# Time-Series Manipulations #
-#---------------------------#
-
-def decompose_cumulative_data(cumulative_array, fill_value=None, zeros_dtype='d'):    
-    """
-    Convert cumulative values into individual values by subtracting consecutive elements,
-    with an option to handle negative differences.
-
-    This function takes an array of cumulative values and returns the individual values
-    that make up the cumulative sum. Negative differences can either be preserved or replaced 
-    with a specified fill value.
-    
-    Parameters
-    ----------
-    cumulative_array : numpy.ndarray
-        A multi-dimensional array representing cumulative values over time or other axes.
-    fill_value : scalar or None, optional
-        Value to replace negative differences. If None (default), negative differences are preserved.
-    zeros_dtype : str or numpy dtype
-        Data type for the array of zeros if `fill_value` is used. Default is 'd' (float).
-    
-    Returns
-    -------
-    individual_values_array : numpy.ndarray
-        A multi-dimensional array with individual values extracted from the cumulative array.
-    
-    Examples
-    --------
-    Example 1: Basic cumulative data decomposition
-    >>> cumulative_array = np.array([6, 7, 13, 13, 20, 22, 30, 31, 38, 43, 52, 55])
-    >>> decompose_cumulative_data(cumulative_array)
-    array([ 6.,  1.,  6.,  0.,  7.,  2.,  8.,  1.,  7.,  5.,  9.,  3.])
-
-    Example 2: Preserving negative differences
-    >>> cumulative_array = np.array([6, 7, 13, 12, 20, 22])
-    >>> decompose_cumulative_data(cumulative_array)
-    array([ 6.,  1.,  6., -1.,  8.,  2.])
-
-    Example 3: Replacing negative differences with zeros
-    >>> decompose_cumulative_data(cumulative_array, fill_value=0)
-    array([ 6.,  1.,  6.,  0.,  8.,  2.])
-    """
-    
-    records = len(cumulative_array)
-    
-    # Define the behavior for negative differences
-    def handle_negative_difference(diff):
-        if fill_value is None:
-            return diff
-        return np.full_like(diff, fill_value, dtype=zeros_dtype) if np.any(diff < 0) else diff
-    
-    # Calculate the individual values, applying the fill_value if necessary
-    individual_values_array = \
-        np.array([handle_negative_difference(cumulative_array[t+1] - cumulative_array[t])
-                  for t in range(records-1)])
-    
-    # Add the average of the last two differences to match the shape of the original array
-    individual_values_array = np.append(individual_values_array,
-                                        np.mean(individual_values_array[-2:], axis=0)[np.newaxis,:],
-                                        axis=0)
-    
-    return individual_values_array
 
 #--------------------------#
 # Parameters and constants #
