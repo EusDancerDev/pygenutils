@@ -5,9 +5,9 @@
 # Import custom modules #
 #-----------------------#
 
+from filewise.general.introspection_utils import get_caller_args
 from paramlib.global_parameters import sets_operation_list
 from pygenutils.strings.string_handler import find_substring_index
-from filewise.general.introspection_utils import get_caller_args
 
 #-------------------------#
 # Define custom functions #
@@ -55,9 +55,9 @@ def sets_operator(array_of_sets1,
         raise ValueError(f"Invalid operator for mathematical sets (option {operator_arg_pos}). "
                          f"Supported options are {sets_operation_list}.")
         
-    if constructor not in sets_contructor_options: 
+    if constructor not in SETS_CONSTRUCTOR_OPTIONS: 
         raise ValueError(f"Unsupported set constructor library (position {constructor_arg_pos}). "
-                         f"Choose one from {sets_contructor_options}.")
+                         f"Choose one from {SETS_CONSTRUCTOR_OPTIONS}.")
     
     # Operations #
     #-#-#-#-#-#-#-
@@ -69,7 +69,7 @@ def sets_operator(array_of_sets1,
             operations_external_module = None
         
         # Call appropriate operation from the dictionary
-        return default_operation_dict[operator](array_of_sets1, array_of_sets2, operations_external_module)
+        return DEFAULT_OPERATION_DICT[operator](array_of_sets1, array_of_sets2, operations_external_module)
 
     elif constructor == "sympy":
         from sympy import FiniteSet
@@ -82,7 +82,7 @@ def sets_operator(array_of_sets1,
         if operator == sets_operation_list[-1]:
             return set(FiniteSet(*[x*y for x in finite_set1 for y in finite_set1]))
         else:
-            return sympy_operation_dict[operator](finite_set1, finite_set2)
+            return SYMPY_OPERATION_DICT[operator](finite_set1, finite_set2)
 
 
 #--------------------------#        
@@ -90,10 +90,10 @@ def sets_operator(array_of_sets1,
 #--------------------------#
 
 # Supported set constructors #
-sets_contructor_options = ["default", "sympy"]
+SETS_CONSTRUCTOR_OPTIONS = ["default", "sympy"]
 
 # Operation dictionary for the 'default' constructor (using Python's set class)
-default_operation_dict = {
+DEFAULT_OPERATION_DICT = {
     "union": lambda array_of_sets1, array_of_sets2, _: array_of_sets1.union(array_of_sets2),
     "intersection": lambda array_of_sets1, array_of_sets2, _: array_of_sets1.intersection(array_of_sets2),
     "difference": lambda array_of_sets1, array_of_sets2, _: array_of_sets1.difference(array_of_sets2),
@@ -102,7 +102,7 @@ default_operation_dict = {
 }
 
 # Operation dictionary for the 'sympy' constructor (using Sympy's FiniteSet class)
-sympy_operation_dict = {
+SYMPY_OPERATION_DICT = {
     "union": lambda finite_set1, finite_set2: finite_set1.union(finite_set2),
     "intersection": lambda finite_set1, finite_set2: finite_set1.intersection(finite_set2),
     "difference": lambda finite_set1, finite_set2: finite_set1 - finite_set2,
