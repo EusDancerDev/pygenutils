@@ -3,8 +3,10 @@
 
 # pygenutils/arrays_and_lists/__init__.py
 
-from . import __init__
-from . import conversions
-from . import data_manipulation
-from . import maths
-from . import patterns
+# Define what should be available when using 'from pygenutils.arrays_and_lists import *'
+__all__ = [
+    'conversions',
+    'data_manipulation',
+    'maths',
+    'patterns'
+]
