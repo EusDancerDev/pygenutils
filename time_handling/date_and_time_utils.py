@@ -1,27 +1,36 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+"""
+Date and time utilities.
+"""
+
 #----------------#
 # Import modules #
 #----------------#
 
-from datetime import datetime, timedelta, timezone
-import time
-
+# Standard modules #
 import os
+import time
+from datetime import datetime, timedelta, timezone
 
+# Third-party modules #
 from numpy import float128
 import pandas as pd
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
-from filewise.xarray_utils import file_utils, patterns
-from pygenutils.strings import text_formatters, string_handler
-from pygenutils.time_handling.time_formatters import datetime_obj_converter, floated_time_parsing_dict
-
+from filewise.xarray_utils.file_utils import ncfile_integrity_status
+from pygenutils.strings.string_handler import find_substring_index
+from pygenutils.strings.text_formatters import format_string, print_format_string
+from pygenutils.time_handling.time_formatters import (
+    datetime_obj_converter,
+    FLOATED_TIME_PARSING_DICT,
+)
+from pygenutils.time_handling.time_utils import find_time_key
 
 # Try to import `pytz` and set a flag for availability
 try:
@@ -29,18 +38,6 @@ try:
     pytz_installed = True
 except ImportError:
     pytz_installed = False
-
-# Create aliases #
-#----------------#
-
-check_ncfile_integrity = file_utils.check_ncfile_integrity
-
-format_string = text_formatters.format_string
-print_format_string = text_formatters.print_format_string
-find_substring_index = string_handler.find_substring_index
-
-get_file_dimensions = patterns.get_file_dimensions
-get_file_variables = patterns.get_file_variables
 
 #------------------#
 # Define functions #
@@ -78,9 +75,9 @@ def _validate_option(arg_iterable, error_class, error_str):
     param_keys = get_caller_args()
     err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
-    if error_class not in error_class_list :
+    if error_class not in ERROR_CLASS_LIST:
         raise KeyError(f"Unsupported error class '{param_keys[err_clas_arg_pos]}'. "
-                       f"Choose one from {error_class_list}.")
+                       f"Choose one from {ERROR_CLASS_LIST}.")
     
     option = arg_iterable[0]
     allowed_options = arg_iterable[1]
@@ -198,8 +195,8 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """    
     # Validate string representing the data type #
-    format_args_current_time = (dtype, dt_dtype_options)
-    _validate_option(format_args_current_time, ValueError, unsupported_option_template)
+    format_args_current_time = (dtype, DT_DTYPE_OPTIONS)
+    _validate_option(format_args_current_time, ValueError, UNSUPPORTED_OPTION_TEMPLATE)
     
     # Handle timezone argument
     if tz_arg is None:
@@ -221,7 +218,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
         raise TypeError("'tz_arg' must be a timezone object, string, or integer for UTC offset.")
 
     # Get the current date and time #
-    current_time = current_datetime_dict.get(dtype)(tz)
+    current_time = CURRENT_DATETIME_DICT.get(dtype)(tz)
     
     # A string does not have .strftime attribute, warn accordingly #
     param_keys = get_caller_args()
@@ -239,7 +236,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
             raise RuntimeError(f"Error during conversion to 'str'': {err}")
         else:
             return current_time
-
+        
 
 # Nanoscale datetimes #
 #-#-#-#-#-#-#-#-#-#-#-#
@@ -293,8 +290,8 @@ def _convert_floated_time_to_datetime(floated_time, module):
         The formatted datetime string with nanoseconds.
     """
     # Validate the module #
-    format_args_float_time_to_dt = (module, list(floated_time_parsing_dict.keys()))
-    _validate_option(format_args_float_time_to_dt, ValueError, unsupported_option_template)
+    format_args_float_time_to_dt = (module, list(FLOATED_TIME_PARSING_DICT.keys()))
+    _validate_option(format_args_float_time_to_dt, ValueError, UNSUPPORTED_OPTION_TEMPLATE)
     # Convert to float if input is a string
     if isinstance(floated_time, str):
         floated_time = float128(floated_time)
@@ -304,7 +301,7 @@ def _convert_floated_time_to_datetime(floated_time, module):
     nanoseconds = int((floated_time - seconds) * 1_000_000_000)
 
     # Convert the seconds part into a datetime object
-    dt = floated_time_parsing_dict[module](floated_time, date_unit="ns")
+    dt = FLOATED_TIME_PARSING_DICT[module](floated_time, date_unit="ns")
     
     # Add the nanoseconds part and return the formatted string
     dt_with_nanos = dt + timedelta(microseconds=nanoseconds / 1_000)
@@ -336,7 +333,6 @@ def _nano_floated_time_str(time_ns):
     # Format the floating-point time with nanosecond precision
     return f"{seconds}.{nanoseconds:09d}"
 
-# %%
 
 # Date/time attributes #
 #-#-#-#-#-#-#-#-#-#-#-#-
@@ -374,9 +370,6 @@ def get_datetime_object_unit(dt_obj):
     else:
         raise AttributeError(f"Object of type '{obj_type}' has no attribute 'dtype'.")
         
-        
-# Date/time detection and handling #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
 
 def infer_frequency(data):
     """
@@ -434,7 +427,7 @@ def infer_frequency(data):
     ###############################################################
 
     elif obj_type == "str":
-        ds = check_ncfile_integrity(data)
+        ds = ncfile_integrity_status(data)
     elif obj_type in ["dataset", "dataarray"]:
         ds = data.copy()
     else:
@@ -498,86 +491,26 @@ def infer_dt_range(data):
 
     # Section 2: Handling NetCDF Files (string or xarray objects)
     elif obj_type == "str":
-        ds = check_ncfile_integrity(data)
+        ds = ncfile_integrity_status(data)
+        try:
+            date_key = find_time_key(ds)
+            years = pd.unique(ds[date_key].dt.year)
+            full_period = f"{years[0]}-{years[-1]}"
+            return full_period
+        finally:
+            ds.close()
     elif obj_type in ["dataset", "dataarray"]:
         ds = data.copy()
+        date_key = find_time_key(ds)
+        years = pd.unique(ds[date_key].dt.year)
+        full_period = f"{years[0]}-{years[-1]}"
+        return full_period
     else:
         raise TypeError("Unsupported data type. Must be pandas DataFrame, Series, "
                         "NetCDF file path (string), or xarray.Dataset/DataArray.")
-    
-    # Infer time range for NetCDF data
-    date_key = find_time_key(ds)
-    years = pd.unique(ds[date_key].dt.year)
-    full_period = f"{years[0]}-{years[-1]}"
-    
-    return full_period
 
 
 # %%
-def find_time_key(data):
-    """
-    Function that searches for the date key in a pandas DataFrame or the 'time' dimension/variable 
-    in a NetCDF file or xarray Dataset.
-
-    Parameters
-    ----------
-    data : pandas.DataFrame, str (NetCDF file path), or xarray.Dataset/xarray.DataArray
-        The input data. If a pandas DataFrame is provided, the method will search for a 
-        date-related key in the columns. For NetCDF or xarray objects, it will search 
-        for the 'time' dimension or variable.
-
-    Returns
-    -------
-    str
-        The string that identifies the 'time' key (for pandas objects) or the 'time' 
-        dimension/variable (for NetCDF/xarray objects).
-
-    Raises
-    ------
-    TypeError
-        If the input data type is not supported.
-    ValueError
-        If no 'time' key is found in pandas DataFrame or no 'time' dimension/variable is 
-        found in NetCDF/xarray data.
-    """
-    # Check input data type 
-    obj_type = get_type_str(data, lowercase=True)
-    
-    # Section 1: Handling Pandas DataFrame
-    if obj_type == "dataframe":
-        try:
-            df_cols = [col.lower() for col in data.columns.tolist()]  # Lowercase all column names
-            date_key_idx = find_substring_index(df_cols, time_kws)
-            return data.columns[date_key_idx]  # Return original column name (not lowercased)
-        except (AttributeError, KeyError):
-            raise ValueError("No 'date' or similar key found in the pandas DataFrame.")
-    
-    else:
-        # Section 2: Handling NetCDF Files or xarray objects
-        if obj_type == "str":
-            ds = check_ncfile_integrity(data)
-        elif obj_type in ["dataset", "dataarray"]:
-            ds = data.copy()
-        else:
-            raise TypeError("Unsupported data type. Must be a pandas DataFrame, "
-                            "NetCDF file path (string), or xarray.Dataset/DataArray.")
-        
-        # Retrieve the dimension and variable lists from the dataset
-        dims = get_file_dimensions(ds)
-        vars_ = get_file_variables(ds)
-    
-        # Search for 'time'-related elements in dimensions and variables
-        time_keys = [key for key in dims + vars_ if key.lower().startswith(('t', 'ti', 'da'))]
-        
-        if not time_keys:
-            if obj_type == "str":
-                raise ValueError(f"No 'time' dimension or variable found in the file '{data}'")
-            else:
-                raise ValueError("No 'time' dimension or variable found in the dataset.")
-
-    return time_keys[0]  # Return the first unique 'time' key
-
-#%%
 
 # File manipulation time attributes #
 #-----------------------------------#
@@ -625,8 +558,8 @@ def get_obj_operation_datetime(obj_list,
     """
     
     # Validate the type of time attribute #
-    format_args_operation_datetime = (attr, attr_options)
-    _validate_option(format_args_operation_datetime, AttributeError, attribute_error_template)
+    format_args_operation_datetime = (attr, ATTR_OPTIONS)
+    _validate_option(format_args_operation_datetime, AttributeError, ATTRIBUTE_ERROR_TEMPLATE)
     
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
@@ -636,7 +569,7 @@ def get_obj_operation_datetime(obj_list,
     obj_timestamp_container = []
     
     for obj in obj_list:
-        struct_time_attr_obj = struct_time_attr_dict.get(attr)(obj)
+        struct_time_attr_obj = STRUCT_TIME_ATTR_DICT.get(attr)(obj)
         timestamp_str_attr_obj = time.strftime(time_fmt_str, struct_time_attr_obj)
         info_list = [obj, timestamp_str_attr_obj]
         obj_timestamp_container.append(info_list)
@@ -710,7 +643,7 @@ def merge_datetime_dataframes(df1, df2,
         dt_colname = find_time_key(df1)
     except Exception as err:
         format_args_df1 = (err, param_keys[df1_arg_pos])
-        print_format_string(date_colname_not_found_template, format_args_df1)
+        print_format_string(DATE_COLNAME_NOT_FOUND_TEMPLATE, format_args_df1)
         
         df1_cols = list(df1.columns)
         df1_cols[0] = std_date_colname
@@ -721,15 +654,15 @@ def merge_datetime_dataframes(df1, df2,
         dt_colname = find_time_key(df2)
     except Exception as err:
         format_args_df2 = (err, param_keys[df2_arg_pos])
-        print_format_string(date_colname_not_found_template, format_args_df2)
+        print_format_string(DATE_COLNAME_NOT_FOUND_TEMPLATE, format_args_df2)
         
         df2_cols = list(df2.columns)
         df2_cols[0] = std_date_colname
         df2.columns = df2_cols
                 
     # Operator argument choice #    
-    format_args_dt_range_op1 = (operator, dt_range_operators)
-    _validate_option(format_args_dt_range_op1, ValueError, unsupported_option_template)
+    format_args_dt_range_op1 = (operator, DT_RANGE_OPERATORS)
+    _validate_option(format_args_dt_range_op1, ValueError, UNSUPPORTED_OPTION_TEMPLATE)
         
     # Operations #
     #-#-#-#-#-#-#-
@@ -756,36 +689,36 @@ def merge_datetime_dataframes(df1, df2,
 #--------------------------#
 
 # Option lists #
-dt_range_operators = ["inner", "outer", "cross", "left", "right"]
-dt_dtype_options = ["datetime", "str", "timestamp"]
-attr_options = ["creation", "modification", "access"]
-error_class_list = [ValueError, AttributeError]
+DT_RANGE_OPERATORS = ["inner", "outer", "cross", "left", "right"]
+DT_DTYPE_OPTIONS = ["datetime", "str", "timestamp"]
+ATTR_OPTIONS = ["creation", "modification", "access"]
+ERROR_CLASS_LIST = [ValueError, AttributeError]
 
 # Time span shortands #
-time_kws = ["da", "fe", "tim", "yy"]
+TIME_KWS = ["da", "fe", "tim", "yy"]
 
 # Template strings #
 #------------------#
 
 # Error strings #
-unsupported_option_template = """Unsupported option '{}'. Options are {}."""
-attribute_error_template = "Invalid attribute '{}'. Options are {}. "
-date_colname_not_found_template = """{} at object '{}'.
+UNSUPPORTED_OPTION_TEMPLATE = """Unsupported option '{}'. Options are {}."""
+ATTRIBUTE_ERROR_TEMPLATE = "Invalid attribute '{}'. Options are {}. "
+DATE_COLNAME_NOT_FOUND_TEMPLATE = """{} at object '{}'.
 Setting default name 'Date' to column number 0."""
 
 # Switch dictionaries #
 #---------------------#
 
 # Dictionary mapping attribute names to corresponding methods #
-struct_time_attr_dict = {
-    attr_options[0]: lambda obj: time.gmtime(os.path.getctime(obj)),
-    attr_options[1]: lambda obj: time.gmtime(os.path.getmtime(obj)),
-    attr_options[2]: lambda obj: time.gmtime(os.path.getatime(obj))
+STRUCT_TIME_ATTR_DICT = {
+    ATTR_OPTIONS[0]: lambda obj: time.gmtime(os.path.getctime(obj)),
+    ATTR_OPTIONS[1]: lambda obj: time.gmtime(os.path.getmtime(obj)),
+    ATTR_OPTIONS[2]: lambda obj: time.gmtime(os.path.getatime(obj))
 }
 
 # Dictionary mapping current time provider methods to the corresponding methods #
-current_datetime_dict = {
-    dt_dtype_options[0] : lambda tz_arg: datetime.datetime.now(tz_arg),
-    dt_dtype_options[1] : lambda tz_arg: time.ctime(tz_arg),
-    dt_dtype_options[2] : lambda tz_arg: pd.Timestamp.now(tz_arg)
-    }
+CURRENT_DATETIME_DICT = {
+    DT_DTYPE_OPTIONS[0] : lambda tz_arg: datetime.datetime.now(tz_arg),
+    DT_DTYPE_OPTIONS[1] : lambda tz_arg: time.ctime(tz_arg),
+    DT_DTYPE_OPTIONS[2] : lambda tz_arg: pd.Timestamp.now(tz_arg)
+}
