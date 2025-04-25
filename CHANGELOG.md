@@ -89,7 +89,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (v15.10.0)
 
-#### **Arrays and Lists**
+#### **Arrays and Lists** (v15.10.0)
 
 - Module `data_manipulation`:
   - Move the function `decompose_cumulative_data` to the module `time_series` in the package `statkit` to avoid circular dependency.
@@ -185,7 +185,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Added (v15.7.0)
 
-#### **Number Bases**
+#### **Number Bases** (v15.7.0)
 
 - Module `base_converters`:
   - Added helper function `_check_input_binary` to check if the input binary number is in the correct format.
@@ -210,7 +210,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed (v15.6.0)
 
-#### **Strings**
+#### **Strings** (v15.6.0)
 
 - Module `string_handler`: enhanced substring search logic: returns single data object for one match, (-1, -1) for no matches, and enforces {"lo", "hi", "both"} for index return options.
 
@@ -312,7 +312,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 #### **Specific changes regarding sub-packages**
 
-##### **Dictionaries**
+##### **Dictionaries** (v14.0.0)
 
 - Module `table_formatters`:
   - Moved all functions to the module `information_output_formatters` (**Strings** sub-package)
@@ -518,7 +518,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Rename module `upload_data_to_mysql_database` to `upload_data`.
 
-### Removed
+### Removed (v15.10.0)
 
 - After the renamings the following modules have been removed:
   - `bulk_rename_index_exec`
