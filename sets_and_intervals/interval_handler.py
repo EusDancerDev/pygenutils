@@ -5,17 +5,17 @@
 # Import modules #
 #----------------#
 
+from intervaltree import Interval, IntervalTree
 import numpy as np
 import pandas as pd
-from intervaltree import Interval, IntervalTree
 
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
-from paramlib.global_parameters import intervals_operation_list
-from pygenutils.strings.string_handler import find_substring_index
 from filewise.instrospection_utils import get_caller_args
+from paramlib.global_parameters import INTERVALS_OPERATION_LIST
+from pygenutils.strings.string_handler import find_substring_index
 
 #------------------#
 # Define functions #
@@ -55,13 +55,11 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     """
     
     # Input validation # 
-    interval_contructor_options = ["pandas", "intervaltree", "numpy", "custom_tuple"]
-    
-    if constructor not in interval_contructor_options:
+    if constructor not in INTERVAL_CONSTRUCTOR_OPTIONS:
         all_args = get_caller_args()
         constr_arg_pos = find_substring_index(all_args, "constructor")
         raise ValueError(f"Unsupported constructor '{constructor}' (position {constr_arg_pos}). "
-                         f"Choose one from {interval_contructor_options}.")
+                         f"Choose one from {INTERVAL_CONSTRUCTOR_OPTIONS}.")
 
     # Operations #
     if constructor == "intervaltree":
@@ -69,7 +67,7 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
               f"do not include the upper bound.")
         
     try:
-        return interval_constructors[constructor]()
+        return INTERVAL_CONSTRUCTORS[constructor]()
     except Exception as err:
         raise RuntimeError("An error occurred. Check the left and/or right "
                            f"limits values passed: {err}")
@@ -123,7 +121,7 @@ def basic_interval_operator(interval_array,
     # Input validation #
     #------------------#
     
-    particular_constructor_opts = interval_contructor_options[:2]
+    particular_constructor_opts = INTERVAL_CONSTRUCTOR_OPTIONS[:2]
     all_args = get_caller_args()
     constr_arg_pos = find_substring_index(all_args, "constructor")
     operator_arg_pos = find_substring_index(all_args, "operator")
@@ -133,9 +131,9 @@ def basic_interval_operator(interval_array,
                          "for interval computations."
                          f"Choose one from {particular_constructor_opts}.")
         
-    if operator not in intervals_operation_list:
+    if operator not in INTERVALS_OPERATION_LIST:
         raise ValueError(f"Invalid operator '{operator}' (position {operator_arg_pos}). "
-                         f"Supported options are {intervals_operation_list}.")
+                         f"Supported options are {INTERVALS_OPERATION_LIST}.")
 
     # Operations #
     #------------#
@@ -148,7 +146,7 @@ def basic_interval_operator(interval_array,
                             closed=closed)
             return merged_bin        
         else:
-            return interval_operations[constructor][operator](interval_array, closed, force_union)
+            return INTERVAL_OPERATIONS[constructor][operator](interval_array, closed, force_union)
     except Exception as err:
         raise RuntimeError("An error occurred, check that every input value "
                            "is stored into an array-like object, "
@@ -159,13 +157,13 @@ def basic_interval_operator(interval_array,
 #--------------------------#
 
 # Supported mathematical interval constructors and operations #
-interval_contructor_options = ["pandas", "intervaltree", "numpy", "custom_tuple"]
+INTERVAL_CONSTRUCTOR_OPTIONS = ["pandas", "intervaltree", "numpy", "custom_tuple"]
 
 # Switch case dictionaries #
 #--------------------------#
 
 # Define interval constructors
-interval_constructors = {
+INTERVAL_CONSTRUCTORS = {
     "pandas": lambda left_limit, right_limit, closed : pd.Interval(left_limit, right_limit, closed=closed),
     "intervaltree": lambda left_limit, right_limit, closed: Interval(left_limit, right_limit),
     "numpy": lambda left_limit, right_limit, closed: np.array([left_limit, right_limit]),
@@ -173,7 +171,7 @@ interval_constructors = {
 }
 
 # Define operations for pandas and intervaltree constructors
-operations_pandas = {
+OPERATIONS_PANDAS = {
     "union": lambda interval_array, closed: 
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.union()[0],
     "intersection": lambda interval_array, closed: \
@@ -186,7 +184,7 @@ operations_pandas = {
         pd.arrays.IntervalArray(interval_array, closed=closed).piso.comparison()[0]
 }
 
-operations_intervaltree = {
+OPERATIONS_INTERVALTREE = {
     "union": lambda interval_array, closed: \
         IntervalTree.from_tuples(interval_array).merge_overlaps(),
     "intersection": lambda interval_array, closed: \
@@ -200,7 +198,7 @@ operations_intervaltree = {
 }
 
 # Combine operations into a dictionary for easy access
-interval_operations = {
-    "pandas": operations_pandas,
-    "intervaltree": operations_intervaltree
+INTERVAL_OPERATIONS = {
+    "pandas": OPERATIONS_PANDAS,
+    "intervaltree": OPERATIONS_INTERVALTREE
 }
