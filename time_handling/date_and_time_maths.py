@@ -23,9 +23,11 @@ from filewise.general.introspection_utils import get_caller_args, get_type_str
 from pygenutils.arrays_and_lists.patterns import select_elements
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.strings.string_handler import find_substring_index
-from pygenutils.time_handling.time_formatters import datetime_obj_converter,\
-                                                     parse_float_time, \
-                                                     parse_time_string
+from pygenutils.time_handling.time_formatters import (
+    datetime_obj_converter,
+    parse_float_time,
+    parse_time_string
+)
 
 #------------------#
 # Define functions #
@@ -63,9 +65,9 @@ def _validate_option(arg_iterable, error_class, error_str):
     param_keys = get_caller_args()
     err_clas_arg_pos = find_substring_index(param_keys, "error_class")
     
-    if error_class not in error_class_list :
+    if error_class not in ERROR_CLASS_LIST:
         raise KeyError(f"Unsupported error class '{param_keys[err_clas_arg_pos]}'. "
-                       f"Choose one from {error_class_list}.")
+                       f"Choose one from {ERROR_CLASS_LIST}.")
     
     option = arg_iterable[0]
     allowed_options = arg_iterable[1]
@@ -137,12 +139,12 @@ def sum_dt_times(dt_obj_list,
                          "must contain at least two objects.")
     
     # Operation argument control #        
-    format_args_math_op = (operation, basic_math_opt_list)
-    _validate_option(format_args_math_op, ValueError, invalid_math_operation_error)
+    format_args_math_op = (operation, BASIC_MATH_OPT_LIST)
+    _validate_option(format_args_math_op, ValueError, INVALID_MATH_OPERATION_ERROR)
         
     # Output format parameter control         
-    arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
+    arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
+    _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
     # Operations #
     ##############
@@ -156,10 +158,10 @@ def sum_dt_times(dt_obj_list,
         timedelta_list.append(timedelta_obj)
         
     # Perform the arithmetical operations #
-    total_timedelta = operation_dict.get(operation)(timedelta_list)    
+    total_timedelta = OPERATION_DICT.get(operation)(timedelta_list)    
     
     # Return the result in the specified output format #
-    total_timedelta_formatted = time_output_format_dict.get(output_format)(total_timedelta)
+    total_timedelta_formatted = TIME_OUTPUT_FORMAT_DICT.get(output_format)(total_timedelta)
     return total_timedelta_formatted
     
 
@@ -192,9 +194,9 @@ def extract_datetime_part(datetime_obj, part="time", arg_list=None):
         value of 'part'.
     """
     format_args_extract = (part, ["time", "date"])
-    _validate_option(format_args_extract, ValueError, invalid_output_format_template)
+    _validate_option(format_args_extract, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
-    return datetime_object_part_dict.get(part)(datetime_obj, arg_list)
+    return DATETIME_OBJECT_PART_DICT.get(part)(datetime_obj, arg_list)
 
 
 # Time average #
@@ -260,8 +262,8 @@ def dt_time_average(dt_obj_list,
                          "must contain at least two objects.")
         
     # Output format parameter control #
-    arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
+    arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
+    _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
         
     # Operations #
     ##############
@@ -271,7 +273,7 @@ def dt_time_average(dt_obj_list,
     time_average = _radians_to_time_of_day(avg_angle)
     
     # Return the result in the specified output format #
-    time_average_formatted = time_output_format_dict.get(output_format)(time_average)
+    time_average_formatted = TIME_OUTPUT_FORMAT_DICT.get(output_format)(time_average)
     return time_average_formatted
 
 
@@ -445,15 +447,15 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
                         f"(number {date_list_pos}) must either be a "
                         "list, tuple or numpy.ndarray.")
     elif (isinstance(date_list, (list, tuple, np.ndarray)) and len(date_list) < 2):
-        raise ValueError(format_string(too_few_arg_error_template, "time"))
+        raise ValueError(format_string(TOO_FEW_ARG_ERROR_TEMPLATE, "time"))
     
     # Operation argument control #
-    format_args_math_op = (operation, basic_math_opt_list)
-    _validate_option(format_args_math_op, ValueError, invalid_math_operation_error)
+    format_args_math_op = (operation, BASIC_MATH_OPT_LIST)
+    _validate_option(format_args_math_op, ValueError, INVALID_MATH_OPERATION_ERROR)
         
     # Output format parameter control #
-    arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
+    arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
+    _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
     # Operations #
     ##############
@@ -465,7 +467,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
         total_date = _add_dates_with_year_gap(total_date, date_obj, operation=operation)
     
     # Return the result in the specified output format #
-    total_date_formatted = date_output_format_dict.get(output_format)(total_date)
+    total_date_formatted = DATE_OUTPUT_FORMAT_DICT.get(output_format)(total_date)
     return total_date_formatted
         
         
@@ -618,8 +620,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     #·#·#·#·#·#·#·#·#·#·#·#·#·#·#·
     
     # Output format parameter control #
-    arg_iterable_output_format = (output_format, time_output_format_options)
-    _validate_option(arg_iterable_output_format, ValueError, invalid_output_format_template)
+    arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
+    _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
     # Date-only return option #
     param_keys = get_caller_args()
@@ -669,7 +671,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
         return (dt_start_natural, dt_end_natural)
     elif output_format == "string":
         format_args_natural_year2 = (dt_start_std, dt_end_std)
-        print_format_string(natural_year_range_table, format_args_natural_year2)
+        print_format_string(NATURAL_YEAR_RANGE_TABLE, format_args_natural_year2)
     elif output_format == "tuple" :
         if return_date_only:
             return ((dt_start_natural.year, dt_start_natural.month, dt_start_natural.day),
@@ -717,23 +719,23 @@ def _has_at_least_one_year_gap(dt1, dt2):
 #--------------#
 
 # Valid option exceptions #
-error_class_list = [TypeError, ValueError]
+ERROR_CLASS_LIST = [TypeError, ValueError]
 
 # Abbreviated mathematical operations #
-basic_math_opt_list = ["sum", "subtr"]
+BASIC_MATH_OPT_LIST = ["sum", "subtr"]
 
 # Time object output formatting options #
-time_output_format_options = ["default", "string", "time_only", "tuple"]
-date_output_format_options = \
-select_elements(time_output_format_options, [0,1,-1])
+TIME_OUTPUT_FORMAT_OPTIONS = ["default", "string", "time_only", "tuple"]
+DATE_OUTPUT_FORMAT_OPTIONS = \
+select_elements(TIME_OUTPUT_FORMAT_OPTIONS, [0,1,-1])
 
 # Template strings #
 #------------------#
 
 # Error #
-invalid_output_format_template = """Unsupported output format '{}'. Options are: {}"""
+INVALID_OUTPUT_FORMAT_TEMPLATE = """Unsupported output format '{}'. Options are: {}"""
         
-unsupported_obj_type_template1 = """Unsupported {} type. Supported types are:
+UNSUPPORTED_OBJ_TYPE_TEMPLATE1 = """Unsupported {} type. Supported types are:
     - string
     - datetime.datetime
     - datetime.{}
@@ -742,7 +744,7 @@ unsupported_obj_type_template1 = """Unsupported {} type. Supported types are:
     - time.struct_time
 """
 
-unsupported_obj_type_template2 = """Unsupported datetime type. Supported types are:
+UNSUPPORTED_OBJ_TYPE_TEMPLATE2 = """Unsupported datetime type. Supported types are:
     - string
     - datetime.datetime
     - numpy.datetime64
@@ -750,13 +752,13 @@ unsupported_obj_type_template2 = """Unsupported datetime type. Supported types a
     - time.struct_time
 """
 
-invalid_math_operation_error = \
-f"Only sum and subtraction operation are supported: {basic_math_opt_list}"
-too_few_arg_error_template = \
+INVALID_MATH_OPERATION_ERROR = \
+f"Only sum and subtraction operation are supported: {BASIC_MATH_OPT_LIST}"
+TOO_FEW_ARG_ERROR_TEMPLATE = \
 "At least two {} or datetime objects are required to perform the addition."
 
 # Informative #
-natural_year_range_table = \
+NATURAL_YEAR_RANGE_TABLE = \
 """
 {} -- {}
 
@@ -770,30 +772,30 @@ v
 # Switch case dictionaries #
 #--------------------------#
 
-operation_dict = {
-    basic_math_opt_list[0] : np.sum,
-    basic_math_opt_list[1] : lambda tds: tds[0] - np.sum(tds[1:])
+OPERATION_DICT = {
+    BASIC_MATH_OPT_LIST[0] : np.sum,
+    BASIC_MATH_OPT_LIST[1] : lambda tds: tds[0] - np.sum(tds[1:])
 }
 
-time_output_format_dict = {
-    time_output_format_options[0] : lambda t_obj: t_obj,
-    time_output_format_options[1] : lambda t_obj: str(t_obj),
-    time_output_format_options[2] : lambda t_obj: t_obj.time(),
-    time_output_format_options[3] : lambda t_obj: (t_obj.days,
+TIME_OUTPUT_FORMAT_DICT = {
+    TIME_OUTPUT_FORMAT_OPTIONS[0] : lambda t_obj: t_obj,
+    TIME_OUTPUT_FORMAT_OPTIONS[1] : lambda t_obj: str(t_obj),
+    TIME_OUTPUT_FORMAT_OPTIONS[2] : lambda t_obj: t_obj.time(),
+    TIME_OUTPUT_FORMAT_OPTIONS[3] : lambda t_obj: (t_obj.days,
                                                    t_obj.hours, 
                                                    t_obj.minutes, 
                                                    t_obj.seconds)
 }
 
-date_output_format_dict = {
-    date_output_format_options[0] : lambda d_obj: d_obj,
-    date_output_format_options[1] : lambda d_obj: str(d_obj),
-    date_output_format_options[2] : lambda d_obj: (d_obj.year,
+DATE_OUTPUT_FORMAT_DICT = {
+    DATE_OUTPUT_FORMAT_OPTIONS[0] : lambda d_obj: d_obj,
+    DATE_OUTPUT_FORMAT_OPTIONS[1] : lambda d_obj: str(d_obj),
+    DATE_OUTPUT_FORMAT_OPTIONS[2] : lambda d_obj: (d_obj.year,
                                                    d_obj.month, 
                                                    d_obj.day)
 }
 
-datetime_object_part_dict = {
+DATETIME_OBJECT_PART_DICT = {
     "time" : lambda dt_start_std, arg_list : dt_start_std.time() if arg_list is None else dt_start_std.time(*arg_list),
     "date" : lambda dt_start_std, arg_list : dt_start_std.date() if arg_list is None else dt_start_std.date(*arg_list)
 }
