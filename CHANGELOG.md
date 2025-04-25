@@ -13,6 +13,18 @@ All notable changes to this project will be documented in this file.
 
 ### Changed
 
+#### **General**
+
+- Replace direct imports with `__all__` definition in all sub-packages:
+  - `arrays_and_lists`
+  - `audio_and_video`
+  - `dictionaries`
+  - `number_bases`
+  - `operative_systems`
+  - `sets_and_intervals`
+  - `strings`
+  - `time_handling`
+
 #### **Arrays and Lists**
 
 - Modules `data_manipulation`, `maths` and `patterns`:
