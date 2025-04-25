@@ -3,10 +3,12 @@
 
 # pygenutils/time_handling/__init__.py
 
-from . import __init__
-from . import calendar_utils
-from . import countdown
-from . import date_and_time_maths
-from . import date_and_time_utils
-from . import program_snippet_exec_timers
-from . import time_formatters
+# Define what should be available when using 'from pygenutils.time_handling import *'
+__all__ = [
+    'calendar_utils',
+    'countdown',
+    'date_and_time_maths',
+    'date_and_time_utils',
+    'program_snippet_exec_timers',
+    'time_formatters'
+]
