@@ -88,9 +88,9 @@ def find_substring_index(string,
     param_keys = get_caller_args()
     match_index_pos = param_keys.index("return_match_index")
         
-    if not (return_match_index in match_obj_index_option_keys):
+    if not (return_match_index in MATCH_INDEX_ACTION_DICT):
         raise ValueError(f"Invalid '{param_keys[match_index_pos]}' value. "
-                         f"Choose from {match_obj_index_option_keys}.")
+                         f"Choose from {MATCH_INDEX_ACTION_DICT.keys()}.")
         
     if not (isinstance(return_match_str, bool)):
         raise ValueError("Argument '{param_keys[match_index_str_pos]}' "
@@ -306,8 +306,8 @@ def _return_search_obj_spec(string, substring, re_obj_str,
         matches = [match_obj] if match_obj else []
     
     # Use the appropriate action for returning indices based on return_match_index
-    if return_match_index in match_index_action_dict:
-        indices = match_index_action_dict[return_match_index](matches)
+    if return_match_index in MATCH_INDEX_ACTION_DICT:
+        indices = MATCH_INDEX_ACTION_DICT[return_match_index](matches)
     else:
         indices = []
     
