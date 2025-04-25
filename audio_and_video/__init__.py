@@ -3,8 +3,10 @@
 
 # pygenutils/audio_and_video/__init__.py
 
-from . import __init__
-from . import audio_and_video_manipulation
-from . import trim_media
-from . import merge_audio_and_video
-from . import merge_audio_or_video
+# Define what should be available when using 'from pygenutils.audio_and_video import *'
+__all__ = [
+    'audio_and_video_manipulation',
+    'trim_media',
+    'merge_audio_and_video',
+    'merge_audio_or_video'
+]
