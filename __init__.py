@@ -3,14 +3,16 @@
 
 # pygenutils/__init__.py
 
-__version__ = "15.9.1"
+__version__ = "15.11.0"
 
-from . import __init__
-from . import arrays_and_lists
-from . import audio_and_video
-from . import dictionaries
-from . import number_bases
-from . import operative_systems
-from . import sets_and_intervals
-from . import strings
-from . import time_handling
+# Define what should be available when using 'from pygenutils import *'
+__all__ = [
+    'arrays_and_lists',
+    'audio_and_video',
+    'dictionaries',
+    'number_bases',
+    'operative_systems',
+    'sets_and_intervals',
+    'strings',
+    'time_handling',
+]
