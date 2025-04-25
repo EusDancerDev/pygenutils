@@ -3,7 +3,9 @@
 
 # pygenutils/number_bases/__init__.py
 
-from . import __init__
-from . import base_converters
-from . import binary_operations
-from . import bitwise_operators
+# Define what should be available when using 'from pygenutils.number_bases import *'
+__all__ = [
+    'base_converters',
+    'binary_operations',
+    'bitwise_operators'
+]
