@@ -1,14 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+#----------------#
+# Import modules #
+#----------------#
+
+from functools import reduce
+
 #-----------------------#
 # Import custom modules #
 #-----------------------#
 
+from paramlib.global_parameters import BASIC_FOUR_RULES
 from pygenutils.dictionaries.dict_handler import sort_dictionary_by_keys
-from paramlib.global_parameters import basic_four_rules
-
-from functools import reduce
 
 #------------------#
 # Define functions #
@@ -69,15 +73,15 @@ def dict_value_basic_operator(dict_list,
         raise ValueError("At least two dictionaries must be provided.")
     
     # Validate mathematical operator #
-    if math_operator not in allowed_calc_dict:
+    if math_operator not in ALLOWED_CALC_DICT:
         raise ValueError ("Invalid basic operator sign. "
-                          f"Choose one from {list(allowed_calc_dict.keys())}.")
+                          f"Choose one from {list(ALLOWED_CALC_DICT.keys())}.")
     
     # Operations #
     #-#-#-#-#-#-#-
     
     # Perform the computation #
-    operation = allowed_calc_dict.get(math_operator)
+    operation = ALLOWED_CALC_DICT.get(math_operator)
     result_dict = reduce(operation, dict_list)
     
     # Order resulting dictionary's keys if desired #
@@ -91,11 +95,11 @@ def dict_value_basic_operator(dict_list,
 #--------------------------#
 
 # Basic calculator operations #
-allowed_calc_dict = {
-    basic_four_rules[0] : lambda d1, d2 : {k : d1[k]+d2[k] for k in d1.ks() & d2},
-    basic_four_rules[1] : lambda d1, d2 : {k : d1[k]-d2[k] for k in d1.ks() & d2},
-    basic_four_rules[2] : lambda d1, d2 : {k : d1[k]*d2[k] for k in d1.ks() & d2},
-    basic_four_rules[3] : lambda d1, d2 : {k : d1[k]/d2[k] for k in d1.ks() & d2},
+ALLOWED_CALC_DICT = {
+    BASIC_FOUR_RULES[0] : lambda d1, d2 : {k : d1[k]+d2[k] for k in d1.ks() & d2},
+    BASIC_FOUR_RULES[1] : lambda d1, d2 : {k : d1[k]-d2[k] for k in d1.ks() & d2},
+    BASIC_FOUR_RULES[2] : lambda d1, d2 : {k : d1[k]*d2[k] for k in d1.ks() & d2},
+    BASIC_FOUR_RULES[3] : lambda d1, d2 : {k : d1[k]/d2[k] for k in d1.ks() & d2},
     "//" : lambda d1, d2 : {k : d1[k]//d2[k] for k in d1.ks() & d2},
     "**" : lambda d1, d2 : {k : d1[k]**d2[k] for k in d1.ks() & d2}
 }
