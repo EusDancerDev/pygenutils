@@ -85,6 +85,12 @@ def standardise_calendar(obj,
 
     obj_type = get_type_str(obj, lowercase=True)
     
+    # Validate extension if save_as_new_obj is True
+    if save_as_new_obj and extension is not None:
+        if obj_type == "pandas" and extension not in SUPPORTED_FILE_EXTS_PANDAS:
+            raise ValueError(f"Unsupported file extension for pandas objects: '{extension}'. "
+                           f"Supported extensions are: {SUPPORTED_FILE_EXTS_PANDAS}")
+    
     # Handling pandas dataframes #
     if obj_type == "pandas" \
         or (obj_type == "list" and all(get_type_str(element) == "dataframe")
@@ -332,4 +338,4 @@ def week_range(date):
 #--------------------------#
 
 # Supported file extensions for calendar standardizations #
-supported_file_exts_pandas = ['csv', 'xlsx']
+SUPPORTED_FILE_EXTS_PANDAS = ['csv', 'xlsx']
