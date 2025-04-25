@@ -4,11 +4,103 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.9.1] - 2025-04-17
+## [v15.11.0] - 2025-04-25
 
-### Fixed (v15.9.1)
+### Added
+
+- Module `date_and_time_utils`:
+  - Add back the function `find_time_key`, moved to the module `time_utils.py` in version 15.10.0, as it semantically suits better in this module.
+
+### Changed
+
+#### **Arrays and Lists**
+
+- Modules `data_manipulation`, `maths` and `patterns`:
+  - Convert constant names to uppercase and update references
+
+#### **Audio and Video**
+
+- Module `audio_and_video_manipulation`:
+  - Convert constant names to uppercase and update references
+
+#### **Dictionaries**
+
+- Modules `dict_handler` and `dict_operators`:
+  - Convert constant names to uppercase and update references
+  - Add parameter validation and improve sorting functionality
+
+#### **Number Bases**
+
+- Modules `base_converters` and `binary_operations`:
+  - Convert constant names to uppercase and update references
+
+#### **Operative Systems**
+
+- Module `os_operations`:
+  - Convert constant names to uppercase and update references
+  - Convert imported constants from `global_parameters.py` to uppercase
+
+#### **Sets and Intervals**
+
+- Module `sets_handler`:
+  - Convert constant names to uppercase and update references
+  - Convert imported constants from `global_parameters.py` to uppercase
+  - Sort project modules alphabetically
+
+- Module `interval_handler`:
+  - Convert constant names to uppercase and reorganise imports
+  - Add parameter validation and fix constructor bug
+
+#### **Strings**
+
+- Module `text_formatters`:
+  - Convert constant names to uppercase and update references
+  - Sort project modules alphabetically
 
 #### **Time Handling**
+
+- Module `time_formatters`:
+  - Convert constant names to uppercase and update references
+  - Convert imported constants from `global_parameters.py` to uppercase
+  - Sort modules according to PEP 8 standards
+
+- Modules `date_and_time_utils` and `program_snippet_exec_timers`:
+  - Convert constant names to uppercase and update references
+  - Reorganise imports and sort modules according to PEP 8 standards
+
+- Modules `date_and_time_maths` and `countdown`:
+  - Convert constant names to uppercase and update references
+
+### Removed
+
+#### **Time Handling** (v15.11.0)
+
+- Module `time_utils`: after moving the function `find_time_key` to the module `date_and_time_utils`, it is no longer needed and it was removed.
+
+---
+
+## [v15.10.0] - 2025-04-21
+
+### Added (v15.10.0)
+
+#### **Time Handling** (v15.10.0)
+
+- Module `time_utils`: move the function `find_time_key` from the module `date_and_time_utils` to avoid circular dependency.
+
+### Changed (v15.10.0)
+
+#### **Arrays and Lists**
+
+- Module `data_manipulation`:
+  - Move the function `decompose_cumulative_data` to the module `time_series` in the package `statkit` to avoid circular dependency.
+
+---
+
+## [v15.9.1] - 2025-04-17
+
+### Changed (v15.9.1)
+
+#### **Time Handling** (v15.9.1)
 
 - Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
 
@@ -20,7 +112,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (v15.9.0)
 
-#### **General**
+#### **General** (v15.9.0)
 
 - Rename all variable names that start with `arg_tuple` to `format_args` to follow a more consistent naming convention `format_args` prefix.
 
@@ -44,7 +136,7 @@ All notable changes to this project will be documented in this file.
 
 ### Added (v15.8.0)
 
-#### **Audio and Video**
+#### **Audio and Video** (v15.8.0)
 
 - Module `audio_and_video_manipulation`: add import for `find_files` from the `filewise` package to enable dynamic file discovery.
 
@@ -91,7 +183,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ## [v15.7.0] - 2025-02-03
 
-### Added
+### Added (v15.7.0)
 
 #### **Number Bases**
 
@@ -99,7 +191,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Added helper function `_check_input_binary` to check if the input binary number is in the correct format.
   - Introduce two basic functions to convert between base 10 and base 2: `dec2bin_basic` and `bin2dec_basic`. Both perform mathematical computations by definition.
 
-#### **Arrays and Lists**
+#### **Arrays and Lists** (v15.7.0)
 
 - Module `data_manipulation`: add flipping utilities of lists and NumPy arrays with N >= 1 dimensions.
 
@@ -148,7 +240,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 #### **Strings** (v15.4.4)
 
-- Renamed module `information_output_formatters` to `text_formatters` for improved clarity. Changes have been applied for all affected modules.z
+- Renamed module `information_output_formatters` to `text_formatters` for improved clarity. Changes have been applied for all affected modules.
 
 #### **Time Handling** (v15.4.4)
 
@@ -517,7 +609,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ### Changed (v10.9.2)
 
-#### **Sets and Intervals**
+#### **Sets and Intervals** (v10.9.2)
 
 - Modules
   - `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually.
