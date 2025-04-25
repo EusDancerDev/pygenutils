@@ -142,12 +142,12 @@ def detect_subarray_in_array(obj, test_obj,
     param_keys = get_caller_args()
     adapt_module_opt_pos = find_substring_index(param_keys, "preferent_adapt_module")
     
-    if preferent_adapt_module not in modules_adaptation:
+    if preferent_adapt_module not in MODULES_ADAPTATION:
         raise ValueError("Invalid module for input object adaptations. "
                          f"(argument '{param_keys[adapt_module_opt_pos]}'.\n"
-                         f"Options are {modules_adaptation}.")
+                         f"Options are {MODULES_ADAPTATION}.")
     else:
-        obj = obj_conversion_opt_dict.get(preferent_adapt_module)(obj)
+        obj = OBJ_CONVERSION_OPT_DICT.get(preferent_adapt_module)(obj)
       
     
     # Determine the element-wise presence #
@@ -466,13 +466,13 @@ def approach_value(array, given_value):
 #-------------------#
 
 # Modules used in input object adaptations #
-modules_adaptation = ["numpy", "pandas"]
+MODULES_ADAPTATION = ["numpy", "pandas"]
 
 # Switch case dictionaries #
 #--------------------------#
 
 # Data type main conversions #
-obj_conversion_opt_dict = {
-    modules_adaptation[0] : lambda obj: np.array(obj),
-    modules_adaptation[1] : lambda obj: Series(obj)
+OBJ_CONVERSION_OPT_DICT = {
+    MODULES_ADAPTATION[0] : lambda obj: np.array(obj),
+    MODULES_ADAPTATION[1] : lambda obj: Series(obj)
 }

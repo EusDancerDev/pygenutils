@@ -89,15 +89,15 @@ def unique_pairs(array_like, library="python-default"):
         arr = arr.flatten()
     
     # Library #
-    if library not in return_pairs_library_list:
+    if library not in RETURN_PAIRS_LIBRARY_LIST:
         raise ValueError("Unsupported library. "
-                         f"Choose one from {return_pairs_library_list}.")
+                         f"Choose one from {RETURN_PAIRS_LIBRARY_LIST}.")
     
     
     # Compute pairs of numbers #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-
     
-    all_pair_combo_arr = return_pairs_opt_dict.get(library)(array)
+    all_pair_combo_arr = RETURN_PAIRS_OPT_DICT.get(library)(array)
     return all_pair_combo_arr
 
 
@@ -109,15 +109,15 @@ def unique_pairs(array_like, library="python-default"):
 #-------------------#
 
 # Procedure options #
-return_pairs_library_list = ["python-default", "itertools-comb"]
+RETURN_PAIRS_LIBRARY_LIST = ["python-default", "itertools-comb"]
 
 # Switch case dictionaries #
 #--------------------------#
 
 # Pair combo calculation functions #
-return_pairs_opt_dict = {
-    return_pairs_library_list[0]: lambda arr: [(i, j) 
+RETURN_PAIRS_OPT_DICT = {
+    RETURN_PAIRS_LIBRARY_LIST[0]: lambda arr: [(i, j) 
                                                for i_aux, i in enumerate(arr)
                                                for j in arr[i_aux+1:]],
-    return_pairs_library_list[1]: lambda arr: list(it.combinations(arr, 2))
+    RETURN_PAIRS_LIBRARY_LIST[1]: lambda arr: list(it.combinations(arr, 2))
 }

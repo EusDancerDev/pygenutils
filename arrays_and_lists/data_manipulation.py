@@ -269,9 +269,9 @@ def revert_1d_basic(arr, procedure="index"):
         The reversed array.
     """
     # Parameter validation #
-    if procedure not in flip_basic_options:
+    if procedure not in FLIP_BASIC_OPTIONS:
         raise ValueError(f"Invalid procedure '{procedure}' for reversing an array. "
-                         f"Choose from: {flip_basic_options}.")
+                         f"Choose from: {FLIP_BASIC_OPTIONS}.")
     
     # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
     if isinstance(arr, np.ndarray):
@@ -312,11 +312,11 @@ def flip_array(array, procedure="numpy_default", axis=None):
     axis : int, optional
         The axis to flip the array along. Default is None.
     """
-    if procedure not in flip_advanced_options:
+    if procedure not in FLIP_ADVANCED_OPTIONS:
         raise ValueError(f"Invalid procedure '{procedure}' for flipping an array. "
-                         f"Choose from: {flip_advanced_options}.")
+                         f"Choose from: {FLIP_ADVANCED_OPTIONS}.")
     
-    return advanced_flip_dict[procedure](array, axis=axis)
+    return ADVANCED_FLIP_DICT[procedure](array, axis=axis)
 
 
 # Inserting, Extending, and Removing Data #
@@ -535,9 +535,9 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
         raise ValueError("If keyword argument 'sort' is set to False, "
                          "'reverse' is not allowed to be True.")
     
-    if procedure not in procedure_options:
+    if procedure not in PROCEDURE_OPTIONS:
         raise ValueError(f"Invalid procedure '{procedure}' for extracting unique values. "
-                         f"Choose from: {procedure_options}.")
+                         f"Choose from: {PROCEDURE_OPTIONS}.")
     
     # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
     if isinstance(arr, np.ndarray):
@@ -570,16 +570,16 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
 #-------------------#
 
 # Array flipping #
-flip_basic_options = ["iterative", "index"]
+FLIP_BASIC_OPTIONS = ["iterative", "index"]
 
 # Unique values extraction #
-procedure_options = ["dict", "list", "set"]
+PROCEDURE_OPTIONS = ["dict", "list", "set"]
 
 # Switch case dictionaries #
 #--------------------------#
 
 # Array flipping #
-advanced_flip_dict = {
+ADVANCED_FLIP_DICT = {
     "numpy_default": lambda array, axis: np.flip(array, axis=axis),
     "numpy_lr": lambda array: np.fliplr(array),
     "numpy_ud": lambda array: np.flipud(array),
@@ -587,4 +587,4 @@ advanced_flip_dict = {
     "index_ud": lambda array: array[::-1,:]
 }
 
-flip_advanced_options = advanced_flip_dict.keys()
+FLIP_ADVANCED_OPTIONS = ADVANCED_FLIP_DICT.keys()
