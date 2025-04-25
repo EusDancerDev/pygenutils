@@ -1,10 +1,5 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Created on Tue Sep 24 16:44:55 2024
-
-@author: jonander
-"""
 
 #----------------#
 # Import modules #
@@ -198,10 +193,10 @@ def merge_individual_media_files(input_file_list_or_file,
     
     # Automatically detect file type
     def is_audio_file(file):
-        return file.endswith(tuple(common_audio_formats))
+        return file.endswith(tuple(COMMON_AUDIO_FORMATS))
 
     def is_video_file(file):
-        return file.endswith(tuple(common_video_formats))
+        return file.endswith(tuple(COMMON_VIDEO_FORMATS))
     
     # Validations #
     #-------------#
@@ -307,11 +302,11 @@ def cut_media_files(input_file_list_or_file,
     
     def validate_time_format(time_str):
         try:
-            for time_fmt in time_fmt_str_list:
+            for time_fmt in TIME_FMT_STR_LIST:
                 parse_time_string(time_str, time_fmt)
         except ValueError:
             raise ValueError(f"Invalid time format: {time_str}. "
-                             f"Expected one from {time_fmt_str_list}")
+                             f"Expected one from {TIME_FMT_STR_LIST}")
 
     # Helper function to load file list from external file if necessary
     def load_file_list(file_or_list):
@@ -397,8 +392,8 @@ def cut_media_files(input_file_list_or_file,
 #-------------------#
 
 # Time format strings #
-time_fmt_str_list = ['%H:%M:%S', '%H:%M:%S.%f']
+TIME_FMT_STR_LIST = ['%H:%M:%S', '%H:%M:%S.%f']
 
 # Common audio and video formats #
-common_audio_formats = ('.mp3', '.aac', '.wav')
-common_video_formats = ('.mp4', '.avi', '.mkv')
+COMMON_AUDIO_FORMATS = ('.mp3', '.aac', '.wav')
+COMMON_VIDEO_FORMATS = ('.mp4', '.avi', '.mkv')
