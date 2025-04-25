@@ -105,8 +105,8 @@ def _procedure_checker(arg):
     ------
     ValueError : If the procedure is not valid.
     """
-    if arg not in procedure_opts:
-        raise ValueError(f"Unsupported procedure. Choose one from {procedure_opts}.")
+    if arg not in PROCEDURE_OPTS:
+        raise ValueError(f"Unsupported procedure. Choose one from {PROCEDURE_OPTS}.")
         
 # Frequently used bases #
 #-----------------------#
@@ -360,4 +360,4 @@ def convert_among_arbitraries(x, base):
 # Parameters and constants #
 #--------------------------#
 
-procedure_opts = ['default', 'format_string']
+PROCEDURE_OPTS = ['default', 'format_string']
