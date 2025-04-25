@@ -3,6 +3,8 @@
 
 # pygenutils/sets_and_intervals/__init__.py
 
-from . import __init__
-from . import interval_handler
-from . import sets_handler
+# Define what should be available when using 'from pygenutils.sets_and_intervals import *'
+__all__ = [
+    'interval_handler',
+    'sets_handler'
+]
