@@ -11,7 +11,7 @@ import os
 # Import custom modules # 
 #-----------------------#
 
-from paramlib.global_parameters import filesystem_context_modules
+from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES
 from pygenutils.strings.string_handler import get_type_str
 from pygenutils.strings.text_formatters import format_string
 
@@ -83,11 +83,11 @@ def run_system_command(command,
 
     
     # Validate module and class
-    if (module, _class) not in command_helpers:
+    if (module, _class) not in COMMAND_HELPERS:
         raise ValueError(f"Unsupported module-class combo '{module}'-'{_class}'.")
     
     # Get the appropriate helper function
-    helper_func = command_helpers.get((module, _class))
+    helper_func = COMMAND_HELPERS.get((module, _class))
     
     # Run the command via the helper
     result = helper_func(command, capture_output=capture_output, encoding=encoding, shell=shell)
@@ -350,7 +350,7 @@ def exit_info(process_exit_info_obj):
         else:
             format_args_error = (return_code, process_exit_info_obj.get("stderr"))
             raise RuntimeError("An error ocurred during command execution: "
-                               f"{format_string(nonzero_exit_status_template, format_args_error)}")
+                               f"{format_string(NONZERO_EXIT_STATUS_TEMPLATE, format_args_error)}")
 
 # %%
 
@@ -362,22 +362,22 @@ def exit_info(process_exit_info_obj):
 #-------------------#
 
 # Modules #
-system_command_modules = filesystem_context_modules[0::3]
+SYSTEM_COMMAND_MODULES = FILESYSTEM_CONTEXT_MODULES[0::3]
 
 # Command run classes #
-class_list = ["system", "popen", "Popen", "call", "run"]
+CLASS_LIST = ["system", "popen", "Popen", "call", "run"]
 
 # Template strings #
 #------------------#
 
 # Errors #
-nonzero_exit_status_template = """Process exited with status {} with the following error:\n{}"""
+NONZERO_EXIT_STATUS_TEMPLATE = """Process exited with status {} with the following error:\n{}"""
 
 # Switch case dictionaries #
 #--------------------------#
 
 # System command run helpers #
-command_helpers = {
+COMMAND_HELPERS = {
     ("os", "system"): os_system_helper,
     ("os", "popen"): os_popen_helper,
     ("subprocess", "Popen"): subprocess_popen_helper,
