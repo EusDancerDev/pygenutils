@@ -21,6 +21,50 @@ from pygenutils.strings.string_handler import find_substring_index
 # Define functions #
 #------------------#
 
+def _validate_interval_parameters(left_limit, right_limit, constructor, closed):
+    """
+    Validates the parameters for interval creation.
+
+    Parameters
+    ----------
+    left_limit : float or int
+        The left limit of the interval.
+    right_limit : float or int
+        The right limit of the interval.
+    constructor : str
+        The library to use for constructing the interval.
+    closed : str
+        Defines whether the interval is closed on the left, right, or both sides.
+
+    Raises
+    ------
+    ValueError
+        If any of the parameters are invalid.
+    """
+    # Validate numeric types
+    if not isinstance(left_limit, (int, float)):
+        raise ValueError(f"left_limit must be numeric, got {type(left_limit)}")
+        
+    if not isinstance(right_limit, (int, float)):
+        raise ValueError(f"right_limit must be numeric, got {type(right_limit)}")
+    
+    # Validate interval limits
+    if left_limit >= right_limit:
+        raise ValueError(f"left_limit ({left_limit}) must be less than right_limit ({right_limit})")
+    
+    # Validate closed parameter
+    valid_closed_options = ["left", "right", "both", "neither"]
+    if closed not in valid_closed_options:
+        raise ValueError(f"closed must be one of {valid_closed_options}, got '{closed}'")
+    
+    # Validate constructor
+    if constructor not in INTERVAL_CONSTRUCTOR_OPTIONS:
+        all_args = get_caller_args()
+        constr_arg_pos = find_substring_index(all_args, "constructor")
+        raise ValueError(f"Unsupported constructor '{constructor}' (position {constr_arg_pos}). "
+                         f"Choose one from {INTERVAL_CONSTRUCTOR_OPTIONS}.")
+
+
 def define_interval(left_limit, right_limit, constructor="pandas", closed="both"):
     """
     Constructs an interval object using the specified constructor.
@@ -47,6 +91,10 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     ------
     ValueError
         If an unsupported constructor is specified.
+        If left_limit is not numeric.
+        If right_limit is not numeric.
+        If left_limit is greater than or equal to right_limit.
+        If closed parameter is not one of the valid options.
 
     Examples
     --------
@@ -55,19 +103,18 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     """
     
     # Input validation # 
-    if constructor not in INTERVAL_CONSTRUCTOR_OPTIONS:
-        all_args = get_caller_args()
-        constr_arg_pos = find_substring_index(all_args, "constructor")
-        raise ValueError(f"Unsupported constructor '{constructor}' (position {constr_arg_pos}). "
-                         f"Choose one from {INTERVAL_CONSTRUCTOR_OPTIONS}.")
+    #------------------#
+    _validate_interval_parameters(left_limit, right_limit, constructor, closed)
 
     # Operations #
+    #------------#
+    
     if constructor == "intervaltree":
         print(f"WARNING: intervals constructed using constructor '{constructor}' "
               f"do not include the upper bound.")
         
     try:
-        return INTERVAL_CONSTRUCTORS[constructor]()
+        return INTERVAL_CONSTRUCTORS[constructor](left_limit, right_limit, closed)
     except Exception as err:
         raise RuntimeError("An error occurred. Check the left and/or right "
                            f"limits values passed: {err}")
