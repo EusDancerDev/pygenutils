@@ -29,8 +29,8 @@ Functions
 # Import custom modules #
 #-----------------------#
 
-from pygenutils.strings.string_handler import find_substring_index
 from filewise.general.introspection_utils import get_type_str
+from pygenutils.strings.string_handler import find_substring_index
 
 #-------------------------#
 # Define custom functions #
@@ -70,12 +70,12 @@ def format_string(string2format, arg_obj):
     num_brackets = len(bracket_index_list)
     
     try:               
-        if (get_type_str(arg_obj) in main_input_dtype_list_strfmt\
+        if (get_type_str(arg_obj) in MAIN_INPUT_DTYPE_LIST_STRFMT\
             and num_brackets >= 2):
             formatted_string = string2format.format(*arg_obj)
             
-        elif ((get_type_str(arg_obj) in main_input_dtype_list_strfmt and num_brackets < 2)\
-            or (get_type_str(arg_obj) not in main_input_dtype_list_strfmt\
+        elif ((get_type_str(arg_obj) in MAIN_INPUT_DTYPE_LIST_STRFMT and num_brackets < 2)\
+            or (get_type_str(arg_obj) not in MAIN_INPUT_DTYPE_LIST_STRFMT\
             and not isinstance(arg_obj, dict))):
             formatted_string = string2format.format(arg_obj)
         
@@ -85,13 +85,13 @@ def format_string(string2format, arg_obj):
         return formatted_string
     
     except (TypeError, UnboundLocalError):
-        raise TypeError(type_error_str1)
+        raise TypeError(TYPE_ERROR_STR1)
     
     except IndexError:
-        raise IndexError(index_error_str)
+        raise IndexError(INDEX_ERROR_STR)
     
     except SyntaxError:
-        raise SyntaxError(syntax_error_str)
+        raise SyntaxError(SYNTAX_ERROR_STR)
         
         
 def print_format_string(string2format, arg_obj, end="\n"):
@@ -142,16 +142,16 @@ def print_percent_string(string2format, arg_obj):
         if isinstance(arg_obj, str):
             print(string2format % (arg_obj))
         else:
-            raise TypeError(type_error_str2)
+            raise TypeError(TYPE_ERROR_STR2)
             
     except TypeError:
-        raise TypeError(type_error_str1)
+        raise TypeError(TYPE_ERROR_STR1)
                 
     except IndexError:
-        raise IndexError(index_error_str)
+        raise IndexError(INDEX_ERROR_STR)
         
     except SyntaxError:
-        raise SyntaxError(syntax_error_str)
+        raise SyntaxError(SYNTAX_ERROR_STR)
         
 # %%
 
@@ -628,13 +628,13 @@ def format_table_from_lists(keys, values,
 #--------------------------#
 
 # Frequent input data types for string formatting #
-main_input_dtype_list_strfmt = ["list", "ndarray", "tuple"]
+MAIN_INPUT_DTYPE_LIST_STRFMT = ["list", "ndarray", "tuple"]
 
 # Error strings #
-type_error_str1 = "Check the iterable type passed to the instance."
-type_error_str2 = "Argument must be of type 'str' only."
+TYPE_ERROR_STR1 = "Check the iterable type passed to the instance."
+TYPE_ERROR_STR2 = "Argument must be of type 'str' only."
 
-index_error_str = "Not all indices were referenced in the string to format."
+INDEX_ERROR_STR = "Not all indices were referenced in the string to format."
 
-syntax_error_str = "One or more arguments in the formatting object "\
+SYNTAX_ERROR_STR = "One or more arguments in the formatting object "\
                     "has strings with unclosed quotes."
