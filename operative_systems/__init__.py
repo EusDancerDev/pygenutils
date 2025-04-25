@@ -3,5 +3,7 @@
 
 # pygenutils/operative_systems/__init__.py
 
-from . import __init__
-from . import os_operations
+# Define what should be available when using 'from pygenutils.operative_systems import *'
+__all__ = [
+    'os_operations'
+]
