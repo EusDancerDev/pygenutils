@@ -53,9 +53,9 @@ def str2bytes(string, proc="straightforward", encoding="utf-8"):
     ValueError: If an unsupported conversion procedure is specified.
     TypeError: If the input is not a string.
     """
-    if proc not in conv_to_byte_options:
+    if proc not in CONV_TO_BYTE_OPTIONS:
         raise ValueError("Unsupported conversion procedure. "
-                         f"Choose one from {conv_to_byte_options}.")
+                         f"Choose one from {CONV_TO_BYTE_OPTIONS}.")
     
     validate_input(string, str)
     
@@ -180,4 +180,4 @@ def validate_input(obj, expected_type):
 #--------------------------#
 
 # String to bytes object conversion procedures
-conv_to_byte_options = ["class", "straightforward"]
+CONV_TO_BYTE_OPTIONS = ["class", "straightforward"]
