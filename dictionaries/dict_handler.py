@@ -37,6 +37,7 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
         If the input is not a dictionary, list, tuple, or NumPy array of dictionaries.
     ValueError
         If less than 2 dictionaries are provided in a list/tuple/array for sorting.
+        If an invalid sorting option is provided.
     """   
     # Input object type validation #
     #------------------------------#
@@ -47,6 +48,11 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
         
     if (get_type_str(obj) in ["list", "tuple", "ndarray"] and len(obj)) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")
+        
+    # Validate sorting option
+    if sort_by not in SORT_BY_OPTIONS:
+        raise ValueError(f"Unsupported sorting option: '{sort_by}'. "
+                        f"Choose one from {SORT_BY_OPTIONS}")
         
     # Sort dictionaries #
     #-------------------#
@@ -118,4 +124,4 @@ def merge_dictionaries(dict_list):
 # Supported options #
 #-------------------#
 
-sort_by_options = ["keys", "values", "custom"]
+SORT_BY_OPTIONS = ["keys", "values", "custom"]
