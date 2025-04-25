@@ -3,6 +3,8 @@
 
 # pygenutils/strings/__init__.py
 
-from . import __init__
-from . import string_handler
-from . import text_formatters
+# Define what should be available when using 'from pygenutils.strings import *'
+__all__ = [
+    'string_handler',
+    'text_formatters'
+]
