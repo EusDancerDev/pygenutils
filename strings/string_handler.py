@@ -5,21 +5,22 @@
 # Import modules # 
 #----------------#
 
+# Standard modules #
 import os
+import re
 from pathlib import Path
 from sys import maxsize
 
-from numpy import array, vectorize, char
+# Third-party modules #
+from numpy import array, char, vectorize
 from pandas import DataFrame, Series
-
-import re
 
 #-----------------------#
 # Import custom modules # 
 #-----------------------#
 
-from paramlib.global_parameters import filesystem_context_modules
-from filewise.general.introspection_utils import get_type_str, get_caller_args
+from filewise.general.introspection_utils import get_caller_args, get_type_str
+from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES
 
 #------------------#
 # Define functions #
@@ -368,7 +369,7 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
     """
 
     # List of supported modules for path specification retrieval
-    path_specs_retrieval_modules = filesystem_context_modules[:2]
+    path_specs_retrieval_modules = FILESYSTEM_CONTEXT_MODULES[:2]
     
     # Check if the specified module is valid
     if module not in path_specs_retrieval_modules:
@@ -376,7 +377,7 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
                          f"Choose one from {path_specs_retrieval_modules}.")
     
     # Retrieve path specifications based on the chosen module
-    obj_specs_dict = path_functions[module](obj_path)
+    obj_specs_dict = PATH_FUNCTIONS[module](obj_path)
     
     # Optionally, split the file name without extension by the specified delimiter
     if splitdelim:
@@ -428,9 +429,9 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
     param_keys = get_caller_args()
     osk_arg_pos = param_keys.index("obj_spec_key")
     
-    if obj_spec_key not in obj_specs_keylist:
+    if obj_spec_key not in OBJ_SPECS_KEYLIST:
         raise ValueError(f"Invalid '{param_keys[osk_arg_pos]}' key. "
-                         f"Choose from {obj_specs_keylist}.")
+                         f"Choose from {OBJ_SPECS_KEYLIST}.")
         
     # If obj_path is not already a dictionary, get the path specifications
     if not isinstance(obj_path, dict):
@@ -439,7 +440,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
         obj_specs_dict = obj_path
     
     # If obj_spec_key is 'name_noext_parts', ensure that splitdelim is provided
-    if obj_spec_key == obj_specs_keylist[3] and not splitdelim:
+    if obj_spec_key == OBJ_SPECS_KEYLIST[3] and not splitdelim:
         raise ValueError("You must specify a splitting character "
                          f"if 'obj_spec_key' == '{obj_spec_key}'.")
     
@@ -491,11 +492,11 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
         str2add = str(str2add)
     
     # Validate object part to modify (arg 'obj2modify') #
-    obj_specs_keylist_practical = obj_specs_keylist[:3] + [obj_specs_keylist[-1]]
+    obj_specs_keylist_practical = OBJ_SPECS_KEYLIST[:3] + [OBJ_SPECS_KEYLIST[-1]]
     if obj2modify not in obj_specs_keylist_practical:
         raise ValueError("Invalid object name to modify, "
                          f"argument '{param_keys[obj2ch_arg_pos]}'. "
-                         f"Choose one from {obj_specs_keylist}.")
+                         f"Choose one from {OBJ_SPECS_KEYLIST}.")
     
     # Get path specifications as a dict if input is a path string
     if not isinstance(target_path_obj, dict):
@@ -514,7 +515,7 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
                 
         else:
             if not isinstance(new_obj, tuple):
-                raise TypeError(f"If modifying '{obj_specs_keylist[2]}', "
+                raise TypeError(f"If modifying '{OBJ_SPECS_KEYLIST[2]}', "
                                 f"'{param_keys[new_obj_arg_pos]}' must be a tuple.")
             else:
                 name_noext = get_obj_specs(target_path_obj, obj2modify)
@@ -557,9 +558,9 @@ def _join_obj_path_specs(obj_specs_dict):
     joint_obj_path : str
         The complete file path string based on the provided parts.
     """
-    obj_path_ext = obj_specs_dict.get(obj_specs_keylist[-1])  # 'ext'
-    obj_path_name_noext = obj_specs_dict.get(obj_specs_keylist[2])  # 'name_noext'
-    obj_path_parent = obj_specs_dict.get(obj_specs_keylist[0])  # 'parent'
+    obj_path_ext = obj_specs_dict.get(OBJ_SPECS_KEYLIST[-1])  # 'ext'
+    obj_path_name_noext = obj_specs_dict.get(OBJ_SPECS_KEYLIST[2])  # 'name_noext'
+    obj_path_parent = obj_specs_dict.get(OBJ_SPECS_KEYLIST[0])  # 'parent'
     
     if obj_path_parent is None:
         # If there is no parent directory, join name_noext and ext
@@ -675,12 +676,12 @@ def substring_replacer(string, substr2find, substr2replace, count_std=-1,
     
     obj_type = get_type_str(string, lowercase=True)
     
-    if obj_type not in str_repl_obj_types:
+    if obj_type not in STR_REPL_OBJ_TYPES:
         raise TypeError("Input object must be of type 'string', 'list', "
                         "'numpy.ndarray', 'DataFrame', or 'Series'.")
             
     if not advanced_search:
-        string_replaced = replace_actions[obj_type](string, substr2find, substr2replace, count_std)
+        string_replaced = REPLACE_ACTIONS[obj_type](string, substr2find, substr2replace, count_std)
         return string_replaced
             
     else:
@@ -711,13 +712,13 @@ def case_modifier(string, case=None):
     String case modified accordingly
     """
     
-    if (case is None or case not in case_modifier_option_keys):
+    if (case is None or case not in CASE_MODIFIER_OPTION_KEYS):
         raise ValueError("You must select a case modifying option from "
                          "the following list:\n"
-                         f"{case_modifier_option_keys}")
+                         f"{CASE_MODIFIER_OPTION_KEYS}")
         
     else:
-        str_case_modified = case_modifier_option_dict.get(case)(string)
+        str_case_modified = CASE_MODIFIER_OPTION_DICT.get(case)(string)
         return str_case_modified
 
     
@@ -747,12 +748,12 @@ def strip(string, strip_option='strip', chars=None):
         String with the specified characters surrounding it removed.
     """
     
-    if (strip_option is None or strip_option not in strip_option_keys):
+    if (strip_option is None or strip_option not in STRIP_OPTION_KEYS):
         raise ValueError("You must select a case strip option from "
-                         f"the following list: {strip_option_keys}")
+                         f"the following list: {STRIP_OPTION_KEYS}")
         
     else:
-        string_stripped = strip_option_dict.get(strip_option)(string, chars)
+        string_stripped = STRIP_OPTION_DICT.get(strip_option)(string, chars)
         return string_stripped
     
 
@@ -764,42 +765,40 @@ def strip(string, strip_option='strip', chars=None):
 #-----------------#
 
 # Standard and essential name lists #
-obj_specs_keylist = ['parent', 'name', 'name_noext', 'name_noext_parts', 'ext']
+OBJ_SPECS_KEYLIST = ['parent', 'name', 'name_noext', 'name_noext_parts', 'ext']
 
 # Search matching object's indexing options #
-match_obj_index_option_keys = ["lo", "hi", "both"]
+MATCH_OBJ_INDEX_OPTION_KEYS = ["lo", "hi", "both"]
 
 # String case handling options #
-case_modifier_option_keys = ["lower", "upper", "capitalize", "title"]
+CASE_MODIFIER_OPTION_KEYS = ["lower", "upper", "capitalize", "title"]
 
 # String stripping options #
-strip_option_keys = ["strip", "lstrip", "rstrip"]
+STRIP_OPTION_KEYS = ["strip", "lstrip", "rstrip"]
 
 # Object types for string replacements #
-str_repl_obj_types = ["str", "list", "ndarray", "dataframe", "series"]
+STR_REPL_OBJ_TYPES = ["str", "list", "ndarray", "dataframe", "series"]
 
 # Switch case dictionaries #
 #--------------------------#
 
 # String case handling #
-case_modifier_option_dict = {
-    case_modifier_option_keys[0] : lambda string : string.lower(),
-    case_modifier_option_keys[1] : lambda string : string.upper(),
-    case_modifier_option_keys[2] : lambda string : string.capitalize(),
-    case_modifier_option_keys[3] : lambda string : string.title()
-    }
-
-case_modifier_option_keys = list(case_modifier_option_dict.keys())
+CASE_MODIFIER_OPTION_DICT = {
+    CASE_MODIFIER_OPTION_KEYS[0] : lambda string : string.lower(),
+    CASE_MODIFIER_OPTION_KEYS[1] : lambda string : string.upper(),
+    CASE_MODIFIER_OPTION_KEYS[2] : lambda string : string.capitalize(),
+    CASE_MODIFIER_OPTION_KEYS[3] : lambda string : string.title()
+}
 
 # String stripping #
-strip_option_dict = {
-    strip_option_keys[0] : lambda string, chars: string.strip(chars),
-    strip_option_keys[1] : lambda string, chars: string.lstrip(chars),
-    strip_option_keys[2] : lambda string, chars: string.rstrip(chars),
+STRIP_OPTION_DICT = {
+    STRIP_OPTION_KEYS[0] : lambda string, chars: string.strip(chars),
+    STRIP_OPTION_KEYS[1] : lambda string, chars: string.lstrip(chars),
+    STRIP_OPTION_KEYS[2] : lambda string, chars: string.rstrip(chars),
 }
 
 # File or directory path specifications retrieval #
-path_functions = {
+PATH_FUNCTIONS = {
     'os': lambda obj_path : {
         'parent': os.path.dirname(obj_path),
         'name': os.path.basename(obj_path),
@@ -815,14 +814,14 @@ path_functions = {
 }
 
 # Index return types for pattern matches #
-match_index_action_dict = {
+MATCH_INDEX_ACTION_DICT = {
     "lo" : lambda matches : [m.start() for m in matches] if matches else [],
     "hi" : lambda matches : [m.end() for m in matches] if matches else [],
     "both" : lambda matches : [m.span() for m in matches] if matches else [],
-    }
+}
 
 # Substring replacement actions using simpler methods #
-replace_actions = {
+REPLACE_ACTIONS = {
     "str": lambda s, sb2find, sb2replace, count_std : s.replace(sb2find, sb2replace, count_std),
     "list": lambda s, sb2find, sb2replace, _ : char.replace(array(s), sb2find, sb2replace),
     "ndarray": lambda s, sb2find, sb2replace, _ : char.replace(s, sb2find, sb2replace),
