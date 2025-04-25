@@ -93,11 +93,11 @@ def __countdown(time_str, dt_fmt_str):
         # Calculate the time components
         hours, minutes, seconds = dt_obj.hour, dt_obj.minute, dt_obj.second
         if days > 0:
-            dt_args_day = [days, hours, minutes, seconds]
-            print_format_string(time_str_parts_fmts[0], dt_args_day)
+            DT_ARGS_DAY = [days, hours, minutes, seconds]
+            print_format_string(TIME_STR_PARTS_FMTS[0], DT_ARGS_DAY)
         else:            
-            dt_args_noday = [hours, minutes, seconds]
-            print_format_string(time_str_parts_fmts[1], dt_args_noday)
+            DT_ARGS_NODAY = [hours, minutes, seconds]
+            print_format_string(TIME_STR_PARTS_FMTS[1], DT_ARGS_NODAY)
             
         # Simulate time passing
         sleep(1)
@@ -116,12 +116,12 @@ def __countdown(time_str, dt_fmt_str):
 #-------------------------#
 
 # Ask for the datetime input #
-datetime_str = input("Introduce any time: ")
-dt_fmt_str = input("Introduce the formatting string without quotes: ")
+DATETIME_STR = input("Introduce any time: ")
+DT_FMT_STR = input("Introduce the formatting string without quotes: ")
 
 # Start the countdown #
 try:
-    __countdown(datetime_str, dt_fmt_str)
+    __countdown(DATETIME_STR, DT_FMT_STR)
 except KeyboardInterrupt:
     print("\nCountdown stopped.")
     
@@ -129,4 +129,4 @@ except KeyboardInterrupt:
 # Parameters and constants #
 #--------------------------#
 
-time_str_parts_fmts = ["{} days {}:{}:{}", "{}:{}:{}"]
+TIME_STR_PARTS_FMTS = ["{} days {}:{}:{}", "{}:{}:{}"]
