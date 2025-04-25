@@ -3,6 +3,8 @@
 
 # pygenutils/dictionaries/__init__.py
 
-from . import __init__
-from . import dict_handler
-from . import dict_operators
+# Define what should be available when using 'from pygenutils.dictionaries import *'
+__all__ = [
+    'dict_handler',
+    'dict_operators'
+]
