@@ -17,6 +17,7 @@ from datetime import datetime, timedelta, timezone
 # Third-party modules #
 from numpy import float128
 import pandas as pd
+import xarray as xr
 
 #------------------------#
 # Import project modules #
@@ -30,7 +31,6 @@ from pygenutils.time_handling.time_formatters import (
     datetime_obj_converter,
     FLOATED_TIME_PARSING_DICT,
 )
-from pygenutils.time_handling.time_utils import find_time_key
 
 # Try to import `pytz` and set a flag for availability
 try:
@@ -84,7 +84,183 @@ def _validate_option(arg_iterable, error_class, error_str):
     
     if option not in allowed_options:
         raise error_class(format_string(error_str, arg_iterable))
-            
+
+# Dates and times #
+#-----------------#
+
+def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):    
+    """
+    Returns the current date and time based on the specified data type.
+
+    Parameters
+    ----------
+    dtype : str
+        Type of current time to retrieve. 
+        Available options:
+        - 'datetime'  : Returns datetime object using datetime.datetime.now()
+        - 'str'       : Returns string representation of current time using time.ctime()
+        - 'timestamp' : Returns timestamp object using pd.Timestamp.now()
+        Default is 'datetime'.
+
+    time_fmt_str : str, optional
+        Optional format string for datetime formatting using .strftime().
+        Default is None.
+
+    tz_arg : timezone or str, optional
+        Optional timezone object or string for specifying the timezone.
+        If a string is provided, it will be converted to a timezone using pytz.
+
+    Raises
+    ------
+    ValueError
+    - If dtype is not one of the valid options ('datetime', 'str', 'timestamp').
+    - If 'time_fmt_str' is provided and dtype is 'str' (which returns a string),
+      as strings do not have .strftime() attribute.
+    RuntimeError
+        Possible only if ``dtype='str'``, if there is an error during the conversion process.
+
+    Returns
+    -------
+    current_time : str or datetime.datetime or pd.Timestamp
+        Current date and time object based on the dtype.
+        If 'time_fmt_str' is provided, returns a formatted string representation.
+    """    
+    # Validate string representing the data type #
+    format_args_current_time = (dtype, DT_DTYPE_OPTIONS)
+    _validate_option(format_args_current_time, ValueError, UNSUPPORTED_OPTION_TEMPLATE)
+    
+    # Handle timezone argument
+    if tz_arg is None:
+        tz = None
+    
+    elif isinstance(tz_arg, str):
+        if pytz_installed:
+            try:
+                tz_arg = pytz.timezone(tz_arg)
+            except pytz.UnknownTimeZoneError:
+                raise ValueError(f"Invalid timezone: {tz_arg}")
+        else:
+            raise ValueError("'pytz' library is required for string timezone arguments.")
+    elif isinstance(tz_arg, int):
+        tz = timezone(timedelta(hours=tz_arg))
+    elif isinstance(tz_arg, timezone):
+        tz = tz_arg
+    else:
+        raise TypeError("'tz_arg' must be a timezone object, string, or integer for UTC offset.")
+
+    # Get the current date and time #
+    current_time = CURRENT_DATETIME_DICT.get(dtype)(tz)
+    
+    # A string does not have .strftime attribute, warn accordingly #
+    param_keys = get_caller_args()
+    fmt_str_arg_pos = find_substring_index(param_keys, "time_fmt_str")
+    if (isinstance(current_time, str) and time_fmt_str is not None):
+        raise ValueError("Current time is already a string. "
+                         f"Choose another data type or "
+                         f"set '{param_keys[fmt_str_arg_pos]}' to None.")
+    
+    # Format the object based on 'time_fmt_str' variable, if provided #
+    if time_fmt_str is not None:
+        try:
+            current_time = datetime_obj_converter(current_time, convert_to="str")
+        except Exception as err:
+            raise RuntimeError(f"Error during conversion to 'str'': {err}")
+        else:
+            return current_time
+
+# Date/time attributes and keys #
+#------------------------------#
+
+def find_time_key(data):
+    """
+    Function that searches for the date/time key in various data structures.
+    Supports both exact matches and partial matches with common time-related terms.
+
+    Parameters
+    ----------
+    data : pandas.DataFrame, xarray.Dataset, xarray.DataArray, or str
+        The input data structure to search for time-related keys:
+        - For pandas DataFrame: searches column names
+        - For xarray Dataset/DataArray: searches dimensions and variables
+        - For str: assumes it's a file path and opens it as xarray Dataset
+
+    Returns
+    -------
+    str
+        The identified time-related key name.
+
+    Raises
+    ------
+    TypeError
+        If the input data type is not supported.
+    ValueError
+        If no time-related key is found.
+    """
+    # Common time-related keywords - both full words and prefixes
+    time_keywords = {
+        'exact': ['time', 'Time', 'TIME', 't', 'T', 'date', 'Date', 'DATE'],
+        'prefix': ['da', 'fe', 'tim', 'yy', 't_', 'ti']
+    }
+    
+    def check_exact_match(name):
+        """Helper to check for exact matches"""
+        return name.lower() in [k.lower() for k in time_keywords['exact']]
+    
+    def check_prefix_match(name):
+        """Helper to check for prefix matches"""
+        name_lower = name.lower()
+        return any(name_lower.startswith(prefix.lower()) for prefix in time_keywords['prefix'])
+    
+    # Handle pandas DataFrame
+    obj_type = get_type_str(data, lowercase=True)
+    if obj_type == "dataframe":
+        # Try exact matches first
+        df_cols = data.columns.tolist()
+        for col in df_cols:
+            if check_exact_match(col):
+                return col
+        
+        # Try prefix matches if no exact match found
+        for col in df_cols:
+            if check_prefix_match(col):
+                return col
+                
+        raise ValueError("No time-related column found in the pandas DataFrame.")
+    
+    # Handle xarray objects
+    elif isinstance(data, (xr.Dataset, xr.DataArray)):
+        # First check dimensions
+        for dim in data.dims:
+            if check_exact_match(dim):
+                return dim
+            if check_prefix_match(dim):
+                return dim
+        
+        # Then check variables
+        for var in data.variables:
+            if check_exact_match(var):
+                return var
+            if check_prefix_match(var):
+                return var
+                
+        raise ValueError("No time-related dimension or variable found in the xarray object.")
+    
+    # Handle string (assumed to be file path)
+    elif isinstance(data, str):
+        try:
+            ds = xr.open_dataset(data)
+            try:
+                time_key = find_time_key(ds)
+                return time_key
+            finally:
+                ds.close()
+        except Exception as e:
+            raise ValueError(f"Could not find time dimension in file {data}: {e}")
+    
+    else:
+        raise TypeError("Unsupported data type. Must be pandas DataFrame, "
+                       "xarray Dataset/DataArray, or file path string.")
+
 # %%
 
 # Display and Conversion Utilities #
