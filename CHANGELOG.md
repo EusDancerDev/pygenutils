@@ -4,6 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.11.1] - 2025-04-27
+
+### Changed
+
+#### **General**
+
+- Modify the comment header `Import custom modules` to `Import project modules` in all modules having it.
+
+---
+
 ## [v15.11.0] - 2025-04-25
 
 ### Added
@@ -11,9 +21,9 @@ All notable changes to this project will be documented in this file.
 - Module `date_and_time_utils`:
   - Add back the function `find_time_key`, moved to the module `time_utils.py` in version 15.10.0, as it semantically suits better in this module.
 
-### Changed
+### Changed (v15.11.0)
 
-#### **General**
+#### **General** (v15.11.0)
 
 - Replace direct imports with `__all__` definition in all sub-packages:
   - `arrays_and_lists`
