@@ -12,6 +12,13 @@ All notable changes to this project will be documented in this file.
 
 - Modify the comment header `Import custom modules` to `Import project modules` in all modules having it.
 
+#### **Audio and Video**
+
+- Convert all **constant names** under the header `Define parameters` to uppercase in the following files:
+  - `merge_audio_and_video.py`
+  - `merge_audio_or_video.py`
+  - `trim_media.py`
+
 ---
 
 ## [v15.11.0] - 2025-04-25
@@ -40,7 +47,7 @@ All notable changes to this project will be documented in this file.
 - Modules `data_manipulation`, `maths` and `patterns`:
   - Convert constant names to uppercase and update references
 
-#### **Audio and Video**
+#### **Audio and Video** (v15.11.0)
 
 - Module `audio_and_video_manipulation`:
   - Convert constant names to uppercase and update references
