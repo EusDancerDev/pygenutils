@@ -335,7 +335,7 @@ def _return_search_obj_spec(string, substring, re_obj_str,
 # Specifications of a file or directory path #
 ##############################################
 
-def obj_path_specs(obj_path, module="os", splitdelim=None):
+def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
     """
     Retrieve the specifications of a file or directory path.
     
@@ -349,7 +349,7 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
         The file or directory path string to process.
     module : str, optional
         The module to use for path processing. Options are 'os' (default) and 'Path' (from pathlib).
-    splitdelim : str, optional
+    SPLIT_DELIM : str, optional
         Delimiter for splitting the file name (without extension) into parts. If None, no splitting is performed.
 
     Returns
@@ -360,7 +360,7 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
         - 'name': The full name of the file or directory.
         - 'name_noext': The file or directory name without the extension.
         - 'ext': The file extension (without the dot).
-        - 'name_noext_parts' (optional): A list of parts if the file name (without extension) is split by `splitdelim`.
+        - 'name_noext_parts' (optional): A list of parts if the file name (without extension) is split by `SPLIT_DELIM`.
 
     Raises
     ------
@@ -380,8 +380,8 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
     obj_specs_dict = PATH_FUNCTIONS[module](obj_path)
     
     # Optionally, split the file name without extension by the specified delimiter
-    if splitdelim:
-        obj_specs_dict['name_noext_parts'] = obj_specs_dict['name_noext'].split(splitdelim)
+    if SPLIT_DELIM:
+        obj_specs_dict['name_noext_parts'] = obj_specs_dict['name_noext'].split(SPLIT_DELIM)
         
     return obj_specs_dict
 
@@ -389,7 +389,7 @@ def obj_path_specs(obj_path, module="os", splitdelim=None):
 # Specific component retrieval #
 ################################
 
-def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
+def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
     """
     Retrieve a specific component of a file or directory path.
 
@@ -407,9 +407,9 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
         - 'parent': The parent directory.
         - 'name': The full name of the file or directory.
         - 'name_noext': The file name without the extension.
-        - 'name_noext_parts': The file name without extension, split by `splitdelim`.
+        - 'name_noext_parts': The file name without extension, split by `SPLIT_DELIM`.
         - 'ext': The file extension (without the dot).
-    splitdelim : str, optional
+    SPLIT_DELIM : str, optional
         Delimiter for splitting the file name (without extension) into parts. 
         Required if `obj_spec_key` is 'name_noext_parts'.
 
@@ -422,7 +422,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
     Raises
     ------
     ValueError
-        If `obj_spec_key` is invalid or if `splitdelim` is not provided when required.
+        If `obj_spec_key` is invalid or if `SPLIT_DELIM` is not provided when required.
     """
     
     # Ensure the provided obj_spec_key is valid #
@@ -435,12 +435,12 @@ def get_obj_specs(obj_path, obj_spec_key=None, splitdelim=None):
         
     # If obj_path is not already a dictionary, get the path specifications
     if not isinstance(obj_path, dict):
-        obj_specs_dict = obj_path_specs(obj_path, splitdelim=splitdelim)
+        obj_specs_dict = obj_path_specs(obj_path, SPLIT_DELIM=SPLIT_DELIM)
     else:
         obj_specs_dict = obj_path
     
-    # If obj_spec_key is 'name_noext_parts', ensure that splitdelim is provided
-    if obj_spec_key == OBJ_SPECS_KEYLIST[3] and not splitdelim:
+    # If obj_spec_key is 'name_noext_parts', ensure that SPLIT_DELIM is provided
+    if obj_spec_key == OBJ_SPECS_KEYLIST[3] and not SPLIT_DELIM:
         raise ValueError("You must specify a splitting character "
                          f"if 'obj_spec_key' == '{obj_spec_key}'.")
     
