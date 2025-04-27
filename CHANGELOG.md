@@ -19,6 +19,10 @@ All notable changes to this project will be documented in this file.
   - `merge_audio_or_video.py`
   - `trim_media.py`
 
+#### **Strings**
+
+- Module `string_handler`: modify the constant `splitdelim` to `SPLIT_DELIM`.
+
 ---
 
 ## [v15.11.0] - 2025-04-25
@@ -80,7 +84,7 @@ All notable changes to this project will be documented in this file.
   - Convert constant names to uppercase and reorganise imports
   - Add parameter validation and fix constructor bug
 
-#### **Strings**
+#### **Strings** (v15.11.0)
 
 - Module `text_formatters`:
   - Convert constant names to uppercase and update references
