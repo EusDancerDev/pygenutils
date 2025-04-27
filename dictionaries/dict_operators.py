@@ -7,9 +7,9 @@
 
 from functools import reduce
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from paramlib.global_parameters import BASIC_FOUR_RULES
 from pygenutils.dictionaries.dict_handler import sort_dictionary_by_keys

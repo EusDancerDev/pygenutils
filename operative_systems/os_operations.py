@@ -7,9 +7,9 @@
 
 import os
 
-#-----------------------#
-# Import custom modules # 
-#-----------------------#
+#------------------------#
+# Import project modules # 
+#------------------------#
 
 from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES
 from pygenutils.strings.string_handler import get_type_str

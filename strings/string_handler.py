@@ -15,9 +15,9 @@ from sys import maxsize
 from numpy import array, char, vectorize
 from pandas import DataFrame, Series
 
-#-----------------------#
-# Import custom modules # 
-#-----------------------#
+#------------------------#
+# Import project modules # 
+#------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES

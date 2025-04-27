@@ -25,9 +25,9 @@ Functions
     Underlines a single- or multiple-line string, using the given character.
 """
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_type_str
 from pygenutils.strings.string_handler import find_substring_index

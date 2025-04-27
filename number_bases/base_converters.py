@@ -9,9 +9,9 @@ The supported bases include binary, octal, decimal, and hexadecimal, as well as
 arbitrary bases.
 """
 
-#-----------------------#
-# Import custom modules # 
-#-----------------------#
+#------------------------#
+# Import project modules # 
+#------------------------#
 
 from pygenutils.strings.string_handler import find_substring_index, substring_replacer
 

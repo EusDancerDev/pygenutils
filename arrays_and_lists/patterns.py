@@ -11,9 +11,9 @@ import more_itertools as mit
 import numpy as np
 from pandas import Series
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_type_str, get_caller_args
 from pygenutils.arrays_and_lists.data_manipulation import flatten_list, sort_1d_basic

@@ -10,9 +10,9 @@ YOU MAY REDISTRIBUTE this program along any other directory,
 but keep in mind that the module is designed to work with absolute paths.
 """
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from pygenutils.audio_and_video.audio_and_video_manipulation import merge_individual_media_files
 

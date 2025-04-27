@@ -23,9 +23,9 @@ from the `numeral_systems.base_converters` module are used for this
 purpose.
 """
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from pygenutils.numeral_systems.base_converters import base2bin, bin2dec
 

@@ -9,9 +9,9 @@ from intervaltree import Interval, IntervalTree
 import numpy as np
 import pandas as pd
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.instrospection_utils import get_caller_args
 from paramlib.global_parameters import INTERVALS_OPERATION_LIST

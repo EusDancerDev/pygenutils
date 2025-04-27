@@ -8,9 +8,9 @@
 import numpy as np
 from pandas import Series, DataFrame
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 #------------------#
 # Define functions # 

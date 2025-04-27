@@ -7,9 +7,9 @@
 
 import os
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_caller_args
 from pygenutils.operative_systems.os_operations import run_system_command, exit_info

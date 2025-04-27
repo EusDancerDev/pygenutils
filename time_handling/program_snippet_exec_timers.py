@@ -11,9 +11,10 @@ import timeit
 
 from numpy import round as np_round
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
+
 from filewise.general.introspection_utils import get_caller_args
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string

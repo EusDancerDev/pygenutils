@@ -15,9 +15,9 @@ import datetime
 import numpy as np
 import pandas as pd
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from pygenutils.arrays_and_lists.patterns import select_elements

@@ -10,9 +10,9 @@ strings to bytes objects using different procedures, converting
 bytes objects to integers, and decoding bytes objects back to string
 """
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from pygenutils.strings.text_formatters import get_type_str
 

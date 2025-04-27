@@ -8,9 +8,9 @@
 from datetime import timedelta as td
 from time import sleep
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from pygenutils.strings.text_formatters import print_format_string
 from pygenutils.time_handling.time_formatters import parse_time_string

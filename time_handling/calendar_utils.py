@@ -11,9 +11,9 @@ import datetime
 import numpy as np
 import pandas as pd
 
-#-----------------------#
-# Import custom modules #
-#-----------------------#
+#------------------------#
+# Import project modules #
+#------------------------#
 
 from filewise.general.introspection_utils import get_type_str
 from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
