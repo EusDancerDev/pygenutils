@@ -24,25 +24,25 @@ from pygenutils.audio_and_video.audio_and_video_manipulation import merge_media_
 #-------------#
 
 # File type delimiters #
-audio_delimiter = "audio"
-video_delimiter = "video"
+AUDIO_DELIMITER = "audio"
+VIDEO_DELIMITER = "video"
 
 # File extensions and globstrings #
-audio_extension = "mp3"
-audio_file_globstr = f"*_{audio_delimiter}.{audio_extension}"
+AUDIO_EXTENSION = "mp3"
+AUDIO_FILE_GLOBSTR = f"*_{AUDIO_DELIMITER}.{AUDIO_EXTENSION}"
 
-video_extension = "mp4"
-video_file_globstr = f"*_{video_delimiter}.{video_extension}"
+VIDEO_EXTENSION = "mp4"
+VIDEO_FILE_GLOBSTR = f"*_{VIDEO_DELIMITER}.{VIDEO_EXTENSION}"
 
 # Path to walk into for file searching #
-search_path = "../Curso_superior_ML/"
+SEARCH_PATH = "../Curso_superior_ML/"
 
 # Input media #
 #-------------#
 
 # Find target audio and video files #
-input_audio_file_list = find_files(audio_file_globstr, search_path)
-input_video_file_list = find_files(video_file_globstr, search_path)
+INPUT_AUDIO_FILE_LIST = find_files(AUDIO_FILE_GLOBSTR, SEARCH_PATH)
+INPUT_VIDEO_FILE_LIST = find_files(VIDEO_FILE_GLOBSTR, SEARCH_PATH)
 
 # Output media #
 #--------------#
@@ -50,24 +50,24 @@ input_video_file_list = find_files(video_file_globstr, search_path)
 # Name output file names manually #
 """Taking into account the names of the files, the simplest way to rename them is by removing the item type"""
 
-output_file_name_list = [
-    f"{input_audio_file.split(audio_delimiter)[0][:-1]}.{video_extension}"
-    for input_audio_file in input_audio_file_list
+OUTPUT_FILE_NAME_LIST = [
+    f"{input_audio_file.split(AUDIO_DELIMITER)[0][:-1]}.{VIDEO_EXTENSION}"
+    for input_audio_file in INPUT_AUDIO_FILE_LIST
 ]
-# output_file_name_list = None
+# OUTPUT_FILE_NAME_LIST = None
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
 ZERO_PADDING = None
-quality = 4
+QUALITY = 4
 
 #-------------------#
 # Program operation #
 #-------------------#
 
-merge_media_files(input_video_file_list,
-                  input_audio_file_list,
-                  output_file_name_list=output_file_name_list,
+merge_media_files(INPUT_VIDEO_FILE_LIST,
+                  INPUT_AUDIO_FILE_LIST,
+                  output_file_name_list=OUTPUT_FILE_NAME_LIST,
                   ZERO_PADDING=ZERO_PADDING,
-                  quality=quality)
+                  quality=QUALITY)
 

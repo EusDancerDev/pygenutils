@@ -23,32 +23,32 @@ from pygenutils.audio_and_video.audio_and_video_manipulation import merge_indivi
 # Simple data #
 #-------------#
 
-output_ext = "mp4"
+OUTPUT_EXT = "mp4"
 
 # Input media #
 #-------------#
 
 # Media input can be a list of files or a single file containing file names
-media_input = []
-# media_input = "media_name_containing_file.txt"
+MEDIA_INPUT = []
+# MEDIA_INPUT = "media_name_containing_file.txt"
 
 # Output media #
 #--------------#
 
 # Merged media file #
-output_file_name = f"merged_media_file.{output_ext}"
-# output_file_name = None
+OUTPUT_FILE_NAME = f"merged_media_file.{OUTPUT_EXT}"
+# OUTPUT_FILE_NAME = None
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
 ZERO_PADDING = 1
-quality = 4
+QUALITY = 4
 
 #------------#
 # Operations #
 #------------#
 
-merge_individual_media_files(media_input,
-                             output_file_name=output_file_name,
+merge_individual_media_files(MEDIA_INPUT,
+                             output_file_name=OUTPUT_FILE_NAME,
                              ZERO_PADDING=ZERO_PADDING,
-                             quality=quality)
+                             quality=QUALITY)

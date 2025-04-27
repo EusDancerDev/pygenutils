@@ -24,32 +24,32 @@ from pygenutils.audio_and_video.audio_and_video_manipulation import cut_media_fi
 #-------------#
 
 # Media input can be a list of files or a single file containing file names
-media_input = []
-# media_input = "media_name_containing_file.txt"
+MEDIA_INPUT = []
+# MEDIA_INPUT = "media_name_containing_file.txt"
 
 # Output media #
 #--------------#
 
 # Merged media file #
-output_file_list = []
-# output_file_list = None
+OUTPUT_FILE_LIST = []
+# OUTPUT_FILE_LIST = None
 
 # Starting and ending times #
-start_time_list = ["start", "00:01:28", "00:02:28.345"]
-end_time_list = ["00:05:21", "end", "00:07:56.851"]
+START_TIME_LIST = ["start", "00:01:28", "00:02:28.345"]
+END_TIME_LIST = ["00:05:21", "end", "00:07:56.851"]
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
 ZERO_PADDING = 1
-quality = 4
+QUALITY = 4
 
 #------------#
 # Operations #
 #------------#
 
-cut_media_files(media_input,
-                start_time_list,
-                end_time_list,
-                output_file_list=output_file_list,
+cut_media_files(MEDIA_INPUT,
+                START_TIME_LIST,
+                END_TIME_LIST,
+                output_file_list=OUTPUT_FILE_LIST,
                 ZERO_PADDING=ZERO_PADDING,
-                quality=quality)
+                quality=QUALITY)
