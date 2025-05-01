@@ -20,7 +20,7 @@ from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 from pygenutils.arrays_and_lists.patterns import unique_type_objects
 from pygenutils.strings.string_handler import modify_obj_specs
 from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
-from statkit.core.interpolation_methods import interp_pd, interp_xr
+from statflow.core.interpolation_methods import interp_pd, interp_xr
 
 #------------------#
 # Define functions #
