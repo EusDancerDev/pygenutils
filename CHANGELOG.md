@@ -4,9 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.11.1] - 2025-04-27
+## [v15.11.2] - 2025-05-01
 
 ### Changed
+
+#### **Time Handling**
+
+- Module `calendar_utils`: update import from `statkit` to `statflow` package to reflect the package's new name.
+
+---
+
+## [v15.11.1] - 2025-04-27
+
+### Changed (v15.11.1)
 
 #### **General**
 
