@@ -61,7 +61,7 @@ All notable changes to this project will be documented in this file.
 - Modules `data_manipulation`, `maths` and `patterns`:
   - Convert constant names to uppercase and update references
 
-#### **Audio and Video** (v15.11.0)
+#### **Audio and Video** (changing)
 
 - Module `audio_and_video_manipulation`:
   - Convert constant names to uppercase and update references
@@ -94,13 +94,13 @@ All notable changes to this project will be documented in this file.
   - Convert constant names to uppercase and reorganise imports
   - Add parameter validation and fix constructor bug
 
-#### **Strings** (v15.11.0)
+#### **Strings** (changing)
 
 - Module `text_formatters`:
   - Convert constant names to uppercase and update references
   - Sort project modules alphabetically
 
-#### **Time Handling**
+#### **Time Handling** (changing)
 
 - Module `time_formatters`:
   - Convert constant names to uppercase and update references
@@ -116,7 +116,7 @@ All notable changes to this project will be documented in this file.
 
 ### Removed
 
-#### **Time Handling** (v15.11.0)
+#### **Time Handling** (removing)
 
 - Module `time_utils`: after moving the function `find_time_key` to the module `date_and_time_utils`, it is no longer needed and it was removed.
 
