@@ -171,7 +171,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
 # Date/time attributes and keys #
 #------------------------------#
 
-def find_time_key(data):
+def find_dt_key(data):
     """
     Function that searches for the date/time key in various data structures.
     Supports both exact matches and partial matches with common time-related terms.
@@ -250,7 +250,7 @@ def find_time_key(data):
         try:
             ds = xr.open_dataset(data)
             try:
-                time_key = find_time_key(ds)
+                time_key = find_dt_key(ds)
                 return time_key
             finally:
                 ds.close()
@@ -559,9 +559,9 @@ def infer_frequency(data):
            str (NetCDF file path), or xarray.Dataset/xarray.DataArray
         The input data for which to infer the frequency. 
         - For pandas objects, the method will try to infer the time frequency using 
-          the 'find_time_key' helper to locate the date column or index.
+          the 'find_dt_key' helper to locate the date column or index.
         - For NetCDF files (string or xarray object), the method will infer the time frequency 
-          using the 'find_time_key' helper to locate the time dimension.
+          using the 'find_dt_key' helper to locate the time dimension.
 
     Returns
     -------
@@ -589,7 +589,7 @@ def infer_frequency(data):
     if obj_type in ["dataframe", "series", "datetimeindex","timedeltaindex"]:
         try:
             # Attempt to find date column and infer frequency
-            date_key = find_time_key(data)
+            date_key = find_dt_key(data)
             time_freq = pd.infer_freq(data[date_key])
         except (TypeError, ValueError):
             # If no date key is found, assume the input is an index
@@ -616,7 +616,7 @@ def infer_frequency(data):
         import xarray as xr
      
     # Infer time frequency for NetCDF data
-    date_key = find_time_key(ds)
+    date_key = find_dt_key(ds)
     time_freq = xr.infer_freq(ds[date_key])
 
     if not time_freq:
@@ -634,9 +634,9 @@ def infer_dt_range(data):
     ----------
     data : pandas.DataFrame, pandas.Series, str (NetCDF file path), or xarray.Dataset/xarray.DataArray
         The input data from which to infer the date range.
-        - For pandas objects, the method will use the 'find_time_key' to locate the date column.
+        - For pandas objects, the method will use the 'find_dt_key' to locate the date column.
         - For NetCDF files (string or xarray object), the method will infer the time range
-          using the 'find_time_key' to locate the time dimension.
+          using the 'find_dt_key' to locate the time dimension.
 
     Returns
     -------
@@ -660,7 +660,7 @@ def infer_dt_range(data):
     
     # Section 1: Handling Pandas DataFrame or Series
     if obj_type in ["dataframe", "series"]:
-        date_key = find_time_key(data)
+        date_key = find_dt_key(data)
         years = pd.unique(data[date_key].dt.year)
         full_period = f"{years[0]}-{years[-1]}"
         return full_period
@@ -669,7 +669,7 @@ def infer_dt_range(data):
     elif obj_type == "str":
         ds = ncfile_integrity_status(data)
         try:
-            date_key = find_time_key(ds)
+            date_key = find_dt_key(ds)
             years = pd.unique(ds[date_key].dt.year)
             full_period = f"{years[0]}-{years[-1]}"
             return full_period
@@ -677,7 +677,7 @@ def infer_dt_range(data):
             ds.close()
     elif obj_type in ["dataset", "dataarray"]:
         ds = data.copy()
-        date_key = find_time_key(ds)
+        date_key = find_dt_key(ds)
         years = pd.unique(ds[date_key].dt.year)
         full_period = f"{years[0]}-{years[-1]}"
         return full_period
@@ -816,7 +816,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # First object
     try:
-        dt_colname = find_time_key(df1)
+        dt_colname = find_dt_key(df1)
     except Exception as err:
         format_args_df1 = (err, param_keys[df1_arg_pos])
         print_format_string(DATE_COLNAME_NOT_FOUND_TEMPLATE, format_args_df1)
@@ -827,7 +827,7 @@ def merge_datetime_dataframes(df1, df2,
     
     # Second object
     try:
-        dt_colname = find_time_key(df2)
+        dt_colname = find_dt_key(df2)
     except Exception as err:
         format_args_df2 = (err, param_keys[df2_arg_pos])
         print_format_string(DATE_COLNAME_NOT_FOUND_TEMPLATE, format_args_df2)
