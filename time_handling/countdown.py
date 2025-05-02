@@ -19,7 +19,7 @@ from pygenutils.time_handling.time_formatters import parse_time_string
 # Define functions #
 #------------------#
 
-def return_time_string_parts(datetime_str, dt_fmt_str):
+def return_dt_string_parts(datetime_str, dt_fmt_str):
     
     """
     Parses a time string and returns the day component (if any) and a datetime object.
@@ -88,7 +88,7 @@ def __countdown(time_str, dt_fmt_str):
     KeyboardInterrupt
         If the user manually interrupts the countdown (Ctrl+C).
     """
-    days, dt_obj = return_time_string_parts(time_str, dt_fmt_str)
+    days, dt_obj = return_dt_string_parts(time_str, dt_fmt_str)
     while days > 0 or (dt_obj.hour, dt_obj.minute, dt_obj.second) != (0, 0, 0):
         # Calculate the time components
         hours, minutes, seconds = dt_obj.hour, dt_obj.minute, dt_obj.second
