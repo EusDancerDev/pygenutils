@@ -268,7 +268,7 @@ def dt_average(dt_obj_list,
     # Operations #
     ##############
         
-    angles = [_time_to_radians(dt_obj) for dt_obj in dt_obj_list]
+    angles = [_dt_to_radians(dt_obj) for dt_obj in dt_obj_list]
     avg_angle = _average_angle(angles)    
     time_average = _radians_to_time_of_day(avg_angle)
     
@@ -280,7 +280,7 @@ def dt_average(dt_obj_list,
 # Auxiliary methods #
 #####################
 
-def _time_to_radians(t, convert_to="datetime", time_fmt_str=None):
+def _dt_to_radians(t, convert_to="datetime", time_fmt_str=None):
     """
     Convert a time object to radians.
     
