@@ -25,7 +25,7 @@ from pygenutils.strings.text_formatters import format_string, print_format_strin
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.time_handling.time_formatters import (
     datetime_obj_converter,
-    parse_float_time,
+    parse_float_dt,
     parse_time_string
 )
 
@@ -153,7 +153,7 @@ def sum_dt_times(dt_obj_list,
     timedelta_list = []
     for dt_obj in dt_obj_list:
         dt_obj = parse_time_string(dt_obj, dt_fmt_str)
-        time_obj = extract_datetime_part(dt_obj)
+        time_obj = extract_dt_part(dt_obj)
         timedelta_obj = datetime_obj_converter(time_obj, "float")
         timedelta_list.append(timedelta_obj)
         
@@ -166,7 +166,7 @@ def sum_dt_times(dt_obj_list,
     
 
 # Auxiliary methods #
-def extract_datetime_part(datetime_obj, part="time", arg_list=None):
+def extract_dt_part(datetime_obj, part="time", arg_list=None):
     """
     Return the time or date part of a datetime object.
 
@@ -325,7 +325,7 @@ def _time_to_radians(t, convert_to="datetime", time_fmt_str=None):
                                f"'{obj_type}' to '{convert_to}': {e}.")
     
     seconds_from_midnight = \
-    datetime_obj_converter(extract_datetime_part(dt_obj), "float")
+    datetime_obj_converter(extract_dt_part(dt_obj), "float")
     radians = seconds_from_midnight / (24 * 60 * 60) * 2 * np.pi
     return radians
 
@@ -387,7 +387,7 @@ def _radians_to_time_of_day(rads):
     # If the seconds match the next day's midnight,
     # set the hour to zero instead of 24.
     # Minutes and seconds are calculated on the 60th basis.
-    time_of_day = extract_datetime_part(parse_float_time(seconds_from_midnight_int))
+    time_of_day = extract_dt_part(parse_float_dt(seconds_from_midnight_int))
     return time_of_day
 
 #%%
@@ -463,7 +463,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
     # Perform the aritmethical operations #
     total_date = parse_time_string(date_list[0], dt_fmt_str)
     for obj in date_list[1:]:
-        date_obj = extract_datetime_part(obj, part="date")
+        date_obj = extract_dt_part(obj, part="date")
         total_date = _add_dates_with_year_gap(total_date, date_obj, operation=operation)
     
     # Return the result in the specified output format #
@@ -662,8 +662,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     # Choose whether to return the date part of the time objects #
     ##############################################################
     if return_date_only:
-        dt_start_natural = extract_datetime_part(dt_start_std, part="date")
-        dt_end_natural = extract_datetime_part(dt_end_std, part="date")
+        dt_start_natural = extract_dt_part(dt_start_std, part="date")
+        dt_end_natural = extract_dt_part(dt_end_std, part="date")
         
     # Choose between returning the results as strings or datetime dt_objects #     
     #############################################################################
