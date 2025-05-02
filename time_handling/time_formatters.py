@@ -118,7 +118,7 @@ def _validate_unit(unit, module):
 # Input format: str #
 #-------------------#
 
-def parse_time_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
+def parse_dt_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
     """
     Convert a time string to a date/time object using a specified library.
     
@@ -188,7 +188,7 @@ def parse_time_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
 # Main function #
 #-#-#-#-#-#-#-#
 
-def parse_float_time(datetime_float, 
+def parse_float_dt(datetime_float, 
                      frac_precision=None,
                      origin="unix", 
                      unit="us", 
@@ -265,7 +265,7 @@ def parse_float_time(datetime_float,
                                       unit,
                                       module)
     else:
-        return _float_time_parser(datetime_float, module, unit)
+        return _float_dt_parser(datetime_float, module, unit)
     
     
 # Auxiliary functions #
@@ -303,25 +303,25 @@ def _parse_float_to_string(floated_time,
     """
     
     if origin == "arbitrary":
-        return _format_arbitrary_time(floated_time, frac_precision)
+        return _format_arbitrary_dt(floated_time, frac_precision)
        
     elif origin == "unix":
         # Accommodation of the fractional second #
         if frac_precision is not None:
             if frac_precision <= 6:
                 dt_seconds = round(floated_time)
-                dt_obj = _float_time_parser(dt_seconds, module, unit)
+                dt_obj = _float_dt_parser(dt_seconds, module, unit)
                 dt_str = dt_obj.strftime(dt_fmt_str)
             elif 7 <= frac_precision <= 9:
                 return get_nano_datetime(floated_time, module)
         # Keep the original precision #
         else:
-            dt_str = _float_time_parser(floated_time, module, unit).strftime(dt_fmt_str)
+            dt_str = _float_dt_parser(floated_time, module, unit).strftime(dt_fmt_str)
     
         return dt_str  
 
     
-def _float_time_parser(floated_time, module, unit):
+def _float_dt_parser(floated_time, module, unit):
     """
     Parses a floated time into a date/time object.
     
@@ -357,7 +357,7 @@ def _float_time_parser(floated_time, module, unit):
     return datetime_obj
 
 
-def _format_arbitrary_time(floated_time, frac_precision):
+def _format_arbitrary_dt(floated_time, frac_precision):
     """
     Formats an arbitrary time (in seconds) into a string representation
     based on the provided format.
@@ -368,7 +368,7 @@ def _format_arbitrary_time(floated_time, frac_precision):
         Time representing a time unit relative to an arbitrary origin.
     frac_precision : int [0,6] or None
         Precision of the fractional seconds.
-        This parameter is originally set in 'parse_float_time' function,
+        This parameter is originally set in 'parse_float_dt' function,
         which allows integers in [0,9], because for 6 < frac_precision <=9 
         it performs optional nanoscale time computing, unlike this internal function.
         So in order to maintain organization, the upper bound for the precision
@@ -421,13 +421,13 @@ def _format_arbitrary_time(floated_time, frac_precision):
 # All except 'float' #
 #-#-#-#-#-#-#-#-#-#-#-
 
-def datetime_obj_converter(datetime_obj,
-                           convert_to,
-                           unit="s",
-                           float_class="d", 
-                           int_class="int",
-                           dt_fmt_str=None):
-    
+def dt_obj_converter(datetime_obj,
+                    convert_to,
+                    unit="s",
+                    float_class="d", 
+                    int_class="int",
+                    dt_fmt_str=None):
+
     """
     Convert a date/time object to another, including float and string representation.
     If float, it represents seconds since the Unix epoch.
@@ -541,7 +541,7 @@ def datetime_obj_converter(datetime_obj,
 #-#-#-#-#-#-#-#-#-#-#-#-#-
 
 # Scalar complex data #
-def _total_time_unit(datetime_obj, unit, float_class, int_class):
+def _total_dt_unit(datetime_obj, unit, float_class, int_class):
     """
     Convert a datetime object into total time based on the specified unit
     (e.g., seconds, microseconds, nanoseconds).
@@ -591,7 +591,7 @@ def _total_time_unit(datetime_obj, unit, float_class, int_class):
         
         
 # Array-like complex data #
-def _total_time_complex_data(datetime_obj, int_class, unit_factor):
+def _total_dt_complex_data(datetime_obj, int_class, unit_factor):
     """
     Calculate total time in a given unit for complex data types,
     such as Series and DataFrames, by converting all values to float.
@@ -959,7 +959,7 @@ FLOATED_TIME_PARSING_DICT = {
 #-#-#-#-#-#-#-#-
 
 # To other objects #
-DATETIME_OBJ_CONVERSION_DICT = {
+DT_OBJ_CONVERSION_DICT = {
     "float"  : lambda dt_obj, _ : dt_obj.timestamp(),
     "time"   : lambda dt_obj, _ : dt_obj.timetuple(),
     "pandas" : lambda dt_obj, unit, _ : pd.to_datetime(_tzinfo_remover(dt_obj), unit=unit),
@@ -968,7 +968,7 @@ DATETIME_OBJ_CONVERSION_DICT = {
     "str"    : lambda dt_obj, _, dt_fmt_str : _to_string(dt_obj, dt_fmt_str)
 }
 
-DATETIME64_OBJ_CONVERSION_DICT = {
+DT64_OBJ_CONVERSION_DICT = {
     "float"    : lambda dt_obj, unit, _ : _to_float(dt_obj, unit),
     "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
     "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
@@ -977,7 +977,7 @@ DATETIME64_OBJ_CONVERSION_DICT = {
     "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(_to_datetime(dt_obj), dt_fmt_str)
 }
 
-DATETIME_TIME_OBJ_CONVERSION_DICT = {
+DT_TIME_OBJ_CONVERSION_DICT = {
     "float"    : lambda dt_obj, _ : _to_float(dt_obj),
     "datetime" : lambda dt_obj, _ : _to_datetime(dt_obj),
     "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
@@ -1014,16 +1014,16 @@ TIME_STT_OBJ_CONVERSION_DICT = {
 }
 
 _DT_LIKE_OBJ_CONVERSION_DICT = {
-    "float"  : lambda dt_obj, unit, _ : _total_time_unit(dt_obj, unit),
+    "float"  : lambda dt_obj, unit, _ : _total_dt_unit(dt_obj, unit),
     "pandas" : lambda dt_obj, unit, _ : _to_datetime(dt_obj, unit),
     "str"    : lambda dt_obj, unit, dt_fmt_str : _to_string(dt_obj, dt_fmt_str, unit)
 }
        
 # Enumerate all possibilities #
 CONVERSION_OPT_DICT = {
-    "datetime": DATETIME_OBJ_CONVERSION_DICT,
-    "datetime64": DATETIME64_OBJ_CONVERSION_DICT,
-    "time" : DATETIME_TIME_OBJ_CONVERSION_DICT,
+    "datetime": DT_OBJ_CONVERSION_DICT,
+    "datetime64": DT64_OBJ_CONVERSION_DICT,
+    "time" : DT_TIME_OBJ_CONVERSION_DICT,
     "timestamp": TIMESTAMP_OBJ_CONVERSION_DICT,
     "arrow": ARROW_OBJ_CONVERSION_DICT,
     "struct_time": TIME_STT_OBJ_CONVERSION_DICT,
@@ -1038,8 +1038,8 @@ _TOTAL_TIME_UNIT_DICT = {
     "datetime64"  : lambda dt_obj, unit, float_class : dt_obj.astype(f"timedelta64[{unit}]").astype(float_class),
     "struct_time" : lambda dt_obj, unit : datetime(*dt_obj[:6]),
     "arrow"       : lambda dt_obj, unit : dt_obj.float_timestamp,
-    "dataframe"   : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
-    "series"      : lambda dt_obj, _, int_class, unit_factor : _total_time_complex_data(dt_obj, int_class, unit_factor),
+    "dataframe"   : lambda dt_obj, _, int_class, unit_factor : _total_dt_complex_data(dt_obj, int_class, unit_factor),
+    "series"      : lambda dt_obj, _, int_class, unit_factor : _total_dt_complex_data(dt_obj, int_class, unit_factor),
     "ndarray"     : lambda dt_obj, unit, float_class, _ : dt_obj.astype(f"datetime64[{unit}]").astype(float_class)  
 }
 
