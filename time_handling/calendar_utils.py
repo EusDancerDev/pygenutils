@@ -19,7 +19,7 @@ from filewise.general.introspection_utils import get_type_str
 from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 from pygenutils.arrays_and_lists.patterns import unique_type_objects
 from pygenutils.strings.string_handler import modify_obj_specs
-from pygenutils.time_handling.date_and_time_utils import find_time_key, infer_frequency
+from pygenutils.time_handling.date_and_time_utils import find_dt_key, infer_frequency
 from statflow.core.interpolation_methods import interp_pd, interp_xr
 
 #------------------#
@@ -110,7 +110,7 @@ def standardise_calendar(obj,
         # Assuming all elements are pandas DataFrames
         for obj_num, (current_obj, fp) in enumerate(zip(obj, file_path)):
             
-            time_col = find_time_key(current_obj)
+            time_col = find_dt_key(current_obj)
             time_freq = infer_frequency(current_obj.loc[:10, time_col])
             
             time_shorter = current_obj[time_col].to_numpy()
