@@ -4,11 +4,64 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.11.2] - 2025-05-01
+## [v15.11.3] - 2025-05-02
 
 ### Changed
 
 #### **Time Handling**
+
+- Module `time_formatters`: rename objects containing `(date)time` to `dt` for date-time operations
+
+  | Type | Original Name | New Name | Description |
+  |:----:|:-------------:|:--------:|:-----------:|
+  | Public Function | `parse_float_time` | `parse_float_dt` | Main function for parsing float values to datetime objects |
+  | Internal Function | `_float_time_parser` | `_float_dt_parser` | Parser for converting float values to datetime objects |
+  | Internal Function | `_format_arbitrary_time` | `_format_arbitrary_dt` | Formatter for arbitrary datetime values |
+  | Internal Function | `_total_time_unit` | `_total_dt_unit` | Converter for datetime objects to total time units |
+  | Internal Function | `_total_time_complex_data` | `_total_dt_complex_data` | Handler for complex data types with datetime values |
+
+  Functions kept with `time` in their names as they handle time-only operations:
+
+  | Type | Name | Description |
+  |:----:|:----:|:-----------:|
+  | Internal Function | `__time_component_to_float` | Specifically deals with time components |
+  | Internal Function | `_to_time_struct` | Specifically deals with time structure |
+
+  Constants renamed:
+
+  | Original Name | New Name | Description |
+  |:-------------:|:--------:|:-----------:|
+  | `DATETIME_OBJ_CONVERSION_DICT` | `DT_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to various formats |
+  | `DATETIME64_OBJ_CONVERSION_DICT` | `DT64_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime64 objects to various formats |
+  | `DATETIME_TIME_OBJ_CONVERSION_DICT` | `DT_TIME_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to time objects |
+
+- Module `countdown`:
+  - Rename public function `return_time_string_parts` to `return_dt_string_parts` as it handles both dates and times.
+
+- Module `date_and_time_maths`:
+  - Rename the following public functions as they handle both dates and times, while improving conciseness:
+
+  | Original Name | New Name |
+  |:-------------:|:--------:|
+  | `extract_datetime_part` | `extract_dt_part` |
+  | `sum_dt_times` | `sum_dt_objects` |
+  | `dt_time_average` | `dt_average` |
+  | `_time_to_radians` | `_dt_to_radians` |
+
+- Module `date_and_time_utils`:
+  - Rename public function `find_time_key` to `find_dt_key` as it handles both dates and times.
+
+**NOTE** (v15.11.3)
+
+- **All above changes regarding public functions have been applied to all affected modules.**
+
+---
+
+## [v15.11.2] - 2025-05-01
+
+### Changed (v15.11.2)
+
+#### **Time Handling** (v15.11.2)
 
 - Module `calendar_utils`: update import from `statkit` to `statflow` package to reflect the package's new name.
 
@@ -1088,15 +1141,18 @@ Sub-package `climatic_signal_modulators`
 
 ### Added (v6.8.2)
 
-- Add functionalities to media manipulation functions for merging and cutting audio/video files
-- Add two external programs that apply functions of the module `audio_and_video_manipulation`.
-- Add and reorganise section header comments
+- Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
+- Add detailed docstring to the function `natural_year` and optimise inner code and comments.
 
 ### Changed (v6.8.2)
 
-- Improve readability and streamline functions
-- Substitute `print_exit_info` with `exit_info` as done in the original module `os_operations`
-- Replace varname `time_format` by `dt_format` as this generally represents both date and time (abbreviated as `dt`).
+- Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
+- Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
+- Optimise the code of the main function `clock_time_average`, as well as the auxiliary functions, and add and refine the docstrings in all of them.
+- Refine module and custom module import syntax in function `standardize_calendar`.
+- Rename `ofile` variable to `out_file_obj`, which all `.write` instances are referenced from.
+- Fix todo list for main function `clock_time_average` and auxiliaries
+- Optimise the whole try-except block and handle specific errors gracefully.
 
 ---
 
