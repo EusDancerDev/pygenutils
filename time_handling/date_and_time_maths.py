@@ -82,7 +82,7 @@ def _validate_option(arg_iterable, error_class, error_str):
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
 # Main method #
-def sum_dt_times(dt_obj_list,
+def sum_dt_objects(dt_obj_list,
                  dt_fmt_str="%H:%M:%S",
                  operation="sum",
                  output_format="standard"):
@@ -208,7 +208,7 @@ def extract_dt_part(datetime_obj, part="time", arg_list=None):
 # Main method #
 ###############
 
-def dt_time_average(dt_obj_list, 
+def dt_average(dt_obj_list, 
                        time_fmt_str="%H:%M:%S",
                        output_format="standard"):
     """
