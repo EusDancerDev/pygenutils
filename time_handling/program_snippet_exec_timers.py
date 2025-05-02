@@ -18,7 +18,7 @@ from numpy import round as np_round
 from filewise.general.introspection_utils import get_caller_args
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string
-from pygenutils.time_handling.time_formatters import parse_float_time
+from pygenutils.time_handling.time_formatters import parse_float_dt
 
 #------------------#
 # Define functions #
@@ -126,7 +126,7 @@ def program_exec_timer(mode, module="time", frac_precision=3):
             frac_precision=frac_precision
             )
             
-        return parse_float_time(elapsed_time, **elapsed_time_kwargs)
+        return parse_float_dt(elapsed_time, **elapsed_time_kwargs)
     
     else:
         raise ValueError("Invalid mode. Choose 'start' or 'stop'.")
@@ -170,7 +170,7 @@ def snippet_exec_timer(snippet_str,
         if not format_time_str:
             time_unit_str = SEC_TIME_UNIT_STR
         else:
-            exec_time_norep = parse_float_time(exec_time_norep, **float_time_parsing_kwargs)
+            exec_time_norep = parse_float_dt(exec_time_norep, **float_time_parsing_kwargs)
             time_unit_str = DEFAULT_TIME_UNIT_STR
         
         # Complete and display the corresponding output information table #
@@ -194,9 +194,9 @@ def snippet_exec_timer(snippet_str,
         if not format_time_str:
             time_unit_str = SEC_TIME_UNIT_STR
         else:
-            exec_time_rep = [parse_float_time(t, **float_time_parsing_kwargs)
+            exec_time_rep = [parse_float_dt(t, **float_time_parsing_kwargs)
                              for t in exec_time_rep]
-            best_time = parse_float_time(best_time, **float_time_parsing_kwargs)
+            best_time = parse_float_dt(best_time, **float_time_parsing_kwargs)
             time_unit_str = DEFAULT_TIME_UNIT_STR
           
         # Complete and display the corresponding output information table
