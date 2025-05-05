@@ -4,11 +4,49 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.11.3] - 2025-05-02
+## [v15.12.0] - 2025-05-05
+
+### Added
+
+- Module `time_utils`:
+  - Add the following internal and public functions to the module:
+    - Internal:
+      - `_convert_floated_time_to_datetime`
+      - `_nano_floated_time_str`
+    - Public:
+      - `get_datetime_object_unit`
+      - `get_nano_datetime`
+  - The addition implies breaking a circular dependency.
 
 ### Changed
 
 #### **Time Handling**
+
+In general, several changes have been made to break a circular dependency.
+
+- Module `calendar_utils`:
+  - Move imports of the functions `interp_pd` and `interp_xr` inside the function `standardise_calendar`.
+
+- Module `date_and_time_utils`:
+  - Correct the module name from which the function `datetime_obj_converter` is imported.
+  - Move the following public and internal functions from `date_and_time_utils` to `time_utils`:
+    - Public functions:
+      - `get_datetime_object_unit`
+      - `get_nano_datetime`
+    - Internal functions:
+      - `_convert_floated_time_to_datetime`
+      - `_nano_floated_time_str`
+
+- Module `time_formatters`:
+  - Reinstate (correct) import of functions `get_datetime_object_unit` and `get_nano_datetime` from module `date_and_time_utils.py` to `time_utils.py`.
+
+---
+
+## [v15.11.3] - 2025-05-02
+
+### Changed (v15.11.3)
+
+#### **Time Handling** (v15.11.3)
 
 - Module `time_formatters`: rename objects containing `(date)time` to `dt` for date-time operations
 
