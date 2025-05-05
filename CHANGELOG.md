@@ -128,7 +128,7 @@ In general, several changes have been made to break a circular dependency.
 
 ## [v15.11.0] - 2025-04-25
 
-### Added
+### Added (v15.11.0)
 
 - Module `date_and_time_utils`:
   - Add back the function `find_time_key`, moved to the module `time_utils.py` in version 15.10.0, as it semantically suits better in this module.
