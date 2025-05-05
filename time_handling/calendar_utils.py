@@ -19,8 +19,10 @@ from filewise.general.introspection_utils import get_type_str
 from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
 from pygenutils.arrays_and_lists.patterns import unique_type_objects
 from pygenutils.strings.string_handler import modify_obj_specs
-from pygenutils.time_handling.date_and_time_utils import find_dt_key, infer_frequency
-from statflow.core.interpolation_methods import interp_pd, interp_xr
+from pygenutils.time_handling.date_and_time_utils import (
+    find_dt_key,
+    infer_frequency,
+)
 
 #------------------#
 # Define functions #
@@ -137,6 +139,8 @@ def standardise_calendar(obj,
             
             # Interpolate missing data
             if interpolation_method:
+                # Import here to avoid circular imports
+                from statflow.core.interpolation_methods import interp_pd
                 current_obj.iloc[:, 1:] = interp_pd(current_obj.iloc[:, 1:],
                                                     method=interpolation_method,
                                                     order=order,
@@ -181,6 +185,8 @@ def standardise_calendar(obj,
         obj_std_calendar = obj.reindex({time_dim: full_times}, method=None)
         
         if interpolation_method:
+            # Import here to avoid circular imports
+            from statflow.core.interpolation_methods import interp_xr
             obj_std_calendar = interp_xr(obj_std_calendar, 
                                          method=interpolation_method,
                                          order=order,
