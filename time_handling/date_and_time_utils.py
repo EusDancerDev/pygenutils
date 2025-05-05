@@ -15,7 +15,6 @@ import time
 from datetime import datetime, timedelta, timezone
 
 # Third-party modules #
-from numpy import float128
 import pandas as pd
 import xarray as xr
 
@@ -24,13 +23,9 @@ import xarray as xr
 #------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
-from filewise.xarray_utils.file_utils import ncfile_integrity_status
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string
-from pygenutils.time_handling.time_formatters import (
-    datetime_obj_converter,
-    FLOATED_TIME_PARSING_DICT,
-)
+from pygenutils.time_handling.time_utils import datetime_obj_converter
 
 # Try to import `pytz` and set a flag for availability
 try:
@@ -196,6 +191,7 @@ def find_dt_key(data):
     ValueError
         If no time-related key is found.
     """
+    
     # Common time-related keywords - both full words and prefixes
     time_keywords = {
         'exact': ['time', 'Time', 'TIME', 't', 'T', 'date', 'Date', 'DATE'],
@@ -413,102 +409,6 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
         else:
             return current_time
         
-
-# Nanoscale datetimes #
-#-#-#-#-#-#-#-#-#-#-#-#
-
-def get_nano_datetime(t=None, module="datetime"):
-    """
-    Get the current or specified time in nanoseconds, formatted as a datetime string.
-    
-    Parameters
-    ----------
-    t : int, float, or None, optional
-        Time value in nanoseconds. If None, the current time is used.
-    module : {"datetime", "time", "pandas", "numpy", "arrow"}, default "datetime"
-        Module used to parse the floated time.
-
-    Returns
-    -------
-    nano_dt_str : str
-        The formatted datetime string with nanoseconds.
-    """
-    if t is not None and not isinstance(t, (float, int)):
-        raise TypeError("Time value must either be integer or float.")
-    
-    # Use current time if none is provided
-    if t is None:
-        t = time.time_ns()  # Get current time in nanoseconds
-    
-    # Ensure we handle floating-point times by converting to int
-    if isinstance(t, float):
-        t = int(str(t).replace(".", ""))
-        
-    floated_nanotime_str = _nano_floated_time_str(t)
-    nano_dt_str = _convert_floated_time_to_datetime(floated_nanotime_str, module)
-    return nano_dt_str
-
-
-def _convert_floated_time_to_datetime(floated_time, module):
-    """
-    Convert a floated time value to a datetime object with nanosecond precision.
-
-    Parameters
-    ----------
-    floated_time : float or int
-        The floated time value to be converted.
-    module : str
-        Module used to parse the floated time.
-
-    Returns
-    -------
-    nano_dt_str : str
-        The formatted datetime string with nanoseconds.
-    """
-    # Validate the module #
-    format_args_float_time_to_dt = (module, list(FLOATED_TIME_PARSING_DICT.keys()))
-    _validate_option(format_args_float_time_to_dt, ValueError, UNSUPPORTED_OPTION_TEMPLATE)
-    # Convert to float if input is a string
-    if isinstance(floated_time, str):
-        floated_time = float128(floated_time)
-        
-    # Split into seconds and nanoseconds
-    seconds = int(floated_time)
-    nanoseconds = int((floated_time - seconds) * 1_000_000_000)
-
-    # Convert the seconds part into a datetime object
-    dt = FLOATED_TIME_PARSING_DICT[module](floated_time, date_unit="ns")
-    
-    # Add the nanoseconds part and return the formatted string
-    dt_with_nanos = dt + timedelta(microseconds=nanoseconds / 1_000)
-    dt_with_nanos_str = datetime_obj_converter(dt_with_nanos, 
-                                               convert_to="str",
-                                               dt_fmt_str='%Y-%m-%dT%H:%M:%S')
-    nano_dt_str = f"{dt_with_nanos_str}.{nanoseconds:09d}"
-    return nano_dt_str
-
-
-def _nano_floated_time_str(time_ns):
-    """
-    Convert a time value in nanoseconds to a formatted floating-point time string.
-
-    Parameters
-    ----------
-    time_ns : int
-        Time value in nanoseconds.
-
-    Returns
-    -------
-    str
-        The floating-point time string with nanosecond precision.
-    """
-    # Convert nanoseconds to seconds and nanoseconds parts
-    seconds = time_ns // 1_000_000_000
-    nanoseconds = time_ns % 1_000_000_000
-
-    # Format the floating-point time with nanosecond precision
-    return f"{seconds}.{nanoseconds:09d}"
-
 
 # Date/time attributes #
 #-#-#-#-#-#-#-#-#-#-#-#-
