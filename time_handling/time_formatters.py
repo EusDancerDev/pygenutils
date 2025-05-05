@@ -26,9 +26,9 @@ from paramlib.global_parameters import (
     UNIT_FACTOR_DICT
 )
 from pygenutils.strings.text_formatters import format_string
-from pygenutils.time_handling.date_and_time_utils import (
+from pygenutils.time_handling.time_utils import (
     get_datetime_object_unit,
-    get_nano_datetime
+    get_nano_datetime,
 )
 
 #------------------#
