@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [v15.12.1] - 2025-05-06
+
+### Changed
+
+#### **Operative Systems**
+
+- Module `os_operations`:
+  - Improve code readability by only passing `return_output_name` to `subprocess.Popen`
+  - Update `run_system_command` docstring to clearly specify parameter applicability
+  - Remove unused `return_output_name` parameter from helper functions where not applicable
+  - Add conditional logic in `run_system_command` to handle parameter appropriately
+
 ---
 
 ## [v15.12.0] - 2025-05-05
@@ -1155,7 +1167,6 @@ Sub-package `climatic_signal_modulators`
 - `polynomial_fitting`
   - Optimised the logic by simplifying variable names and improving handling of edge cases.
   - Enhanced the docstring to detail the parameters, added alternative polynomial function usage, and described the fixing of edges in polynomial interpolation.
-
 ---
 
 ## [v7.0.0] - 2024-09-26
