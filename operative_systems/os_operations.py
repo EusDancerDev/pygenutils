@@ -58,6 +58,9 @@ def run_system_command(command,
     return_output_name : bool, optional, default: False
         If True, returns the file descriptors' names (if applicable) for stdin,
         stdout, and stderr.
+        This parameter is only applicable when using
+        (module, _class) = ("subprocess", "Popen").
+        For all other combinations, this parameter is ignored.
     encoding : str, optional, default 'utf-8'
         The encoding to use when decoding stdout and stderr. 
         If None, no decoding is applied.
@@ -90,7 +93,10 @@ def run_system_command(command,
     helper_func = COMMAND_HELPERS.get((module, _class))
     
     # Run the command via the helper
-    result = helper_func(command, capture_output=capture_output, encoding=encoding, shell=shell)
+    if (module, _class) == ("subprocess", "Popen"):
+        result = helper_func(command, capture_output=capture_output, encoding=encoding, return_output_name=return_output_name)
+    else:
+        result = helper_func(command, capture_output=capture_output, encoding=encoding, shell=shell)
     
     return result
 
@@ -180,7 +186,7 @@ def os_popen_helper(command, capture_output):
     return dict(stdout=output, return_code=None)
 
 
-def subprocess_popen_helper(command, capture_output, encoding):
+def subprocess_popen_helper(command, capture_output, encoding, return_output_name=False):
     """
     Helper function to execute a command using subprocess.Popen.
 
@@ -192,6 +198,8 @@ def subprocess_popen_helper(command, capture_output, encoding):
         If True, captures stdout, stderr, and stdin.
     encoding : str, optional
         The encoding to use when decoding stdout and stderr.
+    return_output_name : bool, optional
+        If True, returns the file descriptors' names for stdin, stdout, and stderr.
 
     Returns:
     --------
@@ -215,9 +223,15 @@ def subprocess_popen_helper(command, capture_output, encoding):
     process.wait()
     
     # Capture stdin, stdout, stderr and command exit status errors if requested
-    stdin = process.stdin.name if (capture_output and process.stdin) else None
-    stdout = process.stdout.read().decode(encoding) if capture_output and process.stdout else None
-    stderr = process.stderr.read().decode(encoding) if capture_output and process.stderr else None
+    if return_output_name and capture_output:
+        stdin = process.stdin.name if process.stdin else None
+        stdout = process.stdout.name if process.stdout else None
+        stderr = process.stderr.name if process.stderr else None
+    else:
+        stdin = process.stdin.read().decode(encoding) if capture_output and process.stdin else None
+        stdout = process.stdout.read().decode(encoding) if capture_output and process.stdout else None
+        stderr = process.stderr.read().decode(encoding) if capture_output and process.stderr else None
+    
     errors = process.errors if hasattr(process, "errors") else None
     
     # Return relevant data
@@ -274,6 +288,8 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
         If True, captures stdout and stderr.
     encoding : str, optional, default: None
         The encoding to use when decoding stdout and stderr.
+    shell : bool, optional
+        If True, the command will be executed through the shell.
 
     Returns
     -------
