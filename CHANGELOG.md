@@ -2,11 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
-## [v15.12.1] - 2025-05-06
+---
+
+## [v15.12.2] - 2025-05-07
 
 ### Changed
 
-#### **Operative Systems**
+#### **Audio and Video**
+
+- Module `merge_audio_and_video`: correct the import path for the function `find_files` from the `filewise` package.
+
+---
+
+## [v15.12.1] - 2025-05-06
+
+### Changed (v15.12.1)
+
+#### **Operative Systems** (changing)
 
 - Module `os_operations`:
   - Improve code readability by only passing `return_output_name` to `subprocess.Popen`
@@ -125,7 +137,7 @@ In general, several changes have been made to break a circular dependency.
 
 - Modify the comment header `Import custom modules` to `Import project modules` in all modules having it.
 
-#### **Audio and Video**
+#### **Audio and Video** (v15.11.1)
 
 - Convert all **constant names** under the header `Define parameters` to uppercase in the following files:
   - `merge_audio_and_video.py`
@@ -180,7 +192,7 @@ In general, several changes have been made to break a circular dependency.
 - Modules `base_converters` and `binary_operations`:
   - Convert constant names to uppercase and update references
 
-#### **Operative Systems** (changing)
+#### **Operative Systems** (changing, v15.11.0)
 
 - Module `os_operations`:
   - Convert constant names to uppercase and update references
