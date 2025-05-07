@@ -52,7 +52,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (v15.12.0)
 
-#### **Time Handling**
+#### **Time Handling** (v15.12.0)
 
 In general, several changes have been made to break a circular dependency.
 
