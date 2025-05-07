@@ -12,6 +12,10 @@ All notable changes to this project will be documented in this file.
 
 - Module `merge_audio_and_video`: correct the import path for the function `find_files` from the `filewise` package.
 
+#### **Strings**
+
+- Module `text_formatters`: ensure the result from `find_substring_index` is always handled as a list in the `format_string` function, preventing errors when formatting strings with a single pair of brackets.
+
 ---
 
 ## [v15.12.1] - 2025-05-06
