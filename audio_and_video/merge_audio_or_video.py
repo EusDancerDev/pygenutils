@@ -44,11 +44,15 @@ OUTPUT_FILE_NAME = f"merged_media_file.{OUTPUT_EXT}"
 ZERO_PADDING = 1
 QUALITY = 4
 
+# Safe mode for ffmpeg #
+# If True, ffmpeg runs in safe mode to prevent unsafe file operations
+SAFE = True
+
 #------------#
 # Operations #
 #------------#
 
 merge_individual_media_files(MEDIA_INPUT,
+                             safe=SAFE,
                              output_file_name=OUTPUT_FILE_NAME,
-                             ZERO_PADDING=ZERO_PADDING,
                              quality=QUALITY)
