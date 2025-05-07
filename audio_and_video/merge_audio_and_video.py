@@ -29,10 +29,10 @@ VIDEO_DELIMITER = "video"
 
 # File extensions and globstrings #
 AUDIO_EXTENSION = "mp3"
-AUDIO_FILE_GLOBSTR = f"*_{AUDIO_DELIMITER}.{AUDIO_EXTENSION}"
+AUDIO_FILE_PATTERN = f"_{AUDIO_DELIMITER}.{AUDIO_EXTENSION}"
 
 VIDEO_EXTENSION = "mp4"
-VIDEO_FILE_GLOBSTR = f"*_{VIDEO_DELIMITER}.{VIDEO_EXTENSION}"
+VIDEO_FILE_PATTERN = f"_{VIDEO_DELIMITER}.{VIDEO_EXTENSION}"
 
 # Path to walk into for file searching #
 SEARCH_PATH = "../Curso_superior_ML/"
@@ -40,9 +40,12 @@ SEARCH_PATH = "../Curso_superior_ML/"
 # Input media #
 #-------------#
 
+# Set common keyword arguments #
+COMMON_KWARGS = dict(search_path=SEARCH_PATH, match_type="glob_left")
+
 # Find target audio and video files #
-INPUT_AUDIO_FILE_LIST = find_files(AUDIO_FILE_GLOBSTR, SEARCH_PATH)
-INPUT_VIDEO_FILE_LIST = find_files(VIDEO_FILE_GLOBSTR, SEARCH_PATH)
+INPUT_AUDIO_FILE_LIST = find_files(AUDIO_FILE_PATTERN, **COMMON_KWARGS)
+INPUT_VIDEO_FILE_LIST = find_files(VIDEO_FILE_PATTERN, **COMMON_KWARGS)
 
 # Output media #
 #--------------#
