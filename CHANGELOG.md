@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.4] - 2025-05-07
+## [v15.12.5] - 2025-05-07
 
 ### Changed
 
@@ -18,6 +18,8 @@ All notable changes to this project will be documented in this file.
   - Correct the import path for the function `find_files` from the `filewise` package.
   - Correct the argument `output_file_name_list` to `output_file_list` as supported by the function `merge_media_files`.
   - Lowercase the argument `ZERO_PADDING` (not the constant), as that is considered as a parameter in the function `merge_media_files`.
+  - Replace the suffix `_GLOBSTR` with `_PATTERN` as the former does not reflect a wildcarded string anymore.
+  - Remove the wildcard asterisk from the constants with the updated suffix, as the function `find_files` implements wildcards.
 
 - Module `merge_audio_or_video`:
   - Expose the `safe` parameter to allow toggling ffmpeg safe mode when merging media files.
