@@ -23,6 +23,7 @@ import xarray as xr
 #------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
+from filewise.xarray_utils.file_utils import ncfile_integrity_status
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.time_handling.time_utils import datetime_obj_converter
