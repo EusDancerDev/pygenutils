@@ -30,7 +30,7 @@ All notable changes to this project will be documented in this file.
       - `get_nano_datetime`
   - The addition implies breaking a circular dependency.
 
-### Changed
+### Changed (v15.12.0)
 
 #### **Time Handling**
 
@@ -180,7 +180,7 @@ In general, several changes have been made to break a circular dependency.
 - Modules `base_converters` and `binary_operations`:
   - Convert constant names to uppercase and update references
 
-#### **Operative Systems**
+#### **Operative Systems** (changing)
 
 - Module `os_operations`:
   - Convert constant names to uppercase and update references
@@ -1167,6 +1167,7 @@ Sub-package `climatic_signal_modulators`
 - `polynomial_fitting`
   - Optimised the logic by simplifying variable names and improving handling of edge cases.
   - Enhanced the docstring to detail the parameters, added alternative polynomial function usage, and described the fixing of edges in polynomial interpolation.
+
 ---
 
 ## [v7.0.0] - 2024-09-26
