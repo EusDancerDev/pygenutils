@@ -41,9 +41,10 @@ def merge_media_files(audio_file_list_or_file,
         A list of video file paths or a path to a text file containing video file names.
     output_file_list : list, optional
         A list of output file names. If not provided, default names will be generated.
-    zero_padding : int, optional
+    zero_padding : int or None, optional
         Zero-padding to apply to the output file numbers. 
-        Must be greater than or equal to 1.
+        Must be greater than or equal to 1, or None to disable padding.
+        Only used when output_file_list is None.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
 
@@ -98,9 +99,9 @@ def merge_media_files(audio_file_list_or_file,
             raise ValueError("Output file name list must match the length of input lists.")
         
     # Zero-padding
-    if not isinstance(zero_padding, int) or zero_padding < 1:
+    if zero_padding is not None and (not isinstance(zero_padding, int) or zero_padding < 1):
         raise ValueError(f"'zero_padding' (number {zero_pad_pos}) "
-                         f"must be an integer >= 1, got {zero_padding}.")
+                         f"must be an integer >= 1 or None, got {zero_padding}.")
         
     # Quality input 
     if not isinstance(quality, int) or not (1 <= quality <= 10):
@@ -115,10 +116,17 @@ def merge_media_files(audio_file_list_or_file,
     
     # Generate default output file names if not provided
     if output_file_list is None:
-        output_file_list = [
-            f"merged_video_{str(i + 1).zfill(zero_padding)}"
-            for i in range(len(video_file_list))
-        ]
+        if zero_padding is None:
+            # No padding when zero_padding is None
+            output_file_list = [
+                f"merged_video_{i + 1}"
+                for i in range(len(video_file_list))
+            ]
+        else:
+            output_file_list = [
+                f"merged_video_{str(i + 1).zfill(zero_padding)}"
+                for i in range(len(video_file_list))
+            ]
     
     # Try multiple ffmpeg merge template strings with different variations to handle errors
     template_strings_to_try = []
@@ -270,9 +278,10 @@ def cut_media_files(input_file_list_or_file,
         If any set to 'end', cutting proceeds until the end of the file.
     output_file_list : list, optional
         A list of output file names. If not provided, default names will be generated.
-    zero_padding : int, optional
+    zero_padding : int or None, optional
         Zero-padding to apply to the output file numbers. 
-        Must be greater than or equal to 1.
+        Must be greater than or equal to 1, or None to disable padding.
+        Only used when output_file_list is None.
     quality : int, optional
         The quality level for the cut output (1=lowest, 10=highest). Default is 1.
 
@@ -339,8 +348,8 @@ def cut_media_files(input_file_list_or_file,
                 validate_time_format(end_time)
 
     # Zero-padding
-    if not isinstance(zero_padding, int) or zero_padding < 1:
-        raise ValueError(f"zero_padding must be an integer >= 1, got {zero_padding}.")
+    if zero_padding is not None and (not isinstance(zero_padding, int) or zero_padding < 1):
+        raise ValueError(f"zero_padding must be an integer >= 1 or None, got {zero_padding}.")
         
     # Quality input 
     if not isinstance(quality, int) or not (1 <= quality <= 10):
@@ -352,8 +361,13 @@ def cut_media_files(input_file_list_or_file,
     
     # If output file list is not provided, create default names
     if output_file_list is None:
-        output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
-                            for i in range(len(file_list))]
+        if zero_padding is None:
+            # No padding when zero_padding is None
+            output_file_list = [f"cut_file_{i + 1}.mp4" 
+                               for i in range(len(file_list))]
+        else:
+            output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
+                               for i in range(len(file_list))]
     
     # Try multiple ffmpeg cut template strings with different variations to handle errors
     template_strings_to_try = []
