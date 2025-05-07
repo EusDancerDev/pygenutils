@@ -67,7 +67,7 @@ QUALITY = 4
 
 merge_media_files(INPUT_VIDEO_FILE_LIST,
                   INPUT_AUDIO_FILE_LIST,
-                  output_file_name_list=OUTPUT_FILE_NAME_LIST,
-                  ZERO_PADDING=ZERO_PADDING,
+                  output_file_list=OUTPUT_FILE_NAME_LIST,
+                  zero_padding=ZERO_PADDING,
                   quality=QUALITY)
 
