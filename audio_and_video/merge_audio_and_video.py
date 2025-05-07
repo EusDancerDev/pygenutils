@@ -13,7 +13,7 @@ but keep in mind that the module is designed to work with absolute paths.
 # Import project modules #
 #------------------------#
 
-from filewise.utilities.file_operations.path_utils import find_files
+from filewise.file_operations.path_utils import find_files
 from pygenutils.audio_and_video.audio_and_video_manipulation import merge_media_files
 
 #-------------------#
