@@ -14,7 +14,7 @@ import os
 from filewise.general.introspection_utils import get_caller_args
 from pygenutils.operative_systems.os_operations import run_system_command, exit_info
 from pygenutils.strings.text_formatters import format_string
-from pygenutils.time_handling.time_formatters import parse_time_string
+from pygenutils.time_handling.time_formatters import parse_dt_string
 
 #------------------#
 # Define functions #
@@ -303,7 +303,7 @@ def cut_media_files(input_file_list_or_file,
     def validate_time_format(time_str):
         try:
             for time_fmt in TIME_FMT_STR_LIST:
-                parse_time_string(time_str, time_fmt)
+                parse_dt_string(time_str, time_fmt)
         except ValueError:
             raise ValueError(f"Invalid time format: {time_str}. "
                              f"Expected one from {TIME_FMT_STR_LIST}")
