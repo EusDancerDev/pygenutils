@@ -67,6 +67,10 @@ def format_string(string2format, arg_obj):
                                               advanced_search=True,
                                               all_matches=True)
     
+    # Ensure bracket_index_list is always a list
+    if not isinstance(bracket_index_list, list):
+        bracket_index_list = [bracket_index_list]
+    
     num_brackets = len(bracket_index_list)
     
     try:               
