@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.5] - 2025-05-07
+## [v15.12.6] - 2025-05-07
 
 ### Changed
 
