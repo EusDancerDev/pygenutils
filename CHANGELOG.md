@@ -148,7 +148,7 @@ In general, several changes have been made to break a circular dependency.
   - `merge_audio_or_video.py`
   - `trim_media.py`
 
-#### **Strings**
+#### **Strings** (v15.11.1)
 
 - Module `string_handler`: modify the constant `splitdelim` to `SPLIT_DELIM`.
 
