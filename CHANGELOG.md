@@ -10,7 +10,18 @@ All notable changes to this project will be documented in this file.
 
 #### **Audio and Video**
 
-- Module `merge_audio_and_video`: correct the import path for the function `find_files` from the `filewise` package.
+- Module `audio_and_video_manipulation`:
+  - Update import to use `parse_dt_string` instead of the deprecated `parse_time_string` from the module `time_formatters`.
+  - Add support for `None` as a valid value for the `zero_padding` parameter in both `merge_media_files` and `cut_media_files` functions, disabling padding when generating default output filenames.
+
+- Module `merge_audio_and_video`:
+  - Correct the import path for the function `find_files` from the `filewise` package.
+  - Correct the argument `output_file_name_list` to `output_file_list` as supported by the function `merge_media_files`.
+  - Lowercase the argument `ZERO_PADDING` (not the constant), as that is considered as a parameter in the function `merge_media_files`.
+
+- Module `merge_audio_or_video`:
+  - Expose the `safe` parameter to allow toggling ffmpeg safe mode when merging media files.
+  - Remove the `ZERO_PADDING` parameter, as it is not supported by the function `merge_individual_media_files`.
 
 #### **Strings**
 

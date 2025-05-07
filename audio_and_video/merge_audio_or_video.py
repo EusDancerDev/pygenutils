@@ -41,7 +41,6 @@ OUTPUT_FILE_NAME = f"merged_media_file.{OUTPUT_EXT}"
 
 # Zero-padding and bit rate factor #
 """The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
-ZERO_PADDING = 1
 QUALITY = 4
 
 # Safe mode for ffmpeg #
