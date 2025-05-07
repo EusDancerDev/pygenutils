@@ -4,7 +4,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.3] - 2025-05-07
+## [v15.12.4] - 2025-05-07
 
 ### Changed
 
@@ -15,6 +15,10 @@ All notable changes to this project will be documented in this file.
 #### **Strings**
 
 - Module `text_formatters`: ensure the result from `find_substring_index` is always handled as a list in the `format_string` function, preventing errors when formatting strings with a single pair of brackets.
+
+#### **Time Handling**
+
+- Module `time_formatters`: correct the name of the deprecated function: from `parse_time_string` to `parse_dt_string`.
 
 ---
 
