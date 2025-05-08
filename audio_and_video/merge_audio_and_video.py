@@ -64,6 +64,12 @@ OUTPUT_FILE_NAME_LIST = [
 ZERO_PADDING = None
 QUALITY = 4
 
+# Command execution parameters #
+CAPTURE_OUTPUT = True
+RETURN_OUTPUT_NAME = False
+ENCODING = "utf-8"
+SHELL = True
+
 #-------------------#
 # Program operation #
 #-------------------#
@@ -72,5 +78,9 @@ merge_media_files(INPUT_VIDEO_FILE_LIST,
                   INPUT_AUDIO_FILE_LIST,
                   output_file_list=OUTPUT_FILE_NAME_LIST,
                   zero_padding=ZERO_PADDING,
-                  quality=QUALITY)
+                  quality=QUALITY,
+                  capture_output=CAPTURE_OUTPUT,
+                  return_output_name=RETURN_OUTPUT_NAME,
+                  encoding=ENCODING,
+                  shell=SHELL)
 
