@@ -28,7 +28,11 @@ def merge_media_files(audio_file_list_or_file,
                       video_file_list_or_file, 
                       output_file_list=None, 
                       zero_padding=1, 
-                      quality=1):
+                      quality=1,
+                      capture_output=False,
+                      return_output_name=False,
+                      encoding="utf-8",
+                      shell=True):
     """
     Merges audio and video files into a single output file for each pair.
 
@@ -46,6 +50,14 @@ def merge_media_files(audio_file_list_or_file,
         Only used when output_file_list is None.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
+    capture_output : bool, optional
+        Whether to capture the command output. Default is False.
+    return_output_name : bool, optional
+        Whether to return file descriptor names. Default is False.
+    encoding : str, optional
+        Encoding to use when decoding command output. Default is "utf-8".
+    shell : bool, optional
+        Whether to execute the command through the shell. Default is True.
 
     Raises
     ------
@@ -147,7 +159,13 @@ def merge_media_files(audio_file_list_or_file,
     # Try each command and pass on errors
     for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(ffmpeg_command)
+            process_exit_info = run_system_command(
+                ffmpeg_command,
+                capture_output=capture_output,
+                return_output_name=return_output_name,
+                encoding=encoding,
+                shell=shell
+            )
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -157,7 +175,11 @@ def merge_media_files(audio_file_list_or_file,
 def merge_individual_media_files(input_file_list_or_file,
                                  safe=True, 
                                  output_file_name=None,
-                                 quality=1):
+                                 quality=1,
+                                 capture_output=False,
+                                 return_output_name=False,
+                                 encoding="utf-8",
+                                 shell=True):
     """
     Merges either audio or video files into a single output file.
 
@@ -173,6 +195,14 @@ def merge_individual_media_files(input_file_list_or_file,
         The name of the output file. If not provided, a default name will be used.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
+    capture_output : bool, optional
+        Whether to capture the command output. Default is False.
+    return_output_name : bool, optional
+        Whether to return file descriptor names. Default is False.
+    encoding : str, optional
+        Encoding to use when decoding command output. Default is "utf-8".
+    shell : bool, optional
+        Whether to execute the command through the shell. Default is True.
 
     Raises
     ------
@@ -245,7 +275,13 @@ def merge_individual_media_files(input_file_list_or_file,
     # Try each command until one succeeds or all fail
     for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(ffmpeg_command)
+            process_exit_info = run_system_command(
+                ffmpeg_command,
+                capture_output=capture_output,
+                return_output_name=return_output_name,
+                encoding=encoding,
+                shell=shell
+            )
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -261,7 +297,11 @@ def cut_media_files(input_file_list_or_file,
                     end_time_list, 
                     output_file_list=None,
                     zero_padding=1,
-                    quality=1):
+                    quality=1,
+                    capture_output=False,
+                    return_output_name=False,
+                    encoding="utf-8",
+                    shell=True):
     """
     Cuts media files (audio or video) based on specified start and end times.
 
@@ -283,6 +323,14 @@ def cut_media_files(input_file_list_or_file,
         Only used when output_file_list is None.
     quality : int, optional
         The quality level for the cut output (1=lowest, 10=highest). Default is 1.
+    capture_output : bool, optional
+        Whether to capture the command output. Default is False.
+    return_output_name : bool, optional
+        Whether to return file descriptor names. Default is False.
+    encoding : str, optional
+        Encoding to use when decoding command output. Default is "utf-8".
+    shell : bool, optional
+        Whether to execute the command through the shell. Default is True.
 
     Raises
     ------
@@ -388,7 +436,13 @@ def cut_media_files(input_file_list_or_file,
     # Try each command and pass on errors
     for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(ffmpeg_command)
+            process_exit_info = run_system_command(
+                ffmpeg_command,
+                capture_output=capture_output,
+                return_output_name=return_output_name,
+                encoding=encoding,
+                shell=shell
+            )
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
