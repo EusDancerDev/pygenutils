@@ -18,14 +18,152 @@ from pygenutils.time_handling.time_formatters import parse_dt_string
 #------------------#
 # Define functions #
 #------------------#
-            
+
+# Internal helpers #
+#------------------#
+
+def _load_file_list(files):
+    """
+    Internal helper to load files from various input formats.
+    
+    Processes inputs that can be:
+    - A direct file path (string)
+    - A path to a text file containing a list of files (string)
+    - A list of file paths (list)
+    - A nested list of file paths for recursive processing (list of lists)
+    
+    Parameters
+    ----------
+    files : str or list
+        The input to process
+        
+    Returns
+    -------
+    list
+        A flattened list of file paths
+        
+    Raises
+    ------
+    ValueError or RuntimeError
+        If the file(s) cannot be read
+    TypeError
+        If the input is neither a string nor a list
+    """
+    # Handle recursion - if it's a list that contains lists, process each sublist
+    if isinstance(files, list) and any(isinstance(item, list) for item in files):
+        result = []
+        for item in files:
+            result.extend(_load_file_list(item))
+        return result
+    
+    # Regular processing
+    if isinstance(files, list):
+        return files
+        
+    # If it's a string, check if it's a direct media file
+    if isinstance(files, str):
+        # If the file exists and has a recognized media extension, treat as direct file path
+        if os.path.exists(files) and (files.endswith(tuple(COMMON_AUDIO_FORMATS)) or 
+                                      files.endswith(tuple(COMMON_VIDEO_FORMATS))):
+            return [files]  # Return as single-item list
+        
+        # Otherwise try to read it as a file containing a list
+        try:
+            with open(files) as f:
+                return f.read().splitlines()
+        except Exception as e:
+            # The original functions use different exception types, so we'll default to ValueError
+            # and let the calling function raise its own exception type if needed
+            raise ValueError(f"Error reading file '{files}': {e}")
+    
+    raise TypeError(f"Expected list or string, got {type(files)}")
+
+def _validate_files(file_list, list_name):
+    """
+    Validates that all files in a list exist.
+    
+    Parameters
+    ----------
+    file_list : list
+        List of file paths to validate
+    list_name : str
+        Name of the list for error reporting
+        
+    Raises
+    ------
+    FileNotFoundError
+        If any file in the list doesn't exist
+    """
+    for file in file_list:
+        if not os.path.exists(file):
+            raise FileNotFoundError(f"{list_name}: '{file}' not found.")
+
+def _is_audio_file(file):
+    """
+    Checks if a file has an audio extension.
+    
+    Parameters
+    ----------
+    file : str
+        File path to check
+        
+    Returns
+    -------
+    bool
+        True if the file has an audio extension, False otherwise
+    """
+    return file.endswith(tuple(COMMON_AUDIO_FORMATS))
+
+def _is_video_file(file):
+    """
+    Checks if a file has a video extension.
+    
+    Parameters
+    ----------
+    file : str
+        File path to check
+        
+    Returns
+    -------
+    bool
+        True if the file has a video extension, False otherwise
+    """
+    return file.endswith(tuple(COMMON_VIDEO_FORMATS))
+
+# Add a new helper function to handle file path escaping
+
+def _escape_path(file_path):
+    """
+    Escapes file paths for use in shell commands.
+    
+    Handles paths containing spaces, parentheses, and other special characters.
+    
+    Parameters
+    ----------
+    file_path : str
+        The file path to escape
+        
+    Returns
+    -------
+    str
+        The escaped file path, safe for use in shell commands
+    """
+    import re
+    import shlex
+    
+    # Use shlex.quote for proper shell escaping
+    return shlex.quote(file_path)
+
+# Main functions #
+#----------------#
+
 # Merge files #
 #-------------#
 
 # %% 
 
-def merge_media_files(audio_file_list_or_file, 
-                      video_file_list_or_file, 
+def merge_media_files(audio_files, 
+                      video_files, 
                       output_file_list=None, 
                       zero_padding=1, 
                       quality=1,
@@ -38,10 +176,12 @@ def merge_media_files(audio_file_list_or_file,
 
     Parameters
     ----------
-    audio_file_list_or_file : list or str
+    audio_files : list or str
         A list of audio file paths or a path to a text file containing audio file names.
-    video_file_list_or_file : list or str
+        Can also be a nested list for recursive processing.
+    video_files : list or str
         A list of video file paths or a path to a text file containing video file names.
+        Can also be a nested list for recursive processing.
     output_file_list : list, optional
         A list of output file names. If not provided, default names will be generated.
     zero_padding : int or None, optional
@@ -70,33 +210,17 @@ def merge_media_files(audio_file_list_or_file,
     None
     """
     
-    # Helper functions #
-    #-#-#-#-#-#-#-#-#-#-
-    
     # Get all arguments #
     param_keys = get_caller_args()
     zero_pad_pos = param_keys.index("zero_padding")
-
-    # Helper function to load file list from external file if necessary
-    def load_file_list(file_or_list):
-        if isinstance(file_or_list, list):
-            return file_or_list
-        try:
-            with open(file_or_list) as f:
-                return f.read().splitlines()
-        except Exception as e:
-            raise ValueError(f"Error reading file '{file_or_list}': {e}")
-            
-    # File existence
-    def validate_files(file_list, list_name):
-        for file in file_list:
-            if not os.path.exists(file):
-                raise FileNotFoundError(f"{list_name}: '{file}' not found.")
     
     # Load the file lists, automatically detecting whether input is file or list
-    audio_file_list = load_file_list(audio_file_list_or_file)
-    video_file_list = load_file_list(video_file_list_or_file)
-
+    try:
+        audio_file_list = _load_file_list(audio_files)
+        video_file_list = _load_file_list(video_files)
+    except ValueError as e:
+        raise ValueError(f"Error loading files: {e}")
+    
     # Validations #
     #-#-#-#-#-#-#-#
     
@@ -119,8 +243,8 @@ def merge_media_files(audio_file_list_or_file,
         raise ValueError("Quality must be an integer between 1 and 10.")
     
     # File existence validation
-    validate_files(video_file_list, "Video file list (arg number 0)")
-    validate_files(audio_file_list, "Audio file list (arg number 1)")
+    _validate_files(video_file_list, "Video file list (arg number 0)")
+    _validate_files(audio_file_list, "Audio file list (arg number 1)")
     
     # Operations #
     #-#-#-#-#-#-#-
@@ -140,39 +264,44 @@ def merge_media_files(audio_file_list_or_file,
             ]
     
     # Try multiple ffmpeg merge template strings with different variations to handle errors
-    ffmpeg_commands_to_try = []
     for audio_file, video_file, output_file in zip(audio_file_list,
                                                    video_file_list,
                                                    output_file_list):
-        # Create a list of ffmpeg commands to try
-        ffmpeg_command = f"ffmpeg -i {audio_file} -i {video_file} "\
-                         f"-c:v copy -c:a aac -b:a {quality*32}k {output_file}"
-        ffmpeg_commands_to_try.append(ffmpeg_command)
-
-        # Additional ffmpeg command variations for error handling
-        ffmpeg_commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
-                                       f"-c:v libx264 -b:a {quality*32}k "
-                                       f"-preset fast {output_file}")
-        ffmpeg_commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
-                                       f"-c:v libx265 -b:a {quality*32}k -c:a copy {output_file}")
-
-    # Try each command and pass on errors
-    for ffmpeg_command in ffmpeg_commands_to_try:
-        try:
-            process_exit_info = run_system_command(
-                ffmpeg_command,
-                capture_output=capture_output,
-                return_output_name=return_output_name,
-                encoding=encoding,
-                shell=shell
+        # Create a list of ffmpeg commands to try using the templates
+        bitrate = quality * 32
+        
+        ffmpeg_commands_to_try = []
+        for template in FFMPEG_MERGE_CMD_TEMPLATES:
+            ffmpeg_command = template.format(
+                audio_file=_escape_path(audio_file),
+                video_file=_escape_path(video_file),
+                bitrate=bitrate,
+                output_file=_escape_path(output_file)
             )
-            exit_info(process_exit_info)
-            break  # Exit loop if successful
-        except RuntimeError:
-            pass  # Continue with the next ffmpeg command if there's an error
+            ffmpeg_commands_to_try.append(ffmpeg_command)
+
+        # Try each command until one succeeds for this file pair
+        success = False
+        for ffmpeg_command in ffmpeg_commands_to_try:
+            try:
+                process_exit_info = run_system_command(
+                    ffmpeg_command,
+                    capture_output=capture_output,
+                    return_output_name=return_output_name,
+                    encoding=encoding,
+                    shell=shell
+                )
+                exit_info(process_exit_info)
+                success = True
+                break  # Exit the inner loop if successful
+            except RuntimeError:
+                continue  # Try the next command variation
+        
+        if not success:
+            print(f"Warning: Failed to process {audio_file} + {video_file}")
 
 # %%
-def merge_individual_media_files(input_file_list_or_file,
+def merge_individual_media_files(media_inputs,
                                  safe=True, 
                                  output_file_name=None,
                                  quality=1,
@@ -185,9 +314,9 @@ def merge_individual_media_files(input_file_list_or_file,
 
     Parameters
     ----------
-    input_file_list_or_file : list or str
+    media_inputs : list or str
         A list of file paths (either audio or video) or a path to a text file 
-        containing file names.
+        containing file names. Can also be a nested list for recursive processing.
     safe : bool, optional
         If True, ffmpeg runs in safe mode to prevent unsafe file operations.
         Default is True.
@@ -215,26 +344,6 @@ def merge_individual_media_files(input_file_list_or_file,
     None
     """
     
-    # Helper functions #
-    #------------------#
-    
-    # Helper function to load file list from external file if necessary
-    def load_file_list(file_or_list):
-        if isinstance(file_or_list, list):
-            return file_or_list
-        try:
-            with open(file_or_list) as f:
-                return f.read().splitlines()
-        except Exception as e:
-            raise ValueError(f"Error reading file '{file_or_list}': {e}")
-    
-    # Automatically detect file type
-    def is_audio_file(file):
-        return file.endswith(tuple(COMMON_AUDIO_FORMATS))
-
-    def is_video_file(file):
-        return file.endswith(tuple(COMMON_VIDEO_FORMATS))
-    
     # Validations #
     #-------------#
     
@@ -243,11 +352,14 @@ def merge_individual_media_files(input_file_list_or_file,
         raise ValueError("Quality must be an integer between 1 and 10.")
 
     # Load the file list, automatically detecting whether input is file or list
-    file_list = load_file_list(input_file_list_or_file)
+    try:
+        file_list = _load_file_list(media_inputs)
+    except ValueError as e:
+        raise ValueError(f"Error loading files: {e}")
 
     # Check if all files are either audio or video, not both #
-    audio_files = [file for file in file_list if is_audio_file(file)]
-    video_files = [file for file in file_list if is_video_file(file)]
+    audio_files = [file for file in file_list if _is_audio_file(file)]
+    video_files = [file for file in file_list if _is_video_file(file)]
     
     if audio_files and video_files:
         raise ValueError("Input list contains both audio and video files. "
@@ -262,15 +374,20 @@ def merge_individual_media_files(input_file_list_or_file,
     
     # Attempt multiple ffmpeg commands to handle potential errors
     ffmpeg_commands_to_try = []
-    input_str = '|'.join(file_list)
-    ffmpeg_commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
-                           f"-c copy {output_file_name}.mp4")
-
-    # Add variations of ffmpeg commands in case errors occur
-    ffmpeg_commands_to_try.append(f"ffmpeg -safe {int(safe)} -f concat -i {input_file_list_or_file} "
-                           f"-c:v libx264 -b:a {quality*32}k -preset slow {output_file_name}.mp4")
-    ffmpeg_commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
-                           f"-c:v libx265 -c:a copy {output_file_name}.mp4")
+    # For input_str, we need to escape each path before joining
+    escaped_file_list = [_escape_path(file) for file in file_list]
+    input_str = '|'.join(escaped_file_list)
+    bitrate = quality * 32
+    
+    for template in FFMPEG_INDIVIDUAL_MERGE_CMD_TEMPLATES:
+        ffmpeg_command = template.format(
+            input_str=input_str,
+            input_file=_escape_path(media_inputs) if isinstance(media_inputs, str) else media_inputs,
+            safe=int(safe),
+            bitrate=bitrate,
+            output_file=_escape_path(output_file_name)
+        )
+        ffmpeg_commands_to_try.append(ffmpeg_command)
 
     # Try each command until one succeeds or all fail
     for ffmpeg_command in ffmpeg_commands_to_try:
@@ -292,7 +409,7 @@ def merge_individual_media_files(input_file_list_or_file,
 # Cut files #
 #-----------#
 
-def cut_media_files(input_file_list_or_file, 
+def cut_media_files(media_inputs, 
                     start_time_list,
                     end_time_list, 
                     output_file_list=None,
@@ -307,8 +424,9 @@ def cut_media_files(input_file_list_or_file,
 
     Parameters
     ----------
-    input_file_list_or_file : list or str
+    media_inputs : list or str
         A list of media file paths or a path to a text file containing file names.
+        Can also be a nested list for recursive processing.
     start_time_list : str or list of str
         The start time in the format '%H:%M:%S' or '%H:%M:%S.%f'. 
         If any set to 'start', cutting starts from the beginning.
@@ -348,13 +466,10 @@ def cut_media_files(input_file_list_or_file,
     
     Notes
     -----
-    For arg 'input_file_list_or_file', note that if a single file is passed, 
+    For arg 'media_inputs', note that if a single file is passed, 
     it must be enclosed in a list, otherwise the function will interpret it
     as being a file, which Python will almost surely unable to read it.
     """
-    
-    # Helper functions #
-    #------------------#
     
     def validate_time_format(time_str):
         try:
@@ -363,22 +478,12 @@ def cut_media_files(input_file_list_or_file,
         except ValueError:
             raise ValueError(f"Invalid time format: {time_str}. "
                              f"Expected one from {TIME_FMT_STR_LIST}")
-
-    # Helper function to load file list from external file if necessary
-    def load_file_list(file_or_list):
-        if isinstance(file_or_list, list):
-            return file_or_list
-        try:
-            with open(file_or_list) as f:
-                return f.read().splitlines()
-        except Exception as e:
-            raise RuntimeError(f"Error reading file '{file_or_list}': {e}")
             
-    # Validations #
-    #-------------#
-    
     # Load the file list, automatically detecting whether input is file or list
-    file_list = load_file_list(input_file_list_or_file)
+    try:
+        file_list = _load_file_list(media_inputs)
+    except ValueError as e:
+        raise RuntimeError(f"Error loading files: {e}")
 
     # Validate lists of start and end times are of the same length
     if len(start_time_list) != len(end_time_list):
@@ -417,36 +522,53 @@ def cut_media_files(input_file_list_or_file,
                                for i in range(len(file_list))]
     
     # Try multiple ffmpeg cut commands with different variations to handle errors
-    ffmpeg_commands_to_try = []
     for input_file, output_file, start_time, end_time in zip(file_list, 
                                                              output_file_list,
                                                              start_time_list,
                                                              end_time_list):
-        ffmpeg_command = f"ffmpeg -i {input_file}"
-        if start_time != 'start':
-            ffmpeg_command += f" -ss {start_time}"
-        if end_time != 'end':
-            ffmpeg_command += f" -to {end_time}"
-        ffmpeg_command += f" -b:a {quality*32}k -c copy {output_file}"
-    
-        ffmpeg_commands_to_try.append(ffmpeg_command)
-        ffmpeg_commands_to_try.append(f"ffmpeg -i {input_file} -b:a {quality*32}k "
-                                       f"-c:v libx264 -preset medium {output_file}")
+        bitrate = quality * 32
+        
+        # Prepare time arguments
+        start_time_arg = f" -ss {start_time}" if start_time != 'start' else ""
+        end_time_arg = f" -to {end_time}" if end_time != 'end' else ""
+        
+        ffmpeg_commands_to_try = []
+        for template in FFMPEG_CUT_CMD_TEMPLATES:
+            if template == FFMPEG_CUT_CMD_TEMPLATES[0]:  # First template uses time args
+                ffmpeg_command = template.format(
+                    input_file=_escape_path(input_file),
+                    start_time_arg=start_time_arg,
+                    end_time_arg=end_time_arg,
+                    bitrate=bitrate,
+                    output_file=_escape_path(output_file)
+                )
+            else:  # Other templates don't use time args
+                ffmpeg_command = template.format(
+                    input_file=_escape_path(input_file),
+                    bitrate=bitrate,
+                    output_file=_escape_path(output_file)
+                )
+            ffmpeg_commands_to_try.append(ffmpeg_command)
 
-    # Try each command and pass on errors
-    for ffmpeg_command in ffmpeg_commands_to_try:
-        try:
-            process_exit_info = run_system_command(
-                ffmpeg_command,
-                capture_output=capture_output,
-                return_output_name=return_output_name,
-                encoding=encoding,
-                shell=shell
-            )
-            exit_info(process_exit_info)
-            break  # Exit loop if successful
-        except RuntimeError:
-            pass  # Continue with the next ffmpeg command if there's an error
+        # Try each command until one succeeds for this file
+        success = False
+        for ffmpeg_command in ffmpeg_commands_to_try:
+            try:
+                process_exit_info = run_system_command(
+                    ffmpeg_command,
+                    capture_output=capture_output,
+                    return_output_name=return_output_name,
+                    encoding=encoding,
+                    shell=shell
+                )
+                exit_info(process_exit_info)
+                success = True
+                break  # Exit the inner loop if successful
+            except RuntimeError:
+                continue  # Try the next command variation
+        
+        if not success:
+            print(f"Warning: Failed to process {input_file}")
 
 
 # %%
@@ -464,3 +586,21 @@ TIME_FMT_STR_LIST = ['%H:%M:%S', '%H:%M:%S.%f']
 # Common audio and video formats #
 COMMON_AUDIO_FORMATS = ('.mp3', '.aac', '.wav')
 COMMON_VIDEO_FORMATS = ('.mp4', '.avi', '.mkv')
+
+# FFMPEG command templates #
+FFMPEG_MERGE_CMD_TEMPLATES = [
+    "ffmpeg -y -i {audio_file} -i {video_file} -c:v copy -c:a aac -b:a {bitrate}k {output_file}",
+    "ffmpeg -y -i {audio_file} -i {video_file} -c:v libx264 -b:a {bitrate}k -preset fast {output_file}",
+    "ffmpeg -y -i {audio_file} -i {video_file} -c:v libx265 -b:a {bitrate}k -c:a copy {output_file}"
+]
+
+FFMPEG_INDIVIDUAL_MERGE_CMD_TEMPLATES = [
+    "ffmpeg -y -i 'concat:{input_str}' -b:a {bitrate}k -c copy {output_file}.mp4",
+    "ffmpeg -y -safe {safe} -f concat -i {input_file} -c:v libx264 -b:a {bitrate}k -preset slow {output_file}.mp4",
+    "ffmpeg -y -i 'concat:{input_str}' -b:a {bitrate}k -c:v libx265 -c:a copy {output_file}.mp4"
+]
+
+FFMPEG_CUT_CMD_TEMPLATES = [
+    "ffmpeg -y -i {input_file}{start_time_arg}{end_time_arg} -b:a {bitrate}k -c copy {output_file}",
+    "ffmpeg -y -i {input_file} -b:a {bitrate}k -c:v libx264 -preset medium {output_file}"
+]
