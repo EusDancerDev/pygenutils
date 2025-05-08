@@ -4,15 +4,35 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.8] - 2025-05-08
+## [v15.12.9] - 2025-05-08
 
-### Changed
+### Added
 
 #### **Audio and Video**
 
 - Module `audio_and_video_manipulation`:
-  - Improve ffmpeg command handling and:
+  - Added `_escape_path` helper function using `shlex.quote` to properly escape file paths with spaces and special characters in shell commands
+  - Enhanced `_load_file_list` to support direct file path strings, improving API flexibility
+  - Added the following internal helper functions to centralise file validation logic:
+    - `_validate_files`
+    - `_is_audio_file`
+    - `_is_video_file`
+
+### Changed
+
+#### **Audio and Video** (changing)
+
+- Module `audio_and_video_manipulation`:
+  - Improve `ffmpeg` command handling:
+    - Centralise helper `load_file_list` functions in a dedicated "Internal helpers" section to reduce code duplication, changing the visibility to internal -> `_load_file_list`.
+    - Enhance them to support direct file path strings or nested lists, in both cases converting them to standardised lists.
+    - Ensure the media lists are properly iterated over.
+    - Added the `-y` flag to all ffmpeg command templates to prevent prompts for file overwriting.
+    - Improve error handling with try/except blocks inside loops to ensure all files are processed.
+    - Update all ffmpeg commands to use path escaping to handle filenames with special characters.
+  - Improve variable naming:
     - Rename template variables to more descriptive names (e.g. `template_strings_to_try` → `ffmpeg_commands_to_try`).
+  - Fix backward compatibility issues:
     - Remove unnecessary `format_string` usage with `run_system_command` since commands are already f-strings.
   - Improve parameter handling and function API:
     - Add parameters `capture_output`, `return_output_name`, `encoding`, and `shell` to main function signatures instead of hardcoding them in `run_system_command` calls.
@@ -27,6 +47,13 @@ All notable changes to this project will be documented in this file.
 
 - Module `trim_media`:
   - Besides above changes, lowercase `zero_padding` instead of uppercase `ZERO_PADDING` where it is used as an input parameter in the calling function.
+
+#### **Operative Systems**
+
+- Module `os_operations`:
+  - Enhanced `subprocess_run_helper` to print `stderr` before raising `CalledProcessError` for better error diagnosis.
+  - Improved `exit_info` function to display both `stdout` and `stderr` when available.
+  - Better handling of commands like `ffmpeg` that use `stderr` for normal output while maintaining successful exit status.
 
 ---
 
@@ -77,7 +104,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.12.0] - 2025-05-05
 
-### Added
+### Added (v15.12.0)
 
 - Module `time_utils`:
   - Add the following internal and public functions to the module:
@@ -223,7 +250,7 @@ In general, several changes have been made to break a circular dependency.
 - Modules `data_manipulation`, `maths` and `patterns`:
   - Convert constant names to uppercase and update references
 
-#### **Audio and Video** (changing)
+#### **Audio and Video** (changing, v15.11.0)
 
 - Module `audio_and_video_manipulation`:
   - Convert constant names to uppercase and update references
