@@ -43,6 +43,12 @@ END_TIME_LIST = ["00:05:21", "end", "00:07:56.851"]
 ZERO_PADDING = 1
 QUALITY = 4
 
+# Command execution parameters #
+CAPTURE_OUTPUT = False
+RETURN_OUTPUT_NAME = False
+ENCODING = "utf-8"
+SHELL = True
+
 #------------#
 # Operations #
 #------------#
@@ -51,5 +57,9 @@ cut_media_files(MEDIA_INPUT,
                 START_TIME_LIST,
                 END_TIME_LIST,
                 output_file_list=OUTPUT_FILE_LIST,
-                ZERO_PADDING=ZERO_PADDING,
-                quality=QUALITY)
+                zero_padding=ZERO_PADDING,
+                quality=QUALITY,
+                capture_output=CAPTURE_OUTPUT,
+                return_output_name=RETURN_OUTPUT_NAME,
+                encoding=ENCODING,
+                shell=SHELL)
