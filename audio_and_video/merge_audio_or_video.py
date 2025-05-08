@@ -47,6 +47,12 @@ QUALITY = 4
 # If True, ffmpeg runs in safe mode to prevent unsafe file operations
 SAFE = True
 
+# Command execution parameters #
+CAPTURE_OUTPUT = False
+RETURN_OUTPUT_NAME = False
+ENCODING = "utf-8"
+SHELL = True
+
 #------------#
 # Operations #
 #------------#
@@ -54,4 +60,8 @@ SAFE = True
 merge_individual_media_files(MEDIA_INPUT,
                              safe=SAFE,
                              output_file_name=OUTPUT_FILE_NAME,
-                             quality=QUALITY)
+                             quality=QUALITY,
+                             capture_output=CAPTURE_OUTPUT,
+                             return_output_name=RETURN_OUTPUT_NAME,
+                             encoding=ENCODING,
+                             shell=SHELL)
