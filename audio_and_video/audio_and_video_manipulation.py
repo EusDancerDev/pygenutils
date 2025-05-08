@@ -13,7 +13,6 @@ import os
 
 from filewise.general.introspection_utils import get_caller_args
 from pygenutils.operative_systems.os_operations import run_system_command, exit_info
-from pygenutils.strings.text_formatters import format_string
 from pygenutils.time_handling.time_formatters import parse_dt_string
 
 #------------------#
@@ -129,26 +128,26 @@ def merge_media_files(audio_file_list_or_file,
             ]
     
     # Try multiple ffmpeg merge template strings with different variations to handle errors
-    template_strings_to_try = []
+    ffmpeg_commands_to_try = []
     for audio_file, video_file, output_file in zip(audio_file_list,
                                                    video_file_list,
                                                    output_file_list):
-        # Create a list of ffmpeg template strings to try
-        merge_template = f"ffmpeg -i {audio_file} -i {video_file} "\
+        # Create a list of ffmpeg commands to try
+        ffmpeg_command = f"ffmpeg -i {audio_file} -i {video_file} "\
                          f"-c:v copy -c:a aac -b:a {quality*32}k {output_file}"
-        template_strings_to_try.append(merge_template)
+        ffmpeg_commands_to_try.append(ffmpeg_command)
 
-        # Additional ffmpeg template string variations for error handling
-        template_strings_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
+        # Additional ffmpeg command variations for error handling
+        ffmpeg_commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
                                        f"-c:v libx264 -b:a {quality*32}k "
                                        f"-preset fast {output_file}")
-        template_strings_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
+        ffmpeg_commands_to_try.append(f"ffmpeg -i {audio_file} -i {video_file} "
                                        f"-c:v libx265 -b:a {quality*32}k -c:a copy {output_file}")
 
     # Try each command and pass on errors
-    for merge_template in template_strings_to_try:
+    for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_template))
+            process_exit_info = run_system_command(ffmpeg_command)
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -231,22 +230,22 @@ def merge_individual_media_files(input_file_list_or_file,
     if not output_file_name:
         output_file_name = "out_file"
     
-    # Attempt multiple ffmpeg template strings to handle potential errors
-    template_strings_to_try = []
+    # Attempt multiple ffmpeg commands to handle potential errors
+    ffmpeg_commands_to_try = []
     input_str = '|'.join(file_list)
-    template_strings_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
+    ffmpeg_commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
                            f"-c copy {output_file_name}.mp4")
 
     # Add variations of ffmpeg commands in case errors occur
-    template_strings_to_try.append(f"ffmpeg -safe {int(safe)} -f concat -i {input_file_list_or_file} "
+    ffmpeg_commands_to_try.append(f"ffmpeg -safe {int(safe)} -f concat -i {input_file_list_or_file} "
                            f"-c:v libx264 -b:a {quality*32}k -preset slow {output_file_name}.mp4")
-    template_strings_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
+    ffmpeg_commands_to_try.append(f"ffmpeg -i 'concat:{input_str}' -b:a {quality*32}k "
                            f"-c:v libx265 -c:a copy {output_file_name}.mp4")
 
     # Try each command until one succeeds or all fail
-    for merge_template in template_strings_to_try:
+    for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(merge_template))
+            process_exit_info = run_system_command(ffmpeg_command)
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
@@ -369,27 +368,27 @@ def cut_media_files(input_file_list_or_file,
             output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
                                for i in range(len(file_list))]
     
-    # Try multiple ffmpeg cut template strings with different variations to handle errors
-    template_strings_to_try = []
+    # Try multiple ffmpeg cut commands with different variations to handle errors
+    ffmpeg_commands_to_try = []
     for input_file, output_file, start_time, end_time in zip(file_list, 
                                                              output_file_list,
                                                              start_time_list,
                                                              end_time_list):
-        cut_template = f"ffmpeg -i {input_file}"
+        ffmpeg_command = f"ffmpeg -i {input_file}"
         if start_time != 'start':
-            cut_template += f" -ss {start_time}"
+            ffmpeg_command += f" -ss {start_time}"
         if end_time != 'end':
-            cut_template += f" -to {end_time}"
-        cut_template += f" -b:a {quality*32}k -c copy {output_file}"
+            ffmpeg_command += f" -to {end_time}"
+        ffmpeg_command += f" -b:a {quality*32}k -c copy {output_file}"
     
-        template_strings_to_try.append(cut_template)
-        template_strings_to_try.append(f"ffmpeg -i {input_file} -b:a {quality*32}k "
+        ffmpeg_commands_to_try.append(ffmpeg_command)
+        ffmpeg_commands_to_try.append(f"ffmpeg -i {input_file} -b:a {quality*32}k "
                                        f"-c:v libx264 -preset medium {output_file}")
 
     # Try each command and pass on errors
-    for cut_template in template_strings_to_try:
+    for ffmpeg_command in ffmpeg_commands_to_try:
         try:
-            process_exit_info = run_system_command(format_string(cut_template))
+            process_exit_info = run_system_command(ffmpeg_command)
             exit_info(process_exit_info)
             break  # Exit loop if successful
         except RuntimeError:
