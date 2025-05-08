@@ -4,11 +4,37 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.6] - 2025-05-07
+## [v15.12.8] - 2025-05-08
 
 ### Changed
 
 #### **Audio and Video**
+
+- Module `audio_and_video_manipulation`:
+  - Improve ffmpeg command handling and:
+    - Rename template variables to more descriptive names (e.g. `template_strings_to_try` → `ffmpeg_commands_to_try`).
+    - Remove unnecessary `format_string` usage with `run_system_command` since commands are already f-strings.
+  - Improve parameter handling and function API:
+    - Add parameters `capture_output`, `return_output_name`, `encoding`, and `shell` to main function signatures instead of hardcoding them in `run_system_command` calls.
+
+- Modules `merge_audio_and_video`, `merge_audio_or_video` and `trim_media`:
+  - Add command execution parameters as constants:
+    - `CAPTURE_OUTPUT`
+    - `RETURN_OUTPUT_NAME`
+    - `ENCODING`
+    - `SHELL`
+  - Update calling function to use the new constants
+
+- Module `trim_media`:
+  - Besides above changes, lowercase `zero_padding` instead of uppercase `ZERO_PADDING` where it is used as an input parameter in the calling function.
+
+---
+
+## [v15.12.6] - 2025-05-07
+
+### Changed (v15.12.6)
+
+#### **Audio and Video** (v15.12.6)
 
 - Module `audio_and_video_manipulation`:
   - Update import to use `parse_dt_string` instead of the deprecated `parse_time_string` from the module `time_formatters`.
