@@ -1,5 +1,9 @@
 # pygenutils
 
+[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![PyPI Version](https://img.shields.io/pypi/v/pygenutils.svg)](https://pypi.org/project/pygenutils/)
+
 **pygenutils** is a comprehensive Python utilities package designed to provide a wide range of general-purpose tools for data manipulation, string handling, time operations, and system interactions. It serves as a collection of commonly needed utilities for Python development.
 
 ## Features
@@ -37,8 +41,6 @@
   - Dictionary manipulation
   - Key-value operations
 
----
-
 ## Installation Guide
 
 ### Dependency Notice
@@ -60,8 +62,6 @@ To stay up-to-date with the latest version of this package, simply run:
 ```bash
 pip install --upgrade pygenutils
 ```
-
----
 
 ## Project Structure
 
@@ -139,19 +139,10 @@ processed_data = data_manipulation.process_array([1, 2, 3, 4, 5])
 matched_pattern = patterns.find_pattern([1, 2, 3, 1, 2, 3], [1, 2, 3])
 ```
 
-## Best Practices
+## Contributing
 
-1. **Module Organisation**:
-   - Use appropriate sub-packages for related functionality
-   - Keep utility functions focused and single-purpose
-   - Document all public functions and classes
+Contributions are welcome! Please feel free to submit a Pull Request. For major changes, please open an issue first to discuss what you would like to change.
 
-2. **Performance Considerations**:
-   - Optimise frequently used operations
-   - Use appropriate data structures
-   - Consider memory usage for large operations
+## License
 
-3. **Error Handling**:
-   - Implement proper error checking
-   - Provide meaningful error messages
-   - Handle edge cases appropriately
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
