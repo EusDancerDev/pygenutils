@@ -325,18 +325,19 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
 
 def exit_info(process_exit_info_obj):
     """
-    Print the exit information of a process.
+    Print the exit information of a process along with stdout and stderr.
 
     This function checks the exit status of a process represented by the 
     provided `process_exit_info_obj`. If the command string fails to execute,
     it raises a RuntimeError indicating that the command was interpreted 
-    as a path.
+    as a path. It also outputs stdout and stderr if available.
 
     Parameters
     ----------
-    process_exit_info_obj : subprocess.CompletedProcess
-        An object containing the exit information of the process, 
-        typically returned by subprocess.run.
+    process_exit_info_obj : dict
+        A dictionary containing exit information of the process,
+        typically returned by run_system_command, with keys like
+        'return_code', 'stdout', and 'stderr'.
 
     Raises
     ------
@@ -349,7 +350,7 @@ def exit_info(process_exit_info_obj):
     ------
     A message indicating whether the process completed successfully or 
     details about the non-zero exit status, including the return code 
-    and any error message from stderr.
+    and any error message from stderr. Also prints stdout and stderr if available.
     """
     try:
         process_exit_info_obj
@@ -361,11 +362,23 @@ def exit_info(process_exit_info_obj):
                            "Please check the command.")
     else:
         return_code = process_exit_info_obj.get("return_code")
+        
+        # Print stdout if available
+        if "stdout" in process_exit_info_obj and process_exit_info_obj["stdout"]:
+            print(f"STDOUT\n{'='*6}")
+            print(process_exit_info_obj["stdout"])
+        
+        # Print stderr if available
+        if "stderr" in process_exit_info_obj and process_exit_info_obj["stderr"]:
+            print(f"STDERR\n{'='*6}")
+            print(process_exit_info_obj["stderr"])
+        
         if return_code == 0:
-            print("Process completed succesfully")
+            print("Process completed successfully with return code 0")
+            return True
         else:
             format_args_error = (return_code, process_exit_info_obj.get("stderr"))
-            raise RuntimeError("An error ocurred during command execution: "
+            raise RuntimeError("An error occurred during command execution: "
                                f"{format_string(NONZERO_EXIT_STATUS_TEMPLATE, format_args_error)}")
 
 # %%
