@@ -158,7 +158,7 @@ def _escape_path(file_path):
 #----------------#
 
 # Merge files #
-#-------------#
+#~~~~~~~~~~~~~#
 
 # %% 
 
@@ -210,17 +210,6 @@ def merge_media_files(audio_files,
     None
     """
     
-    # Get all arguments #
-    param_keys = get_caller_args()
-    zero_pad_pos = param_keys.index("zero_padding")
-    
-    # Load the file lists, automatically detecting whether input is file or list
-    try:
-        audio_file_list = _load_file_list(audio_files)
-        video_file_list = _load_file_list(video_files)
-    except ValueError as e:
-        raise ValueError(f"Error loading files: {e}")
-    
     # Validations #
     #-#-#-#-#-#-#-#
     
@@ -248,6 +237,17 @@ def merge_media_files(audio_files,
     
     # Operations #
     #-#-#-#-#-#-#-
+
+    # Get all arguments #
+    param_keys = get_caller_args()
+    zero_pad_pos = param_keys.index("zero_padding")
+    
+    # Load the file lists, automatically detecting whether input is file or list
+    try:
+        audio_file_list = _load_file_list(audio_files)
+        video_file_list = _load_file_list(video_files)
+    except ValueError as e:
+        raise ValueError(f"Error loading files: {e}")
     
     # Generate default output file names if not provided
     if output_file_list is None:
@@ -291,7 +291,13 @@ def merge_media_files(audio_files,
                     encoding=encoding,
                     shell=shell
                 )
-                exit_info(process_exit_info)
+                # Call exit_info with parameters based on capture_output
+                exit_info(
+                    process_exit_info,
+                    check_stdout=capture_output,
+                    check_stderr=capture_output,
+                    check_return_code=True
+                )
                 success = True
                 break  # Exit the inner loop if successful
             except RuntimeError:
@@ -399,7 +405,13 @@ def merge_individual_media_files(media_inputs,
                 encoding=encoding,
                 shell=shell
             )
-            exit_info(process_exit_info)
+            # Call exit_info with parameters based on capture_output
+            exit_info(
+                process_exit_info,
+                check_stdout=capture_output,
+                check_stderr=capture_output,
+                check_return_code=True
+            )
             break  # Exit loop if successful
         except RuntimeError:
             pass  # Continue with the next ffmpeg command if there's an error
@@ -561,7 +573,13 @@ def cut_media_files(media_inputs,
                     encoding=encoding,
                     shell=shell
                 )
-                exit_info(process_exit_info)
+                # Call exit_info with parameters based on capture_output
+                exit_info(
+                    process_exit_info,
+                    check_stdout=capture_output,
+                    check_stderr=capture_output,
+                    check_return_code=True
+                )
                 success = True
                 break  # Exit the inner loop if successful
             except RuntimeError:
