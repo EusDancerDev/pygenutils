@@ -167,6 +167,7 @@ def merge_media_files(audio_files,
                       output_file_list=None, 
                       zero_padding=1, 
                       quality=1,
+                      overwrite=True,
                       capture_output=False,
                       return_output_name=False,
                       encoding="utf-8",
@@ -190,6 +191,9 @@ def merge_media_files(audio_files,
         Only used when output_file_list is None.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
+    overwrite : bool, optional
+        Whether to overwrite existing output files. Default is True.
+        If True, uses '-y' flag; if False, uses '-n' flag.
     capture_output : bool, optional
         Whether to capture the command output. Default is False.
     return_output_name : bool, optional
@@ -231,6 +235,10 @@ def merge_media_files(audio_files,
     if not isinstance(quality, int) or not (1 <= quality <= 10):
         raise ValueError("Quality must be an integer between 1 and 10.")
     
+    # Overwrite validation
+    if not isinstance(overwrite, bool):
+        raise ValueError("'overwrite' must be a boolean value.")
+    
     # File existence validation
     _validate_files(video_file_list, "Video file list (arg number 0)")
     _validate_files(audio_file_list, "Audio file list (arg number 1)")
@@ -263,16 +271,23 @@ def merge_media_files(audio_files,
                 for i in range(len(video_file_list))
             ]
     
+    # Set overwrite flag
+    overwrite_flag = "-y" if overwrite else "-n"
+    
     # Try multiple ffmpeg merge template strings with different variations to handle errors
-    for audio_file, video_file, output_file in zip(audio_file_list,
+    for i, (audio_file, video_file, output_file) in enumerate(zip(audio_file_list,
                                                    video_file_list,
-                                                   output_file_list):
+                                                   output_file_list)):
         # Create a list of ffmpeg commands to try using the templates
         bitrate = quality * 32
+        
+        # Print status message
+        print(f"Creating merged file {i+1}/{len(audio_file_list)}: {output_file} from audio '{audio_file}' and video '{video_file}'")
         
         ffmpeg_commands_to_try = []
         for template in FFMPEG_MERGE_CMD_TEMPLATES:
             ffmpeg_command = template.format(
+                overwrite_flag=overwrite_flag,
                 audio_file=_escape_path(audio_file),
                 video_file=_escape_path(video_file),
                 bitrate=bitrate,
@@ -311,6 +326,7 @@ def merge_individual_media_files(media_inputs,
                                  safe=True, 
                                  output_file_name=None,
                                  quality=1,
+                                 overwrite=True,
                                  capture_output=False,
                                  return_output_name=False,
                                  encoding="utf-8",
@@ -330,6 +346,9 @@ def merge_individual_media_files(media_inputs,
         The name of the output file. If not provided, a default name will be used.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
+    overwrite : bool, optional
+        Whether to overwrite existing output files. Default is True.
+        If True, uses '-y' flag; if False, uses '-n' flag.
     capture_output : bool, optional
         Whether to capture the command output. Default is False.
     return_output_name : bool, optional
@@ -356,6 +375,10 @@ def merge_individual_media_files(media_inputs,
     # Quality input 
     if not isinstance(quality, int) or not (1 <= quality <= 10):
         raise ValueError("Quality must be an integer between 1 and 10.")
+        
+    # Overwrite validation
+    if not isinstance(overwrite, bool):
+        raise ValueError("'overwrite' must be a boolean value.")
 
     # Load the file list, automatically detecting whether input is file or list
     try:
@@ -378,6 +401,17 @@ def merge_individual_media_files(media_inputs,
     if not output_file_name:
         output_file_name = "out_file"
     
+    # Set overwrite flag
+    overwrite_flag = "-y" if overwrite else "-n"
+    
+    # Print status message
+    if isinstance(media_inputs, list):
+        # Show total file count instead of truncating after 3 files
+        file_type = "audio" if audio_files else "video"
+        print(f"Creating merged file {output_file_name}.mp4 from {len(file_list)} {file_type} files")
+    else:
+        print(f"Creating merged file {output_file_name}.mp4 from files listed in '{media_inputs}'")
+    
     # Attempt multiple ffmpeg commands to handle potential errors
     ffmpeg_commands_to_try = []
     # For input_str, we need to escape each path before joining
@@ -387,6 +421,7 @@ def merge_individual_media_files(media_inputs,
     
     for template in FFMPEG_INDIVIDUAL_MERGE_CMD_TEMPLATES:
         ffmpeg_command = template.format(
+            overwrite_flag=overwrite_flag,
             input_str=input_str,
             input_file=_escape_path(media_inputs) if isinstance(media_inputs, str) else media_inputs,
             safe=int(safe),
@@ -427,6 +462,7 @@ def cut_media_files(media_inputs,
                     output_file_list=None,
                     zero_padding=1,
                     quality=1,
+                    overwrite=True,
                     capture_output=False,
                     return_output_name=False,
                     encoding="utf-8",
@@ -453,6 +489,9 @@ def cut_media_files(media_inputs,
         Only used when output_file_list is None.
     quality : int, optional
         The quality level for the cut output (1=lowest, 10=highest). Default is 1.
+    overwrite : bool, optional
+        Whether to overwrite existing output files. Default is True.
+        If True, uses '-y' flag; if False, uses '-n' flag.
     capture_output : bool, optional
         Whether to capture the command output. Default is False.
     return_output_name : bool, optional
@@ -519,6 +558,9 @@ def cut_media_files(media_inputs,
     if not isinstance(quality, int) or not (1 <= quality <= 10):
         raise ValueError("Quality must be an integer between 1 and 10.")
     
+    # Overwrite validation
+    if not isinstance(overwrite, bool):
+        raise ValueError("'overwrite' must be a boolean value.")
         
     # Operations #
     #------------#
@@ -533,12 +575,20 @@ def cut_media_files(media_inputs,
             output_file_list = [f"cut_file_{str(i + 1).zfill(zero_padding)}.mp4" 
                                for i in range(len(file_list))]
     
+    # Set overwrite flag
+    overwrite_flag = "-y" if overwrite else "-n"
+    
     # Try multiple ffmpeg cut commands with different variations to handle errors
-    for input_file, output_file, start_time, end_time in zip(file_list, 
+    for i, (input_file, output_file, start_time, end_time) in enumerate(zip(file_list, 
                                                              output_file_list,
                                                              start_time_list,
-                                                             end_time_list):
+                                                             end_time_list)):
         bitrate = quality * 32
+        
+        # Print status message
+        start_desc = start_time if start_time != 'start' else 'the beginning'
+        end_desc = end_time if end_time != 'end' else 'the end'
+        print(f"Creating cut file {i+1}/{len(file_list)}: {output_file} from '{input_file}' (from {start_desc} to {end_desc})")
         
         # Prepare time arguments
         start_time_arg = f" -ss {start_time}" if start_time != 'start' else ""
@@ -548,6 +598,7 @@ def cut_media_files(media_inputs,
         for template in FFMPEG_CUT_CMD_TEMPLATES:
             if template == FFMPEG_CUT_CMD_TEMPLATES[0]:  # First template uses time args
                 ffmpeg_command = template.format(
+                    overwrite_flag=overwrite_flag,
                     input_file=_escape_path(input_file),
                     start_time_arg=start_time_arg,
                     end_time_arg=end_time_arg,
@@ -556,6 +607,7 @@ def cut_media_files(media_inputs,
                 )
             else:  # Other templates don't use time args
                 ffmpeg_command = template.format(
+                    overwrite_flag=overwrite_flag,
                     input_file=_escape_path(input_file),
                     bitrate=bitrate,
                     output_file=_escape_path(output_file)
@@ -607,18 +659,18 @@ COMMON_VIDEO_FORMATS = ('.mp4', '.avi', '.mkv')
 
 # FFMPEG command templates #
 FFMPEG_MERGE_CMD_TEMPLATES = [
-    "ffmpeg -y -i {audio_file} -i {video_file} -c:v copy -c:a aac -b:a {bitrate}k {output_file}",
-    "ffmpeg -y -i {audio_file} -i {video_file} -c:v libx264 -b:a {bitrate}k -preset fast {output_file}",
-    "ffmpeg -y -i {audio_file} -i {video_file} -c:v libx265 -b:a {bitrate}k -c:a copy {output_file}"
+    "ffmpeg {overwrite_flag} -i {audio_file} -i {video_file} -c:v copy -c:a aac -b:a {bitrate}k {output_file}",
+    "ffmpeg {overwrite_flag} -i {audio_file} -i {video_file} -c:v libx264 -b:a {bitrate}k -preset fast {output_file}",
+    "ffmpeg {overwrite_flag} -i {audio_file} -i {video_file} -c:v libx265 -b:a {bitrate}k -c:a copy {output_file}"
 ]
 
 FFMPEG_INDIVIDUAL_MERGE_CMD_TEMPLATES = [
-    "ffmpeg -y -i 'concat:{input_str}' -b:a {bitrate}k -c copy {output_file}.mp4",
-    "ffmpeg -y -safe {safe} -f concat -i {input_file} -c:v libx264 -b:a {bitrate}k -preset slow {output_file}.mp4",
-    "ffmpeg -y -i 'concat:{input_str}' -b:a {bitrate}k -c:v libx265 -c:a copy {output_file}.mp4"
+    "ffmpeg {overwrite_flag} -i 'concat:{input_str}' -b:a {bitrate}k -c copy {output_file}.mp4",
+    "ffmpeg {overwrite_flag} -safe {safe} -f concat -i {input_file} -c:v libx264 -b:a {bitrate}k -preset slow {output_file}.mp4",
+    "ffmpeg {overwrite_flag} -i 'concat:{input_str}' -b:a {bitrate}k -c:v libx265 -c:a copy {output_file}.mp4"
 ]
 
 FFMPEG_CUT_CMD_TEMPLATES = [
-    "ffmpeg -y -i {input_file}{start_time_arg}{end_time_arg} -b:a {bitrate}k -c copy {output_file}",
-    "ffmpeg -y -i {input_file} -b:a {bitrate}k -c:v libx264 -preset medium {output_file}"
+    "ffmpeg {overwrite_flag} -i {input_file}{start_time_arg}{end_time_arg} -b:a {bitrate}k -c copy {output_file}",
+    "ffmpeg {overwrite_flag} -i {input_file} -b:a {bitrate}k -c:v libx264 -preset medium {output_file}"
 ]
