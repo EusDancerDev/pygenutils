@@ -4,11 +4,41 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.9] - 2025-05-08
+## [v15.13.0] - 2025-05-09
 
 ### Added
 
 #### **Audio and Video**
+
+- Module `audio_and_video_manipulation`:
+  - Added `overwrite` parameter to control file overwriting behaviour in ffmpeg commands:
+    - `overwrite=True` (default): overwrite the output file, setting the `-y` flag in the ffmpeg command.
+    - `overwrite=False`: prevent overwriting and raise an error if the file already exists, setting the `-n` flag in the ffmpeg command.
+  - Added progress visualization to all functions showing which file is currently being processed (e.g., "Creating merged file 2/10...")
+  - Improved display of file counts when merging multiple files, showing total number and file type
+
+- Modules `merge_audio_and_video`, `merge_audio_or_video` and `trim_media`:
+  - Add the `overwrite` parameter to the calling functions.
+
+### Changed
+
+#### **Operative Systems**
+
+- Module `os_operations`:
+  - Enhanced `exit_info` function to handle various output capture scenarios and object types (dict/CompletedProcess), with improved error handling and fallbacks
+
+#### **Audio and Video** (changing)
+
+- Module `audio_and_video_manipulation`:
+  - Improved system command execution in `merge_media_files`, `merge_individual_media_files`, and `cut_media_files` to properly handle cases where command output isn't captured.
+
+---
+
+## [v15.12.9] - 2025-05-08
+
+### Added (v15.12.9)
+
+#### **Audio and Video** (v15.12.9)
 
 - Module `audio_and_video_manipulation`:
   - Added `_escape_path` helper function using `shlex.quote` to properly escape file paths with spaces and special characters in shell commands
@@ -18,24 +48,20 @@ All notable changes to this project will be documented in this file.
     - `_is_audio_file`
     - `_is_video_file`
 
-### Changed
+### Changed (v15.12.9)
 
-#### **Audio and Video** (changing)
+#### **Audio and Video** (changing, v15.12.9)
 
 - Module `audio_and_video_manipulation`:
   - Improve `ffmpeg` command handling:
-    - Centralise helper `load_file_list` functions in a dedicated "Internal helpers" section to reduce code duplication, changing the visibility to internal -> `_load_file_list`.
-    - Enhance them to support direct file path strings or nested lists, in both cases converting them to standardised lists.
-    - Ensure the media lists are properly iterated over.
-    - Added the `-y` flag to all ffmpeg command templates to prevent prompts for file overwriting.
-    - Improve error handling with try/except blocks inside loops to ensure all files are processed.
-    - Update all ffmpeg commands to use path escaping to handle filenames with special characters.
-  - Improve variable naming:
-    - Rename template variables to more descriptive names (e.g. `template_strings_to_try` → `ffmpeg_commands_to_try`).
-  - Fix backward compatibility issues:
-    - Remove unnecessary `format_string` usage with `run_system_command` since commands are already f-strings.
-  - Improve parameter handling and function API:
-    - Add parameters `capture_output`, `return_output_name`, `encoding`, and `shell` to main function signatures instead of hardcoding them in `run_system_command` calls.
+    - Centralise file loading functions into internal `_load_file_list` helper
+    - Add support for direct file paths and nested lists
+    - Add `-y` flag to prevent overwrite prompts
+    - Improve error handling and path escaping
+  - Improve code quality:
+    - Use more descriptive variable names
+    - Remove redundant string formatting
+    - Add flexible command execution parameters
 
 - Modules `merge_audio_and_video`, `merge_audio_or_video` and `trim_media`:
   - Add command execution parameters as constants:
@@ -48,7 +74,7 @@ All notable changes to this project will be documented in this file.
 - Module `trim_media`:
   - Besides above changes, lowercase `zero_padding` instead of uppercase `ZERO_PADDING` where it is used as an input parameter in the calling function.
 
-#### **Operative Systems**
+#### **Operative Systems** (v15.12.9)
 
 - Module `os_operations`:
   - Enhanced `subprocess_run_helper` to print `stderr` before raising `CalledProcessError` for better error diagnosis.
@@ -980,7 +1006,7 @@ In `statistics` sub-package:
 
 ### Removed (v10.0.0)
 
-- Once every addition and changes performed regarding **Xarray Utils**, removed sub-package `netcdf_handler`.
+- Once every operation above performed, delete sub-package `netcdf_handler`.
 
 ---
 
@@ -1002,7 +1028,7 @@ In `statistics` sub-package:
 
 #### **Functions** (v9.0.0)
 
-##### In `statistics` sub-package
+In `statistics` sub-package:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
@@ -1066,7 +1092,7 @@ In `statistics` sub-package:
 
 ### Removed (v9.0.0)
 
-- Once every addition and changes performed, removed sub-package `pandas_data_frames`.
+- Once every operation above performed, removed sub-package `pandas_data_frames`.
 
 ---
 
@@ -1154,7 +1180,6 @@ In `statistics` sub-package:
 | calculate_TN | climate_indicators | weather_and_climate | TN | (unchanged) | statistics/fields/climatology |
 | calculate_RR | climate_indicators | weather_and_climate | RR | (unchanged) | statistics/fields/climatology |  
 | calculate_CWD | climate_indicators | weather_and_climate | CWD | (unchanged) | statistics/fields/climatology |
-| calculate_HWD | climate_indicators | weather_and_climate | HWD | (unchanged) | statistics/fields/climatology |
 | calculate_HWD | climate_indicators | weather_and_climate | HWD | (unchanged) | statistics/fields/climatology |
 | calculate_HDY | climate_indicators | weather_and_climate | HDY | climate_variables | statistics/fields/climatology |
 | hdy_interpolation | climate_indicators | weather_and_climate | (unchanged) | climate_variables | statistics/fields/climatology |
