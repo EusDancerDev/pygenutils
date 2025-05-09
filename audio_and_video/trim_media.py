@@ -43,6 +43,10 @@ END_TIME_LIST = ["00:05:21", "end", "00:07:56.851"]
 ZERO_PADDING = 1
 QUALITY = 4
 
+# Overwrite existing files #
+# If True, uses '-y' flag; if False, uses '-n' flag (will not overwrite)
+OVERWRITE = True
+
 # Command execution parameters #
 CAPTURE_OUTPUT = False
 RETURN_OUTPUT_NAME = False
@@ -53,13 +57,16 @@ SHELL = True
 # Operations #
 #------------#
 
-cut_media_files(MEDIA_INPUT,
-                START_TIME_LIST,
-                END_TIME_LIST,
-                output_file_list=OUTPUT_FILE_LIST,
-                zero_padding=ZERO_PADDING,
-                quality=QUALITY,
-                capture_output=CAPTURE_OUTPUT,
-                return_output_name=RETURN_OUTPUT_NAME,
-                encoding=ENCODING,
-                shell=SHELL)
+cut_media_files(
+    MEDIA_INPUT,
+    START_TIME_LIST,
+    END_TIME_LIST,
+    output_file_list=OUTPUT_FILE_LIST,
+    zero_padding=ZERO_PADDING,
+    quality=QUALITY,
+    overwrite=OVERWRITE,
+    capture_output=CAPTURE_OUTPUT,
+    return_output_name=RETURN_OUTPUT_NAME,
+    encoding=ENCODING,
+    shell=SHELL
+)

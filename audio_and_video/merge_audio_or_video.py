@@ -47,6 +47,10 @@ QUALITY = 4
 # If True, ffmpeg runs in safe mode to prevent unsafe file operations
 SAFE = True
 
+# Overwrite existing files #
+# If True, uses '-y' flag; if False, uses '-n' flag (will not overwrite)
+OVERWRITE = True
+
 # Command execution parameters #
 CAPTURE_OUTPUT = False
 RETURN_OUTPUT_NAME = False
@@ -57,11 +61,14 @@ SHELL = True
 # Operations #
 #------------#
 
-merge_individual_media_files(MEDIA_INPUT,
-                             safe=SAFE,
-                             output_file_name=OUTPUT_FILE_NAME,
-                             quality=QUALITY,
-                             capture_output=CAPTURE_OUTPUT,
-                             return_output_name=RETURN_OUTPUT_NAME,
-                             encoding=ENCODING,
-                             shell=SHELL)
+merge_individual_media_files(
+    MEDIA_INPUT,
+    safe=SAFE,
+    output_file_name=OUTPUT_FILE_NAME,
+    quality=QUALITY,
+    overwrite=OVERWRITE,
+    capture_output=CAPTURE_OUTPUT,
+    return_output_name=RETURN_OUTPUT_NAME,
+    encoding=ENCODING,
+    shell=SHELL
+)
