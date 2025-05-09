@@ -205,9 +205,9 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
     --------
     dict
         A dictionary containing:
-        - 'stdin': Captured standard input (if applicable).
-        - 'stdout': The captured standard output (if applicable).
-        - 'stderr': The captured standard error (if applicable).
+        - 'stdin': Captured standard input (if applicable and capture_output=True).
+        - 'stdout': The captured standard output (if applicable and capture_output=True).
+        - 'stderr': The captured standard error (if applicable and capture_output=True).
         - 'return_code': The exit code of the command.
         - 'errors': Any errors encountered during command execution.
     """
@@ -222,24 +222,34 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
     # Wait for command to complete
     process.wait()
     
-    # Capture stdin, stdout, stderr and command exit status errors if requested
-    if return_output_name and capture_output:
-        stdin = process.stdin.name if process.stdin else None
-        stdout = process.stdout.name if process.stdout else None
-        stderr = process.stderr.name if process.stderr else None
-    else:
-        stdin = process.stdin.read().decode(encoding) if capture_output and process.stdin else None
-        stdout = process.stdout.read().decode(encoding) if capture_output and process.stdout else None
-        stderr = process.stderr.read().decode(encoding) if capture_output and process.stderr else None
+    # Initialize return dictionary with return code
+    return_dict = {"return_code": process.returncode}
     
-    errors = process.errors if hasattr(process, "errors") else None
+    # Add errors if available
+    if hasattr(process, "errors"):
+        return_dict["errors"] = process.errors
+        
+    # Only capture stdin, stdout, stderr if output capturing was requested
+    if capture_output:
+        if return_output_name:
+            # Return file descriptor names
+            if process.stdin:
+                return_dict["stdin"] = process.stdin.name
+            if process.stdout:
+                return_dict["stdout"] = process.stdout.name
+            if process.stderr:
+                return_dict["stderr"] = process.stderr.name
+        else:
+            # Return actual captured output
+            if process.stdin:
+                return_dict["stdin"] = process.stdin.read().decode(encoding) if encoding else process.stdin.read()
+            if process.stdout:
+                return_dict["stdout"] = process.stdout.read().decode(encoding) if encoding else process.stdout.read()
+            if process.stderr:
+                return_dict["stderr"] = process.stderr.read().decode(encoding) if encoding else process.stderr.read()
     
-    # Return relevant data
-    return dict(stdin=stdin,
-                stdout=stdout,
-                stderr=stderr,
-                return_code=process.returncode,
-                errors=errors)
+    # Return the compiled result dictionary
+    return return_dict
 
 
 def subprocess_call_helper(command, capture_output):
@@ -295,8 +305,8 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
     -------
     dict
         A dictionary containing:
-        - 'stdout': The captured standard output.
-        - 'stderr': The captured standard error.
+        - 'stdout': The captured standard output (if capture_output=True).
+        - 'stderr': The captured standard error (if capture_output=True).
         - 'return_code': The exit code of the command.
 
     Raises
@@ -306,51 +316,74 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
     """
     from subprocess import run, CalledProcessError
     
-    # Execute the command and capture output
+    # Execute the command and capture output if requested
     result = run(command, capture_output=capture_output, text=bool(encoding), shell=shell)
     
-    # Decode stdout/stderr if encoding is provided
-    stdout = result.stdout.strip()
-    stderr = result.stderr.strip()
+    # Initialize return dictionary with return code
+    return_dict = {"return_code": result.returncode}
+    
+    # Only process stdout/stderr if they were captured
+    if capture_output:
+        # Add stdout and stderr to the return dictionary if available
+        if hasattr(result, "stdout"):
+            return_dict["stdout"] = result.stdout.strip() if result.stdout else ""
+        
+        if hasattr(result, "stderr"):
+            return_dict["stderr"] = result.stderr.strip() if result.stderr else ""
     
     # Raise an error for non-zero return codes
     if result.returncode != 0:
         raise CalledProcessError(result.returncode, command)
-    return dict(stdout=stdout, stderr=stderr, return_code=result.returncode)
+        
+    return return_dict
 
 # %%
 
 # Auxiliary methods #
 #-------------------#
 
-def exit_info(process_exit_info_obj):
+def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check_return_code=True):
     """
-    Print the exit information of a process along with stdout and stderr.
+    Print the exit information of a process along with stdout and stderr based on selected parameters.
 
     This function checks the exit status of a process represented by the 
     provided `process_exit_info_obj`. If the command string fails to execute,
     it raises a RuntimeError indicating that the command was interpreted 
-    as a path. It also outputs stdout and stderr if available.
+    as a path. It also outputs stdout and stderr if available and requested.
 
     Parameters
     ----------
-    process_exit_info_obj : dict
-        A dictionary containing exit information of the process,
-        typically returned by run_system_command, with keys like
-        'return_code', 'stdout', and 'stderr'.
+    process_exit_info_obj : dict or subprocess.CompletedProcess
+        Either a dictionary containing exit information of the process or
+        a CompletedProcess object, typically returned by run_system_command.
+    check_stdout : bool, optional
+        Whether to check and print stdout if available. Default is True.
+        Note: stdout will only be available if capture_output=True was set
+        in the original run_system_command call.
+    check_stderr : bool, optional
+        Whether to check and print stderr if available. Default is True.
+        Note: stderr will only be available if capture_output=True was set
+        in the original run_system_command call.
+    check_return_code : bool, optional
+        Whether to check the return code and raise an error if non-zero. Default is True.
 
     Raises
     ------
     RuntimeError
     - If the command string is interpreted as a path and fails to execute,
       in which case Python would originally rise a FileNotFoundError.
-    - If an error occurs during command execution, that is, the exit status in non-zero.
+    - If check_return_code is True and the exit status is non-zero.
+
+    Returns
+    -------
+    bool
+        True if the process completed successfully (or if return code checking is disabled).
 
     Prints
     ------
     A message indicating whether the process completed successfully or 
     details about the non-zero exit status, including the return code 
-    and any error message from stderr. Also prints stdout and stderr if available.
+    and any error message from stderr. Also prints stdout and stderr if available and requested.
     """
     try:
         process_exit_info_obj
@@ -361,25 +394,60 @@ def exit_info(process_exit_info_obj):
         raise RuntimeError("Command string interpreted as a path. "
                            "Please check the command.")
     else:
-        return_code = process_exit_info_obj.get("return_code")
+        # Check if we're dealing with a dictionary or a CompletedProcess object
+        is_dict = isinstance(process_exit_info_obj, dict)
         
-        # Print stdout if available
-        if "stdout" in process_exit_info_obj and process_exit_info_obj["stdout"]:
-            print(f"STDOUT\n{'='*6}")
-            print(process_exit_info_obj["stdout"])
-        
-        # Print stderr if available
-        if "stderr" in process_exit_info_obj and process_exit_info_obj["stderr"]:
-            print(f"STDERR\n{'='*6}")
-            print(process_exit_info_obj["stderr"])
-        
-        if return_code == 0:
-            print("Process completed successfully with return code 0")
-            return True
+        # Get return code - handle both dict and CompletedProcess objects
+        if is_dict:
+            return_code = process_exit_info_obj.get("return_code")
+            # Check if we have any output information
+            has_stdout = "stdout" in process_exit_info_obj
+            has_stderr = "stderr" in process_exit_info_obj
         else:
-            format_args_error = (return_code, process_exit_info_obj.get("stderr"))
-            raise RuntimeError("An error occurred during command execution: "
-                               f"{format_string(NONZERO_EXIT_STATUS_TEMPLATE, format_args_error)}")
+            # Assume it's a CompletedProcess-like object with returncode attribute
+            return_code = getattr(process_exit_info_obj, "returncode", None)
+            # Check if the object has stdout/stderr attributes
+            has_stdout = hasattr(process_exit_info_obj, "stdout")
+            has_stderr = hasattr(process_exit_info_obj, "stderr")
+        
+        # Print stdout if available and requested
+        if check_stdout:
+            if is_dict and has_stdout and process_exit_info_obj.get("stdout"):
+                print(f"STDOUT\n{'='*6}")
+                print(process_exit_info_obj["stdout"])
+            elif not is_dict and has_stdout and getattr(process_exit_info_obj, "stdout", None):
+                print(f"STDOUT\n{'='*6}")
+                print(process_exit_info_obj.stdout)
+        
+        # Print stderr if available and requested
+        if check_stderr:
+            if is_dict and has_stderr and process_exit_info_obj.get("stderr"):
+                print(f"STDERR\n{'='*6}")
+                print(process_exit_info_obj["stderr"])
+            elif not is_dict and has_stderr and getattr(process_exit_info_obj, "stderr", None):
+                print(f"STDERR\n{'='*6}")
+                print(process_exit_info_obj.stderr)
+        
+        # Check return code if requested
+        if check_return_code:
+            if return_code == 0:
+                print("Process completed successfully with return code 0")
+                return True
+            else:
+                # Get error message - handle both dict and CompletedProcess objects
+                error_message = "No error output available (capture_output may have been False)"
+                
+                if is_dict and has_stderr:
+                    error_message = process_exit_info_obj.get("stderr") or error_message
+                elif not is_dict and has_stderr:
+                    error_message = getattr(process_exit_info_obj, "stderr", error_message) or error_message
+                
+                format_args_error = (return_code, error_message)
+                raise RuntimeError("An error occurred during command execution: "
+                                   f"{format_string(NONZERO_EXIT_STATUS_TEMPLATE, format_args_error)}")
+        
+        # If return code checking is disabled, just return True
+        return True
 
 # %%
 
