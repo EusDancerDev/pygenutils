@@ -118,7 +118,7 @@ def _validate_unit(unit, module):
 # Input format: str #
 #-------------------#
 
-def parse_dt_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
+def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns"):
     """
     Convert a time string to a date/time object using a specified library.
     
@@ -126,9 +126,11 @@ def parse_dt_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
     ----------
     datetime_str : str
         A string representing the date and/or time.    
-    dt_fmt_str : str
+    dt_fmt_str : str or None
         A format string that defines the structure of `datetime_str`. 
-        Must follow the format required by the chosen module.   
+        Must follow the format required by the chosen module.
+        If None and module is 'pandas', pandas will try to infer the format.
+        If empty and module is 'pandas' with a numeric timestamp, it will use the unit parameter.
     module : {"datetime", "dateutil", "pandas", "numpy", "arrow"}, default 'datetime'
         Specifies the library used for conversion. 
         If 'numpy', datetime_str must be in ISO 8601 date or datetime format.
@@ -164,19 +166,31 @@ def parse_dt_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
     _validate_option("Module", module, allowed_modules)
     
     # Formatting string #
-    if not dt_fmt_str:
-        raise ValueError("A datetime format string must be provided.")
+    if dt_fmt_str is None and module != "pandas":
+        raise ValueError("A datetime format string must be provided for non-pandas modules.")
         
     # Time string parsing #
     #######################
     
     try:
         parse_func = TIME_STR_PARSING_DICT.get(module)
-        datetime_obj = parse_func(datetime_str, dt_fmt_str, unit) \
-                       if module == "pandas"\
-                       else parse_func(datetime_str, dt_fmt_str)
-    except ValueError:
-        raise ValueError("The time string does not match the format string provided.")
+        
+        # Special handling for pandas module
+        if module == "pandas":
+            # If datetime_str looks like a numeric timestamp, use unit
+            if datetime_str.isdigit() or (datetime_str.replace('.', '', 1).isdigit() and datetime_str.count('.') <= 1):
+                datetime_obj = pd.to_datetime(datetime_str, unit=unit)
+            else:
+                # Otherwise use format if provided, or let pandas infer the format
+                if dt_fmt_str is None:
+                    datetime_obj = pd.to_datetime(datetime_str)
+                else:
+                    datetime_obj = parse_func(datetime_str, dt_fmt_str, unit)
+        else:
+            # For other modules, use the parse_func as defined
+            datetime_obj = parse_func(datetime_str, dt_fmt_str, unit) if module == "numpy" else parse_func(datetime_str, dt_fmt_str)
+    except ValueError as e:
+        raise ValueError(f"The time string does not match the format string provided: {str(e)}")
     else:
         return datetime_obj
     
@@ -189,11 +203,11 @@ def parse_dt_string(datetime_str, dt_fmt_str, module="datetime", unit="ns"):
 #-#-#-#-#-#-#-#
 
 def parse_float_dt(datetime_float, 
-                     frac_precision=None,
-                     origin="unix", 
-                     unit="us", 
-                     dt_fmt_str=None, 
-                     module="datetime"):
+                   frac_precision=None,
+                   origin="unix", 
+                   unit="us", 
+                   dt_fmt_str=None, 
+                   module="datetime"):
     """
     Converts an integer or float time to a date/time object.
     It also converts to a string representation if requested.
@@ -938,9 +952,8 @@ TIME_STR_PARSING_DICT = {
     "datetime" : lambda datetime_str, dt_fmt_str: datetime.strptime(datetime_str, dt_fmt_str),
     "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
     "pandas"   : lambda datetime_str, dt_fmt_str, unit : pd.to_datetime(datetime_str, 
-                                                                       format=dt_fmt_str,
-                                                                       unit=unit),
-    "numpy"    : lambda datetime_str, dt_fmt_str, unit : np.datetime64(datetime_str, unit),
+                                                                       format=dt_fmt_str),
+    "numpy"    : lambda datetime_str, _, unit : np.datetime64(datetime_str, unit),
     "arrow"    : lambda datetime_str, dt_fmt_str: arrow.get(datetime_str, dt_fmt_str)
 }
 
@@ -1036,8 +1049,8 @@ CONVERSION_OPT_DICT = {
 _TOTAL_TIME_UNIT_DICT = {
     "datetime"    : lambda dt_obj, _ : dt_obj.timestamp(),
     "datetime64"  : lambda dt_obj, unit, float_class : dt_obj.astype(f"timedelta64[{unit}]").astype(float_class),
-    "struct_time" : lambda dt_obj, unit : datetime(*dt_obj[:6]),
-    "arrow"       : lambda dt_obj, unit : dt_obj.float_timestamp,
+    "struct_time" : lambda dt_obj, _ : datetime(*dt_obj[:6]),
+    "arrow"       : lambda dt_obj, _ : dt_obj.float_timestamp,
     "dataframe"   : lambda dt_obj, _, int_class, unit_factor : _total_dt_complex_data(dt_obj, int_class, unit_factor),
     "series"      : lambda dt_obj, _, int_class, unit_factor : _total_dt_complex_data(dt_obj, int_class, unit_factor),
     "ndarray"     : lambda dt_obj, unit, float_class, _ : dt_obj.astype(f"datetime64[{unit}]").astype(float_class)  
