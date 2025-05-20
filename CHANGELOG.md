@@ -6,6 +6,14 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.13.1] - 2025-05-10
 
+### Added
+
+#### **Number Bases**
+
+- Add module `mathematical_utils`:
+  - Hosts functions for mathematical operations and number formatting.
+  - Add `adapted_factorial` function for formatted factorial calculations, supporting extremely large numbers.
+
 ### Fixed
 
 #### **Time Handling**
@@ -24,7 +32,7 @@ All notable changes to this project will be documented in this file.
 
 ## [v15.13.0] - 2025-05-09
 
-### Added
+### Added (v15.13.0)
 
 #### **Audio and Video**
 
@@ -313,7 +321,7 @@ In general, several changes have been made to break a circular dependency.
   - Convert constant names to uppercase and update references
   - Add parameter validation and improve sorting functionality
 
-#### **Number Bases**
+#### **Number Bases** (v15.13.0)
 
 - Modules `base_converters` and `binary_operations`:
   - Convert constant names to uppercase and update references
