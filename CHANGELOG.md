@@ -4,6 +4,24 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.13.1] - 2025-05-10
+
+### Fixed
+
+#### **Time Handling**
+
+- Module `time_formatters`:
+  - Fixed `parse_dt_string` function to properly handle parameter conflicts:
+    - Resolved issue with simultaneous use of `format` and `unit` parameters in `pandas.to_datetime`
+    - Removed unused `unit` parameters from lambda functions
+  - Enhanced functionality:
+    - Made `dt_fmt_str` optional with `None` default
+    - Added smart parameter selection based on input type
+    - Improved error messages and documentation
+  - Maintained backwards compatibility
+
+---
+
 ## [v15.13.0] - 2025-05-09
 
 ### Added
@@ -20,7 +38,7 @@ All notable changes to this project will be documented in this file.
 - Modules `merge_audio_and_video`, `merge_audio_or_video` and `trim_media`:
   - Add the `overwrite` parameter to the calling functions.
 
-### Changed
+### Changed (v15.13.0)
 
 #### **Operative Systems**
 
@@ -93,6 +111,10 @@ All notable changes to this project will be documented in this file.
   - Update import to use `parse_dt_string` instead of the deprecated `parse_time_string` from the module `time_formatters`.
   - Add support for `None` as a valid value for the `zero_padding` parameter in both `merge_media_files` and `cut_media_files` functions, disabling padding when generating default output filenames.
 
+### Fixed (v15.12.6)
+
+#### **Audio and Video** (fixing; v15.12.6)
+
 - Module `merge_audio_and_video`:
   - Correct the import path for the function `find_files` from the `filewise` package.
   - Correct the argument `output_file_name_list` to `output_file_list` as supported by the function `merge_media_files`.
@@ -108,7 +130,7 @@ All notable changes to this project will be documented in this file.
 
 - Module `text_formatters`: ensure the result from `find_substring_index` is always handled as a list in the `format_string` function, preventing errors when formatting strings with a single pair of brackets.
 
-#### **Time Handling**
+#### **Time Handling** (v15.12.6)
 
 - Module `time_formatters`: correct the name of the deprecated function: from `parse_time_string` to `parse_dt_string`.
 
@@ -150,6 +172,10 @@ In general, several changes have been made to break a circular dependency.
 
 - Module `calendar_utils`:
   - Move imports of the functions `interp_pd` and `interp_xr` inside the function `standardise_calendar`.
+
+### Fixed (v15.12.0)
+
+#### **Time Handling** (fixing; v15.12.0)
 
 - Module `date_and_time_utils`:
   - Correct the module name from which the function `datetime_obj_converter` is imported.
@@ -221,7 +247,7 @@ In general, several changes have been made to break a circular dependency.
 
 ## [v15.11.2] - 2025-05-01
 
-### Changed (v15.11.2)
+### Fixed (v15.11.2)
 
 #### **Time Handling** (v15.11.2)
 
@@ -356,7 +382,7 @@ In general, several changes have been made to break a circular dependency.
 
 ## [v15.9.1] - 2025-04-17
 
-### Changed (v15.9.1)
+### Fixed (v15.9.1)
 
 #### **Time Handling** (v15.9.1)
 
@@ -373,6 +399,8 @@ In general, several changes have been made to break a circular dependency.
 #### **General** (v15.9.0)
 
 - Rename all variable names that start with `arg_tuple` to `format_args` to follow a more consistent naming convention `format_args` prefix.
+
+### Fixed (v15.9.0)
 
 #### **Time Handling** (v15.9.0)
 
@@ -423,6 +451,8 @@ In general, several changes have been made to break a circular dependency.
 #### **Audio and Video** (v15.8.0; removed)
 
 - Deleted the old `cut_media_files` module as it has been renamed to `trim_media`.
+
+---
 
 ## [v15.7.7] - 2025-02-18
 
@@ -481,6 +511,8 @@ These changes enhance terminology consistency in all affected modules. No user-f
 #### **Arrays and Lists** (v15.5.0)
 
 - Module `data_manipulation`: enhance `remove_elements` function to support multiple indices for list inputs.
+
+### Fixed (v15.5.0)
 
 #### **Time Handling** (v15.5.0)
 
