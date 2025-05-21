@@ -30,7 +30,8 @@ def run_system_command(command,
                        capture_output=False,
                        return_output_name=False,
                        encoding="utf-8",
-                       shell=True):
+                       shell=True,
+                       text=None):
    
     """
     Execute a system command using the specified module and class combination.
@@ -66,7 +67,11 @@ def run_system_command(command,
         If None, no decoding is applied.
     shell : bool, optional
         Only applicable if (module, _class) == ("subprocess", "run").
-        If True, the command will be executed through the shell. Default is True        
+        If True, the command will be executed through the shell. Default is True
+    text : bool, optional, default: None
+        Only applicable if (module, _class) in [("subprocess", "run"), ("subprocess", "Popen")].
+        If True, stdout and stderr are returned as strings rather than bytes.
+        If None, the value is determined by whether encoding is provided.
         
     Raises
     ------
@@ -94,7 +99,11 @@ def run_system_command(command,
     
     # Run the command via the helper
     if (module, _class) == ("subprocess", "Popen"):
-        result = helper_func(command, capture_output=capture_output, encoding=encoding, return_output_name=return_output_name)
+        result = helper_func(command, capture_output=capture_output, encoding=encoding, 
+                             return_output_name=return_output_name, text=text)
+    elif (module, _class) == ("subprocess", "run"):
+        result = helper_func(command, capture_output=capture_output, encoding=encoding, 
+                             shell=shell, text=text)
     else:
         result = helper_func(command, capture_output=capture_output, encoding=encoding, shell=shell)
     
@@ -186,7 +195,7 @@ def os_popen_helper(command, capture_output):
     return dict(stdout=output, return_code=None)
 
 
-def subprocess_popen_helper(command, capture_output, encoding, return_output_name=False):
+def subprocess_popen_helper(command, capture_output, encoding, return_output_name=False, text=None):
     """
     Helper function to execute a command using subprocess.Popen.
 
@@ -200,6 +209,9 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
         The encoding to use when decoding stdout and stderr.
     return_output_name : bool, optional
         If True, returns the file descriptors' names for stdin, stdout, and stderr.
+    text : bool, optional
+        If True, stdout and stderr are returned as strings rather than bytes.
+        If None, the value is determined by whether encoding is provided.
 
     Returns:
     --------
@@ -213,11 +225,14 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
     """
     from subprocess import Popen, PIPE
     
+    # Set text parameter (if not provided, use encoding as a fallback)
+    text_param = text if text is not None else bool(encoding)
+    
     # Define the I/O streams
     pipe_kwargs = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE) if capture_output else {}
     
     # Execute the command
-    process = Popen(command, **pipe_kwargs)
+    process = Popen(command, **pipe_kwargs, text=text_param)
     
     # Wait for command to complete
     process.wait()
@@ -242,11 +257,23 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
         else:
             # Return actual captured output
             if process.stdin:
-                return_dict["stdin"] = process.stdin.read().decode(encoding) if encoding else process.stdin.read()
+                # If text mode is enabled, we already get strings, otherwise decode with encoding
+                if text_param:
+                    return_dict["stdin"] = process.stdin.read()
+                else:
+                    return_dict["stdin"] = process.stdin.read().decode(encoding) if encoding else process.stdin.read()
+                    
             if process.stdout:
-                return_dict["stdout"] = process.stdout.read().decode(encoding) if encoding else process.stdout.read()
+                if text_param:
+                    return_dict["stdout"] = process.stdout.read()
+                else:
+                    return_dict["stdout"] = process.stdout.read().decode(encoding) if encoding else process.stdout.read()
+                    
             if process.stderr:
-                return_dict["stderr"] = process.stderr.read().decode(encoding) if encoding else process.stderr.read()
+                if text_param:
+                    return_dict["stderr"] = process.stderr.read()
+                else:
+                    return_dict["stderr"] = process.stderr.read().decode(encoding) if encoding else process.stderr.read()
     
     # Return the compiled result dictionary
     return return_dict
@@ -286,7 +313,7 @@ def subprocess_call_helper(command, capture_output):
     return dict(return_code=return_code)
 
 
-def subprocess_run_helper(command, capture_output, encoding, shell):
+def subprocess_run_helper(command, capture_output, encoding, shell, text):
     """
     Helper function to execute a command using subprocess.run.
 
@@ -300,6 +327,9 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
         The encoding to use when decoding stdout and stderr.
     shell : bool, optional
         If True, the command will be executed through the shell.
+    text : bool, optional
+        If True, stdout and stderr are returned as strings rather than bytes.
+        If None, the value is determined by whether encoding is provided.
 
     Returns
     -------
@@ -316,8 +346,11 @@ def subprocess_run_helper(command, capture_output, encoding, shell):
     """
     from subprocess import run, CalledProcessError
     
+    # Set text parameter (if not provided, use encoding as a fallback)
+    text_param = text if text is not None else bool(encoding)
+    
     # Execute the command and capture output if requested
-    result = run(command, capture_output=capture_output, text=bool(encoding), shell=shell)
+    result = run(command, capture_output=capture_output, text=text_param, shell=shell)
     
     # Initialize return dictionary with return code
     return_dict = {"return_code": result.returncode}
