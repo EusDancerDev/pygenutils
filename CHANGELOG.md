@@ -4,9 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.1] - 2025-05-10
+## [v15.13.2] - 2025-05-12
 
 ### Added
+
+#### **Operative Systems**
+
+- Module `os_operations`:
+  - Added `text` parameter support to `run_system_command` function:
+    - Only applicable when using `(module, _class)` combos that equal `("subprocess", "run")` or `("subprocess", "Popen")`.
+    - Controls whether subprocess output is returned as strings rather than bytes.
+    - If set to `None` (default), the value is determined by whether encoding is provided.
+
+---
+
+## [v15.13.1] - 2025-05-10
+
+### Added (v15.13.1)
 
 #### **Number Bases**
 
@@ -48,7 +62,7 @@ All notable changes to this project will be documented in this file.
 
 ### Changed (v15.13.0)
 
-#### **Operative Systems**
+#### **Operative Systems** (changing; v15.13.0)
 
 - Module `os_operations`:
   - Enhanced `exit_info` function to handle various output capture scenarios and object types (dict/CompletedProcess), with improved error handling and fallbacks
