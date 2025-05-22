@@ -3,7 +3,7 @@
 
 # pygenutils/__init__.py
 
-__version__ = "15.13.2"
+__version__ = "15.13.3"
 
 # Define what should be available when using 'from pygenutils import *'
 __all__ = [
