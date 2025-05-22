@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.2] - 2025-05-12
+## [v15.13.3] - 2025-05-22
+
+### Fixed
+
+#### **Time Handling**
+
+- Module `time_formatters`:
+  - Enhance `parse_dt_string` function to properly handle non-string inputs:
+    - Add type checking before applying string methods when `module="pandas"`
+    - Update docstring to clarify that when using the pandas module, the function accepts various object types:
+      - Python datetime objects
+      - NumPy datetime64 objects
+      - Integer/float timestamps
+      - Series objects
+      - DataFrame columns
+      - Lists or arrays of timestamps
+    - Maintain backwards compatibility with existing code
+
+---
+
+## [v15.13.2] - 2025-05-21
 
 ### Added
 
