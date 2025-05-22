@@ -48,9 +48,9 @@ All notable changes to this project will be documented in this file.
   - Hosts functions for mathematical operations and number formatting.
   - Add `adapted_factorial` function for formatted factorial calculations, supporting extremely large numbers.
 
-### Fixed
+### Fixed (v15.13.1)
 
-#### **Time Handling**
+#### **Time Handling** (fixing; v15.13.1)
 
 - Module `time_formatters`:
   - Fixed `parse_dt_string` function to properly handle parameter conflicts:
