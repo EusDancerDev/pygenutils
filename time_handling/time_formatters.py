@@ -120,19 +120,26 @@ def _validate_unit(unit, module):
 
 def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns"):
     """
-    Convert a time string to a date/time object using a specified library.
+    Convert a time string or object to a date/time object using a specified library.
     
     Parameters
     ----------
-    datetime_str : str
-        A string representing the date and/or time.    
+    datetime_str : str or object
+        A string representing the date and/or time.
+        If ``module="pandas"``, this can also be:
+            - Python datetime objects
+            - NumPy datetime64 objects
+            - Integer/float timestamps
+            - Series objects
+            - DataFrame columns
+            - Lists or arrays of timestamps
     dt_fmt_str : str or None
         A format string that defines the structure of `datetime_str`. 
         Must follow the format required by the chosen module.
         If None and module is 'pandas', pandas will try to infer the format.
         If empty and module is 'pandas' with a numeric timestamp, it will use the unit parameter.
     module : {"datetime", "dateutil", "pandas", "numpy", "arrow"}, default 'datetime'
-        Specifies the library used for conversion. 
+        Specifies the library used for conversion.
         If 'numpy', datetime_str must be in ISO 8601 date or datetime format.
     unit : str, optional
         Applies only if ``module`` is either 'numpy' or 'pandas'.
@@ -177,8 +184,8 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
         
         # Special handling for pandas module
         if module == "pandas":
-            # If datetime_str looks like a numeric timestamp, use unit
-            if datetime_str.isdigit() or (datetime_str.replace('.', '', 1).isdigit() and datetime_str.count('.') <= 1):
+            # If datetime_str is a string and looks like a numeric timestamp, use unit
+            if isinstance(datetime_str, str) and (datetime_str.isdigit() or (datetime_str.replace('.', '', 1).isdigit() and datetime_str.count('.') <= 1)):
                 datetime_obj = pd.to_datetime(datetime_str, unit=unit)
             else:
                 # Otherwise use format if provided, or let pandas infer the format
@@ -951,8 +958,7 @@ _INT_CLASS_LIST = [np.int8, np.int16, "i", np.float32, "int", np.int64]
 TIME_STR_PARSING_DICT = {
     "datetime" : lambda datetime_str, dt_fmt_str: datetime.strptime(datetime_str, dt_fmt_str),
     "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
-    "pandas"   : lambda datetime_str, dt_fmt_str, unit : pd.to_datetime(datetime_str, 
-                                                                       format=dt_fmt_str),
+    "pandas"   : lambda datetime_str, dt_fmt_str, _ : pd.to_datetime(datetime_str, format=dt_fmt_str),
     "numpy"    : lambda datetime_str, _, unit : np.datetime64(datetime_str, unit),
     "arrow"    : lambda datetime_str, dt_fmt_str: arrow.get(datetime_str, dt_fmt_str)
 }
