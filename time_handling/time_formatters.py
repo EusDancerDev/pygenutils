@@ -392,7 +392,7 @@ def _format_arbitrary_dt(floated_time, frac_precision):
         This parameter is originally set in 'parse_float_dt' function,
         which allows integers in [0,9], because for 6 < frac_precision <=9 
         it performs optional nanoscale time computing, unlike this internal function.
-        So in order to maintain organization, the upper bound for the precision
+        So in order to maintain organisation, the upper bound for the precision
         will be 6.
     
     Returns
@@ -426,9 +426,15 @@ def _format_arbitrary_dt(floated_time, frac_precision):
         if days > 0:
             time_tuple = (days, hours, minutes, seconds)
             time_parts_formatted = format_string(_TIME_STR_PARTS_TEMPLATES[0], time_tuple)
-        else:
+        elif hours > 0:
             time_tuple = (hours, minutes, seconds)
             time_parts_formatted = format_string(_TIME_STR_PARTS_TEMPLATES[1], time_tuple)
+        elif minutes > 0:
+            time_tuple = (minutes, seconds)
+            time_parts_formatted = format_string(_TIME_STR_PARTS_TEMPLATES[2], time_tuple)
+        else:
+            time_tuple = (seconds,)
+            time_parts_formatted = format_string(_TIME_STR_PARTS_TEMPLATES[3], time_tuple)
     except (KeyError, IndexError, ValueError) as e:
         raise ValueError(f"Invalid format string or time components: {e}")
     return time_parts_formatted 
@@ -1069,4 +1075,6 @@ _TOTAL_TIME_UNIT_DICT = {
 _TIME_STR_PARTS_TEMPLATES = [
     "{} days {} hours {} minutes {} seconds",
     "{} hours {} minutes {} seconds",
+    "{} minutes {} seconds",
+    "{} seconds",
 ]
