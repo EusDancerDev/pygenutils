@@ -304,7 +304,7 @@ def _parse_float_to_string(floated_time,
     Parameters
     ----------
     floated_time : int or float
-        Time representing a time unit relative to an origin.
+        Time in seconds representing a time unit relative to an origin.
     frac_precision : int [0,9] or None
         Precision of the fractional seconds.
         Only supported by 'pandas' for high precision.
@@ -380,13 +380,13 @@ def _float_dt_parser(floated_time, module, unit):
 
 def _format_arbitrary_dt(floated_time, frac_precision):
     """
-    Formats an arbitrary time (in seconds) into a string representation
+    Formats an arbitrary time into a string representation
     based on the provided format.
     
     Parameters
     ----------
     floated_time : int or float
-        Time representing a time unit relative to an arbitrary origin.
+        Time in seconds representing a time unit relative to an arbitrary origin.
     frac_precision : int [0,6] or None
         Precision of the fractional seconds.
         This parameter is originally set in 'parse_float_dt' function,
