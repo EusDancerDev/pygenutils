@@ -4,6 +4,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [v15.13.4] - 2025-06-03
+
+### Added
+
+#### **Time Handling**
+
+- Module `time_formatters`:
+  - Enhance internal `_format_arbitrary_dt` function with more granular time formatting options:
+    - Minutes and seconds only format
+    - Seconds only format
+    
+---
+
 ## [v15.13.3] - 2025-05-22
 
 ### Fixed
