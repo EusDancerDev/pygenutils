@@ -207,7 +207,7 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
 #--------------------------#
 
 # Main function #
-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#
 
 def parse_float_dt(datetime_float, 
                    frac_precision=None,
@@ -290,7 +290,7 @@ def parse_float_dt(datetime_float,
     
     
 # Auxiliary functions #
-#-#-#-#-#-#-#-#-#-#-#
+#-#-#-#-#-#-#-#-#-#-#-#
 
 def _parse_float_to_string(floated_time, 
                            frac_precision, 
