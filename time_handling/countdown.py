@@ -56,10 +56,10 @@ def return_dt_string_parts(datetime_str, dt_fmt_str):
         except ValueError:
             raise ValueError("Non-numeric values encountered in the datetime string.")
         else:
-            dt_obj = parse_time_string(time_str, dt_fmt_str, end="\r")
+            dt_obj = parse_time_string(time_str, dt_fmt_str, end="\r", flush=True)
             return days, dt_obj
     else:
-        dt_obj = parse_time_string(datetime_str, dt_fmt_str, end="\r")
+        dt_obj = parse_time_string(datetime_str, dt_fmt_str, end="\r", flush=True)
         return 0, dt_obj # No days component, default to 0.
 
         
