@@ -4,24 +4,34 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.4] - 2025-06-03
+## [15.13.5] - 2025-06-05
+
+### Changed
+
+#### **Time Handling** (changing; 15.13.5)
+
+- Module `countdown.py`: force-flush the output buffer after each print statement with carriage return to display cleaner outputs.
+
+---
+
+## [15.13.4] - 2025-06-03
 
 ### Added
 
-#### **Time Handling**
+#### **Time Handling** (adding; 15.13.4)
 
 - Module `time_formatters`:
   - Enhance internal `_format_arbitrary_dt` function with more granular time formatting options:
     - Minutes and seconds only format
     - Seconds only format
-    
+
 ---
 
-## [v15.13.3] - 2025-05-22
+## [15.13.3] - 2025-05-22
 
 ### Fixed
 
-#### **Time Handling**
+#### **Time Handling** (fixing; 15.13.3)
 
 - Module `time_formatters`:
   - Enhance `parse_dt_string` function to properly handle non-string inputs:
@@ -37,11 +47,11 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.2] - 2025-05-21
+## [15.13.2] - 2025-05-21
 
-### Added
+### Added (15.13.2)
 
-#### **Operative Systems**
+#### **Operative Systems** (adding; 15.13.2)
 
 - Module `os_operations`:
   - Added `text` parameter support to `run_system_command` function:
@@ -51,19 +61,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.1] - 2025-05-10
+## [15.13.1] - 2025-05-10
 
-### Added (v15.13.1)
+### Added (15.13.1)
 
-#### **Number Bases**
+#### **Number Bases** (adding; 15.13.1)
 
 - Add module `mathematical_utils`:
   - Hosts functions for mathematical operations and number formatting.
   - Add `adapted_factorial` function for formatted factorial calculations, supporting extremely large numbers.
 
-### Fixed (v15.13.1)
+### Fixed (15.13.1)
 
-#### **Time Handling** (fixing; v15.13.1)
+#### **Time Handling** (fixing; 15.13.1)
 
 - Module `time_formatters`:
   - Fixed `parse_dt_string` function to properly handle parameter conflicts:
@@ -77,11 +87,11 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.13.0] - 2025-05-09
+## [15.13.0] - 2025-05-09
 
-### Added (v15.13.0)
+### Added (15.13.0)
 
-#### **Audio and Video**
+#### **Audio and Video** (adding; 15.13.0)
 
 - Module `audio_and_video_manipulation`:
   - Added `overwrite` parameter to control file overwriting behaviour in ffmpeg commands:
@@ -93,25 +103,25 @@ All notable changes to this project will be documented in this file.
 - Modules `merge_audio_and_video`, `merge_audio_or_video` and `trim_media`:
   - Add the `overwrite` parameter to the calling functions.
 
-### Changed (v15.13.0)
+### Changed (15.13.0)
 
-#### **Operative Systems** (changing; v15.13.0)
+#### **Operative Systems** (changing; 15.13.0)
 
 - Module `os_operations`:
   - Enhanced `exit_info` function to handle various output capture scenarios and object types (dict/CompletedProcess), with improved error handling and fallbacks
 
-#### **Audio and Video** (changing)
+#### **Audio and Video** (changing; 15.13.0)
 
 - Module `audio_and_video_manipulation`:
   - Improved system command execution in `merge_media_files`, `merge_individual_media_files`, and `cut_media_files` to properly handle cases where command output isn't captured.
 
 ---
 
-## [v15.12.9] - 2025-05-08
+## [15.12.9] - 2025-05-08
 
-### Added (v15.12.9)
+### Added (15.12.9)
 
-#### **Audio and Video** (v15.12.9)
+#### **Audio and Video** (adding; 15.12.9)
 
 - Module `audio_and_video_manipulation`:
   - Added `_escape_path` helper function using `shlex.quote` to properly escape file paths with spaces and special characters in shell commands
@@ -121,9 +131,9 @@ All notable changes to this project will be documented in this file.
     - `_is_audio_file`
     - `_is_video_file`
 
-### Changed (v15.12.9)
+### Changed (15.12.9)
 
-#### **Audio and Video** (changing, v15.12.9)
+#### **Audio and Video** (changing; 15.12.9)
 
 - Module `audio_and_video_manipulation`:
   - Improve `ffmpeg` command handling:
@@ -147,7 +157,7 @@ All notable changes to this project will be documented in this file.
 - Module `trim_media`:
   - Besides above changes, lowercase `zero_padding` instead of uppercase `ZERO_PADDING` where it is used as an input parameter in the calling function.
 
-#### **Operative Systems** (v15.12.9)
+#### **Operative Systems** (changing; 15.12.9)
 
 - Module `os_operations`:
   - Enhanced `subprocess_run_helper` to print `stderr` before raising `CalledProcessError` for better error diagnosis.
@@ -156,19 +166,19 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.6] - 2025-05-07
+## [15.12.6] - 2025-05-07
 
-### Changed (v15.12.6)
+### Changed (15.12.6)
 
-#### **Audio and Video** (v15.12.6)
+#### **Audio and Video** (changing; 15.12.6)
 
 - Module `audio_and_video_manipulation`:
   - Update import to use `parse_dt_string` instead of the deprecated `parse_time_string` from the module `time_formatters`.
   - Add support for `None` as a valid value for the `zero_padding` parameter in both `merge_media_files` and `cut_media_files` functions, disabling padding when generating default output filenames.
 
-### Fixed (v15.12.6)
+### Fixed (15.12.1)
 
-#### **Audio and Video** (fixing; v15.12.6)
+#### **Audio and Video** (fixing; 15.12.6)
 
 - Module `merge_audio_and_video`:
   - Correct the import path for the function `find_files` from the `filewise` package.
@@ -181,21 +191,28 @@ All notable changes to this project will be documented in this file.
   - Expose the `safe` parameter to allow toggling ffmpeg safe mode when merging media files.
   - Remove the `ZERO_PADDING` parameter, as it is not supported by the function `merge_individual_media_files`.
 
-#### **Strings**
+#### **Strings** (fixing; 15.12.6)
 
 - Module `text_formatters`: ensure the result from `find_substring_index` is always handled as a list in the `format_string` function, preventing errors when formatting strings with a single pair of brackets.
 
-#### **Time Handling** (v15.12.6)
+#### **Time Handling** (fixing; 15.12.6)
 
 - Module `time_formatters`: correct the name of the deprecated function: from `parse_time_string` to `parse_dt_string`.
 
+### Deprecated
+
+#### **Time Handling** (deprecating; 15.12.6)
+
+- Module `time_formatters`:
+  - Function `parse_time_string` is deprecated in favor of `parse_dt_string`
+
 ---
 
-## [v15.12.1] - 2025-05-06
+## [15.12.1] - 2025-05-06
 
-### Changed (v15.12.1)
+### Changed (15.12.1)
 
-#### **Operative Systems** (changing)
+#### **Operative Systems** (changing; 15.12.1)
 
 - Module `os_operations`:
   - Improve code readability by only passing `return_output_name` to `subprocess.Popen`
@@ -205,9 +222,11 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [v15.12.0] - 2025-05-05
+## [15.12.0] - 2025-05-05
 
-### Added (v15.12.0)
+### Added (15.12.0)
+
+#### **Time Handling** (adding; 15.12.0)
 
 - Module `time_utils`:
   - Add the following internal and public functions to the module:
@@ -219,18 +238,18 @@ All notable changes to this project will be documented in this file.
       - `get_nano_datetime`
   - The addition implies breaking a circular dependency.
 
-### Changed (v15.12.0)
+### Changed (15.12.0)
 
-#### **Time Handling** (v15.12.0)
+#### **Time Handling** (changing; 15.12.0)
 
 In general, several changes have been made to break a circular dependency.
 
 - Module `calendar_utils`:
   - Move imports of the functions `interp_pd` and `interp_xr` inside the function `standardise_calendar`.
 
-### Fixed (v15.12.0)
+### Fixed (15.12.0)
 
-#### **Time Handling** (fixing; v15.12.0)
+#### **Time Handling** (fixing; 15.12.0)
 
 - Module `date_and_time_utils`:
   - Correct the module name from which the function `datetime_obj_converter` is imported.
@@ -247,11 +266,11 @@ In general, several changes have been made to break a circular dependency.
 
 ---
 
-## [v15.11.3] - 2025-05-02
+## [15.11.3] - 2025-05-02
 
-### Changed (v15.11.3)
+### Changed (15.11.3)
 
-#### **Time Handling** (v15.11.3)
+#### **Time Handling** (changing; 15.11.3)
 
 - Module `time_formatters`: rename objects containing `(date)time` to `dt` for date-time operations
 
@@ -294,53 +313,84 @@ In general, several changes have been made to break a circular dependency.
 - Module `date_and_time_utils`:
   - Rename public function `find_time_key` to `find_dt_key` as it handles both dates and times.
 
-**NOTE** (v15.11.3)
+### Deprecated (15.11.3)
+
+#### **Time Handling** (deprecating; 15.11.3)
+
+- Module `time_formatters`:
+  - The following functions are deprecated in favor of their `dt`-prefixed versions:
+    - `parse_float_time` → `parse_float_dt`
+    - `_float_time_parser` → `_float_dt_parser`
+    - `_format_arbitrary_time` → `_format_arbitrary_dt`
+    - `_total_time_unit` → `_total_dt_unit`
+    - `_total_time_complex_data` → `_total_dt_complex_data`
+  - The following constants are deprecated in favor of their `DT`-prefixed versions:
+    - `DATETIME_OBJ_CONVERSION_DICT` → `DT_OBJ_CONVERSION_DICT`
+    - `DATETIME64_OBJ_CONVERSION_DICT` → `DT64_OBJ_CONVERSION_DICT`
+    - `DATETIME_TIME_OBJ_CONVERSION_DICT` → `DT_TIME_OBJ_CONVERSION_DICT`
+
+- Module `countdown`:
+  - Function `return_time_string_parts` is deprecated in favor of `return_dt_string_parts`
+
+- Module `date_and_time_maths`:
+  - The following functions are deprecated in favor of their new names:
+    - `extract_datetime_part` → `extract_dt_part`
+    - `sum_dt_times` → `sum_dt_objects`
+    - `dt_time_average` → `dt_average`
+    - `_time_to_radians` → `_dt_to_radians`
+
+- Module `date_and_time_utils`:
+  - Function `find_time_key` is deprecated in favor of `find_dt_key`
+
+**NOTE** (15.11.3)
 
 - **All above changes regarding public functions have been applied to all affected modules.**
 
 ---
 
-## [v15.11.2] - 2025-05-01
+## [15.11.2] - 2025-05-01
 
-### Fixed (v15.11.2)
+### Fixed (15.11.2)
 
-#### **Time Handling** (v15.11.2)
+#### **Time Handling** (fixing; 15.11.2)
 
 - Module `calendar_utils`: update import from `statkit` to `statflow` package to reflect the package's new name.
 
 ---
 
-## [v15.11.1] - 2025-04-27
+## [15.11.1] - 2025-04-27
 
-### Changed (v15.11.1)
+### Changed (15.11.1)
 
-#### **General**
+#### **General** (changing; 15.11.1)
 
 - Modify the comment header `Import custom modules` to `Import project modules` in all modules having it.
 
-#### **Audio and Video** (v15.11.1)
+#### **Audio and Video** (changing; 15.11.1)
 
 - Convert all **constant names** under the header `Define parameters` to uppercase in the following files:
   - `merge_audio_and_video.py`
   - `merge_audio_or_video.py`
   - `trim_media.py`
 
-#### **Strings** (v15.11.1)
+#### **Strings** (changing; 15.11.1)
 
 - Module `string_handler`: modify the constant `splitdelim` to `SPLIT_DELIM`.
 
 ---
 
-## [v15.11.0] - 2025-04-25
+## [15.11.0] - 2025-04-25
 
-### Added (v15.11.0)
+### Added (15.11.0)
+
+#### **Time Handling** (adding; 15.11.0)
 
 - Module `date_and_time_utils`:
   - Add back the function `find_time_key`, moved to the module `time_utils.py` in version 15.10.0, as it semantically suits better in this module.
 
-### Changed (v15.11.0)
+### Changed (15.11.0)
 
-#### **General** (v15.11.0)
+#### **General** (changing; 15.11.0)
 
 - Replace direct imports with `__all__` definition in all sub-packages:
   - `arrays_and_lists`
@@ -352,23 +402,23 @@ In general, several changes have been made to break a circular dependency.
   - `strings`
   - `time_handling`
 
-#### **Arrays and Lists**
+#### **Arrays and Lists** (changing; 15.11.0)
 
 - Modules `data_manipulation`, `maths` and `patterns`:
   - Convert constant names to uppercase and update references
 
-#### **Audio and Video** (changing, v15.11.0)
+#### **Audio and Video** (changing; 15.11.0)
 
 - Module `audio_and_video_manipulation`:
   - Convert constant names to uppercase and update references
 
-#### **Dictionaries**
+#### **Dictionaries** (changing; 15.11.0)
 
 - Modules `dict_handler` and `dict_operators`:
   - Convert constant names to uppercase and update references
   - Add parameter validation and improve sorting functionality
 
-#### **Number Bases** (v15.13.0)
+#### **Number Bases** (15.13.0)
 
 - Modules `base_converters` and `binary_operations`:
   - Convert constant names to uppercase and update references
@@ -418,28 +468,28 @@ In general, several changes have been made to break a circular dependency.
 
 ---
 
-## [v15.10.0] - 2025-04-21
+## [15.10.0] - 2025-04-21
 
-### Added (v15.10.0)
+### Added (15.10.0)
 
-#### **Time Handling** (v15.10.0)
+#### **Time Handling** (15.10.0)
 
 - Module `time_utils`: move the function `find_time_key` from the module `date_and_time_utils` to avoid circular dependency.
 
-### Changed (v15.10.0)
+### Changed (15.10.0)
 
-#### **Arrays and Lists** (v15.10.0)
+#### **Arrays and Lists** (15.10.0)
 
 - Module `data_manipulation`:
   - Move the function `decompose_cumulative_data` to the module `time_series` in the package `statkit` to avoid circular dependency.
 
 ---
 
-## [v15.9.1] - 2025-04-17
+## [15.9.1] - 2025-04-17
 
-### Fixed (v15.9.1)
+### Fixed (15.9.1)
 
-#### **Time Handling** (v15.9.1)
+#### **Time Handling** (fixing; 15.9.1)
 
 - Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
 
@@ -447,49 +497,49 @@ In general, several changes have been made to break a circular dependency.
 
 ---
 
-## [v15.9.0] - 2025-04-12
+## [15.9.0] - 2025-04-12
 
-### Changed (v15.9.0)
+### Changed (15.9.0)
 
-#### **General** (v15.9.0)
+#### **General** (changing; 15.9.0)
 
 - Rename all variable names that start with `arg_tuple` to `format_args` to follow a more consistent naming convention `format_args` prefix.
 
-### Fixed (v15.9.0)
+### Fixed (15.9.0)
 
-#### **Time Handling** (v15.9.0)
+#### **Time Handling** (fixing; 15.9.0)
 
 - Module `calendar_utils`: replace non-existent `find_time_dimension` import with available `get_file_dimensions` function and add handling for list return type.
 
 ---
 
-## [v15.8.1] - 2025-03-29
+## [15.8.1] - 2025-03-29
 
-### Changed (v15.8.1)
+### Changed (15.8.1)
 
-#### **General** (v15.8.1)
+#### **General** (changing; 15.8.1)
 
 - Further update comments and variable names to replace `syntax` and `command` with `template`.
 
 ---
 
-## [v15.8.0] - 2025-03-23
+## [15.8.0] - 2025-03-23
 
-### Added (v15.8.0)
+### Added (15.8.0)
 
-#### **Audio and Video** (v15.8.0)
+#### **Audio and Video** (adding; 15.8.0)
 
 - Module `audio_and_video_manipulation`: add import for `find_files` from the `filewise` package to enable dynamic file discovery.
 
-### Changed (v15.8.0)
+### Changed (15.7.6)
 
-#### **General** (v15.8.0)
+#### **General** (changing; 15.8.0)
 
 - Update terminology from `Preformatted Strings` to `Template Strings` in headers and variables.
   - On that basis, rename name 'preformatted' to 'template' in headers and variables wherever necessary.
   - Update comments and variable names to replace `syntax` and `command` with `template` for better clarity in describing variables and constants that use empty `{}` for formatting.
 
-#### **Audio and Video** (v15.8.0; changed)
+#### **Audio and Video** (changing; 15.8.0)
 
 - Module `audio_and_video_manipulation`:
   - Renamed functions for clarity: `merge_audio_and_video_files` to `merge_media_files`, and `merge_audio_or_video_files` to `merge_individual_media_files`.
@@ -501,19 +551,19 @@ In general, several changes have been made to break a circular dependency.
   - Enhance script flexibility with dynamic file handling.
   - Update variable names for clarity and consistency.
 
-### Removed (v15.8.0)
+### Removed (15.8.0)
 
-#### **Audio and Video** (v15.8.0; removed)
+#### **Audio and Video** (removing; 15.8.0)
 
 - Deleted the old `cut_media_files` module as it has been renamed to `trim_media`.
 
 ---
 
-## [v15.7.7] - 2025-02-18
+## [15.7.7] - 2025-02-18
 
-### Changed (v15.7.7)
+### Changed (15.7.7)
 
-#### **General** (v15.7.7)
+#### **General** (changing; 15.7.7)
 
 - For all relevant modules, perform several term replacements:
   - Replace `method` with `procedure` to more accurately describe the approach or technique used in functions, except when referring to class method calls.
@@ -549,45 +599,45 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v15.6.0] - 2024-12-18
+## [15.6.0] - 2024-12-18
 
-### Changed (v15.6.0)
+### Changed (15.6.0)
 
-#### **Strings** (v15.6.0)
+#### **Strings** (15.6.0)
 
 - Module `string_handler`: enhanced substring search logic: returns single data object for one match, (-1, -1) for no matches, and enforces {"lo", "hi", "both"} for index return options.
 
 ---
 
-## [v15.5.0] - 2024-11-23
+## [15.5.0] - 2024-11-23
 
-### Changed (v15.5.0)
+### Changed (15.5.0)
 
-#### **Arrays and Lists** (v15.5.0)
+#### **Arrays and Lists** (15.5.0)
 
 - Module `data_manipulation`: enhance `remove_elements` function to support multiple indices for list inputs.
 
-### Fixed (v15.5.0)
+### Fixed (15.5.0)
 
-#### **Time Handling** (v15.5.0)
+#### **Time Handling** (15.5.0)
 
 - Module `calendar_utils`: corrected the absolute path in the import of the `unique_type_objects` function.
 
 ---
 
-## [v15.4.4] - 2024-11-17
+## [15.4.4] - 2024-11-17
 
-### Changed (v15.4.4)
+### Changed (15.4.4)
 
-#### **General** (v15.4.4)
+#### **General** (15.4.4)
 
 - Minor syntax appearance improvements in many modules.
 
-#### **Strings** (v15.4.4)
+#### **Strings** (15.4.4)
 
 - Renamed module `information_output_formatters` to `text_formatters` for improved clarity. Changes have been applied for all affected modules.
 
-#### **Time Handling** (v15.4.4)
+#### **Time Handling** (15.4.4)
 
 - Module `date_and_time_utils`:
   - Added timezone handling to `get_current_datetime` function with optional 'pytz' support
@@ -597,9 +647,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v15.3.0] - 2024-11-14
+## [15.3.0] - 2024-11-14
 
-### Changed (v15.3.0)
+### Changed (15.3.0)
 
 #### **Web Scraping**
 
@@ -608,21 +658,21 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v15.2.0] - 2024-11-03
+## [15.2.0] - 2024-11-03
 
-### Added (v15.2.0)
+### Added (15.2.0)
 
 - Added `__init__.py` files to all first-level and deeper sub-packages for enhanced import access.
 
-### Changed (v15.2.0)
+### Changed (15.2.0)
 
 - Remove the redundant import of the deprecated and removed `parameters_and_constants` module in all affected modules.
 
 ---
 
-## [v15.0.0] - 2024-10-30
+## [15.0.0] - 2024-10-30
 
-### Changed (v15.0.0)
+### Changed (15.0.0)
 
 - Current package `pyutils` has been renamed to `pygenutils` to align with the purpose of being a general-tool, Swiss army knife.
 
@@ -644,9 +694,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v14.0.0] - 2024-10-28
+## [14.0.0] - 2024-10-28
 
-### Changed (v14.0.0)
+### Changed (14.0.0)
 
 #### **Changes in functions along modules and sub-packages**
 
@@ -657,7 +707,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 #### **Specific changes regarding sub-packages**
 
-##### **Dictionaries** (v14.0.0)
+##### **Dictionaries** (14.0.0)
 
 - Module `table_formatters`:
   - Moved all functions to the module `information_output_formatters` (**Strings** sub-package)
@@ -702,7 +752,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - In function `run_system_command`, default value of argument `encoding` was changed from `None` to `utf-8`.
     - This change has been applied in every affected module.
 
-##### **Strings** (v15.3.0)
+##### **Strings** (15.3.0)
 
 - Module `string_handler`: Renamed the following functions:
 
@@ -725,13 +775,13 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v13.3.2] - 2024-10-25
+## [13.3.2] - 2024-10-25
 
-### Changed (v13.3.2)
+### Changed (13.3.2)
 
-#### **Changes in functions along modules and sub-packages** (v13.3.2)
+#### **Changes in functions along modules and sub-packages** (13.3.2)
 
-##### **General** (v13.3.2)
+##### **General** (13.3.2)
 
 - Switched to British English every verb written in American accent. For example:
   - *standardize* → 'standardi**S**e'
@@ -755,7 +805,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   | change_file_names_byvar | change_filenames_by_var |
   | standardise_file_name | _standardise_filename (marked as internal) |
 
-##### **Specific changes regarding sub-packages** (v13.3.2)
+##### **Specific changes regarding sub-packages** (13.3.2)
 
 - The following renamings have been made:
 
@@ -770,9 +820,9 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v13.0.0] - 2024-10-22
+## [13.0.0] - 2024-10-22
 
-### Changed (v13.0.0)
+### Changed (13.0.0)
 
 #### **File Operations**
 
@@ -817,11 +867,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v12.0.0] - 2024-10-18
+## [12.0.0] - 2024-10-18
 
-### Changed (v12.0.0)
+### Changed (12.0.0)
 
-#### **Arrays and Lists** (v12.0.0)
+#### **Arrays and Lists** (12.0.0)
 
 ##### **Module 'conversions'**
 
@@ -863,7 +913,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Rename module `upload_data_to_mysql_database` to `upload_data`.
 
-### Removed (v15.10.0)
+### Removed (15.10.0)
 
 - After the renamings the following modules have been removed:
   - `bulk_rename_index_exec`
@@ -876,11 +926,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v11.0.0] - 2024-10-17
+## [11.0.0] - 2024-10-17
 
-### Changed (v11.0.0)
+### Changed (11.0.0)
 
-#### **Arrays and Lists** (v11.0.0)
+#### **Arrays and Lists** (11.0.0)
 
 - Module `data_manipulation`
   - Optimised and grouped functions by categories, added support for pandas objects, and improved docstrings.
@@ -910,28 +960,28 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 - Moved function `create_ds_component` from module `data_manipulation` to `xarray_obj_handler`.
 
-### Removed (v11.0.0)
+### Removed (11.0.0)
 
 - After the displacement of the function `create_ds_component`, `change_permissions_main` module was removed.
 
 ---
 
-## [v10.11.3] - 2024-10-12
+## [10.11.3] - 2024-10-12
 
-### Added (v10.11.3)
+### Added (10.11.3)
 
 #### **Core Statistics**
 
 - Created `interpolation_functions` module with `interpolate_numpy`, `interpolate_pandas`, and `interpolate_xarray` for flexible interpolation across various object types.
 
-### Changed (v10.11.3)
+### Changed (10.11.3)
 
 #### **Climatology Statistics**
 
 - Module `representative_series`
   - Delegate interpolation logic for numpy, pandas and xarray objects to module `interpolation_functions` (**Core Statistics**).
 
-#### **Time Handling** (v10.11.3)
+#### **Time Handling** (10.11.3)
 
 - function `standardize_calendar`:
   - Rename to British English nomenclature: `standardise_calendar`.
@@ -944,17 +994,17 @@ These changes enhance terminology consistency in all affected modules. No user-f
 
 ---
 
-## [v10.9.2] - 2024-10-11
+## [10.9.2] - 2024-10-11
 
-### Added (v10.9.2)
+### Added (10.9.2)
 
-#### **General Utilities** (v10.9.2)
+#### **General Utilities** (10.9.2)
 
 - `introspection_utils`: function `get_obj_type_str` now accepts the argument lowercase to change the case of the object type's name to lower.
 
-### Changed (v10.9.2)
+### Changed (10.9.2)
 
-#### **Sets and Intervals** (v10.9.2)
+#### **Sets and Intervals** (10.9.2)
 
 - Modules
   - `interval_operators` and `operators_sets` have been renamed to `interval_handler`and `sets_handler` to align better conceptually.
@@ -963,11 +1013,11 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Refactored `operations_with_sets`, streamlined operations with `default` and `sympy` constructors using switch-case dictionaries.
   - After that, renamed the function to `sets_operator`.
 
-#### **Core Statistics** (v10.9.2)
+#### **Core Statistics** (10.9.2)
 
 - function `polynomial_fitting` has been moved from module `curve_fitting` to `interpolation_functions`.
 
-#### **Time handling** (v10.9.2)
+#### **Time handling** (10.9.2)
 
 - Module `date_and_time_utils`:
   - Merged and optimised functions for inferring frequency, date ranges, and finding date/time keys across pandas and NetCDF/xarray objects with lazy xarray imports.
@@ -981,15 +1031,15 @@ so it is worth describing their origins, referring to the latest version in whic
 | infer_full_period_of_time | data_frame_handler | pandas_data_frames/core | infer_full_period_of_time | netcdf_handler | weather_and_climate | infer_dt_range |
 | infer_time_frequency | data_frame_handler | pandas_data_frames/core | infer_time_frequency | netcdf_handler | weather_and_climate | infer_frequency |
 
-### Removed (v10.9.2)
+### Removed (10.9.2)
 
 - After the displacement of the function `polynomial_fitting`, `curve_fitting` module was removed.
 
 ---
 
-## [v10.4.0] - 2024-10-06
+## [10.4.0] - 2024-10-06
 
-### Changed (v10.4.0)
+### Changed (10.4.0)
 
 - The following functions in **Xarray Utils** have been merged into a single one:
   - `find_time_dimension` and `find_time_dimension_raise_none` → `find_time_dimension`.
@@ -1001,15 +1051,15 @@ so it is worth describing their origins, referring to the latest version in whic
 
 - Rename module `date_and_time_operators` to `date_and_time_utils` to emphasise 'utility' or 'tool' concept; originally in sub-package `time_handling`, no displacement.
 
-### Removed (v10.4.0)
+### Removed (10.4.0)
 
 - Delete sub-package `varied_documentation` as its content has been relocated to a local directory.
 
 ---
 
-## [v10.0.0] - 2024-10-02
+## [10.0.0] - 2024-10-02
 
-### Added (v10.0.0)
+### Added (10.0.0)
 
 - Add the following directories and modules in `statistics` sub-package:
   - **Core Statistics**
@@ -1027,7 +1077,7 @@ so it is worth describing their origins, referring to the latest version in whic
     - `patterns`: utility functions for coordinate, time, and model data handling, enhancing flexibility, error handling, and performance.
     - `xarray_obj_handler`: optimised module for saving xarray Datasets and DataArrays to NetCDF and CSV, with enhanced handling of variable dimensions, attributes, and spatial coordinates.
 
-### Changed (v10.0.0)
+### Changed (10.0.0)
 
 - After the creations in **Core Statistics**, the following changes have been made:
 
@@ -1091,15 +1141,15 @@ In `statistics` sub-package:
 
 - **NOTE**: any function rename above has also been applied to all files using the old function name.
 
-### Removed (v10.0.0)
+### Removed (10.0.0)
 
 - Once every operation above performed, delete sub-package `netcdf_handler`.
 
 ---
 
-## [v9.0.0] - 2024-10-01
+## [9.0.0] - 2024-10-01
 
-### Added (v9.0.0)
+### Added (9.0.0)
 
 - Add the following directories and modules in `statistics` sub-package:
   - **Core Statistics**:
@@ -1109,11 +1159,11 @@ In `statistics` sub-package:
   - **Climate Statistics** (`fields/climatology`)
     - `representative_series`: analysis of time series resulting from representativity criteria.
 
-### Changed (v9.0.0)
+### Changed (9.0.0)
 
 - Once above creations done, the following moves and/or renamings have been made:
 
-#### **Functions** (v9.0.0)
+#### **Functions** (9.0.0)
 
 In `statistics` sub-package:
 
@@ -1121,7 +1171,7 @@ In `statistics` sub-package:
   |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
   | polynomial_fitting | regressions | statistics/core | (unchanged) | curve_fitting | (unchanged) |
   | calculate_HDY | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
-  | hdy_interpolation [once moved, Changed (visibility to internal)] | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
+  | hdy_interpolation [once moved, Changed (isibility to internal)] | variables | statistics/fields/climatology | (unchanged) | hdy_interpolation | (unchanged) |
 
 ##### To `time_handling` sub-package
 
@@ -1177,15 +1227,15 @@ In `statistics` sub-package:
 | --- | climate_variables | statistics/fields/climatology | --- | variables | (unchanged) |
 | --- | calendar_operators | time_handling | --- | calendar_utils | (unchanged) |
 
-### Removed (v9.0.0)
+### Removed (9.0.0)
 
 - Once every operation above performed, removed sub-package `pandas_data_frames`.
 
 ---
 
-## [v8.0.0] - 2024-09-29
+## [8.0.0] - 2024-09-29
 
-### Added (v8.0.0)
+### Added (8.0.0)
 
 #### sub-package `climate_data_utils`
 
@@ -1253,7 +1303,7 @@ In `statistics` sub-package:
   - Added basic functions for hypothesis testing in the `statistical_tests.py` module, including: `z_test_two_means` and `chi_square_test` which provide common statistical hypothesis tests.
   - Each function includes a full docstring with parameter descriptions, examples, and returns, designed to be easily expanded for more complex use cases in the future.
 
-### Changed (v8.0.0)
+### Changed (8.0.0)
 
 - Many functions have been moved out from the modules in the old `weather_and_climate` sub-package to `statistics`.
 - Information about the original module and new function name and location is displayed next:
@@ -1313,15 +1363,15 @@ In `statistics` sub-package:
 - `data_downloads`
 - `complementary-to_remodule`
 
-### Removed (v8.0.0)
+### Removed (8.0.0)
 
 - Once every operation above performed, delete sub-package `weather_and_climate`.
 
 ---
 
-## [v7.3.3] - 2024-09-28
+## [7.3.3] - 2024-09-28
 
-### Added (v7.3.3)
+### Added (7.3.3)
 
 Sub-package `climatic_signal_modulators`
 
@@ -1346,7 +1396,7 @@ Sub-package `climatic_signal_modulators`
     - Improved performance by applying zero-phase filtering and optimizing how filters are designed based on cutoff frequencies.
     - Expanded the docstring to include explanations on filter design and its effect on different time series data.
 
-### Changed (v7.3.3)
+### Changed (7.3.3)
 
 #### Sub-package `climatic_statistics`
 
@@ -1368,9 +1418,9 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v7.0.0] - 2024-09-26
+## [7.0.0] - 2024-09-26
 
-### Changed (v7.0.0)
+### Changed (7.0.0)
 
 - Delete part of the file name `arrays_` contained in all modules of the sub-package `arrays_and_lists`, then delete all old-named modules.
 - Module `climate_statistics`: refactor the following functions to improve performance, readability and maintainability:
@@ -1385,14 +1435,14 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v6.8.2] - 2024-09-25
+## [6.8.2] - 2024-09-25
 
-### Added (v6.8.2)
+### Added (6.8.2)
 
 - Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
 - Add detailed docstring to the function `natural_year` and optimise inner code and comments.
 
-### Changed (v6.8.2)
+### Changed (6.8.2)
 
 - Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
 - Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
@@ -1404,16 +1454,16 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v6.6.0] - 2024-09-23
+## [6.6.0] - 2024-09-23
 
-### Added (v6.6.0)
+### Added (6.6.0)
 
 - Add docstring for every function
 - Add module to store configuration data like credentials, host info, etc.
 - Add type to every parameter missing it in all docstrings
 - Add dictionary with conversion factors from the provided floated time to the given unit
 
-### Changed (v6.6.0)
+### Changed (6.6.0)
 
 - Rename function `remove_elements_from_array` to `remove_elements`
 - Eliminate `exec_command_shell` function and, if present, `catch_shell_prompt_output`  
@@ -1422,45 +1472,45 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v6.3.4] - 2024-09-20
+## [6.3.4] - 2024-09-20
 
-### Added (v6.3.4)
+### Added (6.3.4)
 
 - Add optional argument, comments explaining key parts of the code and simplify the f-strings
 - Add type to the parameter `datetime_obj` in the docstring of the internal function `_total_time_unit`
 - Add type to every parameter missing it in all docstrings.
 
-### Changed (v6.3.4)
+### Changed (6.3.4)
 
 - Delete `todo` from the code as the task there is already done
 - Specify the name and type of the returning variable in function `string_underliner`
 
 ---
 
-## [v6.3.0] - 2024-09-18
+## [6.3.0] - 2024-09-18
 
-### Added (v6.3.0)
+### Added (6.3.0)
 
 - Add further fractional second precision choice at internal function `_format_arbitrary_time`
 - Add support for `datetime.time` object conversion to other datetime-like objects
 
-### Changed (v6.3.0)
+### Changed (6.3.0)
 
 - Eliminate need of the old function `time_format_tweaker` in favour of the renewed `datetime_obj_converter` from module `time_formatters`
 - Rewrite some lazy imports and fix a typo as a result
 
 ---
 
-## [v6.0.0] (2024-09-06)
+## [6.0.0] (2024-09-06)
 
-### Added (v6.0.0)
+### Added (6.0.0)
 
 - Created directories for lambda functions and assertion documentation in Python.
 - Enhanced performance by importing frequently used NumPy libraries and utilizing `get_obj_type_str` for type checks.
 - Implemented a simple calculator functionality using a dictionary-based switch-case approach, accepting multiple arguments.
 - Improved input validation and functionalities in `sort_dictionary_by_keys` and `merge_dictionaries` functions.
   
-### Changed (v6.0.0)
+### Changed (6.0.0)
 
 - Restored accidentally removed code during editing.
 - Sub-package `arrays_and_lists`:
@@ -1469,20 +1519,20 @@ Sub-package `climatic_signal_modulators`
 - Renamed directories for improved readability and intuitive understanding.
 - Removed unnecessary directories due to renaming or redundancy.
 
-### Removed (v6.0.0)
+### Removed (6.0.0)
 
 - Deleted `webdriver_Firefox-Chrome_settings_check.py` in favour of the more descriptively named `webdriver_Firefox-Chrome_setup_test.py`.
 - Eliminated `git` directory as Git does not depend on Python.
 
 ---
 
-## [v5.5.5] (2024-08-20)
+## [5.5.5] (2024-08-20)
 
-### Added (v5.5.5)
+### Added (5.5.5)
 
 - Combined character splitting instructions into single lines for efficiency.
   
-### Changed (v5.5.5)
+### Changed (5.5.5)
 
 - Enhanced the `format_table_from_lists` function for better error handling.
 - Improved readability by splitting long lines into shorter ones.
@@ -1490,107 +1540,107 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v5.4.2] (2024-08-08)
+## [5.4.2] (2024-08-08)
 
-### Added (v5.4.2)
+### Added (5.4.2)
 
 - Functionality to select column delimiters in all relevant functions.
 - New function to underline single or multiple line strings.
 
-### Changed (v5.4.2)
+### Changed (5.4.2)
 
 - Revised the docstring in `format_table_from_lists` to reflect new functionalities.
 - Fixed issues in the `format_table_from_lists` function related to multi-row values.
 
-### Removed (v5.4.2)
+### Removed (5.4.2)
 
 - Removed the `Constants` section from general notes.
 
 ---
 
-## [v5.2.2] (2024-07-15)
+## [5.2.2] (2024-07-15)
 
-### Added (v5.2.2)
+### Added (5.2.2)
 
 - Optional argument for setting the index starting number in `format_table_from_list` and `format_table_from_lists`.
 - New module for formatting dictionaries or lists into tables.
 
-### Changed (v5.2.2)
+### Changed (5.2.2)
 
 - Clarified overwriting behaviour in `serialize_dict_to_json`.
 - Simplified the try-except block structure in `print_format_string`.
 
-### Removed (v5.2.2)
+### Removed (5.2.2)
 
 - Removed a JSON test file.
 
 ---
 
-## [v5.0.0] (2024-07-10)
+## [5.0.0] (2024-07-10)
 
-### Added (v5.0.0)
+### Added (5.0.0)
 
 - Created a sub-package for JSON functionalities.
 
-### Changed (v5.0.0)
+### Changed (5.0.0)
 
 - Polished section comments for clarity.
 
-### Removed (v5.0.0)
+### Removed (5.0.0)
 
 - Removed redundant JSON file utilities, centralizing them in the `json_file_handler` module.
 
 ---
 
-## [v4.9.0] (2024-06-29)
+## [4.9.0] (2024-06-29)
 
-### Added (v4.9.0)
+### Added (4.9.0)
 
 - Various references updated from `pytools` to `pyutils`.
 - New warning codes and documentation improvements.
 
-### Changed (v4.9.0)
+### Changed (4.9.0)
 
 - Created a file to track significant changes in the repository.
 
 ---
 
-## [v4.0.0] (2024-06-26)
+## [4.0.0] (2024-06-26)
 
-### Added (v4.0.0)
+### Added (4.0.0)
 
 - Several sub-packages for various utility functions and modules.
 
-### Changed (v4.0.0)
+### Changed (4.0.0)
 
 - Relocated functions and optimised imports.
 
-### Removed (v4.0.0)
+### Removed (4.0.0)
 
 - Deleted files that have been relocated.
 
 ---
 
-## [v3.0.0] (2024-06-24)
+## [3.0.0] (2024-06-24)
 
-### Added (v3.0.0)
+### Added (3.0.0)
 
 - Introduced new functionalities for handling regex and optimizing code structure.
 
-### Changed (v3.0.0)
+### Changed (3.0.0)
 
 - Updated imports to absolute and improved error handling.
 
 ---
 
-## [v2.7.4] - 2024-06-14
+## [2.7.4] - 2024-06-14
 
-### Added (v2.7.4)
+### Added (2.7.4)
 
 - Add todo for when function `time_format_tweaker` at module `time_formatters` is optimised and incorporated more functionalities to it.
 - Add detailed docstring to the function `natural_year` and optimise inner code and comments.
 
-### Changed (v2.7.4)
+### Changed (2.7.4)
 
 - Modify function `datetime_range_operator` to `merge_datetime_dataframes`.
 - Update function `get_current_time` to `get_current_datetime`; fix typo when writing to the object `report_file_obj`.
@@ -1602,35 +1652,35 @@ Sub-package `climatic_signal_modulators`
 
 ---
 
-## [v2.4.0] - 2024-06-12
+## [2.4.0] - 2024-06-12
 
-### Added (v2.4.0)
+### Added (2.4.0)
 
 - Add docstrings and polish the main functions `sum_clock_times` and `sum_date_objects`, as well as their auxiliary functions.
 - Add functions to sum or subtract dates and/or times (preliminary version).
 
-### Removed (v2.4.0)
+### Removed (2.4.0)
 
 - Delete to-do list with `date_and_time_maths`.
 
 ---
 
-## [v2.1.0] - 2024-06-11
+## [2.1.0] - 2024-06-11
 
-### Added (v2.1.0)
+### Added (2.1.0)
 
 - Import the function to return an object type`s string part.
 - Add multidimensional indexing functionality for NumPy arrays in `select_array_elements` function.
 
-### Renamed (v2.1.0)
+### Renamed (2.1.0)
 
 - Rename the function to return an object type`s string part.
 
 ---
 
-## [v2.0.0] - Initial release - 2024-06-10
+## [2.0.0] - Initial release - 2024-06-10
 
-### Added (v2.0.0)
+### Added (2.0.0)
 
 - Add module for climate and environment data manipulation and extraction.
 - Add module for date and time management functions.
@@ -1639,6 +1689,6 @@ Sub-package `climatic_signal_modulators`
 - Add directory containing small manuals and web extracts about external Python modules and functions.
 - Add module for mathematical operations with sets.
 
-### Removed (v2.0.0)
+### Removed (2.0.0)
 
 - Remove function `json2dict`
