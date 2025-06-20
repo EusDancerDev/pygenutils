@@ -8,6 +8,12 @@
 import itertools as it
 from numpy import array
 
+#------------------------#
+# Import project modules #
+#------------------------#
+
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
+
 #------------------#
 # Define functions #
 #------------------#
@@ -45,9 +51,10 @@ def unique_pairs(array_like, library="python-default"):
     
     Parameters
     ----------
-    array_like : array-like of numbers, i.e. list or np.ndarray thereof.    
+    array_like : list | numpy.ndarray
         Input data. In both cases it will be converted to a NumPy array,
         and if the latter's dimension is N > 1, it will also be flattened.
+        Lists can be nested and will be automatically flattened.
        
         Programatically, all types of data are allowed to co-exist
         in the array, being these simple or complex, which in that case
@@ -69,7 +76,7 @@ def unique_pairs(array_like, library="python-default"):
         If not all elements inside the array are of the same type.
     ValueError
         If an unsupported library is chosen.
-    all_pair_combo_arr : list or numpy.array of tuples
+    all_pair_combo_arr : list | numpy.ndarray of tuples
         The resulting list or array (depending the library used) of tuples.    
     """
     
@@ -77,7 +84,12 @@ def unique_pairs(array_like, library="python-default"):
     #-#-#-#-#-#-#-#-#-#-#
     
     # Input arr #
-    arr = array(array_like)
+    # Handle nested lists by flattening them first
+    if isinstance(array_like, list):
+        arr = array(list(flatten_list(array_like)))
+    else:
+        arr = array(array_like)
+    
     data_type = arr.dtype
 
     if data_type == 'O':       

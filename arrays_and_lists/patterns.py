@@ -44,11 +44,11 @@ def find_item_basic(obj, obj2find):
     
     Parameters
     ----------
-    obj : list or numpy.ndarray of int, float, complex or str
+    obj : list | numpy.ndarray of int | float | complex | str
         List or NumPy array containing the above mentioned type of simple data.
         Every data must be of the same type, which is always guaranteed
         if the object is a numpy.ndarray.
-    obj2find: int, float, complex or str
+    obj2find: int | float | complex | str
         Simple data to find in the input object.
           
     Returns
@@ -100,9 +100,9 @@ def detect_subarray_in_array(obj, test_obj,
     
     Parameters
     ----------
-    obj : numpy.ndarray or pandas.Series 
+    obj : numpy.ndarray | pandas.Series 
         Input object.
-    test_obj : numpy.ndarray or pandas.Series
+    test_obj : numpy.ndarray | pandas.Series
         Object whose values to test against all inside parameter 'obj'.
         It does not need to be of the same type as it,
         but also the other type than thereof.
@@ -131,7 +131,7 @@ def detect_subarray_in_array(obj, test_obj,
             
     Returns
     -------
-    is_test_obj_contained : numpy.ndarray or pandas.Series
+    is_test_obj_contained : numpy.ndarray | pandas.Series
         Returns a multi-dimension object if 'return_all' is set to True.
     are_all_test_elements_in : bool
         If 'return_all' is set to False, it retuns True if all elements
@@ -189,7 +189,7 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
     
     Parameters
     ----------
-    array_like : list, tuple or numpy.ndarray
+    array_like : list | tuple | numpy.ndarray
         Array containing data.
     remove_duplicated : bool
         Whether to remove duplicated elements
@@ -207,9 +207,12 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
     
     """
     
-    # Irrespective of whether the input argument is a NumPy array or a list,
-    # flatten it and create a copy only if necessary
-    flattened_array = np.asarray(array_like).flatten()
+    # Handle nested lists by flattening them first, then convert to numpy array
+    if isinstance(array_like, list):
+        flattened_array = np.array(list(flatten_list(array_like)))
+    else:
+        # For tuples and numpy arrays, use the existing approach
+        flattened_array = np.asarray(array_like).flatten()
  
     # Use a dictionary to track the indices of each element
     duplicated_indices_dict = {}
@@ -245,15 +248,15 @@ def select_elements(array, idx2access):
     
     Parameters
     ----------
-    array : list, dict, or numpy.ndarray
+    array : list | dict | numpy.ndarray
         Container holding the values. If a NumPy array, it can have up to 3 dimensions.
-    idx2access : int, list, or numpy.ndarray
+    idx2access : int | list | numpy.ndarray
         Indices to select multiple values. If a single value is provided,
         it will be converted to a list.
     
     Returns
     -------
-    selected : int, list, dict, or numpy.ndarray
+    selected : int | list | dict | numpy.ndarray
         Single value or a slice of the input container.
     
     Raises
@@ -261,7 +264,7 @@ def select_elements(array, idx2access):
     ValueError
         If the input NumPy array has more than 3 dimensions.
     TypeError
-        If the input array is not a list, dict, or numpy.ndarray.
+        If the input array is not a list | dict | numpy.ndarray.
     
     Examples
     --------
@@ -336,7 +339,7 @@ def count_consecutive(arr, calc_max_len=False):
     
     Parameters
     ----------
-    arr : list, np.ndarray, or pandas.Series
+    arr : list | numpy.ndarray | pandas.Series
         Input array-like object (numeric or boolean).
     
     calc_max_len : bool, optional
@@ -345,7 +348,7 @@ def count_consecutive(arr, calc_max_len=False):
     
     Returns
     -------
-    list or int
+    list | int
         List of lengths of consecutive sequences (or max length if `calc_max_len=True`).
     
     Examples
@@ -386,7 +389,7 @@ def unique_type_objects(list_of_objects):
     
     Returns
     -------
-    unique_type_list : list of types
+    unique_type_list : list[type]
         List containing the unique types of the objects in the list.
     lutl : int
         Length of the unique object type list.
@@ -409,8 +412,7 @@ def approach_value(array, given_value):
     
     Parameters
     ----------
-    array : list, numpy.ndarray or pandas.DataFrame
-        or pandas.Series
+    array : list | numpy.ndarray | pandas.DataFrame | pandas.Series
         Array or Pandas DataFrame or series containing the values.
     
     given_value : float
@@ -418,9 +420,9 @@ def approach_value(array, given_value):
     
     Returns
     -------
-    value_approach : int or float
+    value_approach : int | float
         Closest value in array to the given value.
-    value_approach_idx : int or float or tuple
+    value_approach_idx : int | float | tuple
         Index of the closest value.
         If the array or pandas series is of 1D, it returns a float
         number where the closest value is located.
