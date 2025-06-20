@@ -20,6 +20,7 @@ import pandas as pd
 #------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.arrays_and_lists.patterns import select_elements
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.strings.string_handler import find_substring_index
@@ -92,7 +93,7 @@ def sum_dt_objects(dt_obj_list,
 
     Parameters
     ----------
-    dt_obj_list : list, tuple, or numpy.ndarray
+    dt_obj_list : list[str] | tuple[str] | np.ndarray[str]
         A list, tuple, or numpy.ndarray containing time objects as strings 
         that follow the format specified in 'time_fmt_str'.
     operation : str, optional
@@ -137,6 +138,10 @@ def sum_dt_objects(dt_obj_list,
     elif (isinstance(dt_obj_list, (list, tuple, np.ndarray)) and len(dt_obj_list) < 2):
         raise ValueError(f"Argument '{param_keys[obj_list_pos]}' "
                          "must contain at least two objects.")
+    
+    # Handle nested lists by flattening them first
+    if isinstance(dt_obj_list, list) and any(isinstance(item, list) for item in dt_obj_list):
+        dt_obj_list = list(flatten_list(dt_obj_list))
     
     # Operation argument control #        
     format_args_math_op = (operation, BASIC_MATH_OPT_LIST)

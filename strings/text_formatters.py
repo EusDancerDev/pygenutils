@@ -30,6 +30,7 @@ Functions
 #------------------------#
 
 from filewise.general.introspection_utils import get_type_str
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import find_substring_index
 
 #-------------------------#
@@ -50,7 +51,7 @@ def format_string(string2format, arg_obj):
     ----
     string2format : str
         The string to be formatted.
-    arg_obj : list, tuple or numpy.ndarray
+    arg_obj : list | tuple | np.ndarray
         The object used to fill in the placeholders in 'string2format'.
 
     Returns
@@ -106,7 +107,7 @@ def print_format_string(string2format, arg_obj, end="\n"):
     ----
     string2format : str
         The string to be formatted and printed.
-    arg_obj : list, tuple or numpy.ndarray
+    arg_obj : list | tuple | np.ndarray
         The object used to fill in the placeholders in string2format.
     end : str, optional
         String appended after the last value, default is "\n".
@@ -257,9 +258,9 @@ def format_table(nested_dict,
 
     Parameters
     ----------
-    nested_dict : dict of dict
+    nested_dict : dict[str, dict]
         A nested dictionary to format.
-    keys : list of str, optional
+    keys : list[str] | None, optional
         An optional list of keys to use as column names.
     display_index : bool, optional
         Whether to display the index column. Default is True.
@@ -390,9 +391,9 @@ def format_table_from_list(dict_list,
 
     Parameters
     ----------
-    dict_list : list of dict
+    dict_list : list[dict]
         A list of dictionaries to format.
-    keys : list of str, optional
+    keys : list[str] | None, optional
         An optional list of keys to use as column names.
     display_index : bool, optional
         Whether to display the index column. Default is True.
@@ -421,6 +422,10 @@ def format_table_from_list(dict_list,
     else:
         if isinstance(dict_list, dict):
             dict_list = [dict_list]
+    
+    # Handle nested lists by flattening them first
+    if isinstance(dict_list, list) and any(isinstance(item, list) for item in dict_list):
+        dict_list = list(flatten_list(dict_list))
     
     # Ensure all dictionaries are of the same length
     first_len = len(dict_list[0])
@@ -518,9 +523,9 @@ def format_table_from_lists(keys, values,
     
     Parameters
     ----------
-    keys : list of str
+    keys : list[str]
         A list of column headers for the table.
-    values : list or list of lists
+    values : list | list[list]
         A list containing the row values. If each element of `values` is a list,
         then it is treated as a row; otherwise, `values` is treated as a single row.
     display_index : bool, optional

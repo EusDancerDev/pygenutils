@@ -17,6 +17,7 @@ import pandas as pd
 
 from filewise.general.introspection_utils import get_type_str
 from filewise.pandas_utils.pandas_obj_handler import save2csv, save2excel
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.arrays_and_lists.patterns import unique_type_objects
 from pygenutils.strings.string_handler import modify_obj_specs
 from pygenutils.time_handling.date_and_time_utils import (
@@ -56,7 +57,7 @@ def standardise_calendar(obj,
     obj : pandas.DataFrame, xarray.Dataset, xarray.DataArray, or list of them
         Object containing data. For pandas DataFrames, the first column 
         must be of datetime64 type.
-    file_path : str or list of str
+    file_path : str | list[str]
         Path(s) to the file(s) from which the data object was extracted.
     interpolation_method : str, optional
         Interpolation method to use for filling missing data, e.g., 'linear', 'polynomial'.
@@ -100,6 +101,11 @@ def standardise_calendar(obj,
         
         obj = np.atleast_1d(obj)  # Ensure obj is list-like
         file_path = np.atleast_1d(file_path)  # Ensure file_path is list-like
+        
+        # Handle nested lists by flattening them first
+        if isinstance(file_path, list):
+            if any(isinstance(item, list) for item in file_path):
+                file_path = list(flatten_list(file_path))
         
         obj_std_calendar = []
         len_objects = len(obj)

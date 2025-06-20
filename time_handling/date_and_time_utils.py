@@ -24,6 +24,7 @@ import xarray as xr
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from filewise.xarray_utils.file_utils import ncfile_integrity_status
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string
 from pygenutils.time_handling.time_utils import datetime_obj_converter
@@ -603,7 +604,7 @@ def get_obj_operation_datetime(obj_list,
 
     Parameters
     ----------
-    obj_list : list or str
+    obj_list : list[str] | str
         List of file paths or a single file path string.
     attr : {'creation', 'modification', or 'access'}, optional
         Type of time attribute to retrieve. Defaults to 'modification'.
@@ -641,6 +642,11 @@ def get_obj_operation_datetime(obj_list,
     # Convert the input file object to a list if it is a string #
     if isinstance(obj_list, str):
         obj_list = [obj_list]
+    
+    # Handle nested lists by flattening them first
+    elif isinstance(obj_list, list):
+        if any(isinstance(item, list) for item in obj_list):
+            obj_list = list(flatten_list(obj_list))
     
     # Retrieve operation times #
     obj_timestamp_container = []

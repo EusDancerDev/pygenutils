@@ -15,6 +15,7 @@ import pandas as pd
 
 from filewise.instrospection_utils import get_caller_args
 from paramlib.global_parameters import INTERVALS_OPERATION_LIST
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import find_substring_index
 
 #------------------#
@@ -27,9 +28,9 @@ def _validate_interval_parameters(left_limit, right_limit, constructor, closed):
 
     Parameters
     ----------
-    left_limit : float or int
+    left_limit : float | int
         The left limit of the interval.
-    right_limit : float or int
+    right_limit : float | int
         The right limit of the interval.
     constructor : str
         The library to use for constructing the interval.
@@ -71,9 +72,9 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
 
     Parameters
     ----------
-    left_limit : float or int
+    left_limit : float | int
         The left limit of the interval.
-    right_limit : float or int
+    right_limit : float | int
         The right limit of the interval.
     constructor : str, optional
         The library to use for constructing the interval. Options are:
@@ -181,6 +182,10 @@ def basic_interval_operator(interval_array,
     if operator not in INTERVALS_OPERATION_LIST:
         raise ValueError(f"Invalid operator '{operator}' (position {operator_arg_pos}). "
                          f"Supported options are {INTERVALS_OPERATION_LIST}.")
+
+    # Handle nested lists by flattening them first
+    if isinstance(interval_array, list) and any(isinstance(item, list) for item in interval_array):
+        interval_array = list(flatten_list(interval_array))
 
     # Operations #
     #------------#

@@ -21,6 +21,7 @@ from pandas import DataFrame, Series
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
 from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 
 #------------------#
 # Define functions #
@@ -50,7 +51,7 @@ def find_substring_index(string,
     ----------
     string : str, list, np.ndarray, or tuple
         The input object to search within.
-    substring : str or list-like of str
+    substring : str | list[str]
         The substring or list of substrings to search for. Can be a regex pattern.
     start : int, optional
         Start index for search. Default is 0.
@@ -137,6 +138,11 @@ def find_substring_index(string,
                 return [n for n in match_indices if n != -1]
                 
         elif get_type_str(substring) in ["list", "ndarray", "tuple"]:
+            # Handle nested lists by flattening them first
+            if isinstance(substring, list):
+                if any(isinstance(item, list) for item in substring):
+                    substring = list(flatten_list(substring))
+            
             if not advanced_search:
                 return char.find(string, substring, start=start, end=end)  
             else:   
@@ -179,7 +185,7 @@ def _advanced_pattern_searcher(string, substring,
     ----------
     string : str, list, np.ndarray, or tuple
         The input object to search within.
-    substring : str or list-like of str
+    substring : str | list[str]
         The substring or list of substrings to search for. Can include regex patterns.
     return_match_index : {"lo", "hi", "both"}
         Defines which match index to return.
@@ -415,7 +421,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
 
     Returns
     -------
-    obj_spec : str or list
+    obj_spec : str | list[str]
         The requested part of the path string, 
         or a list of parts if `obj_spec_key` is 'name_noext_parts'.
 

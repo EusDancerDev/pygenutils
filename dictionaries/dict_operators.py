@@ -12,6 +12,7 @@ from functools import reduce
 #------------------------#
 
 from paramlib.global_parameters import BASIC_FOUR_RULES
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.dictionaries.dict_handler import sort_dictionary_by_keys
 
 #------------------#
@@ -33,7 +34,7 @@ def dict_value_basic_operator(dict_list,
 
     Parameters
     ----------
-    dict_list : list of dicts
+    dict_list : list[dict]
         A list of dictionaries with float or int values.
     math_operator : {'+', '-', '*', '/', '//', '**'}
         The mathematical operation to perform. Must be one of the specified operators.
@@ -67,6 +68,10 @@ def dict_value_basic_operator(dict_list,
     if not (isinstance(dict_list, list)) or not all((isinstance(element, dict) for element in dict_list)):
         raise TypeError("Unsupported object type. Must be a list composed "
                         "only of dictionaries.")
+    
+    # Handle nested lists by flattening them first
+    if any(isinstance(item, list) for item in dict_list):
+        dict_list = list(flatten_list(dict_list))
     
     # Validate number of dictionaries in the list #
     if len(dict_list) < 2:

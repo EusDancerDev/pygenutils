@@ -6,6 +6,7 @@
 #------------------------#
 
 from filewise.general.introspection_utils import get_type_str
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 
 #------------------#
 # Define functions #
@@ -19,7 +20,7 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
 
     Parameters
     ----------
-    obj : dict, list, tuple, or numpy.ndarray
+    obj : dict | list[dict] | tuple[dict] | np.ndarray[dict]
         The dictionary or collection of dictionaries to sort.
     sort_by : str, optional
         The sorting criteria ('keys', 'values', 'custom'). Default is 'keys'.
@@ -28,7 +29,7 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
 
     Returns
     -------
-    sorted_obj : dict or list
+    sorted_obj : dict | list[dict]
         A sorted dictionary (if a single dict) or a list of sorted dictionaries.
 
     Raises
@@ -45,6 +46,10 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
     if get_type_str(obj) not in ["dict", "list", "tuple", "ndarray"]:
         raise TypeError("Unsupported object type. "
                         "It must be dict, list, tuple or NumPy array.")
+        
+    # Handle nested lists by flattening them first
+    if isinstance(obj, list) and any(isinstance(item, list) for item in obj):
+        obj = list(flatten_list(obj))
         
     if (get_type_str(obj) in ["list", "tuple", "ndarray"] and len(obj)) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")
@@ -82,7 +87,7 @@ def merge_dictionaries(dict_list):
 
     Parameters
     ----------
-    dict_list : list, tuple, or numpy.ndarray
+    dict_list : list[dict] | tuple[dict] | np.ndarray[dict]
         A collection of dictionaries to merge.
 
     Returns
@@ -107,6 +112,10 @@ def merge_dictionaries(dict_list):
     obj_type = get_type_str(dict_list)
     if obj_type not in ["list", "tuple", "ndarray"]:
         raise TypeError("Unsupported object type. Must be list, tuple, or NumPy array.")
+    
+    # Handle nested lists by flattening them first
+    if isinstance(dict_list, list) and any(isinstance(item, list) for item in dict_list):
+        dict_list = list(flatten_list(dict_list))
     
     if len(dict_list) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")

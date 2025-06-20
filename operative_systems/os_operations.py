@@ -12,6 +12,7 @@ import os
 #------------------------#
 
 from paramlib.global_parameters import FILESYSTEM_CONTEXT_MODULES
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import get_type_str
 from pygenutils.strings.text_formatters import format_string
 
@@ -43,7 +44,7 @@ def run_system_command(command,
 
     Parameters
     ----------
-    command : str or list
+    command : str | list[str]
         The command to execute, either as a string (for 'os' and 'subprocess')
         or a list of arguments (only for 'subprocess' module).
     module : str, optional, default: "subprocess"
@@ -89,6 +90,11 @@ def run_system_command(command,
         - 'errors': Any errors encountered during command execution (if applicable)
     """
 
+    
+    # Handle nested lists by flattening them first for list commands
+    if isinstance(command, list):
+        if any(isinstance(item, list) for item in command):
+            command = list(flatten_list(command))
     
     # Validate module and class
     if (module, _class) not in COMMAND_HELPERS:
@@ -201,7 +207,7 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
 
     Parameters
     ----------
-    command : list or str
+    command : str | list[str]
         The system command to execute.
     capture_output : bool, optional
         If True, captures stdout, stderr, and stdin.
@@ -285,7 +291,7 @@ def subprocess_call_helper(command, capture_output):
     
     Parameters
     ----------
-    command : str or list
+    command : str | list[str]
         The command to run, either as a string or a list of strings.
     capture_output : bool
         If True, output capturing is requested (not supported by this method).
@@ -319,7 +325,7 @@ def subprocess_run_helper(command, capture_output, encoding, shell, text):
 
     Parameters
     ----------
-    command : list or str
+    command : str | list[str]
         The system command to execute.
     capture_output : bool, optional
         If True, captures stdout and stderr.

@@ -7,6 +7,7 @@
 
 from filewise.general.introspection_utils import get_caller_args
 from paramlib.global_parameters import sets_operation_list
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import find_substring_index
 
 #-------------------------#
@@ -22,9 +23,9 @@ def sets_operator(array_of_sets1,
     
     Parameters
     ----------
-    array_of_sets1 : set or list of sets
+    array_of_sets1 : set | list[set]
         The first set or list of sets to perform operations on.
-    array_of_sets2 : set or list of sets, optional
+    array_of_sets2 : set | list[set], optional
         The second set or list of sets for binary operations like union or intersection.
         Default is None.
     constructor : str, optional
@@ -58,6 +59,13 @@ def sets_operator(array_of_sets1,
     if constructor not in SETS_CONSTRUCTOR_OPTIONS: 
         raise ValueError(f"Unsupported set constructor library (position {constructor_arg_pos}). "
                          f"Choose one from {SETS_CONSTRUCTOR_OPTIONS}.")
+    
+    # Handle nested lists by flattening them first
+    if isinstance(array_of_sets1, list) and any(isinstance(item, list) for item in array_of_sets1):
+        array_of_sets1 = list(flatten_list(array_of_sets1))
+    
+    if array_of_sets2 is not None and isinstance(array_of_sets2, list) and any(isinstance(item, list) for item in array_of_sets2):
+        array_of_sets2 = list(flatten_list(array_of_sets2))
     
     # Operations #
     #-#-#-#-#-#-#-
