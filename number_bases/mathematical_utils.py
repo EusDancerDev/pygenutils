@@ -16,7 +16,7 @@ def adapted_factorial(num, decimals):
     
     Parameters
     ----------
-    num : int or float
+    num : int | float
         The number for which to calculate the factorial
     decimals : int
         The number of significant digits to include in the result

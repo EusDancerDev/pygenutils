@@ -102,12 +102,12 @@ def bytes_obj_to_int(bytes_obj):
 
     Parameters
     ----------
-    bytes_obj : bytes or bytearray
+    bytes_obj : bytes | bytearray
         The bytes object to convert.
 
     Returns
     -------
-    list_of_ints: list of int
+    list_of_ints: list[int]
         A list of integers representing the byte values.
 
     Raises
@@ -129,7 +129,7 @@ def bytes_obj_to_str(bytes_obj, encoding="utf-8"):
 
     Parameters
     ----------
-    bytes_obj : bytes or bytearray
+    bytes_obj : bytes | bytearray
         The bytes object to decode.
     encoding : str, optional
         The encoding to use. Default is "utf-8".
@@ -162,7 +162,7 @@ def validate_input(obj, expected_type):
     ----------
     obj : any
         The object to validate.
-    expected_type: type or tuple of types
+    expected_type: type | tuple[type, ...]
         The expected type(s) of the object.
 
     Raises

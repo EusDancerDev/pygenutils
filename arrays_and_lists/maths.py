@@ -51,7 +51,7 @@ def unique_pairs(array_like, library="python-default"):
     
     Parameters
     ----------
-    array_like : list | numpy.ndarray
+    array_like : list | np.ndarray
         Input data. In both cases it will be converted to a NumPy array,
         and if the latter's dimension is N > 1, it will also be flattened.
         Lists can be nested and will be automatically flattened.
@@ -66,7 +66,7 @@ def unique_pairs(array_like, library="python-default"):
         Numbers can be of type integer, float, complex
         or a combination among them.
             
-    library : {'python-default', 'itertools'}
+    library : {'python-default', 'itertools'}, default 'python-default'
         Library to be used. Using 'itertools' built-in library
         the execution time is slightly improved.
             
@@ -76,7 +76,7 @@ def unique_pairs(array_like, library="python-default"):
         If not all elements inside the array are of the same type.
     ValueError
         If an unsupported library is chosen.
-    all_pair_combo_arr : list | numpy.ndarray of tuples
+    all_pair_combo_arr : list[tuple] | np.ndarray[tuple]
         The resulting list or array (depending the library used) of tuples.    
     """
     

@@ -31,7 +31,7 @@ def _check_input_str(x):
 
     Parameters
     ----------
-    x : int or str
+    x : int | str
         The input number.
 
     Returns
@@ -72,7 +72,7 @@ def _check_input_int(x):
 
     Parameters
     ----------
-    x : int or str
+    x : int | str
         The input number.
 
     Returns

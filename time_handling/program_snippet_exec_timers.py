@@ -55,7 +55,7 @@ def _validate_precision(frac_precision, min_prec=0, max_prec=9):
     
     Parameters
     ----------
-    frac_precision : int or None
+    frac_precision : int | None
         The desired fractional precision to validate.
     min_prec : int, optional
         The minimum allowed precision. Default is 0.
@@ -85,8 +85,8 @@ def program_exec_timer(mode, module="time", frac_precision=3):
         Mode to start or stop the timer.
     module : {"os", "time", "timeit"}, optional
         Module to use for timing. Default is "time".
-    frac_precision : int [0,6] or None
-        Precision of the fractional seconds.
+    frac_precision : int | None
+        Precision of the fractional seconds (range 0-6).
 
     Returns
     -------

@@ -25,6 +25,7 @@ from paramlib.global_parameters import (
     PANDAS_DATE_UNIT_LIST,
     UNIT_FACTOR_DICT
 )
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.text_formatters import format_string
 from pygenutils.time_handling.time_utils import (
     get_datetime_object_unit,
@@ -124,7 +125,7 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
     
     Parameters
     ----------
-    datetime_str : str or object
+    datetime_str : str | object
         A string representing the date and/or time.
         If ``module="pandas"``, this can also be:
             - Python datetime objects
@@ -133,7 +134,7 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
             - Series objects
             - DataFrame columns
             - Lists or arrays of timestamps
-    dt_fmt_str : str or None
+    dt_fmt_str : str | None
         A format string that defines the structure of `datetime_str`. 
         Must follow the format required by the chosen module.
         If None and module is 'pandas', pandas will try to infer the format.

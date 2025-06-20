@@ -67,7 +67,7 @@ def get_nano_datetime(t=None, module="datetime"):
     
     Parameters
     ----------
-    t : int, float, or None, optional
+    t : int | float | None, optional
         Time value in nanoseconds. If None, the current time is used.
     module : {"datetime", "time", "pandas", "numpy", "arrow"}, default "datetime"
         Module used to parse the floated time.
@@ -98,7 +98,7 @@ def _convert_floated_time_to_datetime(floated_time, module):
 
     Parameters
     ----------
-    floated_time : float or int
+    floated_time : float | int
         The floated time value to be converted.
     module : str
         Module used to parse the floated time.
@@ -178,9 +178,9 @@ def datetime_obj_converter(datetime_obj,
     unit : str
         The date unit for conversion, applicable to certain types.
         Default is `"s"` (seconds).
-    float_class : str or numpy float class
+    float_class : str | np.floating
         The float precision class. Default is `"d"` (double precision).
-    int_class : str or numpy int class
+    int_class : str | np.integer
         The integer precision class. Default is `"int"` (signed integer type).
     dt_fmt_str : str
         Format string to convert the date/time object to a string.
