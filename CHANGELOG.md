@@ -4,6 +4,75 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [15.14.0] - 2025-06-20
+
+### Added (15.14.0)
+
+#### **General** (adding; 15.14.0)
+
+- **Comprehensive Nested List Support**: Added robust nested list handling across multiple modules
+  - Import `flatten_list` from `arrays_and_lists.data_manipulation` for consistent nested structure processing
+  - Enhanced functions to handle arbitrarily deep nested list structures
+  - Maintains backward compatibility with existing list processing
+
+#### **Dictionaries** (adding; 15.14.0)
+
+- Modules `dict_handler` and `dict_operators`:
+  - Add nested list support for dictionary collections:
+    - `merge_dictionaries()`: Handle nested lists of dictionaries
+    - `sort_object_of_dictionaries()`: Process complex nested dictionary structures
+    - `dict_value_basic_operator()`: Support nested dictionary collections
+
+#### **Operative Systems** (adding; 15.14.0)
+
+- Module `os_operations`:
+  - Add nested list support for command processing:
+    - `run_system_command()`: Flatten nested command argument lists
+    - Enhanced system command execution with complex argument structures
+
+#### **Sets and Intervals** (adding; 15.14.0)
+
+- Modules `sets_handler` and `interval_handler`:
+  - Add foundation for nested structure handling:
+    - Import `flatten_list` for future nested set and interval processing
+    - Enhanced data structure flexibility
+
+### Changed (15.14.0)
+
+#### **General** (changing; 15.14.0)
+
+- **PEP-604 Type Annotation Modernisation**: Systematic update of type hints across modules
+  - Replace `str or list` with modern `str | list[str]` syntax
+  - Enhanced type specificity with generic type parameters
+  - Improved IDE support and static type analysis
+
+#### **Strings** (changing; 15.14.0)
+
+- Modules `string_handler` and `text_formatters`:
+  - Apply PEP-604 union syntax to function parameters:
+    - `substring : str or list-like of str` → `substring : str | list[str]`
+  - Add nested list support:
+    - `find_substring_index()`: Handle nested substring lists
+    - `format_table_from_list()`: Process nested data in table formatting
+
+#### **Time Handling** (changing; 15.14.0)
+
+- Modules `calendar_utils`, `date_and_time_maths`, `date_and_time_utils`, `time_formatters`, `time_utils`, and `program_snippet_exec_timers`:
+  - Apply PEP-604 union syntax to function docstrings:
+    - `file_path : str or list of str` → `file_path : str | list[str]`
+  - Add nested list support for:
+    - File path processing in timestamp operations
+    - Date/time object collections in mathematical operations
+    - Complex nested data structures in calendar operations
+
+#### **Number Bases** (changing; 15.14.0)
+
+- Modules `maths`, `base_converters`, `binary_operations`, and `mathematical_utils`:
+  - Apply PEP-604 union syntax to all function docstrings
+  - Enhanced type clarity for numerical operations and conversions
+
+---
+
 ## [15.13.5] - 2025-06-05
 
 ### Changed
