@@ -12,6 +12,7 @@ import os
 #------------------------#
 
 from filewise.general.introspection_utils import get_caller_args
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.operative_systems.os_operations import run_system_command, exit_info
 from pygenutils.time_handling.time_formatters import parse_dt_string
 
@@ -34,12 +35,12 @@ def _load_file_list(files):
     
     Parameters
     ----------
-    files : str or list
+    files : str | list[str]
         The input to process
         
     Returns
     -------
-    list
+    list[str]
         A flattened list of file paths
         
     Raises
@@ -49,15 +50,11 @@ def _load_file_list(files):
     TypeError
         If the input is neither a string nor a list
     """
-    # Handle recursion - if it's a list that contains lists, process each sublist
-    if isinstance(files, list) and any(isinstance(item, list) for item in files):
-        result = []
-        for item in files:
-            result.extend(_load_file_list(item))
-        return result
-    
-    # Regular processing
+    # Handle nested lists using the robust flatten_list function
     if isinstance(files, list):
+        # Check if there are nested lists and flatten if needed
+        if any(isinstance(item, list) for item in files):
+            files = list(flatten_list(files))
         return files
         
     # If it's a string, check if it's a direct media file
