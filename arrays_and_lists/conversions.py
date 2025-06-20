@@ -12,6 +12,7 @@ import numpy as np
 #------------------------#
 
 from filewise.general.introspection_utils import get_type_str
+from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 
 #------------------#
 # Define functions #
@@ -102,7 +103,11 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
     # Handle numpy arrays and lists
     elif obj_type in ["ndarray", "list"]:
         try:
-            obj_data = np.array(obj_data)  # convert to numpy array if it's not already
+            # Handle nested lists by flattening them first
+            if isinstance(obj_data, list):
+                obj_data = np.array(list(flatten_list(obj_data)))
+            else:
+                obj_data = np.array(obj_data)  # convert to numpy array if it's not already
             if obj_data.dtype == old_type:
                 try:
                     data_converted = obj_data.astype(new_type)
@@ -132,12 +137,12 @@ def combine_arrays(array_of_lists):
     This function takes a list of NumPy arrays (or lists) and combines them 
     into a single NumPy array. It supports arrays with up to 3 dimensions.
     If the arrays have inhomogeneous lengths, it uses `np.hstack` to flatten 
-    and concatenate the arrays.
+    and concatenate the arrays. Nested lists are automatically flattened.
     
     Parameters
     ----------
     array_of_lists : list
-        A list of NumPy arrays or lists to be combined.
+        A list of NumPy arrays or lists to be combined. Lists can be nested.
     
     Returns
     -------
@@ -163,14 +168,38 @@ def combine_arrays(array_of_lists):
      [5 6]
      [7 8]]
     
+    >>> # With nested lists
+    >>> nested_list = [[1, 2], [[3, 4], 5]]
+    >>> result = combine_arrays(nested_list)
+    >>> print(result)
+    [1 2 3 4 5]
+    
     Notes
     -----
     - If the arrays have different shapes, they are concatenated and flattened 
       using `np.hstack`.
+    - Nested lists are automatically flattened before processing.
     - This function assumes that the input contains valid NumPy arrays or lists.
     """    
-    # Get the list of unique dimensions of the arrays #
-    dim_list = np.unique([arr.ndim for arr in array_of_lists])
+    # Handle nested lists by flattening the top-level structure first
+    processed_arrays = []
+    for item in array_of_lists:
+        if isinstance(item, list):
+            # Check if this is a nested list structure
+            try:
+                # Try to convert to numpy array directly first
+                arr = np.array(item)
+                processed_arrays.append(arr)
+            except ValueError:
+                # If direct conversion fails due to irregular nesting,
+                # flatten the list and convert
+                flattened = list(flatten_list(item))
+                processed_arrays.append(np.array(flattened))
+        else:
+            processed_arrays.append(item)
+    
+    # Get the list of unique dimensions of the processed arrays #
+    dim_list = np.unique([arr.ndim for arr in processed_arrays])
     ld = len(dim_list)
     
     # If all arrays/lists are of the same dimension #
@@ -178,15 +207,15 @@ def combine_arrays(array_of_lists):
         dims = dim_list[0]
         
         if dims == 2:
-            array = np.vstack(array_of_lists)
+            array = np.vstack(processed_arrays)
         elif dims == 3:
-            array = np.stack(array_of_lists)
+            array = np.stack(processed_arrays)
         else:
             raise ValueError("Cannot handle arrays with dimensions greater than 3.")
             
     # If the arrays/lists have inconsistent dimensions #
     else:
-        array = np.hstack(array_of_lists)
+        array = np.hstack(processed_arrays)
         
     return array
 
@@ -199,11 +228,13 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     This method takes an input object (list, NumPy array, pandas DataFrame, or Series),
     flattens it (if needed), converts all elements to strings, and joins them into 
     a single string. Optionally, a final delimiter can be added to the end of the string.
+    Handles nested lists automatically.
 
     Parameters
     ----------
     obj : list, numpy.ndarray, pandas.DataFrame, or pandas.Series
         The input object containing data to be flattened and converted to a string.
+        Lists can be nested to any depth.
     delim : str, optional
         The delimiter to use for separating elements in the resulting string.
         By default, a space character (' ') is used.
@@ -229,11 +260,16 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     >>> flatten_to_string(arr, delim=',', add_final_space=True)
     '1,2,3,4,'
     
+    >>> # With nested lists
+    >>> nested = [1, [2, 3], [4, [5, 6]]]
+    >>> flatten_to_string(nested, delim='-')
+    '1-2-3-4-5-6'
+    
     Notes
     -----
     This method is particularly useful for converting arrays or lists of file names 
     into a single string to pass as arguments to shell commands or other processes 
-    that require string input.
+    that require string input. Nested lists are automatically flattened.
     """
     # Get input object type 
     obj_type = get_type_str(obj)
@@ -242,15 +278,19 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     if obj_type not in ["list", "ndarray", "DataFrame", "Series"]:
         raise TypeError("'flatten_to_string' supports lists, NumPy arrays, and pandas DataFrames/Series.")
     
-    # Convert pandas DataFrame/Series to NumPy array #
-    if obj_type not in ["DataFrame", "Series"]:
+    # Handle different input types and convert to flattened array
+    if obj_type == "list":
+        # Use flatten_list for proper nested list handling
+        obj_val_array = np.array(list(flatten_list(obj)))
+    elif obj_type == "ndarray":
+        # NumPy arrays can be flattened directly
+        obj_val_array = obj.flatten()
+    else:  # DataFrame or Series
+        # Convert pandas objects to NumPy array first
         obj_val_array = obj.values
-    else:
-        obj_val_array = np.array(obj)  # Ensure it's a NumPy array if it's a list
-    
-    # Flatten the array if it has more than one dimension #
-    if hasattr(obj_val_array, "flatten"):
-        obj_val_array = obj_val_array.flatten()
+        # Flatten the array if it has more than one dimension
+        if hasattr(obj_val_array, "flatten"):
+            obj_val_array = obj_val_array.flatten()
 
     # Convert all elements to strings #
     obj_list = [str(el) for el in obj_val_array]
