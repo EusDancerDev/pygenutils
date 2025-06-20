@@ -33,7 +33,7 @@ def _pos_swapper(A, x, y):
     
     Parameters
     ----------
-    A : list or numpy.ndarray
+    A : list | numpy.ndarray
         The list or numpy array where the elements will be swapped.
     x : int
         The index of the first element to be swapped.
@@ -73,7 +73,7 @@ def sort_values_standard(array, key=None, reverse=False,
     
     Parameters
     ----------
-    array : list, numpy.ndarray, or pandas.Series
+    array : list | numpy.ndarray | pandas.Series
         Array containing values to be sorted.
     key : function, optional
         Key function to sort list items by their function values. Only for lists.
@@ -81,14 +81,14 @@ def sort_values_standard(array, key=None, reverse=False,
         Sort in ascending (False) or descending (True) order. Default is False.
     axis : int, optional
         Axis to sort for numpy arrays. Default is -1.
-    order : str or list of str, optional
+    order : str | list[str], optional
         Order fields for structured numpy arrays. Default is None.
     want_numpy_array : bool
         Return the result as a numpy array. Default is False.
           
     Returns
     -------
-    sorted_array : list, numpy.ndarray, or pandas.Series
+    sorted_array : list | numpy.ndarray | pandas.Series
         Sorted array or list.
 
     Examples
@@ -123,14 +123,14 @@ def sort_1d_basic(arr, reverse=False):
     
     Parameters
     ----------
-    arr : list or numpy.ndarray of int, float, complex, or str
+    arr : list | numpy.ndarray of int | float | complex | str
         1D array or list with values to sort.
     reverse : bool
         Sort in ascending (False) or descending (True) order. Default is False.
     
     Returns
     -------
-    arr : list or numpy.ndarray
+    arr : list | numpy.ndarray
         Sorted array.
     """
     # Flatten the array if N >= 2 (irrespective of having inhomogeneous parts) #
@@ -165,18 +165,18 @@ def sort_rows_by_column(array, ncol, reverse=False, order=None):
     
     Parameters
     ----------
-    array : list, numpy.ndarray, or pandas.DataFrame
+    array : list | numpy.ndarray | pandas.DataFrame
         2D array to sort.
     ncol : int
         Column index to sort by.
     reverse : bool
         If True, sort in descending order. Default is False (ascending).
-    order : str or list of str, optional
+    order : str | list[str], optional
         Field order for structured arrays. Default is None.
     
     Returns
     -------
-    sorted_array : numpy.ndarray or pandas.DataFrame
+    sorted_array : numpy.ndarray | pandas.DataFrame
         Sorted array by column.
 
     Examples
@@ -212,7 +212,7 @@ def sort_columns_by_row(array, nrow, reverse=False):
     
     Parameters
     ----------
-    array : list, numpy.ndarray, or pandas.DataFrame
+    array : list | numpy.ndarray | pandas.DataFrame
         2D array to sort.
     nrow : int
         Row index to sort by.
@@ -221,7 +221,7 @@ def sort_columns_by_row(array, nrow, reverse=False):
     
     Returns
     -------
-    sorted_array : numpy.ndarray or pandas.DataFrame
+    sorted_array : numpy.ndarray | pandas.DataFrame
         Array sorted by the specified row.
 
     Examples
@@ -258,7 +258,7 @@ def revert_1d_basic(arr, procedure="index"):
 
     Parameters
     ----------
-    arr : list or numpy.ndarray
+    arr : list | numpy.ndarray
         The array to reverse.
     procedure : str
         The procedure to use for reversing the array.
@@ -299,7 +299,7 @@ def flip_array(array, procedure="numpy_default", axis=None):
 
     Parameters
     ----------
-    array : list or numpy.ndarray
+    array : list | numpy.ndarray
         The array to flip.
     procedure : str
         The procedure to use for flipping the array.
@@ -328,18 +328,18 @@ def insert_values(x, index, values, axis=None):
     
     Parameters
     ----------
-    x : list, numpy.ndarray, or pandas.Series
+    x : list | numpy.ndarray | pandas.Series
         Object to insert values into.
     index : int
         Position to insert values.
-    values : list, numpy.array, pandas.Series
+    values : list | numpy.ndarray | pandas.Series
         Values to insert.
     axis : int, optional
         Axis along which to insert values for numpy arrays.
     
     Returns
     -------
-    appended_array : numpy.ndarray or list
+    appended_array : numpy.ndarray | list
         Updated array with inserted values.
 
     Examples
@@ -374,16 +374,16 @@ def extend_array(obj, obj2extend, np_axis=None):
     
     Parameters
     ----------
-    obj : list, numpy.ndarray, or pandas.Series
+    obj : list | numpy.ndarray | pandas.Series
         The original list, numpy array, or pandas Series to be extended.
-    obj2extend : list, numpy.ndarray, or pandas.Series
+    obj2extend : list | numpy.ndarray | pandas.Series
         The object to extend `obj` with.
     np_axis : int, optional
         Axis along which to concatenate numpy arrays. Default is None.
     
     Returns
     -------
-    Extended list, numpy array, or pandas Series.
+    Extended list | numpy.ndarray | pandas.Series.
 
     Examples
     --------
@@ -416,9 +416,9 @@ def remove_elements(array, idx2access, axis=None):
     
     Parameters
     ----------
-    array : list, numpy.ndarray, or pandas.Series
+    array : list | numpy.ndarray | pandas.Series
         List, numpy array, or pandas Series from which elements will be removed.
-    idx2access : int, list, or numpy.ndarray
+    idx2access : int | list | numpy.ndarray
         Indices to access the elements that will be removed. For lists, multiple
         indices are now allowed.
     axis : int, optional
@@ -426,7 +426,7 @@ def remove_elements(array, idx2access, axis=None):
     
     Returns
     -------
-    Updated list, numpy array, or pandas Series with specified elements removed.
+    Updated list | numpy.ndarray | pandas.Series with specified elements removed.
 
     Examples
     --------
@@ -464,6 +464,8 @@ def remove_elements(array, idx2access, axis=None):
 
 # Basic #
 #-#-#-#-#
+
+# TODO: this is the function that we could apply to many functions in which nested lists could not be handled properly!!!
 
 def flatten_list(lst):
     """
@@ -505,7 +507,7 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     
     Parameters
     ----------
-    arr : list or numpy.ndarray
+    arr : list | numpy.ndarray
         The input array or list from which to extract unique values. If the 
         input is a Numpy array with N >= 2 dimensions, it will be flattened. 
         Similarly, if the input is a list, it will be recursively flattened 
