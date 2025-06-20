@@ -30,13 +30,13 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
 
     Parameters
     ----------
-    obj_data : pandas.DataFrame, pandas.Series, numpy.ndarray, or list
+    obj_data : pandas.DataFrame | pandas.Series | numpy.ndarray | list
         Object containing the data to be converted.
     old_type : str
         Current type of the object's values.
     new_type : str
         Type to which the data should be converted.
-    colnames : str, list of str, or '__all_columns__', optional
+    colnames : str | list[str] | '__all_columns__', optional
         Column(s) to apply conversion in case of pandas DataFrame.
         If '__all_columns__', conversion will be applied to all columns.
         Not applicable for pandas Series or numpy arrays.
@@ -45,7 +45,7 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
     
     Returns
     -------
-    obj_data : pandas.DataFrame, pandas.Series, numpy.ndarray, or list
+    obj_data : pandas.DataFrame | pandas.Series | numpy.ndarray | list
         Object with the converted data type, or unchanged if no conversion was made.
 
     Raises
@@ -69,7 +69,7 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
         elif isinstance(colnames, list):
             pass
         else:
-            raise TypeError("'colnames' must be a string, list of strings, or '__all_columns__'.")
+            raise TypeError("'colnames' must be a str | list[str] | '__all_columns__'.")
 
         # Find missing columns
         missing_cols = [col for col in colnames if col not in obj_data.columns]
@@ -127,7 +127,7 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
     # Raise TypeError if the object type is not supported
     else:
         raise TypeError("Unsupported object type. "
-                        "Expected pandas DataFrame/Series, numpy array, or list.")
+                        "Expected pandas.DataFrame | pandas.Series | numpy.ndarray | list.")
 
             
 def combine_arrays(array_of_lists):
@@ -141,7 +141,7 @@ def combine_arrays(array_of_lists):
     
     Parameters
     ----------
-    array_of_lists : list
+    array_of_lists : list[numpy.ndarray | list]
         A list of NumPy arrays or lists to be combined. Lists can be nested.
     
     Returns
@@ -232,7 +232,7 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
 
     Parameters
     ----------
-    obj : list, numpy.ndarray, pandas.DataFrame, or pandas.Series
+    obj : list | numpy.ndarray | pandas.DataFrame | pandas.Series
         The input object containing data to be flattened and converted to a string.
         Lists can be nested to any depth.
     delim : str, optional
@@ -251,7 +251,7 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     Raises
     ------
     TypeError
-        If the input object is not a list, numpy array, pandas DataFrame, or Series.
+        If the input object is not a list | numpy.ndarray | pandas.DataFrame | pandas.Series.
 
     Example
     -------
@@ -276,7 +276,7 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     
     # Validate input type #
     if obj_type not in ["list", "ndarray", "DataFrame", "Series"]:
-        raise TypeError("'flatten_to_string' supports lists, NumPy arrays, and pandas DataFrames/Series.")
+        raise TypeError("'flatten_to_string' supports list | numpy.ndarray | pandas.DataFrame | pandas.Series.")
     
     # Handle different input types and convert to flattened array
     if obj_type == "list":
