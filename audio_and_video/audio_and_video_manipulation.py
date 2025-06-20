@@ -75,13 +75,13 @@ def _load_file_list(files):
     
     raise TypeError(f"Expected list or string, got {type(files)}")
 
-def _validate_files(file_list, list_name):
+def _validate_files(file_list: list[str], list_name: str):
     """
     Validates that all files in a list exist.
     
     Parameters
     ----------
-    file_list : list
+    file_list : list[str]
         List of file paths to validate
     list_name : str
         Name of the list for error reporting
@@ -174,15 +174,15 @@ def merge_media_files(audio_files,
 
     Parameters
     ----------
-    audio_files : list or str
+    audio_files : str | list[str]
         A list of audio file paths or a path to a text file containing audio file names.
         Can also be a nested list for recursive processing.
-    video_files : list or str
+    video_files : str | list[str]
         A list of video file paths or a path to a text file containing video file names.
         Can also be a nested list for recursive processing.
-    output_file_list : list, optional
+    output_file_list : list[str] | None, optional
         A list of output file names. If not provided, default names will be generated.
-    zero_padding : int or None, optional
+    zero_padding : int | None, optional
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1, or None to disable padding.
         Only used when output_file_list is None.
@@ -333,13 +333,13 @@ def merge_individual_media_files(media_inputs,
 
     Parameters
     ----------
-    media_inputs : list or str
+    media_inputs : str | list[str]
         A list of file paths (either audio or video) or a path to a text file 
         containing file names. Can also be a nested list for recursive processing.
     safe : bool, optional
         If True, ffmpeg runs in safe mode to prevent unsafe file operations.
         Default is True.
-    output_file_name : str, optional
+    output_file_name : str | None, optional
         The name of the output file. If not provided, a default name will be used.
     quality : int, optional
         The quality level for the merged output (1=lowest, 10=highest). Default is 1.
@@ -469,18 +469,18 @@ def cut_media_files(media_inputs,
 
     Parameters
     ----------
-    media_inputs : list or str
+    media_inputs : str | list[str]
         A list of media file paths or a path to a text file containing file names.
         Can also be a nested list for recursive processing.
-    start_time_list : str or list of str
+    start_time_list : str | list[str]
         The start time in the format '%H:%M:%S' or '%H:%M:%S.%f'. 
         If any set to 'start', cutting starts from the beginning.
-    start_time_list : str or list of str
+    end_time_list : str | list[str]
         The end time in the format '%H:%M:%S' or '%H:%M:%S.%f'.
         If any set to 'end', cutting proceeds until the end of the file.
-    output_file_list : list, optional
+    output_file_list : list[str] | None, optional
         A list of output file names. If not provided, default names will be generated.
-    zero_padding : int or None, optional
+    zero_padding : int | None, optional
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1, or None to disable padding.
         Only used when output_file_list is None.
