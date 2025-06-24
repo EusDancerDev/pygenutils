@@ -29,7 +29,11 @@
   - Process management
   - System information retrieval
 - **Audio and Video**:
-  - Media file handling
+  - Advanced media file processing with full encoding control
+  - Audio/video file merging and concatenation
+  - Media file cutting and trimming
+  - Comprehensive codec selection (libx264, libx265, aac, mp3, etc.)
+  - Encoding preset and bitrate control
   - Format conversion utilities
 - **Number Systems**:
   - Base conversion utilities
@@ -137,6 +141,31 @@ from pygenutils.arrays_and_lists import data_manipulation, patterns
 # Data manipulation
 processed_data = data_manipulation.process_array([1, 2, 3, 4, 5])
 matched_pattern = patterns.find_pattern([1, 2, 3, 1, 2, 3], [1, 2, 3])
+```
+
+### Audio and Video Operations
+
+```python
+from pygenutils.audio_and_video import audio_and_video_manipulation
+
+# Merge audio and video files with custom encoding
+audio_and_video_manipulation.merge_media_files(
+    audio_files=["audio1.mp3", "audio2.mp3"],
+    video_files=["video1.mp4", "video2.mp4"],
+    video_codec="libx265",  # High-efficiency codec
+    audio_codec="aac",      # Modern audio codec
+    preset="slow",          # Better quality
+    video_bitrate=2000      # 2000 kbps video bitrate
+)
+
+# Cut media files with encoding control
+audio_and_video_manipulation.cut_media_files(
+    media_inputs=["input.mp4"],
+    start_time_list=["00:01:30"],
+    end_time_list=["00:05:45"],
+    video_codec="copy",     # No re-encoding for speed
+    audio_codec="copy"      # Preserve original quality
+)
 ```
 
 ## Contributing
