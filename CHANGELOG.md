@@ -12,14 +12,14 @@ All notable changes to this project will be documented in this file.
 
 - Module `audio_and_video_manipulation`:
   - Enhanced user control over encoding parameters in all media processing functions (only applicable when `video_codec` is not "copy"):
-    - Added `video_codec` parameter (default: "libx264") - supports "copy", "libx264", "libx265", etc.
-    - Added `audio_codec` parameter (default: "aac") - supports "copy", "aac", "mp3", "ac3", etc.
-    - Added `preset` parameter (default: "medium") - encoding speed/quality preset for video codecs
-    - Added `video_bitrate` parameter (default: None) - video bitrate control in kbps
+    - Added `video_codec` parameter (default: "libx264"): supports "copy", "libx264", "libx265", etc.
+    - Added `audio_codec` parameter (default: "aac"): supports "copy", "aac", "mp3", "ac3", etc.
+    - Added `preset` parameter (default: "medium"): encoding speed/quality preset for video codecs
+    - Added `video_bitrate` parameter (default: None): video bitrate control in kbps
+    - Maintained backward compatibility with sensible defaults for all new parameters
   - Updated FFMPEG command templates to use user-configurable parameters instead of hardcoded values
-  - Enhanced functions to intelligently apply video-specific parameters only to video files
-  - Maintained backward compatibility with sensible defaults for all new parameters
-  - Added comprehensive parameter validation with descriptive error messages
+  - Enhanced functions to intelligently apply audio/video-specific parameters only to audio/video files, respectively
+  - Added comprehensive parameter validation with descriptive error messages for all new parameters
 
 ### Changed (15.14.1)
 
