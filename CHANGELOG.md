@@ -787,7 +787,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Renamed the following functions
 
   | Original Function Name | Refactored Function Name |
-  |----------------------|-------------------------|
+  |:----------------------:|:------------------------:|
   | retrieve_function_name | get_func_name |
   | get_function_args | get_func_args |
   | get_function_all_args | get_all_func_args |
