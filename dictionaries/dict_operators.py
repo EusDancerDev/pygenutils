@@ -11,7 +11,7 @@ from functools import reduce
 # Import project modules #
 #------------------------#
 
-from paramlib.global_parameters import BASIC_FOUR_RULES
+from paramlib.global_parameters import BASIC_ARITHMETIC_OPERATORS
 from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.dictionaries.dict_handler import sort_dictionary_by_keys
 
@@ -101,10 +101,10 @@ def dict_value_basic_operator(dict_list,
 
 # Basic calculator operations #
 ALLOWED_CALC_DICT = {
-    BASIC_FOUR_RULES[0] : lambda d1, d2 : {k : d1[k]+d2[k] for k in d1.ks() & d2},
-    BASIC_FOUR_RULES[1] : lambda d1, d2 : {k : d1[k]-d2[k] for k in d1.ks() & d2},
-    BASIC_FOUR_RULES[2] : lambda d1, d2 : {k : d1[k]*d2[k] for k in d1.ks() & d2},
-    BASIC_FOUR_RULES[3] : lambda d1, d2 : {k : d1[k]/d2[k] for k in d1.ks() & d2},
+    BASIC_ARITHMETIC_OPERATORS[0] : lambda d1, d2 : {k : d1[k]+d2[k] for k in d1.ks() & d2},
+    BASIC_ARITHMETIC_OPERATORS[1] : lambda d1, d2 : {k : d1[k]-d2[k] for k in d1.ks() & d2},
+    BASIC_ARITHMETIC_OPERATORS[2] : lambda d1, d2 : {k : d1[k]*d2[k] for k in d1.ks() & d2},
+    BASIC_ARITHMETIC_OPERATORS[3] : lambda d1, d2 : {k : d1[k]/d2[k] for k in d1.ks() & d2},
     "//" : lambda d1, d2 : {k : d1[k]//d2[k] for k in d1.ks() & d2},
     "**" : lambda d1, d2 : {k : d1[k]**d2[k] for k in d1.ks() & d2}
 }
