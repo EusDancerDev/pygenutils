@@ -64,6 +64,31 @@ def _pos_swapper(A, x, y):
     """
     A[x], A[y] = A[y], A[x]
 
+def _flatten_generator(lst):
+    """
+    Recursively flatten a nested list using a generator.
+    
+    This helper function takes a potentially nested list and yields
+    each element in a flattened manner. It handles lists of arbitrary
+    depth, ensuring that all nested elements are extracted in a single
+    flat sequence.
+    
+    Parameters
+    ----------
+    lst : list
+        The list to be flattened, which may contain nested lists.
+    
+    Yields
+    ------
+    item
+        Each non-list element from the nested structure, in order.
+    """
+    for item in lst:
+        if isinstance(item, list):
+            yield from _flatten_generator(item)
+        else:
+            yield item
+
 # Main #
 def sort_values_standard(array, key=None, reverse=False,
                          axis=-1, order=None,
@@ -465,37 +490,57 @@ def remove_elements(array, idx2access, axis=None):
 # Basic #
 #-#-#-#-#
 
-# TODO: this is the function that we could apply to many functions in which nested lists could not be handled properly!!!
-
-def flatten_list(lst):
+def flatten_list(lst, return_list=True, sort=False, reverse=False):
     """
     Recursively flatten a nested list.
     
-    This generator function takes a potentially nested list and yields
-    each element in a flattened manner. It handles lists of arbitrary
-    depth, ensuring that all nested elements are extracted in a single
-    flat sequence.
+    This function takes a potentially nested list and either yields each element
+    in a flattened manner (if return_list=False) or returns a complete flattened list
+    (if return_list=True). It handles lists of arbitrary depth, ensuring that all 
+    nested elements are extracted in a single flat sequence.
     
     Parameters
     ----------
     lst : list
         The list to be flattened, which may contain nested lists.
+    return_list : bool, optional
+        If True, return a list; if False, return a generator. Default is True.
+    sort : bool, optional
+        Whether to sort the flattened elements. Only applicable when return_list=True.
+        Default is False.
+    reverse : bool, optional
+        Whether to sort in descending order. Only applicable if sort=True and 
+        return_list=True. Default is False.
+    
+    Returns
+    -------
+    list | generator
+        If return_list=True, returns a list of flattened elements (optionally sorted).
+        If return_list=False, returns a generator yielding flattened elements.
     
     Yields
     ------
-    item
+    item (when return_list=False)
         Each non-list element from the nested structure, in order.
     
     Examples
     --------
-    >>> list(flatten_list([1, [2, 3], [4, [5, 6]]]))
+    >>> flatten_list([1, [2, 3], [4, [5, 6]]])
+    [1, 2, 3, 4, 5, 6]
+    
+    >>> flatten_list([3, [1, 2], [6, [4, 5]]], sort=True)
+    [1, 2, 3, 4, 5, 6]
+    
+    >>> list(flatten_list([1, [2, 3], [4, [5, 6]]], return_list=False))
     [1, 2, 3, 4, 5, 6]
     """
-    for item in lst:
-        if isinstance(item, list):
-            yield from flatten_list(item)
-        else:
-            yield item
+    if return_list:
+        flattened = list(_flatten_generator(lst))
+        if sort:
+            return sort_1d_basic(flattened, reverse=reverse)
+        return flattened
+    else:
+        return _flatten_generator(lst)
 
 def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     """
