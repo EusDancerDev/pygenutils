@@ -62,7 +62,7 @@ def find_item_basic(obj, obj2find):
         if obj.ndim >= 2:
             obj = obj.flatten()
     elif isinstance(obj, list):
-        obj = list(flatten_list(obj))
+        obj = flatten_list(obj)
     
     # Operations #
     length = len(obj)
@@ -209,7 +209,7 @@ def find_duplicated_elements(array_like, remove_duplicated=False):
     
     # Handle nested lists by flattening them first, then convert to numpy array
     if isinstance(array_like, list):
-        flattened_array = np.array(list(flatten_list(array_like)))
+        flattened_array = np.array(flatten_list(array_like))
     else:
         # For tuples and numpy arrays, use the existing approach
         flattened_array = np.asarray(array_like).flatten()

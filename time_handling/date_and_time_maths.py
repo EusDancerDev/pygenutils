@@ -141,7 +141,7 @@ def sum_dt_objects(dt_obj_list,
     
     # Handle nested lists by flattening them first
     if isinstance(dt_obj_list, list) and any(isinstance(item, list) for item in dt_obj_list):
-        dt_obj_list = list(flatten_list(dt_obj_list))
+        dt_obj_list = flatten_list(dt_obj_list)
     
     # Operation argument control #        
     format_args_math_op = (operation, BASIC_MATH_OPT_LIST)

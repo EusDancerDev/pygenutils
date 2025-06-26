@@ -86,7 +86,7 @@ def unique_pairs(array_like, library="python-default"):
     # Input arr #
     # Handle nested lists by flattening them first
     if isinstance(array_like, list):
-        arr = array(list(flatten_list(array_like)))
+        arr = array(flatten_list(array_like))
     else:
         arr = array(array_like)
     

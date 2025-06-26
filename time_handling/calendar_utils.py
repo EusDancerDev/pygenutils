@@ -105,7 +105,7 @@ def standardise_calendar(obj,
         # Handle nested lists by flattening them first
         if isinstance(file_path, list):
             if any(isinstance(item, list) for item in file_path):
-                file_path = list(flatten_list(file_path))
+                file_path = flatten_list(file_path)
         
         obj_std_calendar = []
         len_objects = len(obj)

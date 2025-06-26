@@ -646,7 +646,7 @@ def get_obj_operation_datetime(obj_list,
     # Handle nested lists by flattening them first
     elif isinstance(obj_list, list):
         if any(isinstance(item, list) for item in obj_list):
-            obj_list = list(flatten_list(obj_list))
+            obj_list = flatten_list(obj_list)
     
     # Retrieve operation times #
     obj_timestamp_container = []

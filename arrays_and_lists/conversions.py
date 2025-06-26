@@ -105,7 +105,7 @@ def convert_data_type(obj_data, old_type, new_type, colnames=None, convert_to_li
         try:
             # Handle nested lists by flattening them first
             if isinstance(obj_data, list):
-                obj_data = np.array(list(flatten_list(obj_data)))
+                obj_data = np.array(flatten_list(obj_data))
             else:
                 obj_data = np.array(obj_data)  # convert to numpy array if it's not already
             if obj_data.dtype == old_type:
@@ -193,7 +193,7 @@ def combine_arrays(array_of_lists):
             except ValueError:
                 # If direct conversion fails due to irregular nesting,
                 # flatten the list and convert
-                flattened = list(flatten_list(item))
+                flattened = flatten_list(item)
                 processed_arrays.append(np.array(flattened))
         else:
             processed_arrays.append(item)
@@ -281,7 +281,7 @@ def flatten_to_string(obj, delim=" ", add_final_space=False):
     # Handle different input types and convert to flattened array
     if obj_type == "list":
         # Use flatten_list for proper nested list handling
-        obj_val_array = np.array(list(flatten_list(obj)))
+        obj_val_array = np.array(flatten_list(obj))
     elif obj_type == "ndarray":
         # NumPy arrays can be flattened directly
         obj_val_array = obj.flatten()

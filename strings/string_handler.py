@@ -141,7 +141,7 @@ def find_substring_index(string,
             # Handle nested lists by flattening them first
             if isinstance(substring, list):
                 if any(isinstance(item, list) for item in substring):
-                    substring = list(flatten_list(substring))
+                    substring = flatten_list(substring)
             
             if not advanced_search:
                 return char.find(string, substring, start=start, end=end)  

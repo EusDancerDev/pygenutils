@@ -425,7 +425,7 @@ def format_table_from_list(dict_list,
     
     # Handle nested lists by flattening them first
     if isinstance(dict_list, list) and any(isinstance(item, list) for item in dict_list):
-        dict_list = list(flatten_list(dict_list))
+        dict_list = flatten_list(dict_list)
     
     # Ensure all dictionaries are of the same length
     first_len = len(dict_list[0])

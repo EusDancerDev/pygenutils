@@ -49,7 +49,7 @@ def sort_object_of_dictionaries(obj, sort_by="keys", custom_sort_key=None):
         
     # Handle nested lists by flattening them first
     if isinstance(obj, list) and any(isinstance(item, list) for item in obj):
-        obj = list(flatten_list(obj))
+        obj = flatten_list(obj)
         
     if (get_type_str(obj) in ["list", "tuple", "ndarray"] and len(obj)) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")
@@ -115,7 +115,7 @@ def merge_dictionaries(dict_list):
     
     # Handle nested lists by flattening them first
     if isinstance(dict_list, list) and any(isinstance(item, list) for item in dict_list):
-        dict_list = list(flatten_list(dict_list))
+        dict_list = flatten_list(dict_list)
     
     if len(dict_list) < 2:
         raise ValueError("At least 2 dictionaries must be provided.")

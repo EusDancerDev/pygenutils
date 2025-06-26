@@ -94,7 +94,7 @@ def run_system_command(command,
     # Handle nested lists by flattening them first for list commands
     if isinstance(command, list):
         if any(isinstance(item, list) for item in command):
-            command = list(flatten_list(command))
+            command = flatten_list(command)
     
     # Validate module and class
     if (module, _class) not in COMMAND_HELPERS:

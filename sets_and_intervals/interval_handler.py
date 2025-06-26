@@ -185,7 +185,7 @@ def basic_interval_operator(interval_array,
 
     # Handle nested lists by flattening them first
     if isinstance(interval_array, list) and any(isinstance(item, list) for item in interval_array):
-        interval_array = list(flatten_list(interval_array))
+        interval_array = flatten_list(interval_array)
 
     # Operations #
     #------------#

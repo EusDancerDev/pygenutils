@@ -163,7 +163,7 @@ def sort_1d_basic(arr, reverse=False):
         if arr.ndim >= 2:
             arr = arr.flatten()
     elif isinstance(arr, list):
-        arr = list(flatten_list(arr))
+        arr = flatten_list(arr)
 
     # Operations #
     for i in range(len(arr)):
@@ -303,7 +303,7 @@ def revert_1d_basic(arr, procedure="index"):
         if arr.ndim >= 2:
             arr = arr.flatten()
     elif isinstance(arr, list):
-        arr = list(flatten_list(arr))
+        arr = flatten_list(arr)
 
     # Operations #
     arr_len = len(arr)-1
@@ -531,7 +531,7 @@ def flatten_list(lst, return_list=True, sort=False, reverse=False):
     >>> flatten_list([3, [1, 2], [6, [4, 5]]], sort=True)
     [1, 2, 3, 4, 5, 6]
     
-    >>> list(flatten_list([1, [2, 3], [4, [5, 6]]], return_list=False))
+    >>> flatten_list([1, [2, 3], [4, [5, 6]]], return_list=True)
     [1, 2, 3, 4, 5, 6]
     """
     if return_list:
@@ -591,7 +591,7 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
         if arr.ndim >= 2:
             arr = arr.flatten()
     elif isinstance(arr, list):
-        arr = list(flatten_list(arr))
+        arr = flatten_list(arr)
 
     # Operations #
     if procedure == "dict":

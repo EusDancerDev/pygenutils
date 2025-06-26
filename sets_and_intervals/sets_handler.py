@@ -62,10 +62,10 @@ def sets_operator(array_of_sets1,
     
     # Handle nested lists by flattening them first
     if isinstance(array_of_sets1, list) and any(isinstance(item, list) for item in array_of_sets1):
-        array_of_sets1 = list(flatten_list(array_of_sets1))
+        array_of_sets1 = flatten_list(array_of_sets1)
     
     if array_of_sets2 is not None and isinstance(array_of_sets2, list) and any(isinstance(item, list) for item in array_of_sets2):
-        array_of_sets2 = list(flatten_list(array_of_sets2))
+        array_of_sets2 = flatten_list(array_of_sets2)
     
     # Operations #
     #-#-#-#-#-#-#-

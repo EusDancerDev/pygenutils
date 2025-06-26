@@ -54,7 +54,7 @@ def _load_file_list(files):
     if isinstance(files, list):
         # Check if there are nested lists and flatten if needed
         if any(isinstance(item, list) for item in files):
-            files = list(flatten_list(files))
+            files = flatten_list(files)
         return files
         
     # If it's a string, check if it's a direct media file

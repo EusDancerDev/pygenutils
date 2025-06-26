@@ -71,7 +71,7 @@ def dict_value_basic_operator(dict_list,
     
     # Handle nested lists by flattening them first
     if any(isinstance(item, list) for item in dict_list):
-        dict_list = list(flatten_list(dict_list))
+        dict_list = flatten_list(dict_list)
     
     # Validate number of dictionaries in the list #
     if len(dict_list) < 2:
