@@ -4,6 +4,38 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [15.15.0] - 2025-06-26
+
+### Changed (15.15.0)
+
+#### **General** (changing; 15.15.0)
+
+**List flattening calls**
+- Removed `list` call on function `flatten_list`, as by default it returns a list
+
+**Type Hint Standardisation**
+- Standardised type hints and docstrings by capitalising typing objects (e.g. `Any`, `Callable`, `Optional`)
+- Updated all `optional` parameters in docstrings to follow lowercase convention
+- Adopted Python 3.10+ union syntax (`|`) consistently across all modules
+
+### Added (15.15.0)
+
+#### **Arrays and Lists** (adding; 15.15.0)
+
+- Module `data_manipulation.py`: enhanced `flatten_list` function with flexible return and sorting options:
+  - Add internal `_flatten_generator` function as the core of the enhancement:
+    - Serves as the core of the enhancement
+    - As a reusable helper function in dedicated helpers section
+  - Define more parameters to gain more flexibility:
+    - Added `return_list` parameter (default: `True`) to choose between list and generator output
+    - Added `sort` parameter to enable sorting of flattened elements using existing `sort_1d_basic` function
+    - Added `reverse` parameter for descending sort order control when sorting is enabled
+  - Update documentation and maintain compatibility:
+    - Updated comprehensive docstring with new parameters, return types, and usage examples
+    - Maintained backward compatibility with existing generator-based usage patterns
+
+---
+
 ## [15.14.1] - 2025-06-24
 
 ### Added (15.14.1)
@@ -41,10 +73,11 @@ All notable changes to this project will be documented in this file.
 
 #### **General** (adding; 15.14.0)
 
-- **Comprehensive Nested List Support**: Added robust nested list handling across multiple modules
+**Comprehensive Nested List Support**
+  - Added robust nested list handling across multiple modules
   - Import `flatten_list` from `arrays_and_lists.data_manipulation` for consistent nested structure processing
   - Enhanced functions to handle arbitrarily deep nested list structures
-  - Maintains backward compatibility with existing list processing
+  - Maintained backward compatibility with existing list processing
 
 #### **Dictionaries** (adding; 15.14.0)
 
