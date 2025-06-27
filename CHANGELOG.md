@@ -6,6 +6,13 @@ All notable changes to this project will be documented in this file.
 
 ## [15.15.1] - 2025-06-27
 
+### Fixed (15.15.1)
+
+#### **Time Handling** (fixing; 15.15.1)
+
+- Modules `countdown.py` and `date_and_time_maths.py`:
+  - Point to the correct function to parse the time string: changed `parse_time_string` to `parse_dt_string`
+
 ### Changed (15.15.1)
 
 #### **General** (changing; 15.15.1)
