@@ -149,7 +149,7 @@ def basic_interval_operator(interval_array,
 
     Returns
     -------
-    Interval object or list of Interval objects
+    Interval object | list[Interval]
         The result of the operation applied to the intervals.
 
     Raises

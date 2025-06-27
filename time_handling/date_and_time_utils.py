@@ -118,7 +118,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
 
     Returns
     -------
-    current_time : str or datetime.datetime or pd.Timestamp
+    current_time : str | datetime.datetime | pd.Timestamp
         Current date and time object based on the dtype.
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """    
@@ -364,7 +364,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
 
     Returns
     -------
-    current_time : str or datetime.datetime or pd.Timestamp
+    current_time : str | datetime.datetime | pd.Timestamp
         Current date and time object based on the dtype.
         If 'time_fmt_str' is provided, returns a formatted string representation.
     """    
@@ -604,7 +604,7 @@ def get_obj_operation_datetime(obj_list,
 
     Parameters
     ----------
-    obj_list : list[str] | str
+    obj_list : str | list[str]
         List of file paths or a single file path string.
     attr : {'creation', 'modification', or 'access'}, optional
         Type of time attribute to retrieve. Defaults to 'modification'.
@@ -618,7 +618,7 @@ def get_obj_operation_datetime(obj_list,
         
     Returns
     -------
-    obj_timestamp_container : list of lists or numpy.ndarray
+    obj_timestamp_container : list[list] | numpy.ndarray
         If 'want_numpy_array' is False, a list of lists, where each of the latter
         contains the [file path, formatted time attribute], else a 2D Numpy array.
 

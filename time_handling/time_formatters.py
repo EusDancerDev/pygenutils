@@ -480,9 +480,9 @@ def dt_obj_converter(datetime_obj,
     unit : str
         The date unit for conversion, applicable to certain types.
         Default is `"s"` (seconds).
-    float_class : str or numpy float class
+    float_class : str | numpy float class
         The float precision class. Default is `"d"` (double precision).
-    int_class : str or numpy int class
+    int_class : str | numpy int class
         The integer precision class. Default is `"int"` (signed integer type).
     dt_fmt_str : str
         Format string to convert the date/time object to a string.
@@ -582,9 +582,9 @@ def _total_dt_unit(datetime_obj, unit, float_class, int_class):
     unit : str 
         The time unit for conversion (e.g., "seconds", "microseconds", "nanoseconds"). 
         The actual unit factors are provided by the `unit_factor_dict`.
-    float_class : str or numpy float class
+    float_class : str | numpy float class
         Specifies the precision class to use for floating-point results.
-    int_class : str or numpy int class
+    int_class : str | numpy int class
         Specifies the precision class to use for integer results.
     
     Returns
@@ -714,7 +714,7 @@ def _to_string(dt_obj, unit, dt_fmt_str):
 
     Returns
     -------
-    str or pd.DataFrame or pd.Series
+    str | pd.DataFrame | pd.Series
         The string representation, or object with string values.
     """
     
@@ -766,7 +766,7 @@ def _to_float(dt_obj, unit, float_class):
         The datetime object to be converted.
     unit : str
         The unit for conversion (e.g., "s" for seconds, "ms" for milliseconds).
-    float_class : str or numpy float class, optional
+    float_class : str | numpy float class, optional
         The precision class for the float result.
 
     Returns

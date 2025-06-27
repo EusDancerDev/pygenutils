@@ -340,7 +340,7 @@ def _average_angle(angles):
     
     Parameters
     ----------
-    angles : list of float
+    angles : list[float]
         The angles in radians to average.
         
     Returns

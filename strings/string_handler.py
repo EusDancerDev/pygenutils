@@ -291,9 +291,9 @@ def _return_search_obj_spec(string, substring, re_obj_str,
     -------
     tuple
         A tuple of indices and matched substrings. Its components are:
-        - indices : list of int
+        - indices : list[int]
               The start positions of matches.
-        - match_strings : list of str
+        - match_strings : list[str]
               The matched substrings.
               
     Notes
@@ -405,7 +405,7 @@ def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
 
     Parameters
     ----------
-    obj_path : str or dict
+    obj_path : str | dict
         The file or directory path string to process, 
         or a dictionary with pre-extracted path components.
     obj_spec_key : str
@@ -466,7 +466,7 @@ def modify_obj_specs(target_path_obj, obj2modify, new_obj=None, str2add=None):
 
     Parameters
     ----------
-    target_path_obj : str or dict
+    target_path_obj : str | dict
         The original file path to modify, or a dictionary containing path specifications.
     obj2modify : str
         Specifies which part of the path to modify. Must be one of ['parent', 'name', 'name_noext', 'ext'].
@@ -589,7 +589,7 @@ def add_to_path(path2tweak, str2add):
 
     Parameters
     ----------
-    path2tweak : str or dict
+    path2tweak : str | dict
         The path object (either a string or dictionary with path components) 
         to which the string should be added.
     str2add : str
@@ -610,7 +610,7 @@ def append_ext(path2tweak, extension):
 
     Parameters
     ----------
-    path2tweak : str or dict
+    path2tweak : str | dict
         The path object (either a string or dictionary with path components) 
         to which the extension should be added.
     extension : str
