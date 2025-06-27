@@ -4,18 +4,18 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [15.15.1] - 2025-06-27
+## [15.15.2] - 2025-06-27
 
-### Fixed (15.15.1)
+### Fixed (15.15.2)
 
-#### **Time Handling** (fixing; 15.15.1)
+#### **Time Handling** (fixing; 15.15.2)
 
 - Modules `countdown.py` and `date_and_time_maths.py`:
   - Point to the correct function to parse the time string: changed `parse_time_string` to `parse_dt_string`
 
-### Changed (15.15.1)
+### Changed (15.15.2)
 
-#### **General** (changing; 15.15.1)
+#### **General** (changing; 15.15.2)
 
 - **Type Hint Standardisation**
   - Standardised type hints and docstrings by capitalising typing objects (e.g. `Any`, `Callable`, `Optional`)
