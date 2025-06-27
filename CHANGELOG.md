@@ -4,19 +4,20 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [15.15.1] - 2025-06-27
+
+### Changed (15.15.1)
+
+#### **General** (changing; 15.15.1)
+
+- **Type Hint Standardisation**
+  - Standardised type hints and docstrings by capitalising typing objects (e.g. `Any`, `Callable`, `Optional`)
+  - Updated all `optional` parameters in docstrings to follow lowercase convention
+  - Adopted Python 3.10+ union syntax (`|`) consistently across all modules
+
+---
+
 ## [15.15.0] - 2025-06-26
-
-### Changed (15.15.0)
-
-#### **General** (changing; 15.15.0)
-
-**List flattening calls**
-- Removed `list` call on function `flatten_list`, as by default it returns a list
-
-**Type Hint Standardisation**
-- Standardised type hints and docstrings by capitalising typing objects (e.g. `Any`, `Callable`, `Optional`)
-- Updated all `optional` parameters in docstrings to follow lowercase convention
-- Adopted Python 3.10+ union syntax (`|`) consistently across all modules
 
 ### Added (15.15.0)
 
@@ -33,6 +34,13 @@ All notable changes to this project will be documented in this file.
   - Update documentation and maintain compatibility:
     - Updated comprehensive docstring with new parameters, return types, and usage examples
     - Maintained backward compatibility with existing generator-based usage patterns
+
+### Changed (15.15.0)
+
+#### **General** (changing; 15.15.0)
+
+- **List flattening calls**
+  - Removed `list` call on function `flatten_list`, as by default it returns a list
 
 ---
 
@@ -73,7 +81,7 @@ All notable changes to this project will be documented in this file.
 
 #### **General** (adding; 15.14.0)
 
-**Comprehensive Nested List Support**
+- **Comprehensive Nested List Support**
   - Added robust nested list handling across multiple modules
   - Import `flatten_list` from `arrays_and_lists.data_manipulation` for consistent nested structure processing
   - Enhanced functions to handle arbitrarily deep nested list structures
@@ -405,30 +413,32 @@ In general, several changes have been made to break a circular dependency.
 
 #### **Time Handling** (changing; 15.11.3)
 
-- Module `time_formatters`: rename objects containing `(date)time` to `dt` for date-time operations
+- Module `time_formatters.py`:
 
-  | Type | Original Name | New Name | Description |
-  |:----:|:-------------:|:--------:|:-----------:|
-  | Public Function | `parse_float_time` | `parse_float_dt` | Main function for parsing float values to datetime objects |
-  | Internal Function | `_float_time_parser` | `_float_dt_parser` | Parser for converting float values to datetime objects |
-  | Internal Function | `_format_arbitrary_time` | `_format_arbitrary_dt` | Formatter for arbitrary datetime values |
-  | Internal Function | `_total_time_unit` | `_total_dt_unit` | Converter for datetime objects to total time units |
-  | Internal Function | `_total_time_complex_data` | `_total_dt_complex_data` | Handler for complex data types with datetime values |
+  - Rename objects containing `(date)time` to `dt` for date-time operations
 
-  Functions kept with `time` in their names as they handle time-only operations:
+    | Type | Original Name | New Name | Description |
+    |:----:|:-------------:|:--------:|:-----------:|
+    | Public Function | `parse_float_time` | `parse_float_dt` | Main function for parsing float values to datetime objects |
+    | Internal Function | `_float_time_parser` | `_float_dt_parser` | Parser for converting float values to datetime objects |
+    | Internal Function | `_format_arbitrary_time` | `_format_arbitrary_dt` | Formatter for arbitrary datetime values |
+    | Internal Function | `_total_time_unit` | `_total_dt_unit` | Converter for datetime objects to total time units |
+    | Internal Function | `_total_time_complex_data` | `_total_dt_complex_data` | Handler for complex data types with datetime values |
 
-  | Type | Name | Description |
-  |:----:|:----:|:-----------:|
-  | Internal Function | `__time_component_to_float` | Specifically deals with time components |
-  | Internal Function | `_to_time_struct` | Specifically deals with time structure |
+    Functions kept with `time` in their names as they handle time-only operations:
 
-  Constants renamed:
+    | Type | Name | Description |
+    |:----:|:----:|:-----------:|
+    | Internal Function | `__time_component_to_float` | Specifically deals with time components |
+    | Internal Function | `_to_time_struct` | Specifically deals with time structure |
 
-  | Original Name | New Name | Description |
-  |:-------------:|:--------:|:-----------:|
-  | `DATETIME_OBJ_CONVERSION_DICT` | `DT_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to various formats |
-  | `DATETIME64_OBJ_CONVERSION_DICT` | `DT64_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime64 objects to various formats |
-  | `DATETIME_TIME_OBJ_CONVERSION_DICT` | `DT_TIME_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to time objects |
+    Constants renamed:
+
+    | Original Name | New Name | Description |
+    |:-------------:|:--------:|:-----------:|
+    | `DATETIME_OBJ_CONVERSION_DICT` | `DT_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to various formats |
+    | `DATETIME64_OBJ_CONVERSION_DICT` | `DT64_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime64 objects to various formats |
+    | `DATETIME_TIME_OBJ_CONVERSION_DICT` | `DT_TIME_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to time objects |
 
 - Module `countdown`:
   - Rename public function `return_time_string_parts` to `return_dt_string_parts` as it handles both dates and times.
