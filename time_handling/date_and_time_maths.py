@@ -27,7 +27,7 @@ from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.time_handling.time_formatters import (
     datetime_obj_converter,
     parse_float_dt,
-    parse_time_string
+    parse_dt_string
 )
 
 #------------------#
@@ -157,7 +157,7 @@ def sum_dt_objects(dt_obj_list,
     # Time delta object conversions #
     timedelta_list = []
     for dt_obj in dt_obj_list:
-        dt_obj = parse_time_string(dt_obj, dt_fmt_str)
+        dt_obj = parse_dt_string(dt_obj, dt_fmt_str)
         time_obj = extract_dt_part(dt_obj)
         timedelta_obj = datetime_obj_converter(time_obj, "float")
         timedelta_list.append(timedelta_obj)
@@ -317,7 +317,7 @@ def _dt_to_radians(t, convert_to="datetime", time_fmt_str=None):
     
     if isinstance(t, str):
         try:
-            dt_obj = parse_time_string(t, dt_fmt_str=time_fmt_str, unit="s")
+            dt_obj = parse_dt_string(t, dt_fmt_str=time_fmt_str, unit="s")
         except Exception as e:
             raise RuntimeError(f"Error during string time parse to a datetime object: {e}.")
     else:
@@ -466,7 +466,7 @@ def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_f
     ##############
    
     # Perform the aritmethical operations #
-    total_date = parse_time_string(date_list[0], dt_fmt_str)
+    total_date = parse_dt_string(date_list[0], dt_fmt_str)
     for obj in date_list[1:]:
         date_obj = extract_dt_part(obj, part="date")
         total_date = _add_dates_with_year_gap(total_date, date_obj, operation=operation)
