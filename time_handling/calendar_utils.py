@@ -349,5 +349,5 @@ def week_range(date):
 # Parameters and constants #
 #--------------------------#
 
-# Supported file extensions for calendar standardizations #
+# Supported file extensions for calendar standardisations #
 SUPPORTED_FILE_EXTS_PANDAS = ['csv', 'xlsx']
