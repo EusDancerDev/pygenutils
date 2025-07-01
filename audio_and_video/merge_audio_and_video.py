@@ -114,4 +114,3 @@ merge_media_files(
     encoding=ENCODING,
     shell=SHELL
 )
-
