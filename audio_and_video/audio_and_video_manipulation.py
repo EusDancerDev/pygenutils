@@ -23,6 +23,8 @@ from pygenutils.time_handling.time_formatters import parse_dt_string
 # Internal helpers #
 #------------------#
 
+
+
 def _load_file_list(files):
     """
     Internal helper to load files from various input formats.
@@ -163,11 +165,11 @@ def merge_media_files(audio_files,
                       video_files, 
                       output_file_list=None, 
                       zero_padding=1, 
-                      quality=1,
-                      video_codec="libx264",
-                      audio_codec="aac", 
+                      audio_bitrate_fraction=5,
+                      video_bitrate_fraction=5,
+                      video_codec=None,
+                      audio_codec=None, 
                       preset="medium",
-                      video_bitrate=None,
                       overwrite=True,
                       capture_output=False,
                       return_output_name=False,
@@ -190,12 +192,18 @@ def merge_media_files(audio_files,
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1, or None to disable padding.
         Only used when output_file_list is None.
-    quality : int, optional
-        The quality level for the merged output (1=lowest, 10=highest). Default is 1.
-    video_codec : str, optional
-        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is "libx264".
-    audio_codec : str, optional
-        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is "aac".
+    audio_bitrate_fraction : int | None, optional
+        Audio bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 2-16 for 64-512kbps (speech to high-quality music).
+        Set to None to skip audio bitrate specification.
+    video_bitrate_fraction : int | None, optional
+        Video bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 31-3125+ for 1-100+Mbps (360p to 4K+).
+        Set to None to skip video bitrate specification.
+    video_codec : str | None, optional
+        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is None (no re-encoding).
+    audio_codec : str | None, optional
+        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is None (no re-encoding).
     preset : str, optional
         Encoding preset for video codec. Options: "ultrafast", "superfast", "veryfast", 
         "faster", "fast", "medium", "slow", "slower", "veryslow". Default is "medium".
@@ -252,17 +260,21 @@ def merge_media_files(audio_files,
         raise ValueError(f"'zero_padding' (number {zero_pad_pos}) "
                          f"must be an integer >= 1 or None, got {zero_padding}.")
         
-    # Quality input 
-    if not isinstance(quality, int) or not (1 <= quality <= 10):
-        raise ValueError("Quality must be an integer between 1 and 10.")
+    # Audio bitrate fraction validation
+    if audio_bitrate_fraction is not None and (not isinstance(audio_bitrate_fraction, int) or audio_bitrate_fraction < 1):
+        raise ValueError("'audio_bitrate_fraction' must be a positive integer or None.")
+        
+    # Video bitrate fraction validation
+    if video_bitrate_fraction is not None and (not isinstance(video_bitrate_fraction, int) or video_bitrate_fraction < 1):
+        raise ValueError("'video_bitrate_fraction' must be a positive integer or None.")
     
     # Video codec validation
-    if not isinstance(video_codec, str):
-        raise ValueError("'video_codec' must be a string.")
+    if video_codec is not None and not isinstance(video_codec, str):
+        raise ValueError("'video_codec' must be a string or None.")
         
     # Audio codec validation
-    if not isinstance(audio_codec, str):
-        raise ValueError("'audio_codec' must be a string.")
+    if audio_codec is not None and not isinstance(audio_codec, str):
+        raise ValueError("'audio_codec' must be a string or None.")
         
     # Preset validation
     valid_presets = ["ultrafast", "superfast", "veryfast", "faster", "fast", 
@@ -270,10 +282,6 @@ def merge_media_files(audio_files,
     if preset not in valid_presets:
         raise ValueError(f"'preset' must be one of {valid_presets}, got '{preset}'.")
         
-    # Video bitrate validation
-    if video_bitrate is not None and (not isinstance(video_bitrate, int) or video_bitrate <= 0):
-        raise ValueError("'video_bitrate' must be a positive integer or None.")
-    
     # Overwrite validation
     if not isinstance(overwrite, bool):
         raise ValueError("'overwrite' must be a boolean value.")
@@ -307,7 +315,8 @@ def merge_media_files(audio_files,
                                                    video_file_list,
                                                    output_file_list)):
         # Create a list of ffmpeg commands to try using the templates
-        audio_bitrate = quality * 32
+        audio_bitrate = audio_bitrate_fraction * 32 if audio_bitrate_fraction is not None else None
+        video_bitrate = video_bitrate_fraction * 32 if video_bitrate_fraction is not None else None
         
         # Print status message
         print(f"Creating merged file {i+1}/{len(audio_file_list)}: {output_file} from audio '{audio_file}' and video '{video_file}'")
@@ -316,21 +325,26 @@ def merge_media_files(audio_files,
         ffmpeg_command = f"ffmpeg {overwrite_flag} -i {_escape_path(audio_file)} -i {_escape_path(video_file)}"
         
         # Add video codec
-        if video_codec != "copy":
-            ffmpeg_command += f" -c:v {video_codec}"
-            # Add preset only if not using copy codec
-            ffmpeg_command += f" -preset {preset}"
-            # Add video bitrate if specified
-            if video_bitrate is not None:
-                ffmpeg_command += f" -b:v {video_bitrate}k"
-        else:
-            ffmpeg_command += f" -c:v copy"
+        if video_codec is not None:
+            if video_codec != "copy":
+                ffmpeg_command += f" -c:v {video_codec}"
+                # Add preset only if not using copy codec
+                ffmpeg_command += f" -preset {preset}"
+                # Add video bitrate if specified
+                if video_bitrate is not None:
+                    ffmpeg_command += f" -b:v {video_bitrate}k"
+            else:
+                ffmpeg_command += f" -c:v copy"
         
         # Add audio codec and bitrate
-        if audio_codec != "copy":
-            ffmpeg_command += f" -c:a {audio_codec} -b:a {audio_bitrate}k"
-        else:
-            ffmpeg_command += f" -c:a copy"
+        if audio_codec is not None:
+            if audio_codec != "copy":
+                ffmpeg_command += f" -c:a {audio_codec}"
+                # Add audio bitrate if specified
+                if audio_bitrate is not None:
+                    ffmpeg_command += f" -b:a {audio_bitrate}k"
+            else:
+                ffmpeg_command += f" -c:a copy"
         
         # Add output file
         ffmpeg_command += f" {_escape_path(output_file)}"
@@ -339,8 +353,8 @@ def merge_media_files(audio_files,
         
         # Add fallback commands using templates with user parameters
         # Prepare conditional arguments
-        video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec != "copy" else ""
-        preset_arg = f" -preset {preset}" if video_codec != "copy" else ""
+        video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec is not None and video_codec != "copy" else ""
+        preset_arg = f" -preset {preset}" if video_codec is not None and video_codec != "copy" else ""
         
         for template in FFMPEG_MERGE_CMD_TEMPLATES:
             fallback_command = template.format(
@@ -349,7 +363,7 @@ def merge_media_files(audio_files,
                 video_file=_escape_path(video_file),
                 video_codec=video_codec,
                 audio_codec=audio_codec,
-                audio_bitrate=audio_bitrate,
+                audio_bitrate=audio_bitrate or "",
                 video_bitrate_arg=video_bitrate_arg,
                 preset_arg=preset_arg,
                 output_file=_escape_path(output_file)
@@ -386,11 +400,11 @@ def merge_media_files(audio_files,
 def merge_individual_media_files(media_inputs,
                                  safe=True, 
                                  output_file_name=None,
-                                 quality=1,
-                                 video_codec="libx264",
-                                 audio_codec="aac",
+                                 audio_bitrate_fraction=5,
+                                 video_bitrate_fraction=5,
+                                 video_codec=None,
+                                 audio_codec=None,
                                  preset="medium",
-                                 video_bitrate=None,
                                  overwrite=True,
                                  capture_output=False,
                                  return_output_name=False,
@@ -409,12 +423,18 @@ def merge_individual_media_files(media_inputs,
         Default is True.
     output_file_name : str | None, optional
         The name of the output file. If not provided, a default name will be used.
-    quality : int, optional
-        The quality level for the merged output (1=lowest, 10=highest). Default is 1.
-    video_codec : str, optional
-        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is "libx264".
-    audio_codec : str, optional
-        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is "aac".
+    audio_bitrate_fraction : int | None, optional
+        Audio bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 2-16 for 64-512kbps (speech to high-quality music).
+        Set to None to skip audio bitrate specification.
+    video_bitrate_fraction : int | None, optional
+        Video bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 31-3125+ for 1-100+Mbps (360p to 4K+).
+        Set to None to skip video bitrate specification.
+    video_codec : str | None, optional
+        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is None (no re-encoding).
+    audio_codec : str | None, optional
+        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is None (no re-encoding).
     preset : str, optional
         Encoding preset for video codec. Options: "ultrafast", "superfast", "veryfast", 
         "faster", "fast", "medium", "slow", "slower", "veryslow". Default is "medium".
@@ -446,27 +466,27 @@ def merge_individual_media_files(media_inputs,
     # Validations #
     #-------------#
     
-    # Quality input 
-    if not isinstance(quality, int) or not (1 <= quality <= 10):
-        raise ValueError("Quality must be an integer between 1 and 10.")
+    # Audio bitrate fraction validation
+    if audio_bitrate_fraction is not None and (not isinstance(audio_bitrate_fraction, int) or audio_bitrate_fraction < 1):
+        raise ValueError("'audio_bitrate_fraction' must be a positive integer or None.")
+        
+    # Video bitrate fraction validation
+    if video_bitrate_fraction is not None and (not isinstance(video_bitrate_fraction, int) or video_bitrate_fraction < 1):
+        raise ValueError("'video_bitrate_fraction' must be a positive integer or None.")
         
     # Video codec validation
-    if not isinstance(video_codec, str):
-        raise ValueError("'video_codec' must be a string.")
+    if video_codec is not None and not isinstance(video_codec, str):
+        raise ValueError("'video_codec' must be a string or None.")
         
     # Audio codec validation
-    if not isinstance(audio_codec, str):
-        raise ValueError("'audio_codec' must be a string.")
+    if audio_codec is not None and not isinstance(audio_codec, str):
+        raise ValueError("'audio_codec' must be a string or None.")
         
     # Preset validation
     valid_presets = ["ultrafast", "superfast", "veryfast", "faster", "fast", 
                      "medium", "slow", "slower", "veryslow"]
     if preset not in valid_presets:
         raise ValueError(f"'preset' must be one of {valid_presets}, got '{preset}'.")
-        
-    # Video bitrate validation
-    if video_bitrate is not None and (not isinstance(video_bitrate, int) or video_bitrate <= 0):
-        raise ValueError("'video_bitrate' must be a positive integer or None.")
         
     # Overwrite validation
     if not isinstance(overwrite, bool):
@@ -508,13 +528,14 @@ def merge_individual_media_files(media_inputs,
     # For input_str, we need to escape each path before joining
     escaped_file_list = [_escape_path(file) for file in file_list]
     input_str = '|'.join(escaped_file_list)
-    audio_bitrate = quality * 32
+    audio_bitrate = audio_bitrate_fraction * 32 if audio_bitrate_fraction is not None else None
+    video_bitrate = video_bitrate_fraction * 32 if video_bitrate_fraction is not None else None
     
     # Build primary ffmpeg command with user-specified parameters
     ffmpeg_command = f"ffmpeg {overwrite_flag} -i 'concat:{input_str}'"
     
     # Add video codec
-    if video_files:  # Only add video options if we have video files
+    if video_files and video_codec is not None:  # Only add video options if we have video files and codec is specified
         if video_codec != "copy":
             ffmpeg_command += f" -c:v {video_codec}"
             # Add preset only if not using copy codec
@@ -526,10 +547,14 @@ def merge_individual_media_files(media_inputs,
             ffmpeg_command += f" -c:v copy"
     
     # Add audio codec and bitrate
-    if audio_codec != "copy":
-        ffmpeg_command += f" -c:a {audio_codec} -b:a {audio_bitrate}k"
-    else:
-        ffmpeg_command += f" -c:a copy"
+    if audio_codec is not None:
+        if audio_codec != "copy":
+            ffmpeg_command += f" -c:a {audio_codec}"
+            # Add audio bitrate if specified
+            if audio_bitrate is not None:
+                ffmpeg_command += f" -b:a {audio_bitrate}k"
+        else:
+            ffmpeg_command += f" -c:a copy"
     
     # Add output file
     ffmpeg_command += f" {_escape_path(output_file_name)}.mp4"
@@ -538,8 +563,8 @@ def merge_individual_media_files(media_inputs,
     
     # Add fallback commands using templates with user parameters
     # Prepare conditional arguments
-    video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec != "copy" else ""
-    preset_arg = f" -preset {preset}" if video_codec != "copy" else ""
+    video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec is not None and video_codec != "copy" else ""
+    preset_arg = f" -preset {preset}" if video_codec is not None and video_codec != "copy" else ""
     
     for template in FFMPEG_INDIVIDUAL_MERGE_CMD_TEMPLATES:
         fallback_command = template.format(
@@ -549,7 +574,7 @@ def merge_individual_media_files(media_inputs,
             safe=int(safe),
             video_codec=video_codec,
             audio_codec=audio_codec,
-            audio_bitrate=audio_bitrate,
+            audio_bitrate=audio_bitrate or "",
             video_bitrate_arg=video_bitrate_arg,
             preset_arg=preset_arg,
             output_file=_escape_path(output_file_name)
@@ -587,11 +612,11 @@ def cut_media_files(media_inputs,
                     end_time_list, 
                     output_file_list=None,
                     zero_padding=1,
-                    quality=1,
-                    video_codec="libx264",
-                    audio_codec="aac",
+                    audio_bitrate_fraction=5,
+                    video_bitrate_fraction=5,
+                    video_codec=None,
+                    audio_codec=None,
                     preset="medium",
-                    video_bitrate=None,
                     overwrite=True,
                     capture_output=False,
                     return_output_name=False,
@@ -617,17 +642,21 @@ def cut_media_files(media_inputs,
         Zero-padding to apply to the output file numbers. 
         Must be greater than or equal to 1, or None to disable padding.
         Only used when output_file_list is None.
-    quality : int, optional
-        The quality level for the cut output (1=lowest, 10=highest). Default is 1.
-    video_codec : str, optional
-        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is "libx264".
-    audio_codec : str, optional
-        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is "aac".
+    audio_bitrate_fraction : int | None, optional
+        Audio bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 2-16 for 64-512kbps (speech to high-quality music).
+        Set to None to skip audio bitrate specification.
+    video_bitrate_fraction : int | None, optional
+        Video bitrate fraction (multiplied by 32 to get kbps). Default is 5.
+        Common ranges: 31-3125+ for 1-100+Mbps (360p to 4K+).
+        Set to None to skip video bitrate specification.
+    video_codec : str | None, optional
+        Video codec to use. Options: "copy", "libx264", "libx265", etc. Default is None (no re-encoding).
+    audio_codec : str | None, optional
+        Audio codec to use. Options: "copy", "aac", "mp3", "ac3", etc. Default is None (no re-encoding).
     preset : str, optional
         Encoding preset for video codec. Options: "ultrafast", "superfast", "veryfast", 
         "faster", "fast", "medium", "slow", "slower", "veryslow". Default is "medium".
-    video_bitrate : int | None, optional
-        Video bitrate in kbps. If None, ffmpeg will choose based on codec defaults.
     overwrite : bool, optional
         Whether to overwrite existing output files. Default is True.
         If True, uses '-y' flag; if False, uses '-n' flag.
@@ -693,17 +722,21 @@ def cut_media_files(media_inputs,
     if zero_padding is not None and (not isinstance(zero_padding, int) or zero_padding < 1):
         raise ValueError(f"zero_padding must be an integer >= 1 or None, got {zero_padding}.")
         
-    # Quality input 
-    if not isinstance(quality, int) or not (1 <= quality <= 10):
-        raise ValueError("Quality must be an integer between 1 and 10.")
+    # Audio bitrate fraction validation
+    if audio_bitrate_fraction is not None and (not isinstance(audio_bitrate_fraction, int) or audio_bitrate_fraction < 1):
+        raise ValueError("'audio_bitrate_fraction' must be a positive integer or None.")
+        
+    # Video bitrate fraction validation
+    if video_bitrate_fraction is not None and (not isinstance(video_bitrate_fraction, int) or video_bitrate_fraction < 1):
+        raise ValueError("'video_bitrate_fraction' must be a positive integer or None.")
     
     # Video codec validation
-    if not isinstance(video_codec, str):
-        raise ValueError("'video_codec' must be a string.")
+    if video_codec is not None and not isinstance(video_codec, str):
+        raise ValueError("'video_codec' must be a string or None.")
         
     # Audio codec validation
-    if not isinstance(audio_codec, str):
-        raise ValueError("'audio_codec' must be a string.")
+    if audio_codec is not None and not isinstance(audio_codec, str):
+        raise ValueError("'audio_codec' must be a string or None.")
         
     # Preset validation
     valid_presets = ["ultrafast", "superfast", "veryfast", "faster", "fast", 
@@ -711,10 +744,6 @@ def cut_media_files(media_inputs,
     if preset not in valid_presets:
         raise ValueError(f"'preset' must be one of {valid_presets}, got '{preset}'.")
         
-    # Video bitrate validation
-    if video_bitrate is not None and (not isinstance(video_bitrate, int) or video_bitrate <= 0):
-        raise ValueError("'video_bitrate' must be a positive integer or None.")
-    
     # Overwrite validation
     if not isinstance(overwrite, bool):
         raise ValueError("'overwrite' must be a boolean value.")
@@ -740,7 +769,8 @@ def cut_media_files(media_inputs,
                                                              output_file_list,
                                                              start_time_list,
                                                              end_time_list)):
-        audio_bitrate = quality * 32
+        audio_bitrate = audio_bitrate_fraction * 32 if audio_bitrate_fraction is not None else None
+        video_bitrate = video_bitrate_fraction * 32 if video_bitrate_fraction is not None else None
         
         # Print status message
         start_desc = start_time if start_time != 'start' else 'the beginning'
@@ -758,7 +788,7 @@ def cut_media_files(media_inputs,
         is_video = _is_video_file(input_file)
         
         # Add video codec (only for video files)
-        if is_video:
+        if is_video and video_codec is not None:
             if video_codec != "copy":
                 ffmpeg_command += f" -c:v {video_codec}"
                 # Add preset only if not using copy codec
@@ -770,10 +800,14 @@ def cut_media_files(media_inputs,
                 ffmpeg_command += f" -c:v copy"
         
         # Add audio codec and bitrate
-        if audio_codec != "copy":
-            ffmpeg_command += f" -c:a {audio_codec} -b:a {audio_bitrate}k"
-        else:
-            ffmpeg_command += f" -c:a copy"
+        if audio_codec is not None:
+            if audio_codec != "copy":
+                ffmpeg_command += f" -c:a {audio_codec}"
+                # Add audio bitrate if specified
+                if audio_bitrate is not None:
+                    ffmpeg_command += f" -b:a {audio_bitrate}k"
+            else:
+                ffmpeg_command += f" -c:a copy"
         
         # Add output file
         ffmpeg_command += f" {_escape_path(output_file)}"
@@ -782,8 +816,8 @@ def cut_media_files(media_inputs,
         
         # Add fallback commands using templates with user parameters
         # Prepare conditional arguments
-        video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec != "copy" and is_video else ""
-        preset_arg = f" -preset {preset}" if video_codec != "copy" and is_video else ""
+        video_bitrate_arg = f" -b:v {video_bitrate}k" if video_bitrate is not None and video_codec is not None and video_codec != "copy" and is_video else ""
+        preset_arg = f" -preset {preset}" if video_codec is not None and video_codec != "copy" and is_video else ""
         
         for template in FFMPEG_CUT_CMD_TEMPLATES:
             fallback_command = template.format(
@@ -793,7 +827,7 @@ def cut_media_files(media_inputs,
                 end_time_arg=end_time_arg,
                 video_codec=video_codec,
                 audio_codec=audio_codec,
-                audio_bitrate=audio_bitrate,
+                audio_bitrate=audio_bitrate or "",
                 video_bitrate_arg=video_bitrate_arg,
                 preset_arg=preset_arg,
                 output_file=_escape_path(output_file)
