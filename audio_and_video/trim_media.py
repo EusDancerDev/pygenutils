@@ -39,7 +39,7 @@ START_TIME_LIST = ["start", "00:01:28", "00:02:28.345"]
 END_TIME_LIST = ["00:05:21", "end", "00:07:56.851"]
 
 # Zero-padding and bitrate fractions #
-#-------------------------------------#
+#------------------------------------#
 
 ZERO_PADDING = 1
 
@@ -52,7 +52,7 @@ AUDIO_BITRATE_FRACTION = 4
 VIDEO_BITRATE_FRACTION = 4
 
 # Codec settings #
-#-----------------#
+#----------------#
 
 # Video codec to use (None = no re-encoding, "copy" = stream copy, "libx264" = H.264, etc.)
 VIDEO_CODEC = None
