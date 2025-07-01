@@ -39,9 +39,28 @@ MEDIA_INPUT = []
 OUTPUT_FILE_NAME = f"merged_media_file.{OUTPUT_EXT}"
 # OUTPUT_FILE_NAME = None
 
-# Zero-padding and bit rate factor #
-"""The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
-QUALITY = 4
+# Bitrate fractions #
+#-------------------#
+
+# Audio bitrate fraction (multiplied by 32 to get kbps)
+# Common ranges: 2-16 for 64-512kbps (speech to high-quality music)
+AUDIO_BITRATE_FRACTION = 4
+
+# Video bitrate fraction (multiplied by 32 to get kbps)  
+# Common ranges: 31-3125+ for 1-100+Mbps (360p to 4K+)
+VIDEO_BITRATE_FRACTION = 4
+
+# Codec settings #
+#-----------------#
+
+# Video codec to use (None = no re-encoding, "copy" = stream copy, "libx264" = H.264, etc.)
+VIDEO_CODEC = None
+
+# Audio codec to use (None = no re-encoding, "copy" = stream copy, "aac" = AAC, etc.)
+AUDIO_CODEC = None
+
+# Encoding preset for video codec (only used if video_codec is not None and not "copy")
+PRESET = "medium"
 
 # Safe mode for ffmpeg #
 # If True, ffmpeg runs in safe mode to prevent unsafe file operations
@@ -65,7 +84,11 @@ merge_individual_media_files(
     MEDIA_INPUT,
     safe=SAFE,
     output_file_name=OUTPUT_FILE_NAME,
-    quality=QUALITY,
+    audio_bitrate_fraction=AUDIO_BITRATE_FRACTION,
+    video_bitrate_fraction=VIDEO_BITRATE_FRACTION,
+    video_codec=VIDEO_CODEC,
+    audio_codec=AUDIO_CODEC,
+    preset=PRESET,
     overwrite=OVERWRITE,
     capture_output=CAPTURE_OUTPUT,
     return_output_name=RETURN_OUTPUT_NAME,
