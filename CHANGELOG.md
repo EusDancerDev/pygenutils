@@ -4,6 +4,36 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.0.0] - 2025-07-01
+
+### Changed (16.0.0)
+
+#### **Audio and Video** (changing; 16.0.0)
+
+- Module `audio_and_video_manipulation`:
+  - **BREAKING CHANGE**: Replace `quality` and `video_bitrate` parameters with separate bitrate fraction parameters:
+    - Add `audio_bitrate_fraction` parameter (default: 5) - multiplied by 32 to get audio kbps
+    - Add `video_bitrate_fraction` parameter (default: 5) - multiplied by 32 to get video kbps
+    - Remove single `quality` parameter and `video_bitrate` parameter
+    - Both fractions can be set to `None` to skip bitrate specification
+  - Enhanced parameter documentation with bitrate ranges based on `on_the_bitrate.md`:
+    - Audio: 2-16 for 64-512kbps (speech to high-quality music)
+    - Video: 31-3125+ for 1-100+Mbps (360p to 4K+)
+  - Improved ffmpeg command building logic to handle `None` values properly
+  - Updated parameter validation for new fraction-based system
+  - Functions affected:
+    - `merge_media_files`
+    - `merge_individual_media_files`
+    - `cut_media_files`
+
+- Scripts `merge_audio_or_video.py`, `merge_audio_and_video.py`, and `trim_media.py`:
+  - Updated to use new `audio_bitrate_fraction` and `video_bitrate_fraction` parameters
+  - Added comprehensive parameter documentation with common bitrate ranges
+  - Removed deprecated `quality` and `video_bitrate` parameter usage
+  - Enhanced configurability with separate audio and video bitrate control
+
+---
+
 ## [15.15.2] - 2025-06-27
 
 ### Fixed (15.15.2)
