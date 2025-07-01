@@ -35,7 +35,7 @@ VIDEO_EXTENSION = "mp4"
 VIDEO_FILE_PATTERN = f"_{VIDEO_DELIMITER}.{VIDEO_EXTENSION}"
 
 # Path to walk into for file searching #
-SEARCH_PATH = "../Curso_superior_ML/"
+SEARCH_PATH = "../curso_superior_ML/"
 
 # Input media #
 #-------------#
@@ -73,7 +73,7 @@ AUDIO_BITRATE_FRACTION = 4
 VIDEO_BITRATE_FRACTION = 4
 
 # Codec settings #
-#-----------------#
+#----------------#
 
 # Video codec to use (None = no re-encoding, "copy" = stream copy, "libx264" = H.264, etc.)
 VIDEO_CODEC = None
