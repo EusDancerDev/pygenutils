@@ -59,10 +59,30 @@ OUTPUT_FILE_NAME_LIST = [
 ]
 # OUTPUT_FILE_NAME_LIST = None
 
-# Zero-padding and bit rate factor #
-"""The factor is multiplied by 32, so that the bit rate is in range [32, 320] kBps"""
+# Zero-padding and bitrate fractions #
+#-------------------------------------#
+
 ZERO_PADDING = None
-QUALITY = 4
+
+# Audio bitrate fraction (multiplied by 32 to get kbps)
+# Common ranges: 2-16 for 64-512kbps (speech to high-quality music)
+AUDIO_BITRATE_FRACTION = 4
+
+# Video bitrate fraction (multiplied by 32 to get kbps)  
+# Common ranges: 31-3125+ for 1-100+Mbps (360p to 4K+)
+VIDEO_BITRATE_FRACTION = 4
+
+# Codec settings #
+#-----------------#
+
+# Video codec to use (None = no re-encoding, "copy" = stream copy, "libx264" = H.264, etc.)
+VIDEO_CODEC = None
+
+# Audio codec to use (None = no re-encoding, "copy" = stream copy, "aac" = AAC, etc.)
+AUDIO_CODEC = None
+
+# Encoding preset for video codec (only used if video_codec is not None and not "copy")
+PRESET = "medium"
 
 # Overwrite existing files #
 # If True, uses '-y' flag; if False, uses '-n' flag (will not overwrite)
@@ -79,11 +99,15 @@ SHELL = True
 #-------------------#
 
 merge_media_files(
-    INPUT_VIDEO_FILE_LIST,
     INPUT_AUDIO_FILE_LIST,
+    INPUT_VIDEO_FILE_LIST,
     output_file_list=OUTPUT_FILE_NAME_LIST,
     zero_padding=ZERO_PADDING,
-    quality=QUALITY,
+    audio_bitrate_fraction=AUDIO_BITRATE_FRACTION,
+    video_bitrate_fraction=VIDEO_BITRATE_FRACTION,
+    video_codec=VIDEO_CODEC,
+    audio_codec=AUDIO_CODEC,
+    preset=PRESET,
     overwrite=OVERWRITE,
     capture_output=CAPTURE_OUTPUT,
     return_output_name=RETURN_OUTPUT_NAME,
