@@ -595,7 +595,7 @@ def infer_dt_range(data):
 
 def get_obj_operation_datetime(obj_list,
                                attr="modification",
-                               time_fmt_str="%Y-%m-%d %H:%M:%S",
+                               time_fmt_str="%F %T",
                                want_numpy_array=True):
     """
     Returns a 2D numpy array where each row contains an object (file path)
@@ -610,7 +610,7 @@ def get_obj_operation_datetime(obj_list,
         Type of time attribute to retrieve. Defaults to 'modification'.
     time_fmt_str : str, optional
         Format string for formatting the time attribute using .strftime(). 
-        Defaults to '%Y-%m-%d %H:%M:%S'.
+        Defaults to '%F %T'.
     want_numpy_array : bool
         Determines whether to convert the final object to a 2D Numpy array.
         If True, a 2D Numpy array is returned, else a list composed of lists.
