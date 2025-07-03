@@ -1,6 +1,6 @@
 # pygenutils
 
-[![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/downloads/)
+[![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
 [![PyPI Version](https://img.shields.io/pypi/v/pygenutils.svg)](https://pypi.org/project/pygenutils/)
 
@@ -53,11 +53,13 @@ This package has minimal external dependencies and is designed to be lightweight
 
 ### Installation Instructions
 
-Install the package using pip:
+**For regular users** who want to use the package in their projects:
 
 ```bash
 pip install pygenutils
 ```
+
+This automatically installs `pygenutils` and all its dependencies from PyPI and GitHub repositories.
 
 ### Package Updates
 
@@ -67,7 +69,113 @@ To stay up-to-date with the latest version of this package, simply run:
 pip install --upgrade pygenutils
 ```
 
-## Project Structure
+## Development Setup
+
+### For Contributors and Developers
+
+If you're planning to contribute to the project or work with the source code, follow these setup instructions:
+
+#### Quick Setup (Recommended)
+
+```bash
+# Clone the repository
+git clone https://github.com/EusDancerDev/pygenutils.git
+cd pygenutils
+
+# Install in editable mode with all dependencies
+pip install -e .
+```
+
+**Note**: The `-e` flag installs the package in "editable" mode, meaning changes to the source code are immediately reflected without reinstalling.
+
+This will automatically install all dependencies, including the required `filewise` and `paramlib` packages directly from their GitHub repositories.
+
+#### Manual Setup (Alternative)
+
+If you prefer to install dependencies manually:
+
+```bash
+# Clone the repository
+git clone https://github.com/EusDancerDev/pygenutils.git
+cd pygenutils
+
+# Install interdependent packages first
+pip install git+https://github.com/EusDancerDev/filewise.git
+pip install git+https://github.com/EusDancerDev/paramlib.git
+
+# Install this package in editable mode
+pip install -e .
+```
+
+#### Development with Optional Dependencies
+
+For full development capabilities, including testing and linting:
+
+```bash
+# Install with development dependencies
+pip install -e ".[dev]"
+
+# Or install specific optional dependencies
+pip install -e ".[xarray]"  # For xarray support
+```
+
+### For Multiple Package Development
+
+If you're working on multiple interdependent packages simultaneously:
+
+```bash
+# Clone all repositories
+git clone https://github.com/EusDancerDev/pygenutils.git
+git clone https://github.com/EusDancerDev/filewise.git
+git clone https://github.com/EusDancerDev/paramlib.git
+
+# Install each in editable mode
+pip install -e ./filewise
+pip install -e ./paramlib
+pip install -e ./pygenutils
+```
+
+### Troubleshooting
+
+If you encounter import errors after cloning:
+
+1. **Ensure dependencies are installed**: Run `pip install -e .` in the project directory
+2. **Check for missing packages**: The main interdependent packages are `filewise` and `paramlib`
+3. **Verify Python environment**: Make sure you're using a compatible Python version (3.10+)
+
+### Verify Installation
+
+To verify that your installation is working correctly, you can run this quick test:
+
+```python
+# Test script to verify installation
+try:
+    import pygenutils
+    from filewise.general.introspection_utils import get_type_str
+    from paramlib.global_parameters import BASIC_ARITHMETIC_OPERATORS
+    
+    print("✅ All imports successful!")
+    print(f"✅ pygenutils version: {pygenutils.__version__}")
+    print("✅ Installation is working correctly.")
+    
+except ImportError as e:
+    print(f"❌ Import error: {e}")
+    print("💡 For regular users: pip install pygenutils")
+    print("💡 For developers: pip install -e .")
+```
+
+### Implementation Notes
+
+This project implements **Git-based dependencies** to solve the interdependent packages problem:
+
+- **Dependencies**: `filewise` and `paramlib` packages are installed directly from GitHub repositories
+- **Automatic Resolution**: Works for both scenarios:
+  - **Regular users**: `pip install pygenutils` automatically installs all dependencies
+  - **Developers**: `pip install -e .` automatically installs all dependencies in editable mode
+- **No Manual Setup**: No need to manually install `filewise` and `paramlib` in either case
+- **Seamless Experience**: All imports work correctly immediately after installation
+
+### Package Structure
 
 The package is organised into several specialised modules:
 
