@@ -24,14 +24,22 @@ from pygenutils.audio_and_video.audio_and_video_manipulation import cut_media_fi
 #-------------#
 
 # Media input can be a list of files or a single file containing file names
-MEDIA_INPUT = []
+MEDIA_INPUT = [
+    "media_file_name_1.mp3",
+    "media_file_name_2.mp4",
+    "media_file_name_3.mp3"
+]
 # MEDIA_INPUT = "media_name_containing_file.txt"
-
+    
 # Output media #
 #--------------#
 
 # Merged media file #
-OUTPUT_FILE_LIST = []
+OUTPUT_FILE_LIST = [
+    "media_file_name_1_trimmed.mp3",
+    "media_file_name_2_trimmed.mp4",
+    "media_file_name_3_trimmed.mp3"
+]
 # OUTPUT_FILE_LIST = None
 
 # Starting and ending times #
