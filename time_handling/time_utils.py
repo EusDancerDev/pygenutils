@@ -116,14 +116,25 @@ def _convert_floated_time_to_datetime(floated_time, module):
     seconds = int(floated_time)
     nanoseconds = int((floated_time - seconds) * 1_000_000_000)
 
-    # Convert the seconds part into a datetime object
-    dt = datetime.fromtimestamp(seconds)
+    # Convert the seconds part into a datetime object using the specified module
+    if module == "datetime":
+        dt = datetime.fromtimestamp(seconds)
+    elif module == "pandas":
+        dt = pd.Timestamp.fromtimestamp(seconds).to_pydatetime()
+    elif module == "numpy":
+        dt = pd.Timestamp.fromtimestamp(seconds).to_pydatetime()  # Convert via pandas for compatibility
+    elif module == "arrow":
+        dt = arrow.get(seconds).datetime
+    elif module == "time":
+        dt = datetime.fromtimestamp(seconds)  # time module uses same as datetime
+    else:
+        raise ValueError(f"Unsupported module: {module}")
     
     # Add the nanoseconds part and return the formatted string
     dt_with_nanos = dt + timedelta(microseconds=nanoseconds / 1_000)
     dt_with_nanos_str = datetime_obj_converter(dt_with_nanos, 
-                                             convert_to="str",
-                                             dt_fmt_str='%Y-%m-%dT%H:%M:%S')
+                                               convert_to="str",
+                                               dt_fmt_str='%FT%T')
     nano_dt_str = f"{dt_with_nanos_str}.{nanoseconds:09d}"
     return nano_dt_str
 
@@ -149,11 +160,11 @@ def _nano_floated_time_str(time_ns):
     return f"{seconds}.{nanoseconds:09d}"
 
 def datetime_obj_converter(datetime_obj,
-                         convert_to,
-                         unit="s",
-                         float_class="d", 
-                         int_class="int",
-                         dt_fmt_str=None):
+                           convert_to,
+                           unit="s",
+                           float_class="d", 
+                           int_class="int",
+                           dt_fmt_str=None):
     """
     Convert a date/time object to another, including float and string representation.
     If float, it represents seconds since the Unix epoch.
@@ -172,18 +183,22 @@ def datetime_obj_converter(datetime_obj,
         
     convert_to : str
         The target type to convert `datetime_obj` to.
-        Accepted values depend on the input type.
+        Supported values: "datetime", "timestamp", "datetime64", "arrow", "str", "float", "int".
         For example, if `datetime_obj` is a `datetime`, `convert_to` could be
-        `datetime64`, `Timestamp`, etc.
+        "datetime64", "timestamp", "float", etc.
     unit : str
-        The date unit for conversion, applicable to certain types.
+        The date unit for conversion, used with numpy datetime64 and pandas Timestamp conversions.
         Default is `"s"` (seconds).
     float_class : str | np.floating
-        The float precision class. Default is `"d"` (double precision).
+        The float precision class used when `convert_to="float"`. 
+        Supported values: "d"/"float" (double), "f" (float32), numpy float types.
+        Default is `"d"` (double precision).
     int_class : str | np.integer
-        The integer precision class. Default is `"int"` (signed integer type).
+        The integer precision class used when `convert_to="int"`.
+        Supported values: "int" (Python int), "i" (int32), numpy integer types.
+        Default is `"int"` (Python integer type).
     dt_fmt_str : str
-        Format string to convert the date/time object to a string.
+        Format string to convert the date/time object to a string when `convert_to="str"`.
 
     Returns
     -------
@@ -228,7 +243,7 @@ def datetime_obj_converter(datetime_obj,
         if isinstance(datetime_obj, datetime):
             return pd.Timestamp(datetime_obj)
         if isinstance(datetime_obj, np.datetime64):
-            return pd.Timestamp(datetime_obj)
+            return pd.Timestamp(datetime_obj, unit=unit)
         if isinstance(datetime_obj, arrow.Arrow):
             return pd.Timestamp(datetime_obj.datetime)
         raise ValueError(f"Cannot convert {obj_type} to Timestamp")
@@ -236,11 +251,11 @@ def datetime_obj_converter(datetime_obj,
     # Convert to numpy datetime64 if requested
     if convert_to == "datetime64":
         if isinstance(datetime_obj, np.datetime64):
-            return datetime_obj
+            return datetime_obj.astype(f'datetime64[{unit}]')
         if isinstance(datetime_obj, (datetime, pd.Timestamp)):
-            return np.datetime64(datetime_obj)
+            return np.datetime64(datetime_obj, unit)
         if isinstance(datetime_obj, arrow.Arrow):
-            return np.datetime64(datetime_obj.datetime)
+            return np.datetime64(datetime_obj.datetime, unit)
         raise ValueError(f"Cannot convert {obj_type} to datetime64")
     
     # Convert to arrow if requested
@@ -254,5 +269,53 @@ def datetime_obj_converter(datetime_obj,
         if isinstance(datetime_obj, np.datetime64):
             return arrow.get(pd.Timestamp(datetime_obj).to_pydatetime())
         raise ValueError(f"Cannot convert {obj_type} to arrow")
+    
+    # Convert to float if requested
+    if convert_to == "float":
+        if hasattr(datetime_obj, 'timestamp'):
+            # For datetime and pandas objects
+            timestamp = datetime_obj.timestamp()
+        elif isinstance(datetime_obj, np.datetime64):
+            # For numpy datetime64 objects
+            timestamp = datetime_obj.astype(f'datetime64[{unit}]').astype(float_class)
+            return timestamp
+        elif isinstance(datetime_obj, arrow.Arrow):
+            timestamp = datetime_obj.float_timestamp
+        else:
+            raise ValueError(f"Cannot convert {obj_type} to float")
+        
+        # Apply float precision class
+        if float_class == "d" or float_class == "float":
+            return float(timestamp)
+        elif float_class == "f":
+            return np.float32(timestamp)
+        elif isinstance(float_class, type) and issubclass(float_class, np.floating):
+            return float_class(timestamp)
+        else:
+            return np.dtype(float_class).type(timestamp)
+    
+    # Convert to int if requested
+    if convert_to == "int":
+        if hasattr(datetime_obj, 'timestamp'):
+            # For datetime and pandas objects
+            timestamp = int(datetime_obj.timestamp())
+        elif isinstance(datetime_obj, np.datetime64):
+            # For numpy datetime64 objects
+            timestamp = datetime_obj.astype(f'datetime64[{unit}]').astype(int_class)
+            return timestamp
+        elif isinstance(datetime_obj, arrow.Arrow):
+            timestamp = int(datetime_obj.float_timestamp)
+        else:
+            raise ValueError(f"Cannot convert {obj_type} to int")
+        
+        # Apply int precision class
+        if int_class == "int":
+            return int(timestamp)
+        elif int_class == "i":
+            return np.int32(timestamp)
+        elif isinstance(int_class, type) and issubclass(int_class, np.integer):
+            return int_class(timestamp)
+        else:
+            return np.dtype(int_class).type(timestamp)
     
     raise ValueError(f"Unsupported conversion target: {convert_to}") 
