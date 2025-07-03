@@ -631,10 +631,10 @@ def cut_media_files(media_inputs,
         A list of media file paths or a path to a text file containing file names.
         Can also be a nested list for recursive processing.
     start_time_list : str | list[str]
-        The start time in the format '%H:%M:%S' or '%H:%M:%S.%f'. 
+        The start time in the format '%T' or '%T.%f'. 
         If any set to 'start', cutting starts from the beginning.
     end_time_list : str | list[str]
-        The end time in the format '%H:%M:%S' or '%H:%M:%S.%f'.
+        The end time in the format '%T' or '%T.%f'.
         If any set to 'end', cutting proceeds until the end of the file.
     output_file_list : list[str] | None, optional
         A list of output file names. If not provided, default names will be generated.
@@ -871,7 +871,7 @@ def cut_media_files(media_inputs,
 #-------------------#
 
 # Time format strings #
-TIME_FMT_STR_LIST = ['%H:%M:%S', '%H:%M:%S.%f']
+TIME_FMT_STR_LIST = ['%T', '%T.%f']
 
 # Common audio and video formats #
 COMMON_AUDIO_FORMATS = ('.mp3', '.aac', '.wav')
