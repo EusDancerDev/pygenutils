@@ -4,16 +4,16 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [16.1.1] - 2025-07-03
+## [16.1.2] - 2025-07-03
 
 ### Fixed
 
-#### **General** (fixing; 16.1.1)
+#### **General** (fixing; 16.1.2)
 
 - Use `%F` and `%T` shorthands for date and time formatting, respectively.
   - Replace occurrences of `%Y-%m-%d` and `%H:%M:%S` with `%F` and `%T` where applicable, across multiple modules.
 
-#### **Time Handling** (fixing; 16.1.1)
+#### **Time Handling** (fixing; 16.1.2)
 
 - Modules `date_and_time_maths.py`:
   - Reference unreferenced parameters in time_handling functions
