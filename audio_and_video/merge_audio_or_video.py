@@ -29,7 +29,11 @@ OUTPUT_EXT = "mp4"
 #-------------#
 
 # Media input can be a list of files or a single file containing file names
-MEDIA_INPUT = []
+MEDIA_INPUT = [
+    "media_file_name_1.mp3",
+    "media_file_name_2.mp4",
+    "media_file_name_3.mp3"
+]
 # MEDIA_INPUT = "media_name_containing_file.txt"
 
 # Output media #
