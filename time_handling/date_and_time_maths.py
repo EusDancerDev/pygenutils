@@ -84,9 +84,9 @@ def _validate_option(arg_iterable, error_class, error_str):
 
 # Main method #
 def sum_dt_objects(dt_obj_list,
-                   dt_fmt_str="%T",
-                   operation="sum",
-                   output_format="standard"):
+                 dt_fmt_str="%H:%M:%S",
+                 operation="sum",
+                 output_format="standard"):
     """
     Calculate the sum or difference of a list of clock times
     and format the output accordingly.
@@ -101,7 +101,7 @@ def sum_dt_objects(dt_obj_list,
         are "sum" (default) and "subtr" for subtraction.
     dt_fmt_str : str, optional
         A format string that defines the structure of each object in 'dt_obj_list'. 
-        Default is '%T'.
+        Default is '%H:%M:%S'.
     output_format : str, optional
         The format of the output. Supported options:
         - 'standard': Returns the total time as a pandas.Timedelta object (default).
@@ -214,8 +214,8 @@ def extract_dt_part(datetime_obj, part="time", arg_list=None):
 ###############
 
 def dt_average(dt_obj_list, 
-               time_fmt_str="%T",
-               output_format="standard"):
+                       time_fmt_str="%H:%M:%S",
+                       output_format="standard"):
     """
     Calculate the average time from a list of time objects
     and format the output accordingly.
@@ -227,7 +227,7 @@ def dt_average(dt_obj_list,
         the format specified in 'time_fmt_str'.
     time_fmt_str : str, optional
         The format string that specifies the format of the time objects. 
-        This only affects objects that are strings. Default is "%T".
+        This only affects objects that are strings. Default is "%H:%M:%S".
         Note that all strings must have at least the detectable part 
         specified by the given format string.
     output_format : str, optional
@@ -273,7 +273,7 @@ def dt_average(dt_obj_list,
     # Operations #
     ##############
         
-    angles = [_dt_to_radians(dt_obj, "datetime", time_fmt_str) for dt_obj in dt_obj_list]
+    angles = [_dt_to_radians(dt_obj) for dt_obj in dt_obj_list]
     avg_angle = _average_angle(angles)    
     time_average = _radians_to_time_of_day(avg_angle)
     
@@ -403,10 +403,7 @@ def _radians_to_time_of_day(rads):
 # Sum and subtract operations #
 #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
-def sum_date_objects(date_list,
-                     operation="sum",
-                     dt_fmt_str="%F",
-                     output_format="default"):
+def sum_date_objects(date_list, operation="sum", dt_fmt_str="%Y-%m-%d", output_format="default"):
     """
     Calculate the sum or difference of a list of dates 
     and format the output accordingly.
@@ -421,7 +418,7 @@ def sum_date_objects(date_list,
         are "sum" (default) and "subtr" for subtraction.
     dt_fmt_str : str, optional
         A format string that defines the structure of each object in 'date_list'. 
-        Default is '%F'.
+        Default is '%Y-%m-%d'.
     output_format : str, optional
         The format of the output. Supported options:
         - 'default': Returns the total date as a datetime.date object (default).
@@ -601,9 +598,7 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     dt_fmt_str : str, optional
         The format string for parsing dates if dt_start or dt_end are strings.
     method : str, optional
-        The method for converting the date objects. Supported values are:
-        "datetime", "timestamp", "datetime64", "arrow", "str".
-        Default is "datetime".
+        The method for converting the date objects, default is "pandas".
     output_format : str, optional
         The format of the output. Supported options are "default", "string", and "tuple".
         "default" returns datetime objects, "string" returns formatted date strings, and
@@ -647,8 +642,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
     # Convert input objects to datetime objects #
     #############################################
     
-    dt_start_std = datetime_obj_converter(dt_start, method, dt_fmt_str=dt_fmt_str)
-    dt_end_std = datetime_obj_converter(dt_end, method, dt_fmt_str=dt_fmt_str)       
+    dt_start_std = datetime_obj_converter(dt_start, "datetime", dt_fmt_str=dt_fmt_str)
+    dt_end_std = datetime_obj_converter(dt_end, "datetime", dt_fmt_str=dt_fmt_str)       
 
     # Check if there is at least a whole year gap between the two objects #  
     #######################################################################
