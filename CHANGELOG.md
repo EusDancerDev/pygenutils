@@ -4,6 +4,31 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.1.0] - 2025-07-03
+
+### Fixed
+
+#### **General** (fixing; 16.1.0)
+
+- Use `%F` and `%T` shorthands for date and time formatting, respectively.
+  - Replace occurrences of `%Y-%m-%d` and `%H:%M:%S` with `%F` and `%T` where applicable, across multiple modules.
+
+#### **Time Handling** (fixing; 16.1.0)
+
+- Modules `date_and_time_maths.py`:
+  - Reference unreferenced parameters in time_handling functions
+    - Fix `time_fmt_str` parameter in `dt_average()` by passing it to `_dt_to_radians()`
+    - Fix `method` parameter in `natural_year()` by using it in `datetime_obj_converter()` calls
+
+- Module `time_utils.py`:
+  - Reference unreferenced parameters in time_handling functions
+    - Fix `module` parameter in `_convert_floated_time_to_datetime()` by implementing module-specific datetime creation
+    - Implement `unit` parameter in `datetime_obj_converter()` for `numpy datetime64` and `pandas Timestamp` conversions
+    - Implement `float_class` parameter by adding `float` conversion target with precision control
+    - Implement `int_class` parameter by adding `int` conversion target with precision control
+  
+---
+
 ## [16.0.0] - 2025-07-01
 
 ### Changed (16.0.0)
