@@ -29,8 +29,8 @@ dependencies = [
     "more_itertools>=10.0.0",
     "numpy>=1.21.0,<2.0.0",
     "pandas>=1.3.0,<2.0.0",
-    "filewise @ git+https://github.com/EusDancerDev/filewise.git",
-    "paramlib @ git+https://github.com/EusDancerDev/paramlib.git",
+    "filewise>=3.11.0",
+    "paramlib>=3.4.0",
     "arrow>=1.2.0",
 ]
 
@@ -43,6 +43,8 @@ dev = [
     "isort>=5.0.0",
     "mypy>=1.0.0",
     "flake8>=6.0.0",
+    "filewise @ git+https://github.com/EusDancerDev/filewise.git",
+    "paramlib @ git+https://github.com/EusDancerDev/paramlib.git",
 ]
 
 [project.urls]
