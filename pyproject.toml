@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygenutils"
-version = "16.1.2"
+version = "16.1.3"
 license = {file = "LICENSE"}
 description = "A comprehensive Python utility library for general-purpose and specialised tasks"
 keywords = ["utilities", "python", "general-purpose", "file handling", "string processing"]
@@ -30,7 +30,7 @@ dependencies = [
     "numpy>=1.21.0,<2.0.0",
     "pandas>=1.3.0,<2.0.0",
     "filewise>=3.11.0",
-    "paramlib>=3.4.0",
+    "paramlib>=3.4.3",
     "arrow>=1.2.0",
 ]
 
