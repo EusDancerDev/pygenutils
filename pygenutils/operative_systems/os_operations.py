@@ -243,7 +243,7 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
     # Wait for command to complete
     process.wait()
     
-    # Initialize return dictionary with return code
+    # Initialise return dictionary with return code
     return_dict = {"return_code": process.returncode}
     
     # Add errors if available
@@ -344,13 +344,12 @@ def subprocess_run_helper(command, capture_output, encoding, shell, text):
         - 'stdout': The captured standard output (if capture_output=True).
         - 'stderr': The captured standard error (if capture_output=True).
         - 'return_code': The exit code of the command.
-
-    Raises
-    ------
-    CalledProcessError
-        If the command returns a non-zero exit code.
+        
+        Note: This function always returns the result dictionary regardless of the
+        return code. The caller should check the 'return_code' field and decide
+        how to handle non-zero exit codes.
     """
-    from subprocess import run, CalledProcessError
+    from subprocess import run
     
     # Set text parameter (if not provided, use encoding as a fallback)
     text_param = text if text is not None else bool(encoding)
@@ -358,7 +357,7 @@ def subprocess_run_helper(command, capture_output, encoding, shell, text):
     # Execute the command and capture output if requested
     result = run(command, capture_output=capture_output, text=text_param, shell=shell)
     
-    # Initialize return dictionary with return code
+    # Initialise return dictionary with return code
     return_dict = {"return_code": result.returncode}
     
     # Only process stdout/stderr if they were captured
@@ -370,10 +369,8 @@ def subprocess_run_helper(command, capture_output, encoding, shell, text):
         if hasattr(result, "stderr"):
             return_dict["stderr"] = result.stderr.strip() if result.stderr else ""
     
-    # Raise an error for non-zero return codes
-    if result.returncode != 0:
-        raise CalledProcessError(result.returncode, command)
-        
+    # Always return the result dictionary, regardless of return code
+    # Let the caller decide how to handle non-zero return codes
     return return_dict
 
 # %%
