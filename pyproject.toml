@@ -43,8 +43,6 @@ dev = [
     "isort>=5.0.0",
     "mypy>=1.0.0",
     "flake8>=6.0.0",
-    "filewise @ git+https://github.com/EusDancerDev/filewise.git",
-    "paramlib @ git+https://github.com/EusDancerDev/paramlib.git",
 ]
 
 [project.urls]
