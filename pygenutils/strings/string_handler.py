@@ -664,7 +664,7 @@ def substring_replacer(string, substr2find, substr2replace, count_std=-1,
         The maximum number of occurrences to replace when using advanced search. Default is 0.
         If 0, all occurrences will be replaced.
     flags : int, optional
-        Flags to modify the behavior of the regex operation. Default is 0.
+        Flags to modify the behaviour of the regex operation. Default is 0.
 
     Returns
     -------
