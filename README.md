@@ -59,7 +59,7 @@ This package has minimal external dependencies and is designed to be lightweight
 pip install pygenutils
 ```
 
-This automatically installs `pygenutils` and all its dependencies from PyPI and GitHub repositories.
+This automatically installs `pygenutils` and all its dependencies with version constraints.
 
 ### Package Updates
 
@@ -82,30 +82,29 @@ If you're planning to contribute to the project or work with the source code, fo
 git clone https://github.com/EusDancerDev/pygenutils.git
 cd pygenutils
 
-# Install in editable mode with all dependencies
-pip install -e .
+# Install with development dependencies (includes latest Git versions)
+pip install -e .[dev]
 ```
 
-**Note**: The `-e` flag installs the package in "editable" mode, meaning changes to the source code are immediately reflected without reinstalling.
+**Note**: The `-e` flag installs the package in "editable" mode, meaning changes to the source code are immediately reflected without reinstalling. The `[dev]` flag includes the latest Git versions of interdependent packages.
 
-This will automatically install all dependencies, including the required `filewise` and `paramlib` packages directly from their GitHub repositories.
+#### Alternative Setup (Explicit Git Dependencies)
 
-#### Manual Setup (Alternative)
-
-If you prefer to install dependencies manually:
+If you prefer to use the explicit development requirements file:
 
 ```bash
 # Clone the repository
 git clone https://github.com/EusDancerDev/pygenutils.git
 cd pygenutils
 
-# Install interdependent packages first
-pip install git+https://github.com/EusDancerDev/filewise.git
-pip install git+https://github.com/EusDancerDev/paramlib.git
+# Install development dependencies from requirements-dev.txt
+pip install -r requirements-dev.txt
 
-# Install this package in editable mode
+# Install in editable mode
 pip install -e .
 ```
+
+This approach gives you the latest development versions of all interdependent packages for testing and development.
 
 #### Development with Optional Dependencies
 
@@ -139,8 +138,8 @@ pip install -e ./pygenutils
 
 If you encounter import errors after cloning:
 
-1. **Ensure dependencies are installed**: Run `pip install -e .` in the project directory
-2. **Check for missing packages**: The main interdependent packages are `filewise` and `paramlib`
+1. **For regular users**: Run `pip install pygenutils` (all dependencies included)
+2. **For developers**: Run `pip install -e .[dev]` to include development dependencies
 3. **Verify Python environment**: Make sure you're using a compatible Python version (3.10+)
 
 ### Verify Installation
@@ -161,19 +160,20 @@ try:
 except ImportError as e:
     print(f"❌ Import error: {e}")
     print("💡 For regular users: pip install pygenutils")
-    print("💡 For developers: pip install -e .")
+    print("💡 For developers: pip install -e .[dev]")
 ```
 
 ### Implementation Notes
 
-This project implements **Git-based dependencies** to solve the interdependent packages problem:
+This project implements a **dual-approach dependency management** system:
 
-- **Dependencies**: `filewise` and `paramlib` packages are installed directly from GitHub repositories
-- **Automatic Resolution**: Works for both scenarios:
-  - **Regular users**: `pip install pygenutils` automatically installs all dependencies
-  - **Developers**: `pip install -e .` automatically installs all dependencies in editable mode
-- **No Manual Setup**: No need to manually install `filewise` and `paramlib` in either case
-- **Seamless Experience**: All imports work correctly immediately after installation
+- **Production Dependencies**: Version-constrained dependencies for PyPI compatibility
+- **Development Dependencies**: Git-based dependencies for latest development versions
+- **Installation Methods**:
+  - **Regular users**: Simple `pip install pygenutils` with all dependencies included
+  - **Developers**: `pip install -e .[dev]` for latest Git versions and development tools
+- **PyPI Compatibility**: All packages can be published without Git dependency issues
+- **Development Flexibility**: Contributors get access to latest versions for testing and development
 
 ### Package Structure
 
