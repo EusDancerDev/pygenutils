@@ -14,7 +14,6 @@ import time
 from datetime import datetime, timedelta
 
 # Third-party modules #
-import arrow
 import numpy as np
 import pandas as pd
 
@@ -124,6 +123,10 @@ def _convert_floated_time_to_datetime(floated_time, module):
     elif module == "numpy":
         dt = pd.Timestamp.fromtimestamp(seconds).to_pydatetime()  # Convert via pandas for compatibility
     elif module == "arrow":
+        try:
+            import arrow
+        except ImportError:
+            raise ImportError("arrow package is required for arrow module conversion. Install with: pip install arrow")
         dt = arrow.get(seconds).datetime
     elif module == "time":
         dt = datetime.fromtimestamp(seconds)  # time module uses same as datetime
@@ -232,7 +235,8 @@ def datetime_obj_converter(datetime_obj,
             return datetime_obj.to_pydatetime()
         if isinstance(datetime_obj, np.datetime64):
             return pd.Timestamp(datetime_obj).to_pydatetime()
-        if isinstance(datetime_obj, arrow.Arrow):
+        # Check if the object is an Arrow object using string comparison to avoid import
+        if obj_type == "arrow":
             return datetime_obj.datetime
         raise ValueError(f"Cannot convert {obj_type} to datetime")
     
@@ -244,7 +248,7 @@ def datetime_obj_converter(datetime_obj,
             return pd.Timestamp(datetime_obj)
         if isinstance(datetime_obj, np.datetime64):
             return pd.Timestamp(datetime_obj, unit=unit)
-        if isinstance(datetime_obj, arrow.Arrow):
+        if obj_type == "arrow":
             return pd.Timestamp(datetime_obj.datetime)
         raise ValueError(f"Cannot convert {obj_type} to Timestamp")
     
@@ -254,13 +258,18 @@ def datetime_obj_converter(datetime_obj,
             return datetime_obj.astype(f'datetime64[{unit}]')
         if isinstance(datetime_obj, (datetime, pd.Timestamp)):
             return np.datetime64(datetime_obj, unit)
-        if isinstance(datetime_obj, arrow.Arrow):
+        if obj_type == "arrow":
             return np.datetime64(datetime_obj.datetime, unit)
         raise ValueError(f"Cannot convert {obj_type} to datetime64")
     
     # Convert to arrow if requested
     if convert_to == "arrow":
-        if isinstance(datetime_obj, arrow.Arrow):
+        try:
+            import arrow
+        except ImportError:
+            raise ImportError("arrow package is required for arrow conversion. Install with: pip install arrow")
+        
+        if obj_type == "arrow":
             return datetime_obj
         if isinstance(datetime_obj, datetime):
             return arrow.get(datetime_obj)
@@ -279,7 +288,7 @@ def datetime_obj_converter(datetime_obj,
             # For numpy datetime64 objects
             timestamp = datetime_obj.astype(f'datetime64[{unit}]').astype(float_class)
             return timestamp
-        elif isinstance(datetime_obj, arrow.Arrow):
+        elif obj_type == "arrow":
             timestamp = datetime_obj.float_timestamp
         else:
             raise ValueError(f"Cannot convert {obj_type} to float")
@@ -303,7 +312,7 @@ def datetime_obj_converter(datetime_obj,
             # For numpy datetime64 objects
             timestamp = datetime_obj.astype(f'datetime64[{unit}]').astype(int_class)
             return timestamp
-        elif isinstance(datetime_obj, arrow.Arrow):
+        elif obj_type == "arrow":
             timestamp = int(datetime_obj.float_timestamp)
         else:
             raise ValueError(f"Cannot convert {obj_type} to int")
