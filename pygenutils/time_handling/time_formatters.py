@@ -10,7 +10,6 @@ import time
 from datetime import datetime
 
 # Third-party modules #
-import arrow
 import numpy as np
 import pandas as pd
 from dateutil import parser
@@ -113,6 +112,35 @@ def _validate_unit(unit, module):
         raise ValueError("Unsupported date unit for pandas.Timestamp objects. "
                          f"Choose one from {PANDAS_DATE_UNIT_LIST}.")
 
+# %% UTILITY FUNCTIONS
+
+def _arrow_get_with_import(*args, **kwargs):
+    """
+    Helper function to import arrow and call arrow.get() with lazy import.
+    
+    Parameters
+    ----------
+    *args : Any
+        Arguments to pass to arrow.get()
+    **kwargs : Any
+        Keyword arguments to pass to arrow.get()
+    
+    Returns
+    -------
+    arrow.Arrow
+        The result of arrow.get(*args, **kwargs)
+    
+    Raises
+    ------
+    ImportError
+        If arrow package is not installed
+    """
+    try:
+        import arrow
+    except ImportError:
+        raise ImportError("arrow package is required for arrow operations. Install with: pip install arrow")
+    
+    return arrow.get(*args, **kwargs)
 
 # %% SIMPLE DATA PARSING
 
@@ -943,6 +971,11 @@ def _to_arrow(dt_obj):
     arrow.Arrow
         The converted Arrow object.
     """
+    try:
+        import arrow
+    except ImportError:
+        raise ImportError("arrow package is required for arrow conversion. Install with: pip install arrow")
+    
     dt_obj = _to_datetime(dt_obj)
     return arrow.get(dt_obj)
 
@@ -967,7 +1000,7 @@ TIME_STR_PARSING_DICT = {
     "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
     "pandas"   : lambda datetime_str, dt_fmt_str, _ : pd.to_datetime(datetime_str, format=dt_fmt_str),
     "numpy"    : lambda datetime_str, _, unit : np.datetime64(datetime_str, unit),
-    "arrow"    : lambda datetime_str, dt_fmt_str: arrow.get(datetime_str, dt_fmt_str)
+    "arrow"    : lambda datetime_str, dt_fmt_str: _arrow_get_with_import(datetime_str, dt_fmt_str)
 }
 
 # Floated #
@@ -978,7 +1011,7 @@ FLOATED_TIME_PARSING_DICT = {
     "time"     : lambda floated_time : datetime(*tuple(time.localtime(floated_time))[:6]),
     "pandas"   : lambda floated_time, unit : pd.to_datetime(floated_time, unit=unit),
     "numpy"    : lambda floated_time, unit : np.datetime64(floated_time, unit),
-    "arrow"    : lambda floated_time, _ : arrow.get(floated_time)
+    "arrow"    : lambda floated_time, _ : _arrow_get_with_import(floated_time)
 }
 
 # Complex data # 
@@ -990,7 +1023,7 @@ DT_OBJ_CONVERSION_DICT = {
     "time"   : lambda dt_obj, _ : dt_obj.timetuple(),
     "pandas" : lambda dt_obj, unit, _ : pd.to_datetime(_tzinfo_remover(dt_obj), unit=unit),
     "numpy"  : lambda dt_obj, unit, _ : np.datetime64(_tzinfo_remover(dt_obj), unit),
-    "arrow"  : lambda dt_obj, _ : arrow.get(dt_obj),
+    "arrow"  : lambda dt_obj, _ : _arrow_get_with_import(dt_obj),
     "str"    : lambda dt_obj, _, dt_fmt_str : _to_string(dt_obj, dt_fmt_str)
 }
 
