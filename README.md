@@ -56,10 +56,16 @@ This package has minimal external dependencies and is designed to be lightweight
 **For regular users** who want to use the package in their projects:
 
 ```bash
-pip install pygenutils
+pip install pygenutils                    # Core functionality
+pip install pygenutils[arrow]             # With arrow support (optional)
 ```
 
 This automatically installs `pygenutils` and all its dependencies with version constraints.
+
+**How It Works Now**:
+
+- `pip install pygenutils` - Core functionality without arrow dependency
+- `pip install pygenutils[arrow]` - With arrow support for enhanced time handling features
 
 ### Package Updates
 
