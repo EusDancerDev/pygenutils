@@ -109,7 +109,14 @@ def find_substring_index(string,
                                                           find_whole_words,
                                                           all_matches)
         else:
-            return string.find(substring)
+            if return_match_index == "lo":
+                return string.find(substring)
+            elif return_match_index == "hi":
+                return string.rfind(substring)
+            else:  # return_match_index == "both"
+                first_index = string.find(substring)
+                last_index = string.rfind(substring)
+                return [first_index, last_index]
 
     
     elif get_type_str(string) in ["list", "ndarray", "tuple"]:
@@ -118,8 +125,18 @@ def find_substring_index(string,
             # Simple search without advanced features
             if not advanced_search:
                 if get_type_str(string) == "ndarray":
-                    match_indices = char.find(string, substring, start=start, end=end)
-                    return [idx for idx in match_indices if idx != -1]
+                    if return_match_index == "lo":
+                        match_indices = char.find(string, substring, start=start, end=end)
+                        return [idx for idx in match_indices if idx != -1]
+                    elif return_match_index == "hi":
+                        match_indices = char.rfind(string, substring, start=start, end=end)
+                        return [idx for idx in match_indices if idx != -1]
+                    else:  # return_match_index == "both"
+                        first_indices = char.find(string, substring, start=start, end=end)
+                        last_indices = char.rfind(string, substring, start=start, end=end)
+                        first_filtered = [idx for idx in first_indices if idx != -1]
+                        last_filtered = [idx for idx in last_indices if idx != -1]
+                        return [first_filtered, last_filtered]
                 
                 else:
                     if end is None:
@@ -144,7 +161,14 @@ def find_substring_index(string,
                     substring = flatten_list(substring)
             
             if not advanced_search:
-                return char.find(string, substring, start=start, end=end)  
+                if return_match_index == "lo":
+                    return char.find(string, substring, start=start, end=end)
+                elif return_match_index == "hi":
+                    return char.rfind(string, substring, start=start, end=end)
+                else:  # return_match_index == "both"
+                    first_indices = char.find(string, substring, start=start, end=end)
+                    last_indices = char.rfind(string, substring, start=start, end=end)
+                    return [first_indices, last_indices]  
             else:   
                 match_indices = _advanced_pattern_searcher(string, substring,
                                                            return_match_index,
@@ -739,7 +763,7 @@ def strip(string, strip_option='strip', chars=None):
     
     Parameters
     ----------
-    strip_option: {'strip', 'lstrip', 'lstrip' 'title'} or None
+    strip_option: {'strip', 'lstrip', 'rstrip'} or None
         Location of the white spaces or substring to strip.
         Default option is the widely used 'strip'.
         
@@ -833,4 +857,4 @@ REPLACE_ACTIONS = {
     "ndarray": lambda s, sb2find, sb2replace, _ : char.replace(s, sb2find, sb2replace),
     "dataframe": lambda s, sb2find, sb2replace, _ : DataFrame.replace(s, sb2find, sb2replace),
     "series": lambda s, sb2find, sb2replace, _ : Series.replace(s, sb2find, sb2replace),
-}
+} 
