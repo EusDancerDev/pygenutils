@@ -163,13 +163,13 @@ def print_percent_string(string2format, arg_obj):
 # String font effects #
 #---------------------#
 
-def string_underliner(string, underline_char="-"):
+def string_underliner(string, underline_char="-", width=None):
     """
     Underlines a given string with the specified character.
     
     If the string contains multiple lines, each line will be underlined
     individually with the same character, keeping the length of the underline
-    consistent with each line's length.
+    consistent with each line's length (or the specified width).
     
     Parameters
     ----------
@@ -179,24 +179,40 @@ def string_underliner(string, underline_char="-"):
     underline_char : str, optional
         The character used to underline the string.
         Defaults to a dash ("-").
+        
+    width : int, optional
+        The total width for centering the string. If None, uses the natural
+        length of each line. If specified, the string will be centered within
+        this width using the underline character as padding.
     
     Returns
     -------
     str_underlined : str
         The original string with an underline applied to each line. 
         For multiline strings, each line is individually underlined.
+        If width is specified, each line is centered within that width.
     
-    Example
-    -------
+    Examples
+    --------
     For a single-line string:
     
     >>> string_underliner("Hello", "*")
     'Hello\n*****'
     
+    For a single-line string with width:
+    
+    >>> string_underliner("Hello", "*", width=15)
+    '*****Hello*****\n***************'
+    
     For a multiline string:
     
     >>> string_underliner("Hello\nWorld", "*")
     'Hello\n*****\nWorld\n*****'
+    
+    For a multiline string with width:
+    
+    >>> string_underliner("Hello\nWorld", "*", width=15)
+    '*****Hello*****\n***************\n*****World*****\n***************'
     """
     
     # Check if the string contains newlines, indicating a multiline string
@@ -210,17 +226,32 @@ def string_underliner(string, underline_char="-"):
         # Build the underlined string by iterating over each line
         str_underlined = ""
         for word in word_list:
-            len_word = len(word)
-            # Underline each word with the specified character repeated to match the word's length
-            str_underlined += f"{word}\n{underline_char * len_word}\n"
+            if width is not None:
+                # Center the word within the specified width
+                centered_word = word.center(width, underline_char)
+                underline = underline_char * width
+            else:
+                # Use natural length
+                centered_word = word
+                underline = underline_char * len(word)
+            
+            str_underlined += f"{centered_word}\n{underline}\n"
         
         # Remove the last newline character to avoid an extra empty line
         str_underlined = str_underlined.rstrip(newline_char)
         
     else:
-        # For a single-line string, simply apply the underline
-        len_string = len(string)
-        str_underlined = f"{string}\n{underline_char * len_string}"
+        # For a single-line string
+        if width is not None:
+            # Center the string within the specified width
+            centered_string = string.center(width, underline_char)
+            underline = underline_char * width
+        else:
+            # Use natural length
+            centered_string = string
+            underline = underline_char * len(string)
+        
+        str_underlined = f"{centered_string}\n{underline}"
 
     return str_underlined
 
@@ -316,7 +347,7 @@ def format_table(nested_dict,
     
     # Build the header string
     header_row = column_delimiter + \
-                 column_delimiter.join(f"{header:^{column_widths[header]}}" 
+                 column_delimiter.join(header.center(column_widths[header]) 
                                        for header in headers) + \
                  column_delimiter
     
@@ -330,13 +361,13 @@ def format_table(nested_dict,
     content_rows = []
     for idx, subdict in nested_dict.items():
         if display_index:
-            row = [f"{idx:^{column_widths[index_header]}}"]
+            row = [str(idx).center(column_widths[index_header])]
         else:
             row = []
         for key in keys:
             original_key = list(subdict.keys())[keys.index(key)]
             value = subdict.get(original_key, "")
-            row.append(f"{str(value):^{column_widths[key]}}")
+            row.append(str(value).center(column_widths[key]))
         content_rows.append(column_delimiter + column_delimiter.join(row) + column_delimiter)
     
     # Combine all parts
@@ -404,8 +435,7 @@ def format_table_from_list(dict_list,
         If display_index = True, set the number for the index to start from.
         Default value is 1.
     column_delimiter : str
-        Character to delimit the columns, applying both for the header and the content.    
-        
+        Character to delimit the columns, applying both for the header and the content.
     
     Raises
     ------
@@ -459,7 +489,7 @@ def format_table_from_list(dict_list,
     
     # Build the header string
     header_row = column_delimiter + \
-                 column_delimiter.join(f"{header:^{column_widths[header]}}" 
+                 column_delimiter.join(header.center(column_widths[header]) 
                                        for header in headers) + \
                  column_delimiter
     
@@ -474,13 +504,13 @@ def format_table_from_list(dict_list,
     content_rows = []
     for idx, subdict in enumerate(dict_list, start=custom_start_index):
         if display_index:
-            row = [f"{idx:^{column_widths[index_header]}}"]
+            row = [str(idx).center(column_widths[index_header])]
         else:
             row = []
         for key in keys:
             original_key = list(subdict.keys())[keys.index(key)]
             value = subdict.get(original_key, "")
-            row.append(f"{str(value):^{column_widths[key]}}")
+            row.append(str(value).center(column_widths[key]))
         content_rows.append(column_delimiter + column_delimiter.join(row) + column_delimiter)
     
     # Combine all parts
@@ -488,16 +518,10 @@ def format_table_from_list(dict_list,
     return table
 
 # # Example usage
-# # dict_list = [
-# #     {'key1': 'val11', 'key2': 'val12'},
-# #     {'key1': 'val21', 'key2': 'val22'},
-# #     {'key1': 'val31', 'key2': 'val32'}
-# # ]
-
 # dict_list = [
-#     {'bayern': 'alemania', 'leipzig': 'alemania'},
-#     {'olaizola': 'aimar', 'irujo': 'juan'},
-#     {'ziskar II': 'karlos', 'lujan': 'vladimir'}
+#     {'key1': 'val11', 'key2': 'val12'},
+#     {'key1': 'val21', 'key2': 'val22'},
+#     {'key1': 'val31', 'key2': 'val32'}
 # ]
 
 # # Print the table with the index
@@ -510,7 +534,7 @@ def format_table_from_list(dict_list,
 
 # # Print the table with custom headers
 # custom_keys = ['Futbola', 'Esku pilota edo pala']
-# print(format_table_from_list(dict_list, keys=custom_keys, display_index=True))
+# print(format_table_from_list(dict_list, keys=custom_keys, display_index=False))
 
 
 def format_table_from_lists(keys, values,
@@ -594,7 +618,7 @@ def format_table_from_lists(keys, values,
         headers = keys
     
     # Build the header string
-    header_row = column_delimiter + column_delimiter.join(f"{header:^{column_widths[header]}}" 
+    header_row = column_delimiter + column_delimiter.join(header.center(column_widths[header]) 
                                                           for header in headers) + column_delimiter
     
     # Build the header underline string
@@ -607,11 +631,11 @@ def format_table_from_lists(keys, values,
     content_rows = []
     for idx, row in enumerate(rows, start=custom_start_index):
         if display_index:
-            row_content = [f"{idx:^{column_widths[index_header]}}"]
+            row_content = [str(idx).center(column_widths[index_header])]
         else:
             row_content = []
         for key, value in zip(keys, row):
-            row_content.append(f"{str(value):^{column_widths[key]}}")
+            row_content.append(str(value).center(column_widths[key]))
         content_rows.append(column_delimiter + column_delimiter.join(row_content) + column_delimiter)
     
     # Combine all parts
@@ -642,8 +666,5 @@ MAIN_INPUT_DTYPE_LIST_STRFMT = ["list", "ndarray", "tuple"]
 # Error strings #
 TYPE_ERROR_STR1 = "Check the iterable type passed to the instance."
 TYPE_ERROR_STR2 = "Argument must be of type 'str' only."
-
 INDEX_ERROR_STR = "Not all indices were referenced in the string to format."
-
-SYNTAX_ERROR_STR = "One or more arguments in the formatting object "\
-                    "has strings with unclosed quotes."
+SYNTAX_ERROR_STR = "One or more arguments in the formatting object has strings with unclosed quotes."
