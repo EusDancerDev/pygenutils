@@ -4,6 +4,26 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.2.0] - 2025-07-16
+
+### Changed (16.2.0)
+
+#### **Time Handling** (changing; 16.2.0)
+
+- Module `time_formatters.py` and `time_utils.py`:
+  - **Arrow Dependency Made Optional**:
+    - Arrow imports are now lazy, reducing core dependencies.
+    - Informative error messages guide users to install the arrow package if needed.
+    - This change requires explicit installation of the arrow package for its functionality.
+
+#### **Strings** (changing; 16.2.0)
+
+- `string_handler.py`: Improved `find_substring_index()` with options for finding last occurrences and both first/last positions, enhancing flexibility in substring searching.
+
+- `text_formatters.py`: Text formatting functions now use the `.center()` method for better readability and functionality, maintaining backward compatibility while adding new centering capabilities.
+
+---
+
 ## [16.1.3] - 2025-07-03
 
 ### Fixed
@@ -209,7 +229,7 @@ All notable changes to this project will be documented in this file.
 
 ## [15.13.5] - 2025-06-05
 
-### Changed
+### Changed (15.13.5)
 
 #### **Time Handling** (changing; 15.13.5)
 
