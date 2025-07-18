@@ -147,7 +147,7 @@ def _arrow_get_with_import(*args, **kwargs):
 # Input format: str #
 #-------------------#
 
-def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns"):
+def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns", dayfirst=False, yearfirst=False):
     """
     Convert a time string or object to a date/time object using a specified library.
     
@@ -181,6 +181,15 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
         and 'us' for NumPy.
         Then, in order to maintain compatibility, the largest common time unit 'us'
         has been defined as default in this function.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+        Only applies when module is 'pandas'.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
+        Only applies when module is 'pandas'.
     
     Returns
     -------
@@ -215,13 +224,13 @@ def parse_dt_string(datetime_str, dt_fmt_str=None, module="datetime", unit="ns")
         if module == "pandas":
             # If datetime_str is a string and looks like a numeric timestamp, use unit
             if isinstance(datetime_str, str) and (datetime_str.isdigit() or (datetime_str.replace('.', '', 1).isdigit() and datetime_str.count('.') <= 1)):
-                datetime_obj = pd.to_datetime(datetime_str, unit=unit)
+                datetime_obj = pd.to_datetime(datetime_str, unit=unit, dayfirst=dayfirst, yearfirst=yearfirst)
             else:
                 # Otherwise use format if provided, or let pandas infer the format
                 if dt_fmt_str is None:
-                    datetime_obj = pd.to_datetime(datetime_str)
+                    datetime_obj = pd.to_datetime(datetime_str, dayfirst=dayfirst, yearfirst=yearfirst)
                 else:
-                    datetime_obj = parse_func(datetime_str, dt_fmt_str, unit)
+                    datetime_obj = parse_func(datetime_str, dt_fmt_str, unit, dayfirst, yearfirst)
         else:
             # For other modules, use the parse_func as defined
             datetime_obj = parse_func(datetime_str, dt_fmt_str, unit) if module == "numpy" else parse_func(datetime_str, dt_fmt_str)
@@ -243,7 +252,9 @@ def parse_float_dt(datetime_float,
                    origin="unix", 
                    unit="us", 
                    dt_fmt_str=None, 
-                   module="datetime"):
+                   module="datetime",
+                   dayfirst=False,
+                   yearfirst=False):
     """
     Converts an integer or float time to a date/time object.
     It also converts to a string representation if requested.
@@ -275,6 +286,15 @@ def parse_float_dt(datetime_float,
     module : {"datetime", "time", "pandas", "numpy", "arrow", "str"}, default 'datetime'.
          The module or class used to parse the floated time. 
          If 'numpy', datetime_float represents an offset from the Unix epoch start.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+        Only applies when module is 'pandas'.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
+        Only applies when module is 'pandas'.
       
     Returns
     -------
@@ -313,9 +333,11 @@ def parse_float_dt(datetime_float,
                                       origin,
                                       dt_fmt_str,
                                       unit,
-                                      module)
+                                      module,
+                                      dayfirst,
+                                      yearfirst)
     else:
-        return _float_dt_parser(datetime_float, module, unit)
+        return _float_dt_parser(datetime_float, module, unit, dayfirst, yearfirst)
     
     
 # Auxiliary functions #
@@ -326,7 +348,9 @@ def _parse_float_to_string(floated_time,
                            origin, 
                            dt_fmt_str, 
                            unit,
-                           module):
+                           module,
+                           dayfirst,
+                           yearfirst):
     """        
     Converts a floated time to its string representation.
 
@@ -345,6 +369,15 @@ def _parse_float_to_string(floated_time,
         Time unit for `floated_time` if `origin='unix'` and `module` in {'numpy', 'pandas'}.
     module : {"datetime", "time", "pandas", "numpy", "arrow"}
         Module used for parsing.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+        Only applies when module is 'pandas'.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
+        Only applies when module is 'pandas'.
 
     Returns
     -------
@@ -360,18 +393,18 @@ def _parse_float_to_string(floated_time,
         if frac_precision is not None:
             if frac_precision <= 6:
                 dt_seconds = round(floated_time)
-                dt_obj = _float_dt_parser(dt_seconds, module, unit)
+                dt_obj = _float_dt_parser(dt_seconds, module, unit, dayfirst, yearfirst)
                 dt_str = dt_obj.strftime(dt_fmt_str)
             elif 7 <= frac_precision <= 9:
                 return get_nano_datetime(floated_time, module)
         # Keep the original precision #
         else:
-            dt_str = _float_dt_parser(floated_time, module, unit).strftime(dt_fmt_str)
+            dt_str = _float_dt_parser(floated_time, module, unit, dayfirst, yearfirst).strftime(dt_fmt_str)
     
         return dt_str  
 
     
-def _float_dt_parser(floated_time, module, unit):
+def _float_dt_parser(floated_time, module, unit, dayfirst, yearfirst):
     """
     Parses a floated time into a date/time object.
     
@@ -383,6 +416,15 @@ def _float_dt_parser(floated_time, module, unit):
         Module used for parsing.
     unit : str, optional
         Time unit for `floated_time` if `module` in {'numpy', 'pandas'}.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+        Only applies when module is 'pandas'.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
+        Only applies when module is 'pandas'.
     
     Returns
     -------
@@ -403,7 +445,7 @@ def _float_dt_parser(floated_time, module, unit):
     # Calculate datetime object #
     #############################
     
-    datetime_obj = FLOATED_TIME_PARSING_DICT.get(module)(floated_time, unit)
+    datetime_obj = FLOATED_TIME_PARSING_DICT.get(module)(floated_time, unit, dayfirst, yearfirst)
     return datetime_obj
 
 
@@ -482,7 +524,9 @@ def dt_obj_converter(datetime_obj,
                     unit="s",
                     float_class="d", 
                     int_class="int",
-                    dt_fmt_str=None):
+                    dt_fmt_str=None,
+                    dayfirst=False,
+                    yearfirst=False):
 
     """
     Convert a date/time object to another, including float and string representation.
@@ -514,6 +558,15 @@ def dt_obj_converter(datetime_obj,
         The integer precision class. Default is `"int"` (signed integer type).
     dt_fmt_str : str
         Format string to convert the date/time object to a string.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+        Only applies when converting to pandas objects.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
+        Only applies when converting to pandas objects.
 
     Returns
     -------
@@ -587,7 +640,7 @@ def dt_obj_converter(datetime_obj,
     conversion_dict = CONVERSION_OPT_DICT[obj_type]
     return perform_conversion(conversion_dict, datetime_obj, unit=unit, 
                               float_class=float_class, int_class=int_class,
-                              dt_fmt_str=dt_fmt_str)
+                              dt_fmt_str=dt_fmt_str, dayfirst=dayfirst, yearfirst=yearfirst)
     
         
 # Auxiliary functions #
@@ -597,7 +650,7 @@ def dt_obj_converter(datetime_obj,
 #-#-#-#-#-#-#-#-#-#-#-#-#-
 
 # Scalar complex data #
-def _total_dt_unit(datetime_obj, unit, float_class, int_class):
+def _total_dt_unit(datetime_obj, unit, float_class=None, int_class=None):
     """
     Convert a datetime object into total time based on the specified unit
     (e.g., seconds, microseconds, nanoseconds).
@@ -784,7 +837,7 @@ def _to_string(dt_obj, unit, dt_fmt_str):
         return str(dt_obj)
 
 
-def _to_float(dt_obj, unit, float_class):
+def _to_float(dt_obj, unit=None, float_class=None):
     """
     Convert a datetime object to a float representing the total time in the specified unit.
 
@@ -804,7 +857,7 @@ def _to_float(dt_obj, unit, float_class):
     """
     obj_type = get_type_str(dt_obj, lowercase=True)
     if obj_type == "datetime64":
-        return dt_obj.astype(f"timedelta64[{unit}]").astype(float_class)
+        return dt_obj.astype(f"timedelta64[{unit}]").astype(float_class) if unit and float_class else dt_obj.astype(float)
     elif obj_type == "time": # datetime.time
         return __time_component_to_float(dt_obj)
     if hasattr(dt_obj, 'timestamp'):
@@ -833,7 +886,7 @@ def __time_component_to_float(t):
     return time_component_float
 
 
-def _to_datetime(dt_obj, unit):
+def _to_datetime(dt_obj, unit=None):
     """
     Convert a given datetime-like object or each value in DataFrame/Series to a 
     standard Python datetime object.
@@ -873,7 +926,7 @@ def _to_datetime(dt_obj, unit):
     else:
         if obj_type == "datetime64":
             # If unit is 'ns' (nanoseconds), use the auxiliary conversion function
-            unit = get_datetime_object_unit(dt_obj)
+            unit = unit or get_datetime_object_unit(dt_obj)
             if unit == "ns":
                 return _to_datetime_aux(dt_obj, unit)
             else:
@@ -904,7 +957,7 @@ def _to_datetime_aux(dt_obj, unit):
     return pd.to_datetime(dt_obj, unit=unit).to_pydatetime()
 
 
-def _to_time_struct(dt_obj):
+def _to_time_struct(dt_obj, unit=None):
     """
     Convert a datetime-like object to a time.struct_time object.
 
@@ -912,15 +965,17 @@ def _to_time_struct(dt_obj):
     ----------
     dt_obj : datetime-like
         The object to be converted to time.struct_time.
+    unit : str, optional
+        The unit for conversion (if needed).
 
     Returns
     -------
     time.struct_time
         The converted time.struct_time object.
     """
-    return _to_datetime(dt_obj).timetuple()
+    return _to_datetime(dt_obj, unit).timetuple()
 
-def _to_pandas(dt_obj, unit):
+def _to_pandas(dt_obj, unit, dayfirst=False, yearfirst=False):
     """
     Convert a datetime-like object to a pandas Timestamp object with the specified unit.
 
@@ -930,15 +985,22 @@ def _to_pandas(dt_obj, unit):
         The object to be converted to a pandas Timestamp.
     unit : str, optional
         The unit for conversion.
+    dayfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True, parses dates with the day first, e.g. "10/11/12" is parsed as 2012-11-10.
+    yearfirst : bool, default False
+        Specify a date parse order if datetime_str is str or is list-like.
+        If True parses dates with the year first, e.g. "10/11/12" is parsed as 2010-11-12.
+        If both dayfirst and yearfirst are True, yearfirst is preceded (same as dateutil).
 
     Returns
     -------
     pd.Timestamp
         The converted pandas Timestamp object.
     """
-    return pd.to_datetime(_to_datetime(dt_obj), unit=unit)
+    return pd.to_datetime(_to_datetime(dt_obj), unit=unit, dayfirst=dayfirst, yearfirst=yearfirst)
 
-def _to_numpy(dt_obj, unit):
+def _to_numpy(dt_obj, unit=None):
     """
     Convert a datetime-like object to a NumPy datetime64 object with the specified unit.
 
@@ -954,7 +1016,7 @@ def _to_numpy(dt_obj, unit):
     np.datetime64
         The converted NumPy datetime64 object.
     """
-    dt_obj = _to_datetime(dt_obj)
+    dt_obj = _to_datetime(dt_obj, unit)
     return np.datetime64(_tzinfo_remover(dt_obj), unit)
 
 def _to_arrow(dt_obj):
@@ -998,7 +1060,7 @@ _INT_CLASS_LIST = [np.int8, np.int16, "i", np.float32, "int", np.int64]
 TIME_STR_PARSING_DICT = {
     "datetime" : lambda datetime_str, dt_fmt_str: datetime.strptime(datetime_str, dt_fmt_str),
     "dateutil" : lambda datetime_str, dt_fmt_str: parser.parse(datetime_str, dt_fmt_str),
-    "pandas"   : lambda datetime_str, dt_fmt_str, _ : pd.to_datetime(datetime_str, format=dt_fmt_str),
+    "pandas"   : lambda datetime_str, dt_fmt_str, unit, dayfirst=False, yearfirst=False : pd.to_datetime(datetime_str, format=dt_fmt_str, dayfirst=dayfirst, yearfirst=yearfirst),
     "numpy"    : lambda datetime_str, _, unit : np.datetime64(datetime_str, unit),
     "arrow"    : lambda datetime_str, dt_fmt_str: _arrow_get_with_import(datetime_str, dt_fmt_str)
 }
@@ -1007,11 +1069,11 @@ TIME_STR_PARSING_DICT = {
 #-#-#-#-#-#
 
 FLOATED_TIME_PARSING_DICT = {
-    "datetime" : lambda floated_time, _ : datetime.fromtimestamp(floated_time),
-    "time"     : lambda floated_time : datetime(*tuple(time.localtime(floated_time))[:6]),
-    "pandas"   : lambda floated_time, unit : pd.to_datetime(floated_time, unit=unit),
-    "numpy"    : lambda floated_time, unit : np.datetime64(floated_time, unit),
-    "arrow"    : lambda floated_time, _ : _arrow_get_with_import(floated_time)
+    "datetime" : lambda floated_time, unit, dayfirst=False, yearfirst=False : datetime.fromtimestamp(floated_time),
+    "time"     : lambda floated_time, unit, dayfirst=False, yearfirst=False : datetime(*tuple(time.localtime(floated_time))[:6]),
+    "pandas"   : lambda floated_time, unit, dayfirst=False, yearfirst=False : pd.to_datetime(floated_time, unit=unit, dayfirst=dayfirst, yearfirst=yearfirst),
+    "numpy"    : lambda floated_time, unit, dayfirst=False, yearfirst=False : np.datetime64(floated_time, unit),
+    "arrow"    : lambda floated_time, unit, dayfirst=False, yearfirst=False : _arrow_get_with_import(floated_time)
 }
 
 # Complex data # 
@@ -1019,63 +1081,63 @@ FLOATED_TIME_PARSING_DICT = {
 
 # To other objects #
 DT_OBJ_CONVERSION_DICT = {
-    "float"  : lambda dt_obj, _ : dt_obj.timestamp(),
-    "time"   : lambda dt_obj, _ : dt_obj.timetuple(),
-    "pandas" : lambda dt_obj, unit, _ : pd.to_datetime(_tzinfo_remover(dt_obj), unit=unit),
-    "numpy"  : lambda dt_obj, unit, _ : np.datetime64(_tzinfo_remover(dt_obj), unit),
-    "arrow"  : lambda dt_obj, _ : _arrow_get_with_import(dt_obj),
-    "str"    : lambda dt_obj, _, dt_fmt_str : _to_string(dt_obj, dt_fmt_str)
+    "float"  : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : dt_obj.timestamp(),
+    "time"   : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : dt_obj.timetuple(),
+    "pandas" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_pandas(_tzinfo_remover(dt_obj), unit, dayfirst, yearfirst),
+    "numpy"  : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_numpy(_tzinfo_remover(dt_obj), unit),
+    "arrow"  : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_arrow(dt_obj),
+    "str"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(dt_obj, unit, dt_fmt_str)
 }
 
 DT64_OBJ_CONVERSION_DICT = {
-    "float"    : lambda dt_obj, unit, _ : _to_float(dt_obj, unit),
-    "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
-    "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
-    "pandas"   : lambda dt_obj, unit : _to_pandas(dt_obj, unit),
-    "arrow"    : lambda dt_obj, _ : _to_arrow(dt_obj),
-    "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(_to_datetime(dt_obj), dt_fmt_str)
+    "float"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_float(dt_obj, unit, float_class),
+    "datetime" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "time"     : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_pandas(dt_obj, unit, dayfirst, yearfirst),
+    "arrow"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_arrow(dt_obj),
+    "str"      : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(_to_datetime(dt_obj), unit, dt_fmt_str)
 }
 
 DT_TIME_OBJ_CONVERSION_DICT = {
-    "float"    : lambda dt_obj, _ : _to_float(dt_obj),
-    "datetime" : lambda dt_obj, _ : _to_datetime(dt_obj),
-    "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
-    "pandas"   : lambda dt_obj, _ : _to_pandas(_to_datetime(dt_obj)),
-    "numpy"    : lambda dt_obj, _ : _to_numpy(_to_datetime(dt_obj)),
-    "arrow"    : lambda dt_obj, _ : _to_arrow(dt_obj),
-    "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(dt_obj, dt_fmt_str)
+    "float"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_float(dt_obj, unit, float_class),
+    "datetime" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "time"     : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_pandas(_to_datetime(dt_obj), unit, dayfirst, yearfirst),
+    "numpy"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_numpy(_to_datetime(dt_obj), unit),
+    "arrow"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_arrow(dt_obj),
+    "str"      : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(dt_obj, unit, dt_fmt_str)
 }
 
 TIMESTAMP_OBJ_CONVERSION_DICT = {
-    "float"    : lambda dt_obj, _ : _to_float(dt_obj),
-    "datetime" : lambda dt_obj, unit, _ : _to_datetime(dt_obj, unit),
-    "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
-    "numpy"    : lambda dt_obj, _ : dt_obj.to_numpy(),
-    "arrow"    : lambda dt_obj, _ : _to_arrow(dt_obj),
-    "str"      : lambda dt_obj, _, dt_fmt_str: _to_string(dt_obj, dt_fmt_str)
+    "float"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_float(dt_obj, unit, float_class),
+    "datetime" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "time"     : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_time_struct(dt_obj),
+    "numpy"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : dt_obj.to_numpy(),
+    "arrow"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_arrow(dt_obj),
+    "str"      : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(dt_obj, unit, dt_fmt_str)
 }
 
 ARROW_OBJ_CONVERSION_DICT = {
-    "float"    : lambda dt_obj, _ : _to_float(dt_obj),
-    "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
-    "time"     : lambda dt_obj, _ : _to_time_struct(dt_obj),
-    "pandas"   : lambda dt_obj, unit, _ : _to_pandas(dt_obj, unit),
-    "numpy"    : lambda dt_obj, unit, _ : _to_numpy(dt_obj, unit),
-    "str"      : lambda dt_obj, _, dt_fmt_str : _to_string(dt_obj, dt_fmt_str)
+    "float"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_float(dt_obj, unit, float_class),
+    "datetime" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "time"     : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_time_struct(dt_obj),
+    "pandas"   : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_pandas(dt_obj, unit, dayfirst, yearfirst),
+    "numpy"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_numpy(dt_obj, unit),
+    "str"      : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(dt_obj, unit, dt_fmt_str)
 }
 
 TIME_STT_OBJ_CONVERSION_DICT = {
-    "float"    : lambda dt_obj, _: _to_float(dt_obj),
-    "datetime" : lambda dt_obj, unit : _to_datetime(dt_obj, unit),
-    "pandas"   : lambda dt_obj, unit : pd.Timestamp(*dt_obj[:6], unit=unit),
-    "numpy"    : lambda dt_obj, unit : np.datetime64(datetime(*dt_obj[:6]), unit),
-    "arrow"    : lambda dt_obj, _: _to_arrow(dt_obj),
+    "float"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_float(dt_obj, unit, float_class),
+    "datetime" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "pandas"   : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : pd.Timestamp(*dt_obj[:6], unit=unit),
+    "numpy"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : np.datetime64(datetime(*dt_obj[:6]), unit),
+    "arrow"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_arrow(dt_obj),
 }
 
 _DT_LIKE_OBJ_CONVERSION_DICT = {
-    "float"  : lambda dt_obj, unit, _ : _total_dt_unit(dt_obj, unit),
-    "pandas" : lambda dt_obj, unit, _ : _to_datetime(dt_obj, unit),
-    "str"    : lambda dt_obj, unit, dt_fmt_str : _to_string(dt_obj, dt_fmt_str, unit)
+    "float"  : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _total_dt_unit(dt_obj, unit, float_class, int_class),
+    "pandas" : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_datetime(dt_obj, unit),
+    "str"    : lambda dt_obj, unit=None, float_class=None, int_class=None, dt_fmt_str=None, dayfirst=False, yearfirst=False : _to_string(dt_obj, unit, dt_fmt_str)
 }
        
 # Enumerate all possibilities #
