@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.2.1] - 2025-07-18
+
+### Added (16.2.1)
+
+#### **Time Handling** (adding; 16.2.1)
+
+- Module `time_formatters.py`:
+  - Introduced `dayfirst` and `yearfirst` parameters to `parse_dt_string()` with default `False` values, updating related functions and dictionaries for compatibility, and ensuring backward compatibility.
+
+---
+
 ## [16.2.0] - 2025-07-16
 
 ### Changed (16.2.0)
