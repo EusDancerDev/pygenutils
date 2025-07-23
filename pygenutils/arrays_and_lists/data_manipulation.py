@@ -600,7 +600,9 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     
     elif procedure == "list":
         unique_val_arr = []
-        [unique_val_arr.append(num) for num in arr if num not in unique_val_arr]
+        for num in arr:
+            if num not in unique_val_arr:
+                unique_val_arr.append(num)
     
     elif procedure == "set":
         unique_val_arr = list(set(arr))
