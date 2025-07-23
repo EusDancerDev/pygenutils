@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.2.2] - 2025-01-27
+
+### Fixed (16.2.2)
+
+#### **Arrays and Lists** (fixing; 16.2.2)
+
+- Module `data_manipulation.py`:
+  - Fix `extract_1d_unique_basic` function to use proper for loop instead of list comprehension for side effects when `procedure="list"`. This improves code readability and follows Python best practices.
+
+---
+
 ## [16.2.1] - 2025-07-18
 
 ### Added (16.2.1)
