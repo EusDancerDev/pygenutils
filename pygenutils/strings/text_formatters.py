@@ -99,7 +99,7 @@ def format_string(string2format, arg_obj):
         raise SyntaxError(SYNTAX_ERROR_STR)
         
         
-def print_format_string(string2format, arg_obj, end="\n"):
+def print_format_string(string2format, arg_obj, end="\n", flush=False):
     """
     Format and print a string using Python's format method.
 
@@ -111,6 +111,8 @@ def print_format_string(string2format, arg_obj, end="\n"):
         The object used to fill in the placeholders in string2format.
     end : str, optional
         String appended after the last value, default is "\n".
+    flush : bool, optional
+        Whether to forcibly flush the stream.
 
     Raises
     ------
@@ -123,7 +125,7 @@ def print_format_string(string2format, arg_obj, end="\n"):
     except Exception as e:
         raise Exception(f"An error occurred: {e}") from e
     else:
-        print(formatted_string, end=end)
+        print(formatted_string, end=end, flush=flush)
 
     
 # %-strings (percent-strings) #
