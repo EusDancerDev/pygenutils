@@ -3,7 +3,7 @@ numpy>=1.21.0
 pandas>=1.3.0
 
 # Interdependent packages (version constraints for PyPI publishing)
-filewise>=3.11.0
+filewise>=3.11.6
 paramlib>=3.4.10
 
 # Optional dependencies (uncomment as needed)
