@@ -4,7 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-## [16.2.2] - 2025-01-27
+## [16.2.3] - 2025-07-28
+
+### Fixed (16.2.3)
+
+#### **Strings** (fixing; 16.2.3)
+
+- Module `text_formatters.py`:
+  - Enhance `print_format_string` function with `flush` parameter support to enable immediate terminal output for real-time display applications like countdown timers.
+
+#### **Time Handling** (fixing; 16.2.3)
+
+- Module `countdown.py`:
+  - Fix terminal output leftover character issue by implementing string padding to ensure consistent display width during countdown transitions
+  - Correct `parse_dt_string` function calls by removing non-existent `end` and `flush` parameters that were causing `TypeError` exceptions
+  - Update import from `print_format_string` to `format_string` to allow printing the formatted output later, now instead of directly printing it
+  - Enhance countdown display logic with proper terminal control using `\r` and `flush=True` for clean real-time output
+  - Update function docstring to accurately reflect the actual output format ("D days H:M:S" or "H:M:S")
+
+---
+
+## [16.2.2] - 2025-07-23
 
 ### Fixed (16.2.2)
 
