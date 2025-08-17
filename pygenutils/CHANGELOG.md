@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.2.4] - 2025-08-17
+
+### Changed (16.2.4)
+
+#### **Number Bases** (changing; 16.2.4)
+
+- Module `base_converters`:
+  - Clean up `bin2dec_basic`:
+    - Update docstring and section headers
+    - Simplify variable names and loop structure
+  - Streamline `dec2bin_basic`:
+    - Replace `while True` with explicit condition
+    - Improve control flow and string handling
+  - Enhance procedure validation:
+    - Add option sets parameter to `_procedure_checker`
+    - Split conversion options by function type
+
 ## [16.2.3] - 2025-07-28
 
 ### Fixed (16.2.3)
