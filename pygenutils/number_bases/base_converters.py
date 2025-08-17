@@ -92,7 +92,7 @@ def _check_input_int(x):
 # Procedure checker #
 #-#-#-#-#-#-#-#-#-#-#
 
-def _procedure_checker(arg):
+def _procedure_checker(arg, procedure_opts):
     """
     Checks if the provided procedure is valid.
 
@@ -105,8 +105,8 @@ def _procedure_checker(arg):
     ------
     ValueError : If the procedure is not valid.
     """
-    if arg not in PROCEDURE_OPTS:
-        raise ValueError(f"Unsupported procedure. Choose one from {PROCEDURE_OPTS}.")
+    if arg not in procedure_opts:
+        raise ValueError(f"Unsupported procedure. Choose one from {procedure_opts}.")
         
 # Frequently used bases #
 #-----------------------#
@@ -130,15 +130,12 @@ def dec2bin_basic(n):
         The binary representation of the input number.
     """
     n_checked = _check_input_int(n)
-    b = ''
-    while True:
+    b = "" # or '_bin', so that we understand the var name better?
+    while n_checked >= 1:
         floordiv, mod = divmod(n_checked,2)
         b += str(mod)
-        if floordiv == 0:
-            break
         n_checked //= 2
-    b_actual = b[::-1]
-    return b_actual
+    return b[::-1]
 
 # Advanced #
 #-#-#-#-#-#-
@@ -162,7 +159,7 @@ def base2bin(n, procedure="format_string", zero_pad=4):
     str
         The binary representation of the input number.
     """
-    _procedure_checker(procedure)
+    _procedure_checker(procedure, NUMBER_CONVERSION_PROCEDURE_OPTS)
 
     if procedure == "default":
         n_bin = bin(n)
@@ -188,7 +185,7 @@ def base2oct(n, procedure="format_string", zero_pad=4):
     str
         The octal representation of the input number.
     """
-    _procedure_checker(procedure)
+    _procedure_checker(procedure, NUMBER_CONVERSION_PROCEDURE_OPTS)
 
     if procedure == "default":
         n_oct = oct(n)
@@ -214,7 +211,7 @@ def base2hex(n, procedure="format_string", zero_pad=4):
     str
         The hexadecimal representation of the input number.
     """
-    _procedure_checker(procedure)
+    _procedure_checker(procedure, NUMBER_CONVERSION_PROCEDURE_OPTS)
 
     if procedure == "default":
         if isinstance(n, float):
@@ -246,7 +243,7 @@ def bin2dec(n_bin):
         n = int(n_bin, base=2)
     return n
 
-def bin2dec_basic(b):
+def bin2dec_basic(b, procedure="loop"):
     """
     Converts a binary number to decimal, using mathematical operations
     by definition (hence the name 'basic').
@@ -257,6 +254,12 @@ def bin2dec_basic(b):
         The binary number as a string.
         It can contain the 'b' or '0b' prefix. If so, the function 
         will take into account the string without the prefix.
+    procedure : str
+        The procedure to use for conversion. Options are:
+        - 'list_comprehension': Uses a list comprehension with enumerate for a more
+          functional approach. Might be more memory intensive for large numbers.
+        - 'loop': Uses a traditional for loop with enumerate. More memory efficient
+          as it doesn't create an intermediate list.
 
     Returns
     -------
@@ -264,13 +267,28 @@ def bin2dec_basic(b):
         The decimal equivalent of the binary number.
     """
 
+    # Validations #
+    ###############
+
+    # Procedure #
+    _procedure_checker(procedure, BIN2DEC_PROCEDURE_OPTS)
+
+    # Number input #
     b_checked = _check_input_binary(b)
     lb = len(b_checked)
 
-    res = 0
-    for bit_pos, i_str in enumerate(range(lb-1,-1,-1)):
-        res += int(b_checked[i_str]) * 2 ** bit_pos
-    return res
+    # Calculation #
+    ###############
+
+    if procedure == "list_comprehension":
+        summands_iter = [int(b_checked[i]) * 2 ** pos for pos, i in enumerate(range(lb-1,-1,-1))]
+        res = sum(summands_iter)
+
+    elif procedure == "loop":
+        res = 0
+        for pos, i in enumerate(range(lb-1,-1,-1)):
+            res += int(b_checked[i]) * 2 ** pos
+        return res
 
 
 def oct2dec(n_oct):
@@ -360,4 +378,5 @@ def convert_among_arbitraries(x, base):
 # Parameters and constants #
 #--------------------------#
 
-PROCEDURE_OPTS = ['default', 'format_string']
+BIN2DEC_PROCEDURE_OPTS = ['list_comprehension', 'loop']
+NUMBER_CONVERSION_PROCEDURE_OPTS = ['default', 'format_string']
