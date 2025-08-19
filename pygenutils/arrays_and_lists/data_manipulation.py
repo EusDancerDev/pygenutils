@@ -165,7 +165,7 @@ def sort_1d_basic(arr, reverse=False):
     elif isinstance(arr, list):
         arr = flatten_list(arr)
 
-    # Operations #
+    # Program progression #
     for i in range(len(arr)):
         current = i
         for k in range(i+1, len(arr)):
@@ -305,7 +305,7 @@ def revert_1d_basic(arr, procedure="index"):
     elif isinstance(arr, list):
         arr = flatten_list(arr)
 
-    # Operations #
+    # Program progression #
     arr_len = len(arr)-1
     if procedure == "iterative":
         for i in range(arr_len//2):
@@ -593,7 +593,7 @@ def extract_1d_unique_basic(arr, procedure="dict", sort=False, reverse=False):
     elif isinstance(arr, list):
         arr = flatten_list(arr)
 
-    # Operations #
+    # Program progression #
     if procedure == "dict":
         unique_key_dict = dict.fromkeys(arr)
         unique_val_arr = list(unique_key_dict.keys())
