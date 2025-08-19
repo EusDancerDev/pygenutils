@@ -290,8 +290,8 @@ def merge_media_files(audio_files,
     _validate_files(video_file_list, "Video file list (arg number 0)")
     _validate_files(audio_file_list, "Audio file list (arg number 1)")
     
-    # Operations #
-    #-#-#-#-#-#-#-
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     # Generate default output file names if not provided
     if output_file_list is None:
@@ -464,7 +464,7 @@ def merge_individual_media_files(media_inputs,
     """
     
     # Validations #
-    #-------------#
+    #-#-#-#-#-#-#-#
     
     # Audio bitrate fraction validation
     if audio_bitrate_fraction is not None and (not isinstance(audio_bitrate_fraction, int) or audio_bitrate_fraction < 1):
@@ -506,8 +506,8 @@ def merge_individual_media_files(media_inputs,
         raise ValueError("Input list contains both audio and video files. "
                          "Only one type is allowed.")
     
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     # Generate default output file names if not provided #
     if not output_file_name:
@@ -748,8 +748,8 @@ def cut_media_files(media_inputs,
     if not isinstance(overwrite, bool):
         raise ValueError("'overwrite' must be a boolean value.")
         
-    # Operations #
-    #------------#
+    # Program progression #
+    #---------------------#
     
     # If output file list is not provided, create default names
     if output_file_list is None:

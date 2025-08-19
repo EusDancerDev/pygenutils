@@ -81,9 +81,9 @@ RETURN_OUTPUT_NAME = False
 ENCODING = "utf-8"
 SHELL = True
 
-#------------#
-# Operations #
-#------------#
+#---------------------#
+# Program progression #
+#---------------------#
 
 cut_media_files(
     MEDIA_INPUT,
