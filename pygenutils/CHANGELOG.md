@@ -4,6 +4,67 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.3.0] - 2025-08-19
+
+### Changed (16.3.0)
+
+#### **General** (changing; 16.3.0)
+
+- Change the header section comment `Operations` to `Program progression` to better reflect what it contains in the following modules:
+
+| Subpackage | Module |
+|:----------:|:------:|
+| `arrays_and_lists` | `data_manipulation.py` |
+| `arrays_and_lists` | `patterns.py` |
+| `audio_and_video` | `audio_and_video_manipulation.py` |
+| `audio_and_video` | `merge_audio_or_video.py` |
+| `audio_and_video` | `trim_media.py` |
+| `dictionaries` | `dict_operators.py` |
+| `operative_systems` | `os_operations.py` |
+| `sets_and_intervals` | `interval_handler.py` |
+| `sets_and_intervals` | `set_handler.py` |
+| `time_handling` | `date_and_time_maths.py` |
+| `time_handling` | `date_and_time_utils.py` |
+| `time_handling` | `program_snippet_exec_timers.py` |
+| `time_handling` | `time_formatters.py` |
+
+- Reorganise the comment hierarchy:
+  - Implement a two- or three-level comment hierarchy:
+    - Level 1: `#---------------------#`
+    - Level 2: `#-#-#-#-#-#-#-#-#-#-#-#`
+    - Level 3: `#######################`
+  - Clear, consistent, sufficient for current scope, standardising underline lengths and document the hierarchy at the top if/when adding more levels
+
+  - Affected modules are:
+
+  | Subpackage | Module |
+  |:----------:|:------:|
+  | `operative_systems` | `os_operations.py` |
+  | `sets_and_intervals` | `interval_handler.py` |
+  | `time_handling` | `date_and_time_maths.py` |
+  | `time_handling` | `program_snippet_exec_timers.py` |
+  | `time_handling` | `time_formatters.py` |
+
+#### **Time Handling** (changing; 16.3.0)
+
+- Module `time_formatters.py`:
+  - Clean up unused parameters in conversion dictionaries:
+    - Replace unused parameters with underscores in `_TOTAL_TIME_UNIT_DICT` and in all dictionaries ending with `_OBJ_CONVERSION_DICT`:
+      - `DT_OBJ_CONVERSION_DICT`
+      - `DT64_OBJ_CONVERSION_DICT`
+      - `DT_TIME_OBJ_CONVERSION_DICT`
+      - `TIMESTAMP_OBJ_CONVERSION_DICT`
+      - `ARROW_OBJ_CONVERSION_DICT`
+      - `_DT_LIKE_OBJ_CONVERSION_DICT`
+    - Normalise the conversion dispatcher to pass a consistent positional argument sequence, preserving arity and avoiding unexpected keyword issues.
+    - Correct minor issues found while reviewing:
+      - Fix `np.ndarray` type check in `_to_string`.
+      - Use `timedelta(...).total_seconds()` in `__time_component_to_float`.
+      - Adjust `dateutil` parsing to not accept strptime-like format strings.
+    - No public API changes; improves maintainability and clarity of internal conversions.
+
+---
+
 ## [16.2.4] - 2025-08-17
 
 ### Changed (16.2.4)
