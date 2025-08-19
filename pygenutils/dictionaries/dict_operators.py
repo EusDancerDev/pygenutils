@@ -82,8 +82,8 @@ def dict_value_basic_operator(dict_list,
         raise ValueError ("Invalid basic operator sign. "
                           f"Choose one from {list(ALLOWED_CALC_DICT.keys())}.")
     
-    # Operations #
-    #-#-#-#-#-#-#-
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     # Perform the computation #
     operation = ALLOWED_CALC_DICT.get(math_operator)
