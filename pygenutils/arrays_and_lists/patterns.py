@@ -64,7 +64,7 @@ def find_item_basic(obj, obj2find):
     elif isinstance(obj, list):
         obj = flatten_list(obj)
     
-    # Operations #
+    # Program progression #
     length = len(obj)
     sorted_obj = sort_1d_basic(obj)
     
