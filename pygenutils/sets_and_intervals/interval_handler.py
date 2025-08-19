@@ -104,11 +104,12 @@ def define_interval(left_limit, right_limit, constructor="pandas", closed="both"
     """
     
     # Input validation # 
-    #------------------#
+    #-#-#-#-#-#-#-#-#-#-
+
     _validate_interval_parameters(left_limit, right_limit, constructor, closed)
 
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     if constructor == "intervaltree":
         print(f"WARNING: intervals constructed using constructor '{constructor}' "
@@ -167,7 +168,7 @@ def basic_interval_operator(interval_array,
     """
     
     # Input validation #
-    #------------------#
+    #-#-#-#-#-#-#-#-#-#-
     
     particular_constructor_opts = INTERVAL_CONSTRUCTOR_OPTIONS[:2]
     all_args = get_caller_args()
@@ -187,8 +188,8 @@ def basic_interval_operator(interval_array,
     if isinstance(interval_array, list) and any(isinstance(item, list) for item in interval_array):
         interval_array = flatten_list(interval_array)
 
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     try:
         if constructor == "pandas" and operator == "union" and force_union:

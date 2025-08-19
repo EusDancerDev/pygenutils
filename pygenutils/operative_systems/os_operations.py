@@ -139,7 +139,7 @@ def os_system_helper(command, capture_output):
     """
     
     # Validations #
-    #-------------#
+    #-#-#-#-#-#-#-#
     
     # Command and class #
     if not isinstance(command, str):
@@ -150,8 +150,8 @@ def os_system_helper(command, capture_output):
     if capture_output:
         raise ValueError("os.system cannot capture output.")
     
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     # Execute the command
     exit_code = os.system(command)
@@ -180,7 +180,7 @@ def os_popen_helper(command, capture_output):
     """
     
     # Validations #
-    #-------------#
+    #-#-#-#-#-#-#-#
     
     # Command and class #
     if not isinstance(command, str):
@@ -191,8 +191,8 @@ def os_popen_helper(command, capture_output):
     if not capture_output:
         raise ValueError("os.popen must capture output.")
     
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     # Capture the output
     output = os.popen(command).read()
@@ -231,26 +231,26 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
     """
     from subprocess import Popen, PIPE
     
-    # Set text parameter (if not provided, use encoding as a fallback)
+    # Set text parameter (if not provided, use encoding as a fallback) #
     text_param = text if text is not None else bool(encoding)
     
-    # Define the I/O streams
+    # Define the I/O streams #
     pipe_kwargs = dict(stdin=PIPE, stdout=PIPE, stderr=PIPE) if capture_output else {}
     
-    # Execute the command
+    # Execute the command #
     process = Popen(command, **pipe_kwargs, text=text_param)
     
-    # Wait for command to complete
+    # Wait for command to complete #
     process.wait()
     
-    # Initialise return dictionary with return code
+    # Initialise return dictionary with return code #
     return_dict = {"return_code": process.returncode}
     
-    # Add errors if available
+    # Add errors if available #
     if hasattr(process, "errors"):
         return_dict["errors"] = process.errors
         
-    # Only capture stdin, stdout, stderr if output capturing was requested
+    # Only capture stdin, stdout, stderr if output capturing was requested #
     if capture_output:
         if return_output_name:
             # Return file descriptor names
@@ -281,7 +281,7 @@ def subprocess_popen_helper(command, capture_output, encoding, return_output_nam
                 else:
                     return_dict["stderr"] = process.stderr.read().decode(encoding) if encoding else process.stderr.read()
     
-    # Return the compiled result dictionary
+    # Return the compiled result dictionary #
     return return_dict
 
 
@@ -351,16 +351,16 @@ def subprocess_run_helper(command, capture_output, encoding, shell, text):
     """
     from subprocess import run
     
-    # Set text parameter (if not provided, use encoding as a fallback)
+    # Set text parameter (if not provided, use encoding as a fallback) #
     text_param = text if text is not None else bool(encoding)
     
-    # Execute the command and capture output if requested
+    # Execute the command and capture output if requested #
     result = run(command, capture_output=capture_output, text=text_param, shell=shell)
     
-    # Initialise return dictionary with return code
+    # Initialise return dictionary with return code #
     return_dict = {"return_code": result.returncode}
     
-    # Only process stdout/stderr if they were captured
+    # Only process stdout/stderr if they were captured #
     if capture_output:
         # Add stdout and stderr to the return dictionary if available
         if hasattr(result, "stdout"):
@@ -430,10 +430,10 @@ def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check
         raise RuntimeError("Command string interpreted as a path. "
                            "Please check the command.")
     else:
-        # Check if we're dealing with a dictionary or a CompletedProcess object
+        # Check if we're dealing with a dictionary or a CompletedProcess object #
         is_dict = isinstance(process_exit_info_obj, dict)
         
-        # Get return code - handle both dict and CompletedProcess objects
+        # Get return code - handle both dict and CompletedProcess objects #
         if is_dict:
             return_code = process_exit_info_obj.get("return_code")
             # Check if we have any output information
@@ -446,7 +446,7 @@ def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check
             has_stdout = hasattr(process_exit_info_obj, "stdout")
             has_stderr = hasattr(process_exit_info_obj, "stderr")
         
-        # Print stdout if available and requested
+        # Print stdout if available and requested #
         if check_stdout:
             if is_dict and has_stdout and process_exit_info_obj.get("stdout"):
                 print(f"STDOUT\n{'='*6}")
@@ -455,7 +455,7 @@ def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check
                 print(f"STDOUT\n{'='*6}")
                 print(process_exit_info_obj.stdout)
         
-        # Print stderr if available and requested
+        # Print stderr if available and requested #
         if check_stderr:
             if is_dict and has_stderr and process_exit_info_obj.get("stderr"):
                 print(f"STDERR\n{'='*6}")
@@ -464,7 +464,7 @@ def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check
                 print(f"STDERR\n{'='*6}")
                 print(process_exit_info_obj.stderr)
         
-        # Check return code if requested
+        # Check return code if requested #
         if check_return_code:
             if return_code == 0:
                 print("Process completed successfully with return code 0")
@@ -482,7 +482,7 @@ def exit_info(process_exit_info_obj, check_stdout=True, check_stderr=True, check
                 raise RuntimeError("An error occurred during command execution: "
                                    f"{format_string(NONZERO_EXIT_STATUS_TEMPLATE, format_args_error)}")
         
-        # If return code checking is disabled, just return True
+        # If return code checking is disabled, just return True #
         return True
 
 # %%

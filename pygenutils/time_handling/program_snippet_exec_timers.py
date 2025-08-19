@@ -102,7 +102,7 @@ def program_exec_timer(mode, module="time", frac_precision=3):
     global ti
    
     # Input validations #
-    #-------------------#
+    #-#-#-#-#-#-#-#-#-#-#
     
     # Module #
     _validate_option("Module", module, MODULE_LIST)
@@ -110,8 +110,8 @@ def program_exec_timer(mode, module="time", frac_precision=3):
     # Fractional second precision #        
     _validate_precision(frac_precision, max_prec=6)
     
-    # Operations #
-    #------------#
+    # Program progression #
+    #-#-#-#-#-#-#-#-#-#-#-#
     
     if mode == "start":
         ti = MODULE_OPERATION_DICT[module]()
@@ -140,6 +140,8 @@ def snippet_exec_timer(snippet_str,
                        return_best_time=False):
         
     # Roundoff validation #
+    #-#-#-#-#-#-#-#-#-#-#-#
+
     param_keys = get_caller_args()
     roundoff_arg_pos = find_substring_index(param_keys, "roundoff")
     
@@ -147,6 +149,8 @@ def snippet_exec_timer(snippet_str,
         raise TypeError(format_string(TYPE_ERROR_TEMPLATE, f'{param_keys[roundoff_arg_pos]}'))
     
     # Set keyword argument dictionary for float time parsing #
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
     float_time_parsing_kwargs =  dict(
         module="str",
         origin="arbitrary",
@@ -154,6 +158,8 @@ def snippet_exec_timer(snippet_str,
     )
 
     # Execution time in the specified number of trials with no repeats #
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
     if repeats is None:
         exec_time_norep = timeit.timeit(setup=snippet_str,
                                         number=trials,
@@ -178,6 +184,8 @@ def snippet_exec_timer(snippet_str,
         print_format_string(NOREP_EXEC_TIME_INFO_TEMPLATE, format_args_exec_timer1)
       
     # Execution time in the specified number of trials for several repeats #
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
+
     else:
         exec_time_rep = timeit.repeat(setup=snippet_str, 
                                       repeat=repeats,

@@ -80,9 +80,11 @@ def _validate_option(arg_iterable, error_class, error_str):
 #-------#
 
 # Sum and subtract operations #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 # Main method #
+#-#-#-#-#-#-#-#
+
 def sum_dt_objects(dt_obj_list,
                    dt_fmt_str="%T",
                    operation="sum",
@@ -151,8 +153,8 @@ def sum_dt_objects(dt_obj_list,
     arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
     _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
-    # Operations #
-    ##############
+    # Program progression #
+    #######################
     
     # Time delta object conversions #
     timedelta_list = []
@@ -171,6 +173,8 @@ def sum_dt_objects(dt_obj_list,
     
 
 # Auxiliary methods #
+#-#-#-#-#-#-#-#-#-#-#
+
 def extract_dt_part(datetime_obj, part="time", arg_list=None):
     """
     Return the time or date part of a datetime object.
@@ -205,13 +209,13 @@ def extract_dt_part(datetime_obj, part="time", arg_list=None):
 
 
 # Time average #
-#-#-#-#-#-#-#-#-
+#~~~~~~~~~~~~~~#
 
 # Adapted from https://stackoverflow.com/questions/12033905/using-python-to-create-an-average-out-of-a-list-of-times
 # and refined with ChatGPT
 
 # Main method #
-###############
+#-#-#-#-#-#-#-#
 
 def dt_average(dt_obj_list, 
                time_fmt_str="%T",
@@ -270,8 +274,8 @@ def dt_average(dt_obj_list,
     arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
     _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
         
-    # Operations #
-    ##############
+    # Program progression #
+    #######################
         
     angles = [_dt_to_radians(dt_obj, "datetime", time_fmt_str) for dt_obj in dt_obj_list]
     avg_angle = _average_angle(angles)    
@@ -283,7 +287,7 @@ def dt_average(dt_obj_list,
 
 
 # Auxiliary methods #
-#####################
+#-#-#-#-#-#-#-#-#-#-#
 
 def _dt_to_radians(t, convert_to="datetime", time_fmt_str=None):
     """
@@ -401,7 +405,7 @@ def _radians_to_time_of_day(rads):
 #-------#
 
 # Sum and subtract operations #
-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#
 
 def sum_date_objects(date_list,
                      operation="sum",
@@ -465,8 +469,8 @@ def sum_date_objects(date_list,
     arg_iterable_output_format = (output_format, TIME_OUTPUT_FORMAT_OPTIONS)
     _validate_option(arg_iterable_output_format, ValueError, INVALID_OUTPUT_FORMAT_TEMPLATE)
     
-    # Operations #
-    ##############
+    # Program progression #
+    #######################
    
     # Perform the aritmethical operations #
     total_date = parse_dt_string(date_list[0], dt_fmt_str)
@@ -582,7 +586,7 @@ def _add_dates_with_year_gap(date1, date2, operation):
 
 
 # Natural years #
-#-#-#-#-#-#-#-#-#
+#~~~~~~~~~~~~~~#
 
 def natural_year(dt_start, dt_end, dt_fmt_str=None,
                  method="pandas",
@@ -641,8 +645,8 @@ def natural_year(dt_start, dt_end, dt_fmt_str=None,
                         "must be a boolean.")
     
 
-    # Operations #
-    #·#·#·#·#·#·#·
+    # Program progression #
+    #·#·#·#·#·#·#·#·#·#·#·#
     
     # Convert input objects to datetime objects #
     #############################################
