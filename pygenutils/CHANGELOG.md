@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.3.1] - 2025-10-08
+
+### Changed (16.3.1)
+
+#### **Time Handling** (changing; 16.3.1)
+
+- Module `program_snippet_exec_timers.py`:
+  - Improve parameter naming for semantic clarity:
+    - Rename `roundoff` parameter to `decimal_places` in `snippet_exec_timer()` function
+    - Update all related documentation, validation logic, comments, and internal usage
+
+#### **Number Bases** (changing; 16.3.1)
+
+- Module `mathematical_utils.py`:
+  - Improve parameter naming for semantic accuracy:
+    - *Rationale*: Factorials produce integers; the parameter controls significant digits for scientific notation representation, not decimal places for floating-point rounding.
+    - Changes:
+      - Rename `decimals` parameter to `significant_digits` in `adapted_factorial()` function
+      - Update comment from "roundoff number" to "decimal places position" for consistency
+      - Update all related documentation and internal usage
+
+---
+
 ## [16.3.0] - 2025-08-19
 
 ### Changed (16.3.0)
