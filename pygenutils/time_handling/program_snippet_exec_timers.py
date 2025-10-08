@@ -135,18 +135,18 @@ def program_exec_timer(mode, module="time", frac_precision=3):
 def snippet_exec_timer(snippet_str, 
                        repeats=None, 
                        trials=int(1e4), 
-                       roundoff=None,
+                       decimal_places=None,
                        format_time_str=False,
                        return_best_time=False):
         
-    # Roundoff validation #
-    #-#-#-#-#-#-#-#-#-#-#-#
+    # Decimal places validation #
+    #-#-#-#-#-#-#-#-#-#-#-#-#-#-#
 
     param_keys = get_caller_args()
-    roundoff_arg_pos = find_substring_index(param_keys, "roundoff")
+    decimal_places_arg_pos = find_substring_index(param_keys, "decimal_places")
     
-    if not isinstance(roundoff, int):
-        raise TypeError(format_string(TYPE_ERROR_TEMPLATE, f'{param_keys[roundoff_arg_pos]}'))
+    if not isinstance(decimal_places, int):
+        raise TypeError(format_string(TYPE_ERROR_TEMPLATE, f'{param_keys[decimal_places_arg_pos]}'))
     
     # Set keyword argument dictionary for float time parsing #
     #-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-#-
@@ -154,7 +154,7 @@ def snippet_exec_timer(snippet_str,
     float_time_parsing_kwargs =  dict(
         module="str",
         origin="arbitrary",
-        frac_precision=roundoff
+        frac_precision=decimal_places
     )
 
     # Execution time in the specified number of trials with no repeats #
@@ -170,8 +170,8 @@ def snippet_exec_timer(snippet_str,
         exec_time_norep = timeit.repeat(snippet_str, repeat=1, number=10000)[0]
         """
         
-        if roundoff is not None:
-            exec_time_norep = np_round(exec_time_norep, roundoff)
+        if decimal_places is not None:
+            exec_time_norep = np_round(exec_time_norep, decimal_places)
         
         if not format_time_str:
             time_unit_str = SEC_TIME_UNIT_STR
@@ -192,8 +192,8 @@ def snippet_exec_timer(snippet_str,
                                       number=trials,
                                       globals=globals())
         
-        if roundoff is not None:
-            exec_time_rep = np_round(exec_time_rep, roundoff)
+        if decimal_places is not None:
+            exec_time_rep = np_round(exec_time_rep, decimal_places)
         
         # Compute best time
         best_time = min(exec_time_rep) 
