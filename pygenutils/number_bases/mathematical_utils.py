@@ -6,11 +6,11 @@ from math import factorial
 # Define functions #
 #------------------#
 
-def adapted_factorial(num, decimals):
+def adapted_factorial(num, significant_digits):
     """
     Calculate the factorial of a number with precise formatting control.
     
-    For standard-sized results, formats the output using the specified decimal precision.
+    For standard-sized results, formats the output using the specified precision.
     For extremely large factorials that would cause an OverflowError during formatting,
     converts the result to scientific notation with appropriate rounding.
     
@@ -18,7 +18,7 @@ def adapted_factorial(num, decimals):
     ----------
     num : int | float
         The number for which to calculate the factorial
-    decimals : int
+    significant_digits : int
         The number of significant digits to include in the result
     
     Returns
@@ -40,17 +40,17 @@ def adapted_factorial(num, decimals):
     result = factorial(num)
 
     try:
-        result = f"{result:.{decimals}g}"
+        result = f"{result:.{significant_digits}g}"
     except OverflowError:
-        # Convert to string and round to the desired decimal places
+        # Convert to string and round to the desired significant digits
         result_str = str(result)
-        # Take into account the number next to the roundoff number
-        if int(result_str[decimals]) >= 5:
-            prev_num = int(result_str[decimals-1]) + 1
+        # Take into account the number next to the significant digits position
+        if int(result_str[significant_digits]) >= 5:
+            prev_num = int(result_str[significant_digits-1]) + 1
         else:
-            prev_num = int(result_str[decimals-1])
+            prev_num = int(result_str[significant_digits-1])
         # Convert to float
-        result_adapted = f"{result_str[0]}.{result_str[1:decimals-1]}{prev_num}e+{len(result_str)-1}"
+        result_adapted = f"{result_str[0]}.{result_str[1:significant_digits-1]}{prev_num}e+{len(result_str)-1}"
     else:
         result_adapted = result
     
