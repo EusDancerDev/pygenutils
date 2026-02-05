@@ -99,10 +99,10 @@ def __countdown(time_str, dt_fmt_str):
         
         if days > 0:
             DT_ARGS_DAY = [days, hours, minutes, seconds]
-            time_display = format_string(TIME_STR_PARTS_FMTS[0], *DT_ARGS_DAY)
+            time_display = format_string(TIME_STR_PARTS_FMTS[0], DT_ARGS_DAY)
         else:            
             DT_ARGS_NODAY = [hours, minutes, seconds]
-            time_display = format_string(TIME_STR_PARTS_FMTS[1], *DT_ARGS_NODAY)
+            time_display = format_string(TIME_STR_PARTS_FMTS[1], DT_ARGS_NODAY)
         
         # Rellenar la cadena de visualización para limpiar caracteres sobrantes
         # Pad the display string to clear any leftover characters
@@ -120,10 +120,16 @@ def __countdown(time_str, dt_fmt_str):
             days -= 1
         
     print("\nTime up!")
+    
+#---------------------------------#
+# Define parameters and constants # # FIXME: or just "define parameters" even if we aren't going to define any constant?
+#---------------------------------#
 
-#-------------------------#
-# Countdown functionality #
-#-------------------------#
+TIME_STR_PARTS_FMTS = ["{} days {0:02d}:{1:02d}:{2:02d}", "{0:02d}:{1:02d}:{2:02d}"] # TODO: is template elememt indexing and formatting well suited to guide both the user and dev?
+
+#---------------------#
+# Program progression #
+#---------------------#
 
 # Ask for the datetime input #
 DATETIME_STR = input("Introduce any time: ")
@@ -134,9 +140,3 @@ try:
     __countdown(DATETIME_STR, DT_FMT_STR)
 except KeyboardInterrupt:
     print("\nCountdown stopped.")
-    
-#--------------------------#
-# Parameters and constants #
-#--------------------------#
-
-TIME_STR_PARTS_FMTS = ["{} days {}:{}:{}", "{}:{}:{}"]
