@@ -64,7 +64,7 @@ def format_string(string2format, arg_obj):
     IndexError: If there are not enough indices referenced in the string to format.
     SyntaxError: If there are syntax errors in the formatting object.
     """
-    bracket_index_list = find_substring_index(string2format, "{}",
+    bracket_index_list = find_substring_index(string2format, r"[{}]",
                                               advanced_search=True,
                                               all_matches=True)
     
