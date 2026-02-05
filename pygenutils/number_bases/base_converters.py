@@ -60,7 +60,7 @@ def _check_input_binary(b):
         The binary number as a string without the 'b' or '0b' prefix.
     """
     b_clean = substring_replacer(substring_replacer(b, "b", ""), "0b", "")
-    are_only_binaries = find_substring_index(b_clean, "^[01]+$")
+    are_only_binaries = find_substring_index(b_clean, r"^[01]+$")
     if are_only_binaries == -1:
         raise ValueError("The input binary number is not in the correct format.")
     return b_clean
