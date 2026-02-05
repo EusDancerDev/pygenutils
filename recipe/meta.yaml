@@ -1,5 +1,5 @@
 {% set name = "pygenutils" %}
-{% set version = "15.13.5" %}
+{% set version = "16.3.2" %}
 
 package:
   name: {{ name|lower }}
@@ -37,6 +37,8 @@ test:
     - pygenutils.sets_and_intervals
     - pygenutils.strings
     - pygenutils.time_handling
+  commands:
+    - python -c "import pygenutils; print(pygenutils.__version__)"
 
 about:
   home: https://github.com/EusDancerDev/pygenutils
