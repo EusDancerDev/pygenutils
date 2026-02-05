@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.3.2] - 2026-02-05
+
+### Fixed (16.3.2)
+
+#### **Number Bases** (fixing; 16.3.2)
+
+- Module `base_converters.py`:
+  - Use a raw regex pattern for binary input validation in `_check_input_binary` to ensure the expression is interpreted correctly.
+
+#### **Strings** (fixing; 16.3.2)
+
+- Module `text_formatters.py`:
+  - Correct the brace-matching regex in `format_string` by using the character class `[{}]` so curly braces are treated as literal characters.
+
+#### **Time Handling** (fixing; 16.3.2)
+
+- Module `countdown.py`:
+  - Remove redundant argument unpacking in `__countdown` and rely on `format_string` for mapping datetime components.
+
+---
+
 ## [16.3.1] - 2025-10-08
 
 ### Changed (16.3.1)
