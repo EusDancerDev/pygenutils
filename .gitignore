@@ -27,8 +27,5 @@ htmlcov/
 # Logs
 *.log
 
-# Ignore the Spyder project manager directory #
-.spyproject
-
 # Ignore configuration and generated files #
 .chglog
