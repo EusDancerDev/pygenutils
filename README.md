@@ -57,15 +57,18 @@ This package has minimal external dependencies and is designed to be lightweight
 
 ```bash
 pip install pygenutils                    # Core functionality
-pip install pygenutils[arrow]             # With arrow support (optional)
+pip install 'pygenutils[climate]'         # NetCDF / climarraykit features in time_handling
+pip install pygenutils[arrow]             # Arrow support (optional)
 ```
 
-This automatically installs `pygenutils` and all its dependencies with version constraints.
+Core install pulls **numpy**, **pandas**, **filewise**, **paramlib**, and **more_itertools**. **climarraykit** (and thus **xarray** for those code paths) is optional.
 
-**How It Works Now**:
+**Optional extras**:
 
-- `pip install pygenutils` - Core functionality without arrow dependency
-- `pip install pygenutils[arrow]` - With arrow support for enhanced time handling features
+- `pip install pygenutils` — core only (no climarraykit)
+- `pip install 'pygenutils[climate]'` — NetCDF helpers (`ncfile_integrity_status`, `get_file_dimensions` proxies)
+- `pip install pygenutils[arrow]` — Arrow for enhanced time handling
+- `pip install pygenutils[xarray]` — xarray only (rare; prefer `[climate]` for climarraykit-backed APIs)
 
 ### Package Updates
 
@@ -92,7 +95,7 @@ cd pygenutils
 pip install -e .[dev]
 ```
 
-**Note**: The `-e` flag installs the package in "editable" mode, meaning changes to the source code are immediately reflected without reinstalling. The `[dev]` flag includes the latest Git versions of interdependent packages.
+**Note**: The `-e` flag installs the package in "editable" mode. The `[dev]` extra includes development tools **and** `climarraykit` so time-handling tests and NetCDF code paths work without a separate `[climate]` install.
 
 #### Alternative Setup (Explicit Git Dependencies)
 
@@ -106,11 +109,11 @@ cd pygenutils
 # Install development dependencies from requirements-dev.txt
 pip install -r requirements-dev.txt
 
-# Install in editable mode
-pip install -e .
+# Install in editable mode (add [climate] if you skip Git climarraykit and need NetCDF features)
+pip install -e .[dev]
 ```
 
-This approach gives you the latest development versions of all interdependent packages for testing and development.
+This approach gives you Git checkouts of **filewise**, **climarraykit**, and **paramlib** plus pinned scientific stack; use **`pip install -e .[dev]`** so editable **pygenutils** matches **`pyproject.toml`** (including dev + climarraykit).
 
 #### Development with Optional Dependencies
 
@@ -121,7 +124,8 @@ For full development capabilities, including testing and linting:
 pip install -e ".[dev]"
 
 # Or install specific optional dependencies
-pip install -e ".[xarray]"  # For xarray support
+pip install -e ".[climate]"   # climarraykit / NetCDF-related time_handling
+pip install -e ".[xarray]"    # xarray only (optional; [climate] is usually preferred)
 ```
 
 ### For Multiple Package Development
@@ -132,20 +136,22 @@ If you're working on multiple interdependent packages simultaneously:
 # Clone all repositories
 git clone https://github.com/EusDancerDev/pygenutils.git
 git clone https://github.com/EusDancerDev/filewise.git
+git clone https://github.com/EusDancerDev/climarraykit.git
 git clone https://github.com/EusDancerDev/paramlib.git
 
-# Install each in editable mode
+# Install each in editable mode (order: dependencies first)
 pip install -e ./filewise
 pip install -e ./paramlib
-pip install -e ./pygenutils
+pip install -e ./climarraykit
+pip install -e ./pygenutils[dev]
 ```
 
 ### Troubleshooting
 
 If you encounter import errors after cloning:
 
-1. **For regular users**: Run `pip install pygenutils` (all dependencies included)
-2. **For developers**: Run `pip install -e .[dev]` to include development dependencies
+1. **For regular users**: Run `pip install pygenutils` (core dependencies) or `pip install 'pygenutils[climate]'` for NetCDF/climarraykit features
+2. **For developers**: Run `pip install -e .[dev]` (includes dev tools and climarraykit)
 3. **Verify Python environment**: Make sure you're using a compatible Python version (3.10+)
 
 ### Verify Installation
@@ -165,21 +171,16 @@ try:
     
 except ImportError as e:
     print(f"❌ Import error: {e}")
-    print("💡 For regular users: pip install pygenutils")
+    print("💡 For regular users: pip install pygenutils  # add [climate] for NetCDF features")
     print("💡 For developers: pip install -e .[dev]")
 ```
 
 ### Implementation Notes
 
-This project implements a **dual-approach dependency management** system:
-
-- **Production Dependencies**: Version-constrained dependencies for PyPI compatibility
-- **Development Dependencies**: Git-based dependencies for latest development versions
-- **Installation Methods**:
-  - **Regular users**: Simple `pip install pygenutils` with all dependencies included
-  - **Developers**: `pip install -e .[dev]` for latest Git versions and development tools
-- **PyPI Compatibility**: All packages can be published without Git dependency issues
-- **Development Flexibility**: Contributors get access to latest versions for testing and development
+- **Core PyPI dependencies**: **more_itertools**, **numpy**, **pandas**, **filewise**, **paramlib**.
+- **Optional `[climate]`**: **climarraykit** (pulls **xarray**) for NetCDF-related helpers in `time_handling`.
+- **Optional `[dev]`**: development tools plus **climarraykit** for a full local test stack.
+- **Git-based `requirements-dev.txt`**: optional bleeding-edge **filewise**, **climarraykit**, **paramlib** before `pip install -e .[dev]`.
 
 ### Package Structure
 
