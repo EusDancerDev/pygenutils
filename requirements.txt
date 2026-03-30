@@ -5,11 +5,13 @@ pandas>=1.3.0,<2.0.0
 
 # Interdependent packages
 filewise>=3.11.6
-climarraykit>=0.1.0
 paramlib>=3.4.10
 
-# Optional extras (same names as pyproject [project.optional-dependencies]):
-#   pip install pygenutils[xarray]
-#   pip install pygenutils[arrow]
+# Optional: NetCDF / climarraykit features in time_handling (pip install 'pygenutils[climate]')
+# climarraykit>=0.1.0
+
+# Other optional extras (see pyproject.toml)
+# pip install 'pygenutils[xarray]'
+# pip install 'pygenutils[arrow]'
 # xarray>=2024.2.0
 # arrow>=1.2.0
