@@ -1,21 +1,29 @@
 # Development requirements for pygenutils
-# Use this file for local development with latest Git versions of interdependent packages
+# ---------------------------------------------------------------------------
+# Typical workflow:
+#   1. pip install -r requirements-dev.txt   # optional: Git siblings + dev deps
+#   2. pip install -e .[dev]                 # editable install with climarraykit + dev tools
+# ---------------------------------------------------------------------------
 
-# Core dependencies with Git references for development
+# Interdependent packages — Git (optional; latest main from source)
 filewise @ git+https://github.com/EusDancerDev/filewise.git
 climarraykit @ git+https://github.com/EusDancerDev/climarraykit.git
 paramlib @ git+https://github.com/EusDancerDev/paramlib.git
 
-# Standard dependencies (aligned with pyproject.toml)
+# Standard dependencies (aligned with pyproject.toml core)
 more_itertools>=10.0.0
 numpy>=1.21.0,<2.0.0
 pandas>=1.3.0,<2.0.0
 
-# Optional extras (uncomment if you need them for local testing)
+# [project.optional-dependencies] dev includes climarraykit; use `pip install -e .[dev]`
+# or uncomment for a flat install without editable pygenutils:
+# climarraykit>=0.1.0
+
+# Optional extras (uncomment for local testing without full extras)
 # arrow>=1.2.0
 # xarray>=2024.2.0
 
-# Development tools (aligned with pyproject [project.optional-dependencies] dev)
+# Development tools (aligned with [project.optional-dependencies] dev)
 pytest>=7.0.0
 pytest-cov>=4.0.0
 black>=23.0.0
