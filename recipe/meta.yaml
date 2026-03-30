@@ -1,5 +1,5 @@
 {% set name = "pygenutils" %}
-{% set version = "16.3.3" %}
+{% set version = "16.4.0" %}
 
 package:
   name: {{ name|lower }}
