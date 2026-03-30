@@ -59,8 +59,8 @@ def _check_input_binary(b):
     str
         The binary number as a string without the 'b' or '0b' prefix.
     """
-    b_clean = substring_replacer(substring_replacer(b, "b", ""), "0b", "")
-    are_only_binaries = find_substring_index(b_clean, r"^[01]+$")
+    b_clean = substring_replacer(substring_replacer(b, "0b", ""), "b", "")
+    are_only_binaries = find_substring_index(b_clean, r"^[01]+$", advanced_search=True)
     if are_only_binaries == -1:
         raise ValueError("The input binary number is not in the correct format.")
     return b_clean
@@ -130,12 +130,12 @@ def dec2bin_basic(n):
         The binary representation of the input number.
     """
     n_checked = _check_input_int(n)
-    b = "" # or '_bin', so that we understand the var name better?
+    bits_lsb_first = "" # LSB == Least Significant Bit
     while n_checked >= 1:
-        floordiv, mod = divmod(n_checked,2)
-        b += str(mod)
+        mod = n_checked % 2
+        bits_lsb_first += str(mod)
         n_checked //= 2
-    return b[::-1]
+    return bits_lsb_first[::-1]
 
 # Advanced #
 #-#-#-#-#-#-
@@ -280,16 +280,17 @@ def bin2dec_basic(b, procedure="loop"):
     # Calculation #
     ###############
 
+    # Take the LSB at index 0 of reversed string — bit i contributes int(bit) * 2**i
+    b_lsb_first = b_checked[::-1]
+
     if procedure == "list_comprehension":
-        summands_iter = [int(b_checked[i]) * 2 ** pos for pos, i in enumerate(range(lb-1,-1,-1))]
-        res = sum(summands_iter)
+        return sum(int(b_lsb_first[i]) * 2**i for i in range(lb))
 
-    elif procedure == "loop":
-        res = 0
-        for pos, i in enumerate(range(lb-1,-1,-1)):
-            res += int(b_checked[i]) * 2 ** pos
-        return res
-
+    res = 0
+    for i in range(lb):
+        res += int(b_lsb_first[i]) * 2**i
+    return res
+    
 
 def oct2dec(n_oct):
     """

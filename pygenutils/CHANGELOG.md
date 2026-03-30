@@ -20,6 +20,13 @@ All notable changes to this project will be documented in this file.
 - Module `countdown.py`:
   - Define `TIME_STR_PARTS_FMTS` with named placeholders (`days`, `hours`, `minutes`, `seconds`) and pass component dictionaries to `format_string` for the countdown display.
 
+#### **Number Bases** (changing; 16.4.0)
+
+- Module `base_converters.py`:
+  - In `_check_input_binary`, strip the `0b` prefix before `b`, and validate digits with `find_substring_index(..., advanced_search=True)` so the pattern uses regex semantics from `string_handler`.
+  - In `dec2bin_basic`, build the reversed bit string in a variable named `bits_lsb_first` (with an LSB note) instead of a terse accumulator name.
+  - In `bin2dec_basic`, use an LSB-first view of the digit string (`b_lsb_first`) for both `list_comprehension` and `loop` procedures, and return the result from the list-comprehension path.
+
 ---
 
 ## [16.3.3] - 2026-03-30
