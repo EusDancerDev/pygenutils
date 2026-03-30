@@ -169,13 +169,14 @@ def standardise_calendar(obj,
         
         return obj_std_calendar
     
-    # Handling xarray datasets or data arrays #
+    # Handling xarray datasets or data arrays (no xarray/climarraykit at module import;
+    # cftime_range and get_file_dimensions are loaded only for this branch)
     elif obj_type in ["dataarray", "dataset"] \
         or (obj_type == "list" and all(get_type_str(element) in ["dataarray", "dataset"] 
                                        for element in obj)):
         
         from xarray import cftime_range
-        from filewise.xarray_utils.patterns import get_file_dimensions
+        from climarraykit.patterns import get_file_dimensions
             
         if isinstance(obj, list):
             obj = obj[0]  # Assuming only one object in the list
