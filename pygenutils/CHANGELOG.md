@@ -4,6 +4,21 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.4.0] - 2026-03-30
+
+### Changed (16.4.0)
+
+#### **Packaging** (changing; 16.4.0)
+
+- **Breaking (install surface):** `climarraykit` is no longer a core dependency. Provide it via the optional extra **`[climate]`** (`pip install 'pygenutils[climate]'`). The **`[dev]`** extra includes `climarraykit` for contributors and CI.
+- Add `time_handling/_optional_climate.py` with cached proxies for `ncfile_integrity_status` and `get_file_dimensions`, raising `ImportError` with an install hint when `climarraykit` is missing.
+
+#### **Time Handling** (changing; 16.4.0)
+
+- Modules `date_and_time_utils.py` and `calendar_utils.py` import NetCDF/climarraykit helpers via `_optional_climate` instead of direct `climarraykit` imports.
+
+---
+
 ## [16.3.3] - 2026-03-30
 
 ### Changed (16.3.3)
