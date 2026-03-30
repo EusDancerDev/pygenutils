@@ -4,7 +4,7 @@ numpy>=1.21.0,<2.0.0
 pandas>=1.3.0,<2.0.0
 
 # Interdependent packages
-filewise>=3.11.6
+filewise>=3.13.0
 paramlib>=3.4.10
 
 # Optional: NetCDF / climarraykit features in time_handling (pip install 'pygenutils[climate]')
