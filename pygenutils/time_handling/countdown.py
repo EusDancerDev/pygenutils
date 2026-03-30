@@ -98,11 +98,20 @@ def __countdown(time_str, dt_fmt_str):
         hours, minutes, seconds = dt_obj.hour, dt_obj.minute, dt_obj.second
         
         if days > 0:
-            DT_ARGS_DAY = [days, hours, minutes, seconds]
-            time_display = format_string(TIME_STR_PARTS_FMTS[0], DT_ARGS_DAY)
-        else:            
-            DT_ARGS_NODAY = [hours, minutes, seconds]
-            time_display = format_string(TIME_STR_PARTS_FMTS[1], DT_ARGS_NODAY)
+            dt_args_day = {
+                "days": days,
+                "hours": hours,
+                "minutes": minutes,
+                "seconds": seconds,
+            }
+            time_display = format_string(TIME_STR_PARTS_FMTS[0], dt_args_day)
+        else:
+            dt_args_noday = {
+                "hours": hours,
+                "minutes": minutes,
+                "seconds": seconds,
+            }
+            time_display = format_string(TIME_STR_PARTS_FMTS[1], dt_args_noday)
         
         # Rellenar la cadena de visualización para limpiar caracteres sobrantes
         # Pad the display string to clear any leftover characters
@@ -122,10 +131,14 @@ def __countdown(time_str, dt_fmt_str):
     print("\nTime up!")
     
 #---------------------------------#
-# Define parameters and constants # # FIXME: or just "define parameters" even if we aren't going to define any constant?
+# Define parameters and templates #
 #---------------------------------#
 
-TIME_STR_PARTS_FMTS = ["{} days {0:02d}:{1:02d}:{2:02d}", "{0:02d}:{1:02d}:{2:02d}"] # TODO: is template elememt indexing and formatting well suited to guide both the user and dev?
+# Named fields for format_string(..., dict); see pygenutils.strings.text_formatters.format_string.
+TIME_STR_PARTS_FMTS = [
+    "{days} days {hours:02d}:{minutes:02d}:{seconds:02d}",
+    "{hours:02d}:{minutes:02d}:{seconds:02d}",
+]
 
 #---------------------#
 # Program progression #

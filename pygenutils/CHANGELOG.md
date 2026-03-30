@@ -17,6 +17,9 @@ All notable changes to this project will be documented in this file.
 
 - Modules `date_and_time_utils.py` and `calendar_utils.py` import NetCDF/climarraykit helpers via `_optional_climate` instead of direct `climarraykit` imports.
 
+- Module `countdown.py`:
+  - Define `TIME_STR_PARTS_FMTS` with named placeholders (`days`, `hours`, `minutes`, `seconds`) and pass component dictionaries to `format_string` for the countdown display.
+
 ---
 
 ## [16.3.3] - 2026-03-30
