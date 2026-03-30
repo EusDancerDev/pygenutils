@@ -4,6 +4,23 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [16.3.3] - 2026-03-30
+
+### Changed (16.3.3)
+
+#### **Time Handling** (changing; 16.3.3)
+
+- Module `date_and_time_utils.py`:
+  - Remove top-level `import xarray` and the top-level import of `ncfile_integrity_status` from `climarraykit.file_utils` so importing this module does not load xarray or climarraykit NetCDF helpers until a code path needs them.
+  - Add `_is_xarray_dataset_or_dataarray()` to recognise xarray Dataset/DataArray objects via duck typing (module/name) so `find_dt_key` can handle in-memory xarray objects without importing xarray.
+  - Use lazy `import xarray` only in the file-path branch of `find_dt_key` and in the NetCDF / xarray branch of `infer_frequency`; lazy-import `ncfile_integrity_status` only in `infer_frequency` and `infer_dt_range` when opening NetCDF paths from strings.
+  - Refresh docstrings/notes to describe lazy loading behaviour.
+
+- Module `calendar_utils.py`:
+  - Clarify comments in `standardise_calendar` so it is explicit that xarray / climarraykit imports for the xarray branch occur only when that branch runs (no xarray at module import time).
+
+---
+
 ## [16.3.2] - 2026-02-05
 
 ### Fixed (16.3.2)
@@ -57,7 +74,7 @@ All notable changes to this project will be documented in this file.
 - Change the header section comment `Operations` to `Program progression` to better reflect what it contains in the following modules:
 
 | Subpackage | Module |
-|:----------:|:------:|
+| :--- | :--- |
 | `arrays_and_lists` | `data_manipulation.py` |
 | `arrays_and_lists` | `patterns.py` |
 | `audio_and_video` | `audio_and_video_manipulation.py` |
@@ -82,7 +99,7 @@ All notable changes to this project will be documented in this file.
   - Affected modules are:
 
   | Subpackage | Module |
-  |:----------:|:------:|
+  | :--- | :--- |
   | `operative_systems` | `os_operations.py` |
   | `sets_and_intervals` | `interval_handler.py` |
   | `time_handling` | `date_and_time_maths.py` |
@@ -316,7 +333,7 @@ All notable changes to this project will be documented in this file.
   - These include abbreviation addressing.
 
 | Module | Old variable name | New variable name |
-|:------:|:-----------------:|:-----------------:|
+| :--- | :---: | :---: |
 | `dict_operators` | `BASIC_FOUR_RULES` | `BASIC_ARITHMETIC_OPERATORS` |
 
 ---
@@ -664,7 +681,7 @@ In general, several changes have been made to break a circular dependency.
   - Rename objects containing `(date)time` to `dt` for date-time operations
 
     | Type | Original Name | New Name | Description |
-    |:----:|:-------------:|:--------:|:-----------:|
+    | :---: | :---: | :---: | :---: |
     | Public Function | `parse_float_time` | `parse_float_dt` | Main function for parsing float values to datetime objects |
     | Internal Function | `_float_time_parser` | `_float_dt_parser` | Parser for converting float values to datetime objects |
     | Internal Function | `_format_arbitrary_time` | `_format_arbitrary_dt` | Formatter for arbitrary datetime values |
@@ -674,14 +691,14 @@ In general, several changes have been made to break a circular dependency.
     Functions kept with `time` in their names as they handle time-only operations:
 
     | Type | Name | Description |
-    |:----:|:----:|:-----------:|
+    | :---: | :---: | :---: |
     | Internal Function | `__time_component_to_float` | Specifically deals with time components |
     | Internal Function | `_to_time_struct` | Specifically deals with time structure |
 
     Constants renamed:
 
     | Original Name | New Name | Description |
-    |:-------------:|:--------:|:-----------:|
+    | :---: | :---: | :---: |
     | `DATETIME_OBJ_CONVERSION_DICT` | `DT_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to various formats |
     | `DATETIME64_OBJ_CONVERSION_DICT` | `DT64_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime64 objects to various formats |
     | `DATETIME_TIME_OBJ_CONVERSION_DICT` | `DT_TIME_OBJ_CONVERSION_DICT` | Dictionary of functions for converting datetime objects to time objects |
@@ -693,7 +710,7 @@ In general, several changes have been made to break a circular dependency.
   - Rename the following public functions as they handle both dates and times, while improving conciseness:
 
   | Original Name | New Name |
-  |:-------------:|:--------:|
+  | :--- | :--- |
   | `extract_datetime_part` | `extract_dt_part` |
   | `sum_dt_times` | `sum_dt_objects` |
   | `dt_time_average` | `dt_average` |
@@ -1107,7 +1124,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Renamed the following functions
 
   | Original Function Name | Refactored Function Name |
-  |:----------------------:|:------------------------:|
+  | :--- | :--- |
   | `retrieve_function_name` | `get_func_name` |
   | `get_function_args` | `get_func_args` |
   | `get_function_all_args` | `get_all_func_args` |
@@ -1124,7 +1141,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Renamed the following functions
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `check_essential_prog_installation` | `_check_essential_progs` (marked as internal) |
   | `pdf_file_tweaker` | `file_tweaker` |
   | `pdf_file_compressor` | `file_compressor` |
@@ -1146,7 +1163,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - Module `string_handler`: Renamed the following functions:
 
   | Old function name | New function name |
-  |:-----------------:|:-----------------:|
+  | :--- | :--- |
   | `add_str_to_path` | `add_to_path` |
   | `ext_adder` | `append_ext` |
 
@@ -1157,7 +1174,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - The following renamings have been performed:
 
   | Old package name | New package name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `geospatial_tools` | `geosptools` |
   | `parameters_and_constants` | `paramlib` |
   | `multilingual_text_processing` | `LinguaLab` |
@@ -1189,7 +1206,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Renamed the following functions:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `get_variable_name_in_file_name` | `_get_varname_in_filename` (marked as internal) |
   | `change_file_names_byvar` | `change_filenames_by_var` |
   | `standardise_file_name` | `_standardise_filename` (marked as internal) |
@@ -1199,7 +1216,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - The following renamings have been made:
 
   | Old package name | New package name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `climate_data_utils` | `climalab` |
   | `statistics` | `statkit` |
   | `utilities` | `filewise` |
@@ -1222,7 +1239,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - Renamed the following functions:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `move_files_by_ext_from_exec_code` | `move_files` |
   | `copy_files_by_ext_from_exec_code` | `copy_files` |
   | `remove_files_by_ext` | `remove_files` |
@@ -1246,7 +1263,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - The following functions have been merged and renamed:
 
   | First function | Second function | Merged function name |
-  |:--------------:|:---------------:|:--------------------:|
+  | :---: | :---: | :---: |
   | `find_files_by_ext` | `find_files_by_globstr` | `find_files` |
   | `find_all_directories` | `find_all_file_extensions` | `find_items` |
   | `find_file_containing_dirs_by_ext` | `find_file_containing_dirs_by_globstr` | `find_dirs_with_files` |
@@ -1269,7 +1286,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - Renamed the following functions:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `basic_value_data_type_converter` | `convert_data_type` |
   | `list_array_to_std_array` | `combine_arrays` |
   | `flatten_content_to_string` | `flatten_to_string` |
@@ -1281,7 +1298,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - The following **module** renamings have been made:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `bulk_rename_index_main` | `bulk_rename_auto` |
   | `bulk_rename_index_manual` | `bulk_rename_manual` |
 
@@ -1292,7 +1309,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 - The following **module** renamings have been made:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `change_permissions_exec` | `modify_properties` |
   | `pdf_file_compressor_exec` | `compress_pdf` |
   | `pdf_file_tweaker_exec` | `tweak_pdf` |
@@ -1342,7 +1359,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
   - Renamed the following functions:
 
   | Old function name | New function name |
-  |:----------------:|:-----------------:|
+  | :--- | :--- |
   | `extract_and_store_latlon_bounds` | `extract_latlon_bounds` |
   | `extract_and_store_period_bounds` | `extract_time_bounds` |
   | `extract_and_store_time_formats` | `extract_time_formats` |
@@ -1415,7 +1432,7 @@ These changes enhance terminology consistency in all affected modules. No user-f
 so it is worth describing their origins, referring to the latest version in which these moves have been performed (to this module).
 
 | Function name 1 | Module referring to 1 | sub-package referring to 1 | Function name 2 | Module referring to 2 | sub-package referring to 2 | Merged function name |
-|:--------------:|:--------------------:|:------------------------:|:--------------:|:--------------------:|:------------------------:|:--------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: | :---: |
 | `find_date_key` | `data_frame_handler` | `pandas_data_frames/core` | `find_time_dimension` | `netcdf_handler` | `weather_and_climate` | `find_time_key` |
 | `infer_full_period_of_time` | `data_frame_handler` | `pandas_data_frames/core` | `infer_full_period_of_time` | `netcdf_handler` | `weather_and_climate` | `infer_dt_range` |
 | `infer_time_frequency` | `data_frame_handler` | `pandas_data_frames/core` | `infer_time_frequency` | `netcdf_handler` | `weather_and_climate` | `infer_frequency` |
@@ -1475,7 +1492,7 @@ so it is worth describing their origins, referring to the latest version in whic
 In `statistics` sub-package:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `signal_whitening` | `time_series` | `statistics/core` | (unchanged) | `signal_processing` | (unchanged) |
   | `low_pass_filter` | `time_series` | `statistics/core` | (unchanged) | `signal_processing` | (unchanged) |
   | `high_pass_filter` | `time_series` | `statistics/core` | (unchanged) | `signal_processing` | (unchanged) |
@@ -1488,7 +1505,7 @@ In `statistics` sub-package:
 1.1. To `time_handling` and `data_manipulation`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `create_ds_component` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `data_manipulation` | `utilities/xarray_utils` |
   | `extract_and_store_latlon_bounds` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `data_manipulation` | `utilities/xarray_utils` |
   | `extract_and_store_period_bounds` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `data_manipulation` | `utilities/xarray_utils` |
@@ -1498,7 +1515,7 @@ In `statistics` sub-package:
 1.2. To `file_utils`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `get_netcdf_file_dir_list` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `file_utils` | `utilities/xarray_utils` |
   | `get_netcdf_file_list` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `file_utils` | `utilities/xarray_utils` |
   | `netcdf_file_scanner` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `file_utils` | `utilities/xarray_utils` |
@@ -1507,7 +1524,7 @@ In `statistics` sub-package:
 1.3. To `patterns`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `find_coordinate_variables` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `patterns` | `utilities/xarray_utils` |
   | `find_coordinate_variables_raise_none` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `patterns` | `utilities/xarray_utils` |
   | `find_nearest_coordinates` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `patterns` | `utilities/xarray_utils` |
@@ -1522,7 +1539,7 @@ In `statistics` sub-package:
 1.4. To `xarray_obj_handler`:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `grib2netcdf` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `xarray_obj_handler` | `utilities/xarray_utils` |
   | `save_data_array_as_csv` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `xarray_obj_handler` | `utilities/xarray_utils` |
   | `save_data_as_netcdf_std` | `netcdf_handler` | `climate_data_utils` | (unchanged) | `xarray_obj_handler` | `utilities/xarray_utils` |
@@ -1557,7 +1574,7 @@ In `statistics` sub-package:
 In `statistics` sub-package:
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `polynomial_fitting` | `regressions` | `statistics/core` | (unchanged) | `curve_fitting` | (unchanged) |
   | `calculate_HDY` | `variables` | `statistics/fields/climatology` | (unchanged) | `hdy_interpolation` | (unchanged) |
   | `hdy_interpolation` [once moved, Changed (isibility to internal)] | `variables` | `statistics/fields/climatology` | (unchanged) | `hdy_interpolation` | (unchanged) |
@@ -1565,24 +1582,24 @@ In `statistics` sub-package:
 ##### To `time_handling` sub-package
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `infer_full_period_of_time` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `date_and_time_operators` | (unchanged) |
   | `infer_time_frequency` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `date_and_time_operators` | (unchanged) |
   | `find_date_key` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `date_and_time_operators` | (unchanged) |
-  | `infer_time_frequency` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `date_and_time_operators` | (unchanged) |  
+  | `infer_time_frequency` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `date_and_time_operators` | (unchanged) |
 
 ##### To `utilities/pandas_utils` sub-package (depth level 2)
 
 1.1 To `conversions.py` module
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `df_to_structured_array` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `conversions` | (unchanged) |
 
 1.2 To `data_manipulation` module
 
   | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-  |:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+  | :---: | :---: | :---: | :---: | :---: | :---: |
   | `create_pivot_table` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `data_manipulation` | (unchanged) |
   | `concat_dfs_aux` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `data_manipulation` | (unchanged) |
   | `count_data_by_concept` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `data_manipulation` | (unchanged) |
@@ -1596,7 +1613,7 @@ In `statistics` sub-package:
 1.3 To `pandas_obj_handler` module
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: |
 | `csv2df` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `pandas_obj_handler` | (unchanged) |
 | `excel_handler` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `pandas_obj_handler` | (unchanged) |
 | `merge_csv_files` | `data_frame_handler` | `pandas_data_frames` | (unchanged) | `pandas_obj_handler` | (unchanged) |
@@ -1611,7 +1628,7 @@ In `statistics` sub-package:
 #### **Modules**
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: |
 | --- | `climate_indicators` | `statistics/fields/climatology` | --- | `indicators` | (unchanged) |
 | --- | `climate_variables` | `statistics/fields/climatology` | --- | `variables` | (unchanged) |
 | --- | `calendar_operators` | `time_handling` | --- | `calendar_utils` | (unchanged) |
@@ -1698,13 +1715,13 @@ In `statistics` sub-package:
 - Information about the original module and new function name and location is displayed next:
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: |
 | `calculate_WSDI` | `climate_indicators` | `weather_and_climate` | `WSDI` | (unchanged) | (unchanged) |
 | `calculate_SU` | `climate_indicators` | `weather_and_climate` | `SU` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_CSU` | `climate_indicators` | `weather_and_climate` | `CSU` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_FD` | `climate_indicators` | `weather_and_climate` | `FD` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_TN` | `climate_indicators` | `weather_and_climate` | `TN` | (unchanged) | `statistics/fields/climatology` |
-| `calculate_RR` | `climate_indicators` | `weather_and_climate` | `RR` | (unchanged) | `statistics/fields/climatology` |  
+| `calculate_RR` | `climate_indicators` | `weather_and_climate` | `RR` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_CWD` | `climate_indicators` | `weather_and_climate` | `CWD` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_HWD` | `climate_indicators` | `weather_and_climate` | `HWD` | (unchanged) | `statistics/fields/climatology` |
 | `calculate_HDY` | `climate_indicators` | `weather_and_climate` | `HDY` | `climate_variables` | `statistics/fields/climatology` |
@@ -1712,19 +1729,19 @@ In `statistics` sub-package:
 | `calculate_biovars` | `climate_indicators` | `weather_and_climate` | `biovars` | `climate_variables` | `statistics/fields/climatology` |
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: |
 | `periodic_statistics` | `climate_statistics` | `weather_and_climate` | (unchanged) | `time_series` | `statistics/core` |
 | `climat_periodic_statistics` | `climate_statistics` | `weather_and_climate` | (unchanged) | `time_series` | `statistics/core` |
-| `calculate_and_apply_deltas` | `climate_statistics` | `weather_and_climate` | (unchanged) | `simple_bias_correction` | `statistics/fields/climatology` |  
+| `calculate_and_apply_deltas` | `climate_statistics` | `weather_and_climate` | (unchanged) | `simple_bias_correction` | `statistics/fields/climatology` |
 | `window_sum` | `climate_statistics` | `weather_and_climate` | (unchanged) | `moving_operations` | `statistics/core` |
 | `moving_average` | `climate_statistics` | `weather_and_climate` | (unchanged) | `moving_operations` | `statistics/core` |
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
-| `autocorrelate` | `climatic_signal_modulators` | `weather_and_climate` | (unchanged) | `time_series` | `statistics/core` |  
+| :---: | :---: | :---: | :---: | :---: | :---: |
+| `autocorrelate` | `climatic_signal_modulators` | `weather_and_climate` | (unchanged) | `time_series` | `statistics/core` |
 
 | Original function name | Original module | Original sub-package path | New function name | New module | New sub-package path |
-|:----------------------:|:---------------:|:------------------------:|:----------------:|:-----------:|:-------------------:|
+| :---: | :---: | :---: | :---: | :---: | :---: |
 | `get_1hour_time_step_data` | `consecutive_idx_statistics` | `weather_and_climate` | `hourly_ts_cumul` | `time_series` | `statistics/core` |
 | `count_consecutive_days_maxdata` | `consecutive_idx_statistics` | `weather_and_climate` | `consec_occurrences_maxdata` | `time_series` | `statistics/core` |
 | `count_consecutive_days_mindata` | `consecutive_idx_statistics` | `weather_and_climate` | `consec_occurrences_mindata` | `time_series` | `statistics/core` |
