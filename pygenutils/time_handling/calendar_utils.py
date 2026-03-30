@@ -176,7 +176,8 @@ def standardise_calendar(obj,
                                        for element in obj)):
         
         from xarray import cftime_range
-        from climarraykit.patterns import get_file_dimensions
+
+        from ._optional_climate import get_file_dimensions
             
         if isinstance(obj, list):
             obj = obj[0]  # Assuming only one object in the list
