@@ -16,14 +16,12 @@ from datetime import datetime, timedelta, timezone
 
 # Third-party modules #
 import pandas as pd
-import xarray as xr
 
 #------------------------#
 # Import project modules #
 #------------------------#
 
 from filewise.general.introspection_utils import get_caller_args, get_type_str
-from filewise.xarray_utils.file_utils import ncfile_integrity_status
 from pygenutils.arrays_and_lists.data_manipulation import flatten_list
 from pygenutils.strings.string_handler import find_substring_index
 from pygenutils.strings.text_formatters import format_string, print_format_string
@@ -35,6 +33,19 @@ try:
     pytz_installed = True
 except ImportError:
     pytz_installed = False
+
+
+def _is_xarray_dataset_or_dataarray(obj):
+    """
+    Return True if *obj* is an xarray Dataset or DataArray without importing xarray.
+
+    Used so this module can be imported without loading xarray unless a caller
+    passes xarray objects or NetCDF paths into the helpers that need it.
+    """
+    cls = type(obj)
+    mod = getattr(cls, "__module__", "") or ""
+    return mod.startswith("xarray.") and cls.__name__ in ("Dataset", "DataArray")
+
 
 #------------------#
 # Define functions #
@@ -166,7 +177,7 @@ def get_current_datetime(dtype="datetime", time_fmt_str=None, tz_arg=None):
             return current_time
 
 # Date/time attributes and keys #
-#------------------------------#
+#-------------------------------#
 
 def find_dt_key(data):
     """
@@ -192,6 +203,12 @@ def find_dt_key(data):
         If the input data type is not supported.
     ValueError
         If no time-related key is found.
+
+    Notes
+    -----
+    This module does not import xarray at import time. ``xarray`` is imported
+    lazily only when *data* is a file path string, and ``climarraykit`` only
+    when opening NetCDF paths in :func:`infer_frequency` / :func:`infer_dt_range`.
     """
     
     # Common time-related keywords - both full words and prefixes
@@ -225,8 +242,8 @@ def find_dt_key(data):
                 
         raise ValueError("No time-related column found in the pandas DataFrame.")
     
-    # Handle xarray objects
-    elif isinstance(data, (xr.Dataset, xr.DataArray)):
+    # Handle xarray objects (no top-level xarray import; see _is_xarray_dataset_or_dataarray)
+    elif _is_xarray_dataset_or_dataarray(data):
         # First check dimensions
         for dim in data.dims:
             if check_exact_match(dim):
@@ -243,9 +260,11 @@ def find_dt_key(data):
                 
         raise ValueError("No time-related dimension or variable found in the xarray object.")
     
-    # Handle string (assumed to be file path)
+    # Handle string (assumed to be file path); xarray loaded only for this path
     elif isinstance(data, str):
         try:
+            import xarray as xr
+
             ds = xr.open_dataset(data)
             try:
                 time_key = find_dt_key(ds)
@@ -481,6 +500,8 @@ def infer_frequency(data):
       not the index.
     - For NetCDF files, the method can handle either file paths (strings) or already-opened 
       xarray.Dataset/xarray.DataArray objects.
+    - ``xarray`` and ``climarraykit`` are only imported when this function enters the
+      NetCDF / xarray branch (not when this module is imported).
     """
     # Check input data type #
     #########################
@@ -505,6 +526,8 @@ def infer_frequency(data):
     ###############################################################
 
     elif obj_type == "str":
+        from climarraykit.file_utils import ncfile_integrity_status
+
         ds = ncfile_integrity_status(data)
     elif obj_type in ["dataset", "dataarray"]:
         ds = data.copy()
@@ -512,11 +535,9 @@ def infer_frequency(data):
         raise TypeError("Unsupported data type. Must be pandas DataFrame, "
                         "Series, DatetimeIndex, TimedeltaIndex, "
                         "NetCDF file path (string), or xarray.Dataset/DataArray.")
-        
-    # Lazy import of xarray (if not already imported)
-    if 'xr' not in globals():
-        import xarray as xr
-     
+
+    import xarray as xr
+
     # Infer time frequency for NetCDF data
     date_key = find_dt_key(ds)
     time_freq = xr.infer_freq(ds[date_key])
@@ -554,8 +575,8 @@ def infer_dt_range(data):
     -----
     - For pandas Series, the method will infer the date range based on the series values, 
       not the index.
-    - For NetCDF files, the method will attempt a lazy import of xarray to avoid unnecessary 
-      installation for non-climate-related tasks.
+    - For NetCDF file paths, ``climarraykit.file_utils.ncfile_integrity_status`` is imported
+      only in that branch; xarray is not loaded at module import time.
     """
     # Check input data type #
     obj_type = get_type_str(data, lowercase=True)
@@ -569,6 +590,8 @@ def infer_dt_range(data):
 
     # Section 2: Handling NetCDF Files (string or xarray objects)
     elif obj_type == "str":
+        from climarraykit.file_utils import ncfile_integrity_status
+
         ds = ncfile_integrity_status(data)
         try:
             date_key = find_dt_key(ds)
