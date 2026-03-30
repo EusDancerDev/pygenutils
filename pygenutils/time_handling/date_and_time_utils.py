@@ -207,8 +207,9 @@ def find_dt_key(data):
     Notes
     -----
     This module does not import xarray at import time. ``xarray`` is imported
-    lazily only when *data* is a file path string, and ``climarraykit`` only
-    when opening NetCDF paths in :func:`infer_frequency` / :func:`infer_dt_range`.
+    lazily only when *data* is a file path string. NetCDF path handling uses
+    ``_optional_climate`` (requires ``pip install 'pygenutils[climate]'``) in
+    :func:`infer_frequency` / :func:`infer_dt_range`.
     """
     
     # Common time-related keywords - both full words and prefixes
@@ -500,8 +501,9 @@ def infer_frequency(data):
       not the index.
     - For NetCDF files, the method can handle either file paths (strings) or already-opened 
       xarray.Dataset/xarray.DataArray objects.
-    - ``xarray`` and ``climarraykit`` are only imported when this function enters the
-      NetCDF / xarray branch (not when this module is imported).
+    - ``xarray`` and the climarraykit-backed helpers (via ``_optional_climate``) are
+      only loaded when this function enters the NetCDF / xarray branch. Install
+      ``pygenutils[climate]`` for NetCDF path support.
     """
     # Check input data type #
     #########################
@@ -526,7 +528,7 @@ def infer_frequency(data):
     ###############################################################
 
     elif obj_type == "str":
-        from climarraykit.file_utils import ncfile_integrity_status
+        from ._optional_climate import ncfile_integrity_status
 
         ds = ncfile_integrity_status(data)
     elif obj_type in ["dataset", "dataarray"]:
@@ -575,8 +577,8 @@ def infer_dt_range(data):
     -----
     - For pandas Series, the method will infer the date range based on the series values, 
       not the index.
-    - For NetCDF file paths, ``climarraykit.file_utils.ncfile_integrity_status`` is imported
-      only in that branch; xarray is not loaded at module import time.
+    - For NetCDF file paths, ``_optional_climate.ncfile_integrity_status`` is used
+      (requires ``pip install 'pygenutils[climate]'``); xarray is not loaded at module import time.
     """
     # Check input data type #
     obj_type = get_type_str(data, lowercase=True)
@@ -590,7 +592,7 @@ def infer_dt_range(data):
 
     # Section 2: Handling NetCDF Files (string or xarray objects)
     elif obj_type == "str":
-        from climarraykit.file_utils import ncfile_integrity_status
+        from ._optional_climate import ncfile_integrity_status
 
         ds = ncfile_integrity_status(data)
         try:
