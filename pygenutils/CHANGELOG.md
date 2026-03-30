@@ -27,6 +27,11 @@ All notable changes to this project will be documented in this file.
   - In `dec2bin_basic`, build the reversed bit string in a variable named `bits_lsb_first` (with an LSB note) instead of a terse accumulator name.
   - In `bin2dec_basic`, use an LSB-first view of the digit string (`b_lsb_first`) for both `list_comprehension` and `loop` procedures, and return the result from the list-comprehension path.
 
+#### **Arrays and Lists** (changing; 16.4.0)
+
+- Module `data_manipulation.py`:
+  - In `flatten_list`, when `return_list=True`, rename the local holding the materialised flat sequence from `flattened` to `flattened_list`.
+
 ---
 
 ## [16.3.3] - 2026-03-30

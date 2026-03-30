@@ -535,10 +535,10 @@ def flatten_list(lst, return_list=True, sort=False, reverse=False):
     [1, 2, 3, 4, 5, 6]
     """
     if return_list:
-        flattened = list(_flatten_generator(lst)) # TODO: flattened -> flattened_list? Eta honen antzerako konponketa gehio?
+        flattened_list = list(_flatten_generator(lst))
         if sort:
-            return sort_1d_basic(flattened, reverse=reverse)
-        return flattened
+            return sort_1d_basic(flattened_list, reverse=reverse)
+        return flattened_list
     else:
         return _flatten_generator(lst)
 
