@@ -1,7 +1,7 @@
 # Core dependencies (aligned with pyproject.toml [project.dependencies])
 more_itertools>=10.0.0
-numpy>=1.21.0,<2.0.0
-pandas>=1.3.0,<2.0.0
+numpy>=2.2.3
+pandas>=2.2.3
 
 # Interdependent packages
 filewise>=3.13.0

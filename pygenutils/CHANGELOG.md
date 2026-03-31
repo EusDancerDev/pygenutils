@@ -4,6 +4,17 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [17.0.0] - 2026-03-31
+
+### Breaking (17.0.0)
+
+#### **Package Dependencies** (breaking; 17.0.0)
+
+- **NumPy / Pandas:** require **`numpy>=2.2.3`** and **`pandas>=2.2.3`**. Remove the previous upper bounds **`numpy<2.0.0`** and **`pandas<2.0.0`**. Environments pinned to NumPy 1.x or Pandas 1.x must upgrade before installing this release.
+- **`requirements.txt`**, **`requirements-dev.txt`**, **`pyproject.toml`**, and **`recipe/meta.yaml`** are updated to match.
+
+---
+
 ## [16.4.0] - 2026-03-30
 
 ### Changed (16.4.0)
