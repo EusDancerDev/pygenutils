@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pygenutils"
-version = "17.1.0"
+version = "17.1.1"
 license = {file = "LICENSE"}
 description = "A comprehensive Python utility library for general-purpose and specialised tasks"
 keywords = ["utilities", "python", "general-purpose", "file handling", "string processing"]
@@ -29,13 +29,13 @@ dependencies = [
     "more_itertools>=10.0.0",
     "numpy>=2.2.3",
     "pandas>=2.2.3",
-    "filewise>=3.13.0",
-    "paramlib>=3.4.10",
+    "filewise>=3.14.0",
+    "paramlib>=3.5.0",
 ]
 
 [project.optional-dependencies]
 climate = [
-    "climarraykit>=0.1.0",
+    "climarraykit>=0.2.1",
 ]
 xarray = ["xarray>=2024.2.0"]
 arrow = ["arrow>=1.2.0"]
@@ -46,7 +46,7 @@ dev = [
     "isort>=5.0.0",
     "mypy>=1.0.0",
     "flake8>=6.0.0",
-    "climarraykit>=0.1.0",
+    "climarraykit>=0.2.1",
 ]
 
 [project.urls]
