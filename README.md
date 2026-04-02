@@ -1,7 +1,7 @@
 # pygenutils
 
 [![Python Version](https://img.shields.io/badge/python-3.10%2B-blue.svg)](https://www.python.org/downloads/)
-[![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/EusDancerDev/pygenutils/blob/main/LICENSE)
 [![PyPI Version](https://img.shields.io/pypi/v/pygenutils.svg)](https://pypi.org/project/pygenutils/)
 
 **pygenutils** is a comprehensive Python utilities package designed to provide a wide range of general-purpose tools for data manipulation, string handling, time operations, and system interactions. It serves as a collection of commonly needed utilities for Python development.
@@ -223,8 +223,8 @@ The package is organised into several specialised modules:
 
 For detailed version history and changes, please refer to:
 
-- `CHANGELOG.md`: Comprehensive list of changes for each version
-- `VERSIONING.md`: Versioning policy and guidelines
+- [Changelog](https://github.com/EusDancerDev/pygenutils/blob/main/pygenutils/CHANGELOG.md): comprehensive list of changes for each version
+- [Versioning](https://github.com/EusDancerDev/pygenutils/blob/main/pygenutils/VERSIONING.md): versioning policy and guidelines
 
 ## Usage Examples
 
@@ -289,4 +289,4 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License — see the [LICENSE](https://github.com/EusDancerDev/pygenutils/blob/main/LICENSE) file in the repository for details.
