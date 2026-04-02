@@ -17,7 +17,7 @@ pandas>=2.2.3
 
 # [project.optional-dependencies] dev includes climarraykit; use `pip install -e .[dev]`
 # or uncomment for a flat install without editable pygenutils:
-# climarraykit>=0.1.0
+# climarraykit>=0.2.1
 
 # Optional extras (uncomment for local testing without full extras)
 # arrow>=1.2.0
