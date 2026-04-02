@@ -4,6 +4,22 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [17.1.0] - 2026-04-02
+
+### Changed (17.1.0)
+
+#### **Packaging** (changing; 17.1.0)
+
+- **`pyproject.toml`** and **`pygenutils.__init__.__version__`**: set to **17.1.0**. They still read **16.4.0** while **`CHANGELOG.md`** already recorded **[17.0.0]** for the NumPy / Pandas constraint change; this release brings published metadata in line with that history and adds the string-handler updates below.
+
+#### **Strings** (changing; 17.1.0)
+
+- Module `string_handler.py`:
+  - Replace the **`PATH_FUNCTIONS`** lambdas with **`_path_specs_os`** and **`_path_specs_pathlib`**: one **`os.path.basename`** / **`os.path.splitext`** pass for the **`os`** backend, and a single **`Path`** instance for the **`Path`** backend.
+  - Add optional **`parent_levels`** (default **`1`**) to **`obj_path_specs`** and **`get_obj_specs`**: the **`'parent'`** entry can refer to an ancestor **`n`** steps up; pathlib uses **`.parent`** when **`n == 1`** (root-safe) and **`.parents[n - 1]`** for **`n > 1`**; **`os`** uses repeated **`os.path.dirname`**. Values **`parent_levels < 1`** raise **`ValueError`**.
+
+---
+
 ## [17.0.0] - 2026-03-31
 
 ### Breaking (17.0.0)
