@@ -365,7 +365,7 @@ def _return_search_obj_spec(string, substring, re_obj_str,
 # Specifications of a file or directory path #
 ##############################################
 
-def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
+def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None, parent_levels=1):
     """
     Retrieve the specifications of a file or directory path.
     
@@ -381,12 +381,16 @@ def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
         The module to use for path processing. Options are 'os' (default) and 'Path' (from pathlib).
     SPLIT_DELIM : str, optional
         Delimiter for splitting the file name (without extension) into parts. If None, no splitting is performed.
+    parent_levels : int, optional
+        How many parent directories to walk from ``obj_path`` for the ``'parent'`` entry (default ``1``
+        is the immediate parent). Pathlib uses a single ``.parents[parent_levels - 1]`` lookup; ``os`` uses
+        repeated ``os.path.dirname`` calls.
 
     Returns
     -------
     obj_specs_dict : dict
         A dictionary containing the following path components:
-        - 'parent': The parent directory of the path.
+        - 'parent': The parent directory of the path (or the ancestor ``parent_levels`` steps up).
         - 'name': The full name of the file or directory.
         - 'name_noext': The file or directory name without the extension.
         - 'ext': The file extension (without the dot).
@@ -395,7 +399,7 @@ def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
     Raises
     ------
     ValueError
-        If an unsupported module is provided.
+        If an unsupported module is provided, or if ``parent_levels`` is less than 1.
     """
 
     # List of supported modules for path specification retrieval
@@ -406,8 +410,11 @@ def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
         raise ValueError(f"Unsupported module '{module}'. "
                          f"Choose one from {path_specs_retrieval_modules}.")
     
+    if parent_levels < 1:
+        raise ValueError("'parent_levels' must be an integer >= 1.")
+    
     # Retrieve path specifications based on the chosen module
-    obj_specs_dict = PATH_FUNCTIONS[module](obj_path)
+    obj_specs_dict = PATH_FUNCTIONS[module](obj_path, parent_levels)
     
     # Optionally, split the file name without extension by the specified delimiter
     if SPLIT_DELIM:
@@ -419,7 +426,7 @@ def obj_path_specs(obj_path, module="os", SPLIT_DELIM=None):
 # Specific component retrieval #
 ################################
 
-def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
+def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None, parent_levels=1):
     """
     Retrieve a specific component of a file or directory path.
 
@@ -442,6 +449,8 @@ def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
     SPLIT_DELIM : str, optional
         Delimiter for splitting the file name (without extension) into parts. 
         Required if `obj_spec_key` is 'name_noext_parts'.
+    parent_levels : int, optional
+        Passed to :func:`obj_path_specs` when resolving a path string (see ``parent_levels`` there).
 
     Returns
     -------
@@ -465,7 +474,9 @@ def get_obj_specs(obj_path, obj_spec_key=None, SPLIT_DELIM=None):
         
     # If obj_path is not already a dictionary, get the path specifications
     if not isinstance(obj_path, dict):
-        obj_specs_dict = obj_path_specs(obj_path, SPLIT_DELIM=SPLIT_DELIM)
+        obj_specs_dict = obj_path_specs(
+            obj_path, SPLIT_DELIM=SPLIT_DELIM, parent_levels=parent_levels
+        )
     else:
         obj_specs_dict = obj_path
     
@@ -828,19 +839,42 @@ STRIP_OPTION_DICT = {
 }
 
 # File or directory path specifications retrieval #
-PATH_FUNCTIONS = {
-    'os': lambda obj_path : {
-        'parent': os.path.dirname(obj_path),
-        'name': os.path.basename(obj_path),
-        'name_noext': os.path.splitext(os.path.basename(obj_path))[0],
-        'ext': os.path.splitext(os.path.basename(obj_path))[1][1:]
-    },
-    'Path': lambda obj_path : {
-        'parent': Path(obj_path).parent,
-        'name': Path(obj_path).name,
-        'name_noext': Path(obj_path).stem,
-        'ext': Path(obj_path).suffix[1:]
+
+
+def _path_specs_os(obj_path, parent_levels=1):
+    """Single basename/splitext pass; parent via repeated dirname (same as n-1 index in Path.parents)."""
+    base = os.path.basename(obj_path)
+    root, ext_with_dot = os.path.splitext(base)
+    parent = obj_path
+    for _ in range(parent_levels):
+        parent = os.path.dirname(parent)
+    return {
+        'parent': parent,
+        'name': base,
+        'name_noext': root,
+        'ext': ext_with_dot[1:],
     }
+
+
+def _path_specs_pathlib(obj_path, parent_levels=1):
+    """Single Path instance; use ``.parent`` for one level (root-safe), else ``.parents[...]``."""
+    p = Path(obj_path)
+    ext = p.suffix
+    if parent_levels == 1:
+        parent = p.parent
+    else:
+        parent = p.parents[parent_levels - 1]
+    return {
+        'parent': parent,
+        'name': p.name,
+        'name_noext': p.stem,
+        'ext': ext[1:] if ext else '',
+    }
+
+
+PATH_FUNCTIONS = {
+    'os': _path_specs_os,
+    'Path': _path_specs_pathlib,
 }
 
 # Index return types for pattern matches #
