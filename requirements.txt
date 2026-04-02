@@ -3,12 +3,12 @@ more_itertools>=10.0.0
 numpy>=2.2.3
 pandas>=2.2.3
 
-# Interdependent packages
-filewise>=3.13.0
-paramlib>=3.4.10
+# Interdependent packages (NumPy/Pandas 2.2.3+ stack)
+filewise>=3.14.0
+paramlib>=3.5.0
 
 # Optional: NetCDF / climarraykit features in time_handling (pip install 'pygenutils[climate]')
-# climarraykit>=0.1.0
+# climarraykit>=0.2.1
 
 # Other optional extras (see pyproject.toml)
 # pip install 'pygenutils[xarray]'
