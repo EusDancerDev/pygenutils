@@ -4,6 +4,37 @@ All notable changes to this project will be documented in this file.
 
 ---
 
+## [17.1.1] - 2026-04-02
+
+### Fixed (17.1.1)
+
+#### **Package Dependencies** (fixing; 17.1.1)
+
+- **`filewise`:** raise the minimum to **`>=3.14.0`** in **`pyproject.toml`**, **`requirements.txt`**, and **`recipe/post-link.sh`**.
+- **`paramlib`:** raise the minimum to **`>=3.5.0`** in the same files.
+- **`climarraykit`:** raise the optional extra floor to **`>=0.2.1`** in **`[climate]`** and **`[dev]`** in **`pyproject.toml`**.
+
+#### **Conda recipe** (fixing; 17.1.1)
+
+- **`recipe/meta.yaml`:** set **`version`** to **17.1.1** (it had remained **16.4.0** while **`pyproject.toml`** and **`__init__.py`** advanced to **17.x**).
+- **`recipe/post-link.sh`:** align **`filewise`** and **`paramlib`** pip pins with **`pyproject.toml`**.
+
+### Changed (17.1.1)
+
+#### **Packaging** (changing; 17.1.1)
+
+- **`pyproject.toml`**, **`pygenutils.__init__.__version__`**, and **`recipe/meta.yaml`:** release **17.1.1**.
+
+#### **Changelog** (changing; 17.1.1)
+
+- **[17.0.0]:** replace non-standard **`### Breaking`** with **`### Changed`**; mark incompatible dependency moves with **`Breaking change:`** in list items (Keep a Changelog style); remove the HTML TODO comment.
+
+#### **Documentation** (changing; 17.1.1)
+
+- **`README.md`:** use absolute GitHub URLs for the licence badge, licence section, and pointers to **`CHANGELOG.md`** / **`VERSIONING.md`** so PyPI renders resolve correctly.
+
+---
+
 ## [17.1.0] - 2026-04-02
 
 ### Changed (17.1.0)
@@ -22,12 +53,12 @@ All notable changes to this project will be documented in this file.
 
 ## [17.0.0] - 2026-03-31
 
-### Breaking (17.0.0)
+### Changed (17.0.0)
 
-#### **Package Dependencies** (breaking; 17.0.0)
+#### **Package Dependencies** (changed; 17.0.0)
 
-- **NumPy / Pandas:** require **`numpy>=2.2.3`** and **`pandas>=2.2.3`**. Remove the previous upper bounds **`numpy<2.0.0`** and **`pandas<2.0.0`**. Environments pinned to NumPy 1.x or Pandas 1.x must upgrade before installing this release.
-- **`requirements.txt`**, **`requirements-dev.txt`**, **`pyproject.toml`**, and **`recipe/meta.yaml`** are updated to match.
+- **Breaking change:** **NumPy / Pandas:** require **`numpy>=2.2.3`** and **`pandas>=2.2.3`**. Remove the previous upper bounds **`numpy<2.0.0`** and **`pandas<2.0.0`**. Environments pinned to NumPy 1.x or Pandas 1.x must upgrade before installing this release.
+- **Breaking change:** **`requirements.txt`**, **`requirements-dev.txt`**, **`pyproject.toml`**, and **`recipe/meta.yaml`** are updated to match (conda **`recipe/meta.yaml`** **`version`** field caught up in **[17.1.1]**).
 
 ---
 
