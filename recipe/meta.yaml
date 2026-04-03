@@ -44,11 +44,11 @@ about:
   home: https://github.com/EusDancerDev/pygenutils
   license: MIT
   license_file: LICENSE
-  summary: A comprehensive Python utility library for general-purpose and specialised tasks
+  summary: General-purpose Python utilities for strings, time, arrays, files, and system tasks
   description: |
-    pygenutils is a comprehensive Python utilities package designed to provide a wide range of 
-    general-purpose tools for data manipulation, string handling, time operations, and system interactions.
-    It serves as a collection of commonly needed utilities for Python development.
+    pygenutils bundles reusable helpers for text and datetime handling, list and array patterns,
+    dictionaries, and light OS-oriented utilities, with NumPy and pandas where appropriate.
+    It is a shared foundation for other EusDancerDev scientific and tooling libraries.
   doc_url: https://github.com/EusDancerDev/pygenutils#readme
   dev_url: https://github.com/EusDancerDev/pygenutils.git
 
