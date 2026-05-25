@@ -26,6 +26,3 @@ htmlcov/
 
 # Logs
 *.log
-
-# Ignore configuration and generated files #
-.chglog
